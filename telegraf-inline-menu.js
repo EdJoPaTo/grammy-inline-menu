@@ -197,15 +197,18 @@ class TelegrafInlineMenu {
 
     const actionCodePrefix = `${this.prefix}:${action}:`
     const actionCode = new RegExp(`^${actionCodePrefix}(.+)$`)
-    this.bot.action(actionCode, this.hideMiddleware(hide, async ctx => {
+    this.bot.action(actionCode, async ctx => {
       const key = ctx.match[1]
+      if (hide && (await hide(ctx, key))) {
+        return ctx.answerCbQuery()
+      }
       if (isSetFunc && (await isSetFunc(ctx, key))) {
         // Value is already set. ignore
         return ctx.answerCbQuery()
       }
       await setFunc(ctx, key)
       return this.setMenuNow(ctx)
-    }))
+    })
 
     if (typeof options === 'function') {
       this.buttons.push(async ctx => {

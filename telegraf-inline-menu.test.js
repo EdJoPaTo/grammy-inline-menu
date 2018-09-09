@@ -139,7 +139,18 @@ test('toogle toggles', async t => {
 function exampleSelectMenu(options, additionalArgs) {
   const menu = new TelegrafInlineMenu('a:b', 'some text')
   let selected = 'peter'
-  const isSetFunc = (ctx, key) => key === selected
+  const isSetFunc = ({t}, key) => {
+    if (key === undefined) {
+      t.fail('key has to be always set')
+    }
+    return key === selected
+  }
+  const hide = ({t}, key) => {
+    if (key === undefined) {
+      t.fail('key has to be always set')
+    }
+    return false
+  }
 
   const setFunc = ({t}, key) => {
     selected = key
@@ -148,6 +159,7 @@ function exampleSelectMenu(options, additionalArgs) {
 
   const optionalArgs = {
     isSetFunc,
+    hide,
     ...additionalArgs
   }
   menu.select('c', options, setFunc, optionalArgs)
