@@ -53,6 +53,8 @@ async function buildKeyboardButton({text, textPrefix, actionCode, url, hide}, ..
     result.callback_data = actionCode
   } else if (url) {
     result.url = url
+  } else {
+    throw new Error('button has to have actionCode or url')
   }
 
   return result

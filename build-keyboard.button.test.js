@@ -51,3 +51,9 @@ test('urlButton', async t => {
     hide: false
   })
 })
+
+test('unfinished button', async t => {
+  await t.throwsAsync(() => buildKeyboardButton({
+    text: '42'
+  }))
+})
