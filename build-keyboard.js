@@ -17,7 +17,7 @@ async function buildKeyboardRow(row, ctx) {
   return result
 }
 
-async function buildKeyboardButton({text, textPrefix, actionCode, hide}, ...args) {
+async function buildKeyboardButton({text, textPrefix, actionCode, url, hide}, ...args) {
   if (hide) {
     hide = await hide(...args)
     if (hide) {
@@ -40,8 +40,22 @@ async function buildKeyboardButton({text, textPrefix, actionCode, hide}, ...args
   if (typeof actionCode === 'function') {
     actionCode = await actionCode(...args)
   }
+  if (typeof url === 'function') {
+    url = await url(...args)
+  }
 
-  return Markup.callbackButton(text, actionCode)
+  const result = {
+    text,
+    hide: false
+  }
+
+  if (actionCode) {
+    result.callback_data = actionCode
+  } else if (url) {
+    result.url = url
+  }
+
+  return result
 }
 
 module.exports = {

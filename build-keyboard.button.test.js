@@ -38,3 +38,16 @@ test('textPrefix works', async t => {
     hide: false
   })
 })
+
+test('urlButton', async t => {
+  const result = await buildKeyboardButton({
+    text: '42',
+    textPrefix: '7',
+    url: () => 'https://edjopato.de'
+  })
+  t.deepEqual(result, {
+    text: '7 42',
+    url: 'https://edjopato.de',
+    hide: false
+  })
+})

@@ -88,6 +88,12 @@ Updates menu when doFunc() resolved.
 `doFunc(ctx)` will be triggered when user presses the button.
 `hide(ctx)` (optional) can hide the button when return is true.
 
+### `menu.urlButton(text, url, {hide, joinLastRow})`
+
+Url button. This button is just a pass thru and has no affect on the actionCode system.
+
+`text` and `url` can be `string` or `function(ctx)`.
+`hide(ctx)` (optional) can hide the button when return is true.
 
 ### `menu.submenu(text, menu, {hide, joinLastRow})`
 

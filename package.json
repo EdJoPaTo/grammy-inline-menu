@@ -46,7 +46,9 @@
     "overrides": [
       {
         "files": [
-          "*.test.js"
+          "build-keyboard*.js",
+          "example-depth-two.test.js",
+          "telegraf-inline-menu.test.js"
         ],
         "rules": {
           "camelcase": [

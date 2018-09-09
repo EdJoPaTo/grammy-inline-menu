@@ -11,6 +11,8 @@ bot.use(session())
 
 const mainMenu = new TelegrafInlineMenu('', ctx => `Hey ${ctx.from.first_name}!`, '🔙 zurück…', '🔝 zum Hauptmenü')
 
+mainMenu.urlButton('EdJoPaTo.de', 'https://edjopato.de')
+
 const eventMenu = new TelegrafInlineMenu('e', 'Hier gibts Events')
 let someValue = false
 eventMenu.toggle('t', 'toggle me', (ctx, newState) => {

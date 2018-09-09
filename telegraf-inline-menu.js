@@ -130,6 +130,17 @@ class TelegrafInlineMenu {
     }))
   }
 
+  urlButton(text, url, {hide, joinLastRow} = {}) {
+    if (!hide) {
+      hide = () => false
+    }
+    this.addButton({
+      text,
+      url,
+      hide
+    }, !joinLastRow)
+  }
+
   submenu(text, submenu, {hide, joinLastRow} = {}) {
     if (!hide) {
       hide = () => false
