@@ -33,7 +33,7 @@ function selectEvent(ctx, selected) {
 const addMenu = new TelegrafInlineMenu('e:a', 'Welche Events möchtest du hinzufügen?')
 function filterText(ctx) {
   let text = '🔎 Filter'
-  if (ctx.session.eventfilter !== '.+') {
+  if (ctx.session.eventfilter && ctx.session.eventfilter !== '.+') {
     text += ': ' + ctx.session.eventfilter
   }
   return text
@@ -46,11 +46,11 @@ addMenu.question('filter', filterText,
   }
 )
 
-addMenu.toggle('clearfilter', 'Filter aufheben', ctx => {
+addMenu.button('clearfilter', 'Filter aufheben', ctx => {
   ctx.session.eventfilter = '.+'
 }, {
   joinLastRow: true,
-  hide: ctx => ctx.session.eventfilter === '.+'
+  hide: ctx => !ctx.session.eventfilter || ctx.session.eventfilter === '.+'
 })
 
 addMenu.list('add', () => allEvents, selectEvent, {
