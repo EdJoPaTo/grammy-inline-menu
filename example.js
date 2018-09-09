@@ -13,8 +13,8 @@ const mainMenu = new TelegrafInlineMenu('', ctx => `Hey ${ctx.from.first_name}!`
 
 const eventMenu = new TelegrafInlineMenu('e', 'Hier gibts Events')
 let someValue = false
-eventMenu.toggle('t', 'toggle me', () => {
-  someValue = !someValue
+eventMenu.toggle('t', 'toggle me', (ctx, newState) => {
+  someValue = newState
 }, {isSetFunc: () => someValue})
 
 const allEvents = [
@@ -71,11 +71,11 @@ const settingsMenu = new TelegrafInlineMenu('s', '*Settings*')
 const mensaSettingsMenu = new TelegrafInlineMenu('s:m', '*Mensa Settings*')
 let mensaToggle = false
 let student = false
-mensaSettingsMenu.toggle('t', 'Essen', () => {
-  mensaToggle = !mensaToggle
+mensaSettingsMenu.toggle('t', 'Essen', (ctx, newState) => {
+  mensaToggle = newState
 }, {isSetFunc: () => mensaToggle})
-mensaSettingsMenu.toggle('student', 'Studentenpreis', () => {
-  student = !student
+mensaSettingsMenu.toggle('student', 'Studentenpreis', (ctx, newState) => {
+  student = newState
 }, {isSetFunc: () => student, hide: () => !mensaToggle})
 
 let price = 'student'
