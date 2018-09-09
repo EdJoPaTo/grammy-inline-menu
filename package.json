@@ -1,0 +1,58 @@
+{
+  "name": "telegraf-inline-menu",
+  "version": "1.0.0",
+  "description": "Inline Menus for Telegraf made simple.",
+  "main": "telegraf-inline-menu.js",
+  "scripts": {
+    "ava": "ava",
+    "ava:watch": "ava -w",
+    "standard-version": "standard-version",
+    "xo": "xo",
+    "start": "node example.js",
+    "prerelease": "npm test",
+    "release": "standard-version",
+    "pretest": "xo",
+    "test": "nyc ava"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EdJoPaTo/telegraf-inline-menu.git"
+  },
+  "keywords": [
+    "Telegraf",
+    "Telegram"
+  ],
+  "author": "Edgar To",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EdJoPaTo/telegraf-inline-menu/issues"
+  },
+  "homepage": "https://github.com/EdJoPaTo/telegraf-inline-menu#readme",
+  "dependencies": {
+    "telegraf": "^3.23.0"
+  },
+  "devDependencies": {
+    "ava": "^0.25.0",
+    "nyc": "^13.0.1",
+    "xo": "^0.23.0"
+  },
+  "xo": {
+    "space": true,
+    "semicolon": false,
+    "overrides": [
+      {
+        "files": [
+          "*.test.js"
+        ],
+        "rules": {
+          "camelcase": [
+            "warn",
+            {
+              "properties": "never"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

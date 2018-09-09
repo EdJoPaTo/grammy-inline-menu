@@ -1,0 +1,7 @@
+node_modules
+.nyc_output
+
+# exclude npm pack packages
+*.tgz
+
+token.txt
