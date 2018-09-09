@@ -92,16 +92,27 @@ class TelegrafInlineMenu {
     return Composer.branch(hide, Composer.safePassThru(), Composer.compose(fns))
   }
 
-  manual(action, text, {hide} = {}) {
+  addButton(button, ownRow = true) {
+    if (ownRow) {
+      this.buttons.push([
+        button
+      ])
+    } else {
+      const lastRow = this.buttons[this.buttons.length - 1]
+      lastRow.push(button)
+    }
+  }
+
+  manual(action, text, {hide, joinLastRow} = {}) {
     const actionCode = this.prefix + ':' + action
-    this.buttons.push([{
+    this.addButton({
       text,
       actionCode,
       hide
-    }])
+    }, !joinLastRow)
   }
 
-  submenu(text, submenu, {hide} = {}) {
+  submenu(text, submenu, {hide, joinLastRow} = {}) {
     if (!hide) {
       hide = () => false
     }
@@ -117,15 +128,15 @@ class TelegrafInlineMenu {
     submenu.parent = this
 
     const actionCode = submenu.prefix
-    this.buttons.push([{
+    this.addButton({
       text,
       actionCode,
       hide
-    }])
+    }, !joinLastRow)
     this.bot.use(this.hideMiddleware(hide, submenu.bot))
   }
 
-  toggle(action, text, setFunc, {isSetFunc, hide} = {}) {
+  toggle(action, text, setFunc, {isSetFunc, hide, joinLastRow} = {}) {
     if (!hide) {
       hide = () => false
     }
@@ -138,12 +149,12 @@ class TelegrafInlineMenu {
 
     const textPrefix = isSetFunc ? async ctx => enabledEmoji(await isSetFunc(ctx)) : undefined
 
-    this.buttons.push([{
+    this.addButton({
       text,
       textPrefix,
       actionCode,
       hide
-    }])
+    }, !joinLastRow)
   }
 
   list(action, options, setFunc, optionalArgs = {}) {
@@ -179,7 +190,7 @@ class TelegrafInlineMenu {
     }
   }
 
-  question(action, buttonText, setFunc, {hide, questionText} = {}) {
+  question(action, buttonText, setFunc, {hide, questionText, joinLastRow} = {}) {
     if (!questionText) {
       questionText = buttonText
     }
@@ -200,11 +211,11 @@ class TelegrafInlineMenu {
       ])
     }))
 
-    this.buttons.push([{
+    this.addButton({
       text: buttonText,
       actionCode,
       hide
-    }])
+    }, !joinLastRow)
   }
 }
 

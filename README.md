@@ -51,6 +51,8 @@ Methods often have these parameters:
   Will be set as the button text.
 - `setFunc`
   Will be called when the user selects an option from the menu
+- `joinLastRow` (optional)
+  When set to true the button will try to join the row before
 - `hide` (optional)
   Hides the button in the menu when the Function returns false
 
@@ -68,7 +70,7 @@ This can be a `string` or `function(ctx)`.
 `backButtonText` and `mainMenuButtonText` will be used for the back and top buttons.
 Submenus will use these attibutes of parents.
 
-### `menu.manual(actionCode, text, {hide})`
+### `menu.manual(actionCode, text, {hide, joinLastRow})`
 
 Add a Button for a manual (or legacy) bot.action
 
@@ -76,7 +78,7 @@ Add a Button for a manual (or legacy) bot.action
 `text` can be a `string` or a `function(ctx)` that will be set as the Button text.
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.submenu(text, menu, {hide})`
+### `menu.submenu(text, menu, {hide, joinLastRow})`
 
 Creates a Button in the menu to a submenu
 
@@ -87,7 +89,7 @@ It uses the actionCode of the provided `menu`.
 `menu` is another TelegrafInlineMenu with an actionCode below the one of the current menu.
 `hide(ctx)` (optional) can hide the button that opens the submenu.
 
-### `menu.toggle(actionCode, text, setFunc, {isSetFunc, hide})`
+### `menu.toggle(actionCode, text, setFunc, {isSetFunc, hide, joinLastRow})`
 
 Creates a button that toggles a setting
 
@@ -99,7 +101,7 @@ Creates a button that toggles a setting
 This will show an emoji to the user on the button as text prefix.
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.select(actionCode, options, setFunc, {isSetFunc, prefixFunc, hide, columns})`
+### `menu.select(actionCode, options, setFunc, {isSetFunc, prefixFunc, hide, joinLastRow, columns})`
 
 Creates multiple buttons for each provided option.
 
@@ -125,7 +127,7 @@ Can only be used when `isSetFunc` is not used.
 This is an alias for `menu.select`
 The wording makes more sense with list that are not exclusive selections.
 
-### `menu.question(actionCode, buttonText, setFunc, {questionText, hide})`
+### `menu.question(actionCode, buttonText, setFunc, {questionText, hide, joinLastRow})`
 
 When the user presses the button, he will be asked a question.
 The answer he gives will be given via `setFunc(ctx, answer)`

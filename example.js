@@ -49,6 +49,7 @@ addMenu.question('filter', filterText,
 addMenu.toggle('clearfilter', 'Filter aufheben', ctx => {
   ctx.session.eventfilter = '.+'
 }, {
+  joinLastRow: true,
   hide: ctx => ctx.session.eventfilter === '.+'
 })
 
