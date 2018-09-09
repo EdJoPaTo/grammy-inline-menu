@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.3.1"></a>
+## [1.3.1](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v1.3.0...v1.3.1) (2018-09-09)
+
+
+### Bug Fixes
+
+* **select:** hide has the key now always set ([8f048fd](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/8f048fd))
+
+
+
 <a name="1.3.0"></a>
 # [1.3.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v1.2.0...v1.3.0) (2018-09-09)
 
