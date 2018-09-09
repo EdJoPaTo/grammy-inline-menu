@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.2.0"></a>
+# [1.2.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v1.1.0...v1.2.0) (2018-09-09)
+
+
+### Features
+
+* add 'joinLastRow' option ([3494e5c](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/3494e5c))
+* **button:** add simple button ([af7509b](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/af7509b))
+
+
+
 <a name="1.1.0"></a>
 # [1.1.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v1.0.0...v1.1.0) (2018-09-09)
 
