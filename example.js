@@ -55,7 +55,6 @@ addMenu.toggle('clearfilter', 'Filter aufheben', ctx => {
 
 addMenu.list('add', () => allEvents, selectEvent, {
   hide: (ctx, selectedEvent) => {
-    console.log('addMenu list hide', ctx.session.eventfilter)
     const filter = ctx.session.eventfilter || '.+'
     const regex = new RegExp(filter, 'i')
     return !regex.test(selectedEvent)
@@ -87,7 +86,6 @@ const priceOptions = {
 }
 
 const selectSet = (ctx, key) => {
-  console.log('set price', price, key)
   price = key
 }
 const selectIsSet = (ctx, key) => key === price
