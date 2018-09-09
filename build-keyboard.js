@@ -37,6 +37,10 @@ async function buildKeyboardButton({text, textPrefix, actionCode, hide}, ...args
     }
   }
 
+  if (typeof actionCode === 'function') {
+    actionCode = await actionCode(...args)
+  }
+
   return Markup.callbackButton(text, actionCode)
 }
 

@@ -158,14 +158,24 @@ class TelegrafInlineMenu {
     if (!hide) {
       hide = () => false
     }
+    console.assert(isSetFunc, `Use menu.toggle(${action}) with isSetFunc. Not using it is depricated. If you cant provide it use menu.button instead.`, 'menu prefix:', this.prefix, 'toggle text:', text)
 
-    const actionCode = this.prefix + ':' + action
-    this.bot.action(actionCode, this.hideMiddleware(hide, async ctx => {
-      await setFunc(ctx)
+    const set = async (ctx, newVal) => {
+      await setFunc(ctx, newVal)
       return this.setMenuNow(ctx)
-    }))
+    }
+
+    const actionCodePrefix = this.prefix + ':' + action
+    this.bot.action(actionCodePrefix + ':true', this.hideMiddleware(hide, ctx => set(ctx, true)))
+    this.bot.action(actionCodePrefix + ':false', this.hideMiddleware(hide, ctx => set(ctx, false)))
+    // This will be used when isSetFunc is not available (depricated)
+    this.bot.action(actionCodePrefix, this.hideMiddleware(hide, ctx => set(ctx)))
 
     const textPrefix = isSetFunc ? async ctx => enabledEmoji(await isSetFunc(ctx)) : undefined
+
+    const actionCode = isSetFunc ? async ctx => {
+      return (await isSetFunc(ctx)) ? actionCodePrefix + ':false' : actionCodePrefix + ':true'
+    } : actionCodePrefix
 
     this.addButton({
       text,

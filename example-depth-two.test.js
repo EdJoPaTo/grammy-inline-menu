@@ -10,7 +10,7 @@ const {Extra} = Telegraf
 function exampleToogleMenu(backButtonText) {
   const menu = new TelegrafInlineMenu('a:b', 'some text', backButtonText)
   const isSetFunc = () => true
-  const setFunc = ({t}) => t.pass()
+  const setFunc = ({t}, newState) => t.false(newState)
 
   const optionalArgs = {
     isSetFunc
@@ -66,7 +66,7 @@ test('generate', async t => {
         [{
           text: enabledEmojiTrue + ' toggle me',
           hide: false,
-          callback_data: 'a:b:c'
+          callback_data: 'a:b:c:false'
         }], [{
           text: 'back…',
           hide: false,
@@ -97,6 +97,6 @@ test('toggles', async t => {
     {callback_query: {data: 'main'}},
     {callback_query: {data: 'a'}},
     {callback_query: {data: 'a:b'}},
-    {callback_query: {data: 'a:b:c'}}
+    {callback_query: {data: 'a:b:c:false'}}
   ])
 })

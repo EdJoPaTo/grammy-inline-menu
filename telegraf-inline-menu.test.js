@@ -21,7 +21,7 @@ test('main menu dynamic text', async t => {
 
 function exampleToogleMenu() {
   const menu = new TelegrafInlineMenu('a:b', 'some text')
-  const setFunc = ({t}) => t.pass()
+  const setFunc = ({t}, newState) => t.false(newState)
   const isSetFunc = () => true
 
   const optionalArgs = {
@@ -55,7 +55,7 @@ test('submenu generate', async t => {
         [{
           text: enabledEmojiTrue + ' toggle me',
           hide: false,
-          callback_data: 'a:b:c'
+          callback_data: 'a:b:c:false'
         }], [{
           text: 'back…',
           hide: false,
@@ -80,12 +80,14 @@ test('submenu toggles', async t => {
   bot.use(menu)
   bot.use(ctx => t.fail('update not handled: ' + JSON.stringify(ctx.update)))
 
+  // All menus can be accessed anytime (+2)
   await bot.handleUpdates([
     {callback_query: {data: 'a'}},
     {callback_query: {data: 'a:b'}}
   ])
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
+  // Toggles toggle & update message (+2)
+  await bot.handleUpdate({callback_query: {data: 'a:b:c:false'}})
 })
 
 test('submenu must be below', t => {
@@ -112,7 +114,7 @@ test('toogle generate', async t => {
       inline_keyboard: [[{
         text: enabledEmojiTrue + ' toggle me',
         hide: false,
-        callback_data: 'a:b:c'
+        callback_data: 'a:b:c:false'
       }]]
     }
   }))
@@ -130,7 +132,8 @@ test('toogle toggles', async t => {
   bot.use(menu)
   bot.use(ctx => t.fail('update not handled: ' + JSON.stringify(ctx.update)))
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
+  // Toggles: toggle & message update (+2)
+  await bot.handleUpdate({callback_query: {data: 'a:b:c:false'}})
 })
 
 function exampleSelectMenu(options, additionalArgs) {
