@@ -106,9 +106,9 @@ Creates a button that toggles a setting
 
 `actionCode` has to be unique in this menu.
 `text` can be a `string` or a `function(ctx)` that will be set as the Button text.
-`setFunc(ctx)` will be called when a user presses the toggle button.
+`setFunc(ctx, newState)` will be called when a user presses the toggle button. `newState` contains the new State (true / false)
 
-`isSetFunc(ctx)` (optional) should return the current state of the toggle (true / false).
+`isSetFunc(ctx)` should return the current state of the toggle (true / false).
 This will show an emoji to the user on the button as text prefix.
 `hide(ctx)` (optional) can hide the button when return is true.
 
