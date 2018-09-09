@@ -280,3 +280,57 @@ test('select with prefix', async t => {
     }
   }))
 })
+
+function exampleQuestionMenu(questionText) {
+  const menu = new TelegrafInlineMenu('a:b', 'some text')
+
+  const setFunc = ({t}, answer) => {
+    t.is(answer, 'correct')
+  }
+
+  const optionalArgs = {
+    questionText
+  }
+  menu.question('c', 'Question Button', setFunc, optionalArgs)
+  return menu
+}
+
+test('question generate', async t => {
+  const menu = exampleQuestionMenu('what?')
+
+  const ctx = {t}
+
+  const {text, extra} = await menu.generate(ctx)
+  t.is(text, 'some text')
+  t.deepEqual(extra, new Extra({
+    parse_mode: 'Markdown',
+    reply_markup: {
+      inline_keyboard: [[{
+        text: 'Question Button',
+        hide: false,
+        callback_data: 'a:b:c'
+      }]]
+    }
+  }))
+})
+
+test('question answer', async t => {
+  t.plan(3)
+
+  const questionText = 'wat?'
+  const menu = exampleQuestionMenu(questionText)
+  const bot = new Telegraf()
+  bot.context.t = t
+  bot.context.editMessageText = () => t.pass()
+  bot.context.reply = () => t.pass()
+  bot.context.answerCbQuery = () => {}
+  bot.context.deleteMessage = () => {}
+  bot.use(menu)
+  bot.use(ctx => t.fail('update not handled: ' + JSON.stringify(ctx.update)))
+
+  // Will reply question (+1 -> 1)
+  await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
+
+  // Will setFunction (+1) and reply menu after that (+1 -> 3)
+  await bot.handleUpdate({message: {reply_to_message: {text: questionText}, text: 'correct'}})
+})
