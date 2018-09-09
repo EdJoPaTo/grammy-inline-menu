@@ -1,0 +1,6 @@
+.*
+*.test.js
+token.txt
+
+# exclude npm pack packages
+*.tgz
