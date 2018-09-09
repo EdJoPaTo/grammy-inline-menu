@@ -144,7 +144,12 @@ bot.catch(error => {
     console.error('message not modified')
     return
   }
-  console.error('telegraf error', error.response, error.on, error)
+  console.error('telegraf error',
+    error.response,
+    error.on
+  )
+  console.error('inline keyboard', error.on && error.on.payload && error.on.payload.reply_markup && error.on.payload.reply_markup.inline_keyboard)
+  console.error('full error', error)
 })
 
 bot.startPolling()
