@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.3.0"></a>
+# [1.3.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v1.2.0...v1.3.0) (2018-09-09)
+
+
+### Features
+
+* **toggle:** include state to be set into actionCode ([79c2c47](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/79c2c47))
+
+
+
 <a name="1.2.0"></a>
 # [1.2.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v1.1.0...v1.2.0) (2018-09-09)
 
