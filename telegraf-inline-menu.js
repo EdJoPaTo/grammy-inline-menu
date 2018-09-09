@@ -151,7 +151,7 @@ class TelegrafInlineMenu {
       actionCode,
       hide
     }, !joinLastRow)
-    this.bot.use(this.hideMiddleware(hide, submenu.bot))
+    this.bot.use(this.hideMiddleware(hide, submenu))
   }
 
   toggle(action, text, setFunc, {isSetFunc, hide, joinLastRow} = {}) {
