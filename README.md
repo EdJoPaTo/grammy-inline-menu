@@ -68,6 +68,15 @@ This can be a `string` or `function(ctx)`.
 `backButtonText` and `mainMenuButtonText` will be used for the back and top buttons.
 Submenus will use these attibutes of parents.
 
+### `menu.manual(actionCode, text, {hide})`
+
+Add a Button for a manual (or legacy) bot.action
+
+`actionCode` has to be unique in this menu.
+`text` can be a `string` or a `function(ctx)` that will be set as the Button text.
+`hide(ctx)` (optional) can hide the button when return is true.
+
+
 ### `menu.submenu(text, menu, {hide})`
 
 Creates a Button in the menu to a submenu

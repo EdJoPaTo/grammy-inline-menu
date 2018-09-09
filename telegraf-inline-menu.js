@@ -92,6 +92,15 @@ class TelegrafInlineMenu {
     return Composer.branch(hide, Composer.safePassThru(), Composer.compose(fns))
   }
 
+  manual(action, text, {hide} = {}) {
+    const actionCode = this.prefix + ':' + action
+    this.buttons.push([{
+      text,
+      actionCode,
+      hide
+    }])
+  }
+
   submenu(text, submenu, {hide} = {}) {
     if (!hide) {
       hide = () => false
