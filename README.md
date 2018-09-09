@@ -1,5 +1,9 @@
 # Telegraf Inline Menu
 
+[![Build Status](https://travis-ci.org/EdJoPaTo/telegraf-inline-menu.svg?branch=master)](https://travis-ci.org/EdJoPaTo/telegraf-inline-menu)
+[![Dependency Status](https://david-dm.org/EdJoPaTo/telegraf-inline-menu/status.svg)](https://david-dm.org/EdJoPaTo/telegraf-inline-menu)
+[![Dependency Status](https://david-dm.org/EdJoPaTo/telegraf-inline-menu/dev-status.svg)](https://david-dm.org/EdJoPaTo/telegraf-inline-menu?type=dev)
+
 In order to build inline menus with Telegraf you need to handle `Markup.inlineKeyboard` and `bot.action` way to often.
 Do this simple with this inline menu library.
 
