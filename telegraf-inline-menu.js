@@ -112,6 +112,24 @@ class TelegrafInlineMenu {
     }, !joinLastRow)
   }
 
+  button(action, text, doFunc, {hide, joinLastRow} = {}) {
+    if (!hide) {
+      hide = () => false
+    }
+
+    const actionCode = this.prefix + ':' + action
+    this.addButton({
+      text,
+      actionCode,
+      hide
+    }, !joinLastRow)
+
+    this.bot.action(actionCode, this.hideMiddleware(hide, async ctx => {
+      await doFunc(ctx)
+      return this.setMenuNow(ctx)
+    }))
+  }
+
   submenu(text, submenu, {hide, joinLastRow} = {}) {
     if (!hide) {
       hide = () => false

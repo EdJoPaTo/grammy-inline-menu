@@ -78,6 +78,17 @@ Add a Button for a manual (or legacy) bot.action
 `text` can be a `string` or a `function(ctx)` that will be set as the Button text.
 `hide(ctx)` (optional) can hide the button when return is true.
 
+### `menu.button(actionCode, text, doFunc, {hide, joinLastRow})`
+
+Simple Button for triggering functions.
+Updates menu when doFunc() resolved.
+
+`actionCode` has to be unique in this menu.
+`text` can be a `string` or a `function(ctx)` that will be set as the Button text.
+`doFunc(ctx)` will be triggered when user presses the button.
+`hide(ctx)` (optional) can hide the button when return is true.
+
+
 ### `menu.submenu(text, menu, {hide, joinLastRow})`
 
 Creates a Button in the menu to a submenu
