@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Inline Menus for Telegraf made simple.",
   "main": "telegraf-inline-menu.js",
+  "engines": {
+    "node": ">=8.6"
+  },
   "scripts": {
     "ava": "ava",
     "ava:watch": "ava -w",
