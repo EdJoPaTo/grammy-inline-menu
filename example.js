@@ -17,6 +17,53 @@ eventMenu.toggle('t', 'toggle me', () => {
   someValue = !someValue
 }, {isSetFunc: () => someValue})
 
+const allEvents = [
+  'AA',
+  'AD',
+  'AF',
+  'CE',
+  'DT',
+  'VS'
+]
+
+function selectEvent(ctx, selected) {
+  return ctx.answerCbQuery(selected + ' was added')
+}
+
+const addMenu = new TelegrafInlineMenu('e:a', 'Welche Events möchtest du hinzufügen?')
+function filterText(ctx) {
+  let text = '🔎 Filter'
+  if (ctx.session.eventfilter !== '.+') {
+    text += ': ' + ctx.session.eventfilter
+  }
+  return text
+}
+addMenu.question('filter', filterText,
+  (ctx, answer) => {
+    ctx.session.eventfilter = answer
+  }, {
+    questionText: 'Wonach möchtest du filtern?'
+  }
+)
+
+addMenu.toggle('clearfilter', 'Filter aufheben', ctx => {
+  ctx.session.eventfilter = '.+'
+}, {
+  hide: ctx => ctx.session.eventfilter === '.+'
+})
+
+addMenu.list('add', () => allEvents, selectEvent, {
+  hide: (ctx, selectedEvent) => {
+    console.log('addMenu list hide', ctx.session.eventfilter)
+    const filter = ctx.session.eventfilter || '.+'
+    const regex = new RegExp(filter, 'i')
+    return !regex.test(selectedEvent)
+  },
+  columns: 3
+})
+
+eventMenu.submenu('Hinzufügen…', addMenu)
+
 mainMenu.submenu('Events', eventMenu)
 
 const settingsMenu = new TelegrafInlineMenu('s', '*Settings*')

@@ -76,7 +76,6 @@ Add a Button for a manual (or legacy) bot.action
 `text` can be a `string` or a `function(ctx)` that will be set as the Button text.
 `hide(ctx)` (optional) can hide the button when return is true.
 
-
 ### `menu.submenu(text, menu, {hide})`
 
 Creates a Button in the menu to a submenu
@@ -125,3 +124,14 @@ Can only be used when `isSetFunc` is not used.
 
 This is an alias for `menu.select`
 The wording makes more sense with list that are not exclusive selections.
+
+### `menu.question(actionCode, buttonText, setFunc, {questionText, hide})`
+
+When the user presses the button, he will be asked a question.
+The answer he gives will be given via `setFunc(ctx, answer)`
+
+`actionCode` has to be unique in this menu.
+`buttonText` can be a `string` or a `function(ctx)` that will be set as the Button text.
+`setFunc(ctx, answer)` will be called when the user answers the question.
+`questionText` (optional) can be a string. This has to be globally unique! If this is not unique it will collide with the other question with the same text and probably not work as intended.
+`hide(ctx)` (optional) can hide the button when return is true.

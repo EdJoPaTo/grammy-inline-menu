@@ -1,4 +1,4 @@
-const {Composer, Extra} = require('telegraf')
+const {Composer, Extra, Markup} = require('telegraf')
 
 const {getRowsOfButtons} = require('./align-buttons')
 const {buildKeyboard} = require('./build-keyboard')
@@ -177,6 +177,34 @@ class TelegrafInlineMenu {
       const result = generateSelectButtons(actionCodePrefix, options, optionalArgs)
       result.forEach(o => this.buttons.push(o))
     }
+  }
+
+  question(action, buttonText, setFunc, {hide, questionText} = {}) {
+    if (!questionText) {
+      questionText = buttonText
+    }
+
+    const actionCode = this.prefix + ':' + action
+
+    this.bot.on('text', Composer.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === questionText, async ctx => {
+      const answer = ctx.message.text
+      await setFunc(ctx, answer)
+      return this.replyMenuNow(ctx)
+    }))
+
+    this.bot.action(actionCode, this.hideMiddleware(hide, ctx => {
+      const extra = Extra.markup(Markup.forceReply())
+      return Promise.all([
+        ctx.reply(questionText, extra),
+        ctx.deleteMessage()
+      ])
+    }))
+
+    this.buttons.push([{
+      text: buttonText,
+      actionCode,
+      hide
+    }])
   }
 }
 
