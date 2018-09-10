@@ -81,6 +81,15 @@ class TelegrafInlineMenu {
   async setMenuNow(ctx) {
     const {text, extra} = await this.generate(ctx)
     return ctx.editMessageText(text, extra)
+      .catch(error => {
+        if (error.description === 'Bad Request: message is not modified') {
+          // This is kind of ok.
+          // Not changed stuff should not be sended but sometimes it happens…
+          console.warn('menu is not modified', this.prefix)
+        } else {
+          throw error
+        }
+      })
   }
 
   middleware() {

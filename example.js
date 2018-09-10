@@ -13,6 +13,8 @@ const mainMenu = new TelegrafInlineMenu('', ctx => `Hey ${ctx.from.first_name}!`
 
 mainMenu.urlButton('EdJoPaTo.de', 'https://edjopato.de')
 
+mainMenu.button('test', 'Do nothing', () => {})
+
 const eventMenu = new TelegrafInlineMenu('e', 'Hier gibts Events')
 let someValue = false
 eventMenu.toggle('t', 'toggle me', (ctx, newState) => {
