@@ -96,8 +96,8 @@ test('submenu toggles', async t => {
 
   const bot = new Telegraf()
   bot.context.t = t
-  bot.context.editMessageText = () => t.pass()
-  bot.context.answerCbQuery = () => {}
+  bot.context.editMessageText = () => Promise.resolve(t.pass())
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.use(menu)
   bot.use(ctx => t.fail('update not handled: ' + JSON.stringify(ctx.update)))
 
@@ -147,8 +147,8 @@ test('toogle toggles', async t => {
   const menu = exampleToogleMenu()
   const bot = new Telegraf()
   bot.context.t = t
-  bot.context.editMessageText = () => t.pass()
-  bot.context.answerCbQuery = () => {}
+  bot.context.editMessageText = () => Promise.resolve(t.pass())
+  bot.context.answerCbQuery = () => Promise.resolve()
 
   bot.use(menu)
   bot.use(ctx => t.fail('update not handled: ' + JSON.stringify(ctx.update)))
@@ -231,8 +231,8 @@ async function selectSelect(t, options) {
   const menu = exampleSelectMenu(options)
   const bot = new Telegraf()
   bot.context.t = t
-  bot.context.editMessageText = () => t.pass()
-  bot.context.answerCbQuery = () => {}
+  bot.context.editMessageText = () => Promise.resolve(t.pass())
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.use(menu)
 
   // Already selected -> will not t.pass()
@@ -357,10 +357,10 @@ test('question answer', async t => {
   const menu = exampleQuestionMenu(questionText, 'correct')
   const bot = new Telegraf()
   bot.context.t = t
-  bot.context.editMessageText = () => t.pass()
-  bot.context.reply = () => t.pass()
-  bot.context.answerCbQuery = () => {}
-  bot.context.deleteMessage = () => {}
+  bot.context.editMessageText = () => Promise.resolve(t.pass())
+  bot.context.reply = () => Promise.resolve(t.pass())
+  bot.context.answerCbQuery = () => Promise.resolve()
+  bot.context.deleteMessage = () => Promise.resolve()
   bot.use(menu)
   bot.use(ctx => t.fail('update not handled: ' + JSON.stringify(ctx.update)))
 
@@ -376,10 +376,10 @@ test('question works not only with text', async t => {
   const menu = exampleQuestionMenu(questionText)
   const bot = new Telegraf()
   bot.context.t = t
-  bot.context.editMessageText = () => {}
-  bot.context.reply = () => {}
-  bot.context.answerCbQuery = () => {}
-  bot.context.deleteMessage = () => {}
+  bot.context.editMessageText = () => Promise.resolve()
+  bot.context.reply = () => Promise.resolve()
+  bot.context.answerCbQuery = () => Promise.resolve()
+  bot.context.deleteMessage = () => Promise.resolve()
   bot.use(menu)
   bot.use(ctx => t.fail('update not handled: ' + JSON.stringify(ctx.update)))
 

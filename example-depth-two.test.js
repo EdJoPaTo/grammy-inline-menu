@@ -88,8 +88,8 @@ test('toggles', async t => {
 
   const bot = new Telegraf()
   bot.context.t = t
-  bot.context.editMessageText = () => t.pass()
-  bot.context.answerCbQuery = () => {}
+  bot.context.editMessageText = () => Promise.resolve(t.pass())
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.use(mainmenu)
   bot.use(ctx => t.fail('update not handled: ' + JSON.stringify(ctx.update)))
 
