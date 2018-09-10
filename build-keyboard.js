@@ -17,7 +17,7 @@ async function buildKeyboardRow(row, ctx) {
   return result
 }
 
-async function buildKeyboardButton({text, textPrefix, actionCode, url, hide}, ...args) {
+async function buildKeyboardButton({text, textPrefix, actionCode, url, switchToChat, switchToCurrentChat, hide}, ...args) {
   if (hide) {
     hide = await hide(...args)
     if (hide) {
@@ -46,6 +46,10 @@ async function buildKeyboardButton({text, textPrefix, actionCode, url, hide}, ..
     buttonWithPromises.callback_data = actionCode
   } else if (url) {
     buttonWithPromises.url = url
+  } else if (switchToChat) {
+    buttonWithPromises.switch_inline_query = switchToChat
+  } else if (switchToCurrentChat) {
+    buttonWithPromises.switch_inline_query_current_chat = switchToCurrentChat
   } else {
     throw new Error('button was not completly intialized')
   }

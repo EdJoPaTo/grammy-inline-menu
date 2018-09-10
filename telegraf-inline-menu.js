@@ -140,12 +140,25 @@ class TelegrafInlineMenu {
   }
 
   urlButton(text, url, {hide, joinLastRow} = {}) {
-    if (!hide) {
-      hide = () => false
-    }
     this.addButton({
       text,
       url,
+      hide
+    }, !joinLastRow)
+  }
+
+  switchToChatButton(text, value, {hide, joinLastRow} = {}) {
+    this.addButton({
+      text,
+      switchToChat: value,
+      hide
+    }, !joinLastRow)
+  }
+
+  switchToCurrentChatButton(text, value, {hide, joinLastRow} = {}) {
+    this.addButton({
+      text,
+      switchToCurrentChat: value,
       hide
     }, !joinLastRow)
   }

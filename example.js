@@ -15,6 +15,8 @@ mainMenu.urlButton('EdJoPaTo.de', 'https://edjopato.de')
 
 mainMenu.button('test', 'Do nothing', () => {})
 
+mainMenu.switchToCurrentChatButton('Interessant', 'nope')
+
 const eventMenu = new TelegrafInlineMenu('e', 'Hier gibts Events')
 let someValue = false
 eventMenu.toggle('t', 'toggle me', (ctx, newState) => {
@@ -141,7 +143,14 @@ bot.command('test', ctx => ctx.reply('test', Extra.markup(
 
 bot.action(/.+/, ctx => ctx.reply('action not handled: ' + ctx.match[0]))
 
-bot.use(ctx => ctx.reply('something not handled'))
+bot.use(ctx => {
+  if (ctx.updateType === 'inline_query') {
+    // This bot example has no inline mode.
+    // The switchToCurrentChatButton example will trigger it and fail
+    return
+  }
+  return ctx.reply('something not handled')
+})
 
 bot.catch(error => {
   if (error.description === 'Bad Request: message is not modified') {
