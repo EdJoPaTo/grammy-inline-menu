@@ -37,27 +37,29 @@ async function buildKeyboardButton({text, textPrefix, actionCode, url, hide}, ..
     }
   }
 
-  if (typeof actionCode === 'function') {
-    actionCode = await actionCode(...args)
-  }
-  if (typeof url === 'function') {
-    url = await url(...args)
-  }
-
-  const result = {
+  const buttonWithPromises = {
     text,
     hide: false
   }
 
   if (actionCode) {
-    result.callback_data = actionCode
+    buttonWithPromises.callback_data = actionCode
   } else if (url) {
-    result.url = url
+    buttonWithPromises.url = url
   } else {
-    throw new Error('button has to have actionCode or url')
+    throw new Error('button was not completly intialized')
   }
 
-  return result
+  const button = {}
+  Object.keys(buttonWithPromises)
+    .forEach(async key => {
+      if (typeof buttonWithPromises[key] === 'function') {
+        button[key] = await buttonWithPromises[key](...args)
+      } else {
+        button[key] = buttonWithPromises[key]
+      }
+    })
+  return button
 }
 
 module.exports = {
