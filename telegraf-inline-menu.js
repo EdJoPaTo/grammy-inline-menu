@@ -239,7 +239,7 @@ class TelegrafInlineMenu {
 
     const actionCode = this.prefix + ':' + action
 
-    this.bot.on('text', Composer.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === questionText, async ctx => {
+    this.bot.on('message', Composer.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === questionText, async ctx => {
       const answer = ctx.message.text
       await setFunc(ctx, answer)
       return this.replyMenuNow(ctx)
