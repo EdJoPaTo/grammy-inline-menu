@@ -70,13 +70,14 @@ This can be a `string` or `function(ctx)`.
 `backButtonText` and `mainMenuButtonText` will be used for the back and top buttons.
 Submenus will use these attibutes of parents.
 
-### `menu.manual(actionCode, text, {hide, joinLastRow})`
+### `menu.manual(actionCode, text, {hide, joinLastRow, root})`
 
 Add a Button for a manual (or legacy) bot.action
 
 `actionCode` has to be unique in this menu.
 `text` can be a `string` or a `function(ctx)` that will be set as the Button text.
 `hide(ctx)` (optional) can hide the button when return is true.
+`root` (optional) can be `true` or `false`. When `true` the actionCode is not relative to the menu. This is useful for links to other menus.
 
 ### `menu.button(actionCode, text, doFunc, {hide, joinLastRow})`
 

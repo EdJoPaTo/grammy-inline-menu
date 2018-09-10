@@ -19,6 +19,27 @@ test('main menu dynamic text', async t => {
   t.is(text, 'Hey 42')
 })
 
+test('manual', async t => {
+  const menu = new TelegrafInlineMenu('a', '42')
+  menu.manual('b', 'test1')
+  menu.manual('b', 'test2', {root: true})
+  const {extra} = await menu.generate('42')
+  t.deepEqual(extra, new Extra({
+    parse_mode: 'Markdown',
+    reply_markup: {
+      inline_keyboard: [[{
+        text: 'test1',
+        hide: false,
+        callback_data: 'a:b'
+      }], [{
+        text: 'test2',
+        hide: false,
+        callback_data: 'b'
+      }]]
+    }
+  }))
+})
+
 function exampleToogleMenu() {
   const menu = new TelegrafInlineMenu('a:b', 'some text')
   const setFunc = ({t}, newState) => t.false(newState)

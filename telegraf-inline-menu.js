@@ -103,8 +103,8 @@ class TelegrafInlineMenu {
     }
   }
 
-  manual(action, text, {hide, joinLastRow} = {}) {
-    const actionCode = this.prefix + ':' + action
+  manual(action, text, {hide, joinLastRow, root} = {}) {
+    const actionCode = root ? action : this.prefix + ':' + action
     this.addButton({
       text,
       actionCode,
