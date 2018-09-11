@@ -7,9 +7,14 @@ const {enabledEmoji, enabledEmojiTrue, enabledEmojiFalse} = require('./enabled-e
 
 const {Extra} = Telegraf
 
-test('main menu is the one without prefix', t => {
+test('main menu with main prefix', t => {
   const menu = new TelegrafInlineMenu('main', 'Main Menu')
-  t.is(menu.prefix, '')
+  t.is(menu.code.get(), 'main')
+})
+
+test('main menu without prefix', t => {
+  const menu = new TelegrafInlineMenu('', 'Main Menu')
+  t.is(menu.code.get(), 'main')
 })
 
 test('main menu dynamic text', async t => {

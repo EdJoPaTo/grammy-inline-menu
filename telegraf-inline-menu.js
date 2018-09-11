@@ -1,16 +1,13 @@
 const {Composer, Extra, Markup} = require('telegraf')
 
+const ActionCode = require('./action-code')
 const {getRowsOfButtons} = require('./align-buttons')
 const {buildKeyboard} = require('./build-keyboard')
 const {enabledEmoji, enabledEmojiTrue} = require('./enabled-emoji')
 
 class TelegrafInlineMenu {
-  constructor(prefix, text, backButtonText, mainMenuButtonText) {
-    if (prefix === 'main') {
-      prefix = ''
-    }
-
-    this.prefix = prefix
+  constructor(code, text, backButtonText, mainMenuButtonText) {
+    this.code = new ActionCode(code)
     this.mainText = text
     this.backButtonText = backButtonText
     this.mainMenuButtonText = mainMenuButtonText
@@ -18,8 +15,7 @@ class TelegrafInlineMenu {
     this.bot = new Composer()
     this.buttons = []
 
-    const actionCode = this.prefix === '' ? 'main' : this.prefix
-    this.bot.action(actionCode, ctx => this.setMenuNow(ctx))
+    this.bot.action(this.code.get(), ctx => this.setMenuNow(ctx))
   }
 
   getNeededLastRowButtons() {
@@ -28,13 +24,10 @@ class TelegrafInlineMenu {
     // When there is a parent…
     // When there is a main menu, display main menu button first, back with depth >= 2
     // When there is no main menu instantly display back button
-    if (this.parent && this.parent.prefix !== '') {
+    if (this.parent && this.parent.code.get() !== 'main') {
       const backButtonText = goUpUntilTrue(this, menu => menu.backButtonText).result
       if (backButtonText) {
-        const prefixParts = this.prefix.split(':')
-        prefixParts.pop()
-        const actionCode = prefixParts.join(':')
-
+        const actionCode = this.code.parent().get()
         lastButtonRow.push({
           text: backButtonText,
           actionCode
@@ -42,7 +35,7 @@ class TelegrafInlineMenu {
       }
     }
 
-    const mainmenu = goUpUntilTrue(this, menu => menu.prefix === '')
+    const mainmenu = goUpUntilTrue(this, menu => menu.code.get() === 'main')
     if (this.parent && mainmenu) {
       const mainMenuButtonText = goUpUntilTrue(this, menu => menu.mainMenuButtonText).result
       if (mainMenuButtonText) {
@@ -85,7 +78,7 @@ class TelegrafInlineMenu {
         if (error.description === 'Bad Request: message is not modified') {
           // This is kind of ok.
           // Not changed stuff should not be sended but sometimes it happens…
-          console.warn('menu is not modified', this.prefix)
+          console.warn('menu is not modified', this.code)
         } else {
           throw error
         }
@@ -113,10 +106,10 @@ class TelegrafInlineMenu {
   }
 
   manual(action, text, {hide, joinLastRow, root} = {}) {
-    const actionCode = root ? action : this.prefix + ':' + action
+    const actionCode = root ? new ActionCode(action) : this.code.concat(action)
     this.addButton({
       text,
-      actionCode,
+      actionCode: actionCode.get(),
       hide
     }, !joinLastRow)
   }
@@ -126,7 +119,7 @@ class TelegrafInlineMenu {
       hide = () => false
     }
 
-    const actionCode = this.prefix + ':' + action
+    const actionCode = this.code.concat(action).get()
     this.addButton({
       text,
       actionCode,
@@ -168,17 +161,13 @@ class TelegrafInlineMenu {
       hide = () => false
     }
 
-    if (submenu.prefix.indexOf(this.prefix) < 0) {
-      throw new Error('submenu is not below this menu')
-    }
-    if ((this.prefix === '' && submenu.prefix.split(':').length !== 1) ||
-        (this.prefix !== '' && this.prefix.split(':').length + 1 !== submenu.prefix.split(':').length)) {
+    if (submenu.code.parent().get() !== this.code.get()) {
       throw new Error('submenu is not directly below this menu')
     }
 
     submenu.parent = this
 
-    const actionCode = submenu.prefix
+    const actionCode = submenu.code.get()
     this.addButton({
       text,
       actionCode,
@@ -191,29 +180,31 @@ class TelegrafInlineMenu {
     if (!hide) {
       hide = () => false
     }
-    console.assert(isSetFunc, `Use menu.toggle(${action}) with isSetFunc. Not using it is depricated. If you cant provide it use menu.button instead.`, 'menu prefix:', this.prefix, 'toggle text:', text)
+    console.assert(isSetFunc, `Use menu.toggle(${action}) with isSetFunc. Not using it is depricated. If you cant provide it use menu.button instead.`, 'menu prefix:', this.code, 'toggle text:', text)
 
     const set = async (ctx, newVal) => {
       await setFunc(ctx, newVal)
       return this.setMenuNow(ctx)
     }
 
-    const actionCodePrefix = this.prefix + ':' + action
-    this.bot.action(actionCodePrefix + ':true', this.hideMiddleware(hide, ctx => set(ctx, true)))
-    this.bot.action(actionCodePrefix + ':false', this.hideMiddleware(hide, ctx => set(ctx, false)))
+    const actionCode = this.code.concat(action)
+    const actionCodeTrue = actionCode.concat('true').get()
+    const actionCodeFalse = actionCode.concat('false').get()
+    this.bot.action(actionCodeTrue, this.hideMiddleware(hide, ctx => set(ctx, true)))
+    this.bot.action(actionCodeFalse, this.hideMiddleware(hide, ctx => set(ctx, false)))
     // This will be used when isSetFunc is not available (depricated)
-    this.bot.action(actionCodePrefix, this.hideMiddleware(hide, ctx => set(ctx)))
+    this.bot.action(actionCode.get(), this.hideMiddleware(hide, ctx => set(ctx)))
 
     const textPrefix = isSetFunc ? async ctx => enabledEmoji(await isSetFunc(ctx)) : undefined
 
-    const actionCode = isSetFunc ? async ctx => {
-      return (await isSetFunc(ctx)) ? actionCodePrefix + ':false' : actionCodePrefix + ':true'
-    } : actionCodePrefix
+    const resultActionCode = isSetFunc ? async ctx => {
+      return (await isSetFunc(ctx)) ? actionCodeFalse : actionCodeTrue
+    } : actionCode.get()
 
     this.addButton({
       text,
       textPrefix,
-      actionCode,
+      actionCode: resultActionCode,
       hide
     }, !joinLastRow)
   }
@@ -228,8 +219,8 @@ class TelegrafInlineMenu {
     }
     const {isSetFunc, hide} = optionalArgs
 
-    const actionCodePrefix = `${this.prefix}:${action}:`
-    const actionCode = new RegExp(`^${actionCodePrefix}(.+)$`)
+    const actionCodeBase = this.code.concat(action)
+    const actionCode = actionCodeBase.concat(/(.+)/).get()
     this.bot.action(actionCode, async ctx => {
       const key = ctx.match[1]
       if (hide && (await hide(ctx, key))) {
@@ -246,10 +237,10 @@ class TelegrafInlineMenu {
     if (typeof options === 'function') {
       this.buttons.push(async ctx => {
         const optionsResult = await options(ctx)
-        return generateSelectButtons(actionCodePrefix, optionsResult, optionalArgs)
+        return generateSelectButtons(actionCodeBase, optionsResult, optionalArgs)
       })
     } else {
-      const result = generateSelectButtons(actionCodePrefix, options, optionalArgs)
+      const result = generateSelectButtons(actionCodeBase, options, optionalArgs)
       result.forEach(o => this.buttons.push(o))
     }
   }
@@ -259,7 +250,7 @@ class TelegrafInlineMenu {
       questionText = buttonText
     }
 
-    const actionCode = this.prefix + ':' + action
+    const actionCode = this.code.concat(action).get()
 
     this.bot.on('message', Composer.optional(ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === questionText, async ctx => {
       const answer = ctx.message.text
@@ -283,11 +274,11 @@ class TelegrafInlineMenu {
   }
 }
 
-function generateSelectButtons(actionCodePrefix, options, {isSetFunc, prefixFunc, hide, columns}) {
+function generateSelectButtons(actionCodeBase, options, {isSetFunc, prefixFunc, hide, columns}) {
   const isArray = Array.isArray(options)
   const keys = isArray ? options : Object.keys(options)
   const buttons = keys.map(key => {
-    const actionCode = actionCodePrefix + key
+    const actionCode = actionCodeBase.concat(key).get()
     const text = isArray ? key : options[key]
     let textPrefix
     if (prefixFunc) {
