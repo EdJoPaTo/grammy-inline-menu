@@ -12,12 +12,20 @@ async function buildKeyboard(buttons, ctx) {
   return Markup.inlineKeyboard(resultButtonsFlatted)
 }
 
-async function buildKeyboardRow(row, ctx) {
-  const result = await Promise.all(row.map(buttonInfo => buildKeyboardButton(buttonInfo, ctx)))
+async function buildKeyboardRow(row, ...args) {
+  const result = await Promise.all(row.map(buttonInfo => buildKeyboardButton(buttonInfo, ...args)))
   return result
 }
 
-async function buildKeyboardButton({text, textPrefix, actionCode, url, switchToChat, switchToCurrentChat, hide}, ...args) {
+async function buildKeyboardButton({
+  actionCode,
+  hide,
+  switchToChat,
+  switchToCurrentChat,
+  text,
+  textPrefix,
+  url
+}, ...args) {
   if (hide) {
     hide = await hide(...args)
     if (hide) {
