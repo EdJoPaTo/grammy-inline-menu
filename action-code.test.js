@@ -9,6 +9,20 @@ test('constructor', t => {
   t.is(new ActionCode('a:b').get(), 'a:b')
 })
 
+test('constructor wrongs', t => {
+  t.throws(() => new ActionCode())
+  t.throws(() => new ActionCode({}))
+  t.throws(() => new ActionCode(() => {}))
+})
+
+test('constructorThrows empty', constructorThrows, undefined)
+test('constructorThrows object', constructorThrows, {})
+test('constructorThrows function', constructorThrows, () => {})
+
+function constructorThrows(t, input) {
+  t.throws(() => new ActionCode(input), /must be/)
+}
+
 test('static parent', t => {
   t.is(ActionCode.parent('a:b').get(), 'a')
   t.is(ActionCode.parent('a:b:c:d').get(), 'a:b:c')

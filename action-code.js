@@ -7,9 +7,12 @@ class ActionCode {
       if (actionCode.source.startsWith('^') || actionCode.source.endsWith('$')) {
         throw new Error('begin or end anchors are not supported (^, $)')
       }
+      this.code = actionCode
+    } else if (typeof actionCode === 'string') {
+      this.code = actionCode || 'main'
+    } else {
+      throw new TypeError('ActionCode must be a regex or string')
     }
-
-    this.code = actionCode || 'main'
   }
 
   get() {
