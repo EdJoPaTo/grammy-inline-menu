@@ -9,6 +9,7 @@
   "scripts": {
     "ava": "ava",
     "ava:watch": "ava -w",
+    "nyc": "nyc",
     "standard-version": "standard-version",
     "xo": "xo",
     "start": "node example.js",
