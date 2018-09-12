@@ -30,6 +30,12 @@ class ActionCode {
   }
 
   static concat(prefix, action) {
+    if (prefix instanceof ActionCode) {
+      prefix = prefix.code
+    }
+    if (action instanceof ActionCode) {
+      action = action.code
+    }
     if (prefix instanceof RegExp) {
       throw new TypeError('concat to an RegExp is currently not supported. Open an Issue for it.')
     }
