@@ -39,6 +39,7 @@ test('static concat', t => {
   t.is(ActionCode.concat('main', 'a').get(), 'a')
   t.is(ActionCode.concat('a', 'b').get(), 'a:b')
   t.is(ActionCode.concat('a:b:c', 'd').get(), 'a:b:c:d')
+  t.is(ActionCode.concat('a:b', 'c:d').get(), 'a:b:c:d')
 })
 
 test('regex', t => {
