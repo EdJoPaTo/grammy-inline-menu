@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="1.7.0"></a>
+# [1.7.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v1.6.0...v1.7.0) (2018-09-13)
+
+
+### Features
+
+* add support for switchToChat and switchToCurrentChat ([32a242d](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/32a242d))
+* **action-code:** concat ActionCodes together ([5b0b4a7](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/5b0b4a7))
+
+
+
 <a name="1.6.0"></a>
 # [1.6.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v1.5.0...v1.6.0) (2018-09-10)
 
