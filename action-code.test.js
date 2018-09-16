@@ -47,6 +47,10 @@ test('concat an ActionCode', t => {
   t.deepEqual(ActionCode.concat('b', new ActionCode(/(.+)/i)).get(), /^b:(.+)$/i)
 })
 
+test('concat two ActionCodes', t => {
+  t.is(ActionCode.concat(new ActionCode('main'), new ActionCode('a')).get(), 'a')
+})
+
 test('regex', t => {
   t.deepEqual(new ActionCode(/(.+)/).get(), /^(.+)$/)
   t.deepEqual(new ActionCode(/(.+)/i).get(), /^(.+)$/i)
