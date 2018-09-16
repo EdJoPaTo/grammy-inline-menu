@@ -127,13 +127,27 @@ class TelegrafInlineMenu {
           if (handler.submenu) {
             middleware = handler.submenu.middleware(childActionCode.get(), subOptions)
           } else {
+            middlewareOptions.only = async ctx => {
+              if (ctx.updateType !== 'callback_query') {
+                return false
+              }
+              ctx.match = childActionCode.exec(ctx.callbackQuery.data)
+              if (!ctx.match) {
+                return false
+              }
+              if (handler.only && !(await handler.only(ctx))) {
+                return false
+              }
+              return true
+            }
+
             options.log('add action reaction', childActionCode.get(), handler.middleware)
-            middleware = Composer.action(childActionCode.get(), async (ctx, next) => {
+            middleware = async (ctx, next) => {
               await handler.middleware(ctx, next)
               if (handler.setMenuAfter) {
                 await setMenuFunc(ctx, 'after handler action' + childActionCode.get())
               }
-            })
+            }
           }
         } else {
           middleware = handler.middleware

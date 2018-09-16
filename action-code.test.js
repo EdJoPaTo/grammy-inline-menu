@@ -72,3 +72,21 @@ test('regex fail anchors', t => {
   t.throws(() => new ActionCode(/^42/), /anchor/)
   t.throws(() => new ActionCode(/42$/), /anchor/)
 })
+
+test('getRegex from regex', t => {
+  t.deepEqual(new ActionCode(/b/).getRegex(), /^b$/)
+})
+
+test('getRegex from non regex', t => {
+  t.deepEqual(new ActionCode('b').getRegex(), /^b$/)
+})
+
+test('exec', t => {
+  t.deepEqual(new ActionCode('b').exec('c'), null)
+  t.truthy(new ActionCode('b').exec('b'))
+})
+
+test('test', t => {
+  t.false(new ActionCode('b').test('c'))
+  t.true(new ActionCode('b').test('b'))
+})

@@ -25,6 +25,23 @@ class ActionCode {
     return this.code
   }
 
+  getRegex() {
+    if (this.code instanceof RegExp) {
+      const {source, flags} = this.code
+      const newSource = `^${source}$`
+      return new RegExp(newSource, flags)
+    }
+    return new RegExp(`^${this.code}$`)
+  }
+
+  exec(value = '') {
+    return this.getRegex().exec(value)
+  }
+
+  test(value = '') {
+    return this.getRegex().test(value)
+  }
+
   concat(action) {
     return ActionCode.concat(this.code, action)
   }
