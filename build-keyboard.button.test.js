@@ -35,6 +35,28 @@ test('urlButton', async t => {
   })
 })
 
+test('switchToChat', async t => {
+  const result = await buildKeyboardButton({
+    text: '42',
+    switchToChat: () => '42'
+  })
+  t.deepEqual(result, {
+    text: '42',
+    switch_inline_query: '42'
+  })
+})
+
+test('switchToCurrentChat', async t => {
+  const result = await buildKeyboardButton({
+    text: '42',
+    switchToCurrentChat: () => '42'
+  })
+  t.deepEqual(result, {
+    text: '42',
+    switch_inline_query_current_chat: '42'
+  })
+})
+
 test('unfinished button', async t => {
   await t.throwsAsync(() => buildKeyboardButton({
     text: '42'
