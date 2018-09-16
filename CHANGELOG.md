@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v1.7.0...v2.0.0) (2018-09-16)
+
+
+### Features
+
+* **select:** limit maximal rows of buttons ([4089727](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/4089727))
+* rework the logic to be loaded not until .init() is used ([a3dd6b2](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/a3dd6b2))
+
+
+### BREAKING CHANGES
+
+* multiple method arguments are swapped, changed and 
+improved. Check README
+
+
+
 <a name="1.7.0"></a>
 # [1.7.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v1.6.0...v1.7.0) (2018-09-13)
 
