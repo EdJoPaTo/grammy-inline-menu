@@ -274,7 +274,13 @@ class TelegrafInlineMenu {
   }
 }
 
-function generateSelectButtons(actionCodeBase, options, {isSetFunc, prefixFunc, hide, columns}) {
+function generateSelectButtons(actionCodeBase, options, {
+  columns,
+  hide,
+  isSetFunc,
+  maxRows,
+  prefixFunc
+}) {
   const isArray = Array.isArray(options)
   const keys = isArray ? options : Object.keys(options)
   const buttons = keys.map(key => {
@@ -299,7 +305,7 @@ function generateSelectButtons(actionCodeBase, options, {isSetFunc, prefixFunc, 
       hide: hideKey
     }
   })
-  return getRowsOfButtons(buttons, columns)
+  return getRowsOfButtons(buttons, columns, maxRows)
 }
 
 function goUpUntilTrue(start, func) {

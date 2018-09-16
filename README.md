@@ -127,7 +127,7 @@ Creates a button that toggles a setting
 This will show an emoji to the user on the button as text prefix.
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.select(actionCode, options, setFunc, {isSetFunc, prefixFunc, hide, joinLastRow, columns})`
+### `menu.select(actionCode, options, setFunc, {isSetFunc, prefixFunc, hide, joinLastRow, columns, maxRows})`
 
 Creates multiple buttons for each provided option.
 
@@ -146,7 +146,9 @@ Can only be used when `isSetFunc` is not used.
 
 `hide(ctx, key)` (optional) can be used to hide some or all buttons in the menu when true is returned on the specific key.
 
-`columns` (Integer, optional) can be provided in order to limit the amount of buttons in one row.
+`columns` (Integer, optional) can be provided in order to limit the amount of buttons in one row. (default: 6)
+
+`maxRows` (Integer, optional) can be provided to limit the maximal rows of buttons. (default: 10)
 
 ### `menu.list`
 

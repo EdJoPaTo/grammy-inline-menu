@@ -1,9 +1,7 @@
-function getRowsOfButtons(buttons, columns) {
-  if (!columns) {
-    columns = buttons.length
-  }
+function getRowsOfButtons(buttons, columns = 6, maxRows = 10) {
+  const maxButtons = Math.min(maxRows * columns, buttons.length)
   const rows = []
-  for (let i = 0; i < buttons.length; i += columns) {
+  for (let i = 0; i < maxButtons; i += columns) {
     const slice = buttons.slice(i, i + columns)
     rows.push(slice)
   }
