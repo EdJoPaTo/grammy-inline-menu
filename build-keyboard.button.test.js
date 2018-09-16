@@ -20,8 +20,7 @@ test('async func possible', async t => {
   }, new ActionCode(''))
   t.deepEqual(result, {
     text: '42',
-    callback_data: 'a',
-    hide: false
+    callback_data: 'a'
   })
 })
 
@@ -32,8 +31,7 @@ test('urlButton', async t => {
   })
   t.deepEqual(result, {
     text: '42',
-    url: 'https://edjopato.de',
-    hide: false
+    url: 'https://edjopato.de'
   })
 })
 

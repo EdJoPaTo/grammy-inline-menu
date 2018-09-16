@@ -17,7 +17,6 @@ test('menu correct', async t => {
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: emojiTrue + ' toggle me',
-      hide: false,
       callback_data: 'a:b:c:false'
     }]])
     return Promise.resolve()
@@ -55,7 +54,6 @@ async function ownPrefixTest(t, currentState, prefix) {
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: prefix + ' toggle me',
-      hide: false,
       callback_data: 'a:b:c:' + !currentState
     }]])
     return Promise.resolve()

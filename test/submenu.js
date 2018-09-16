@@ -5,7 +5,6 @@ import TelegrafInlineMenu from '../inline-menu'
 
 const menuKeyboard = [[{
   text: 'Submenu',
-  hide: false,
   callback_data: 'a:b:c'
 }]]
 
@@ -71,7 +70,6 @@ test('submenu with back button', async t => {
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: 'back…',
-      hide: false,
       callback_data: 'a:b'
     }]])
     return Promise.resolve()
@@ -90,7 +88,6 @@ test('submenu with main button', async t => {
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: 'main…',
-      hide: false,
       callback_data: 'main'
     }]])
     return Promise.resolve()

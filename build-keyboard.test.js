@@ -13,7 +13,6 @@ test('one row one key', async t => {
     [
       {
         text: '42',
-        hide: false,
         callback_data: 'a'
       }
     ]
@@ -41,21 +40,17 @@ test('four buttons in two rows', async t => {
     [
       {
         text: '42',
-        hide: false,
         callback_data: 'a'
       }, {
         text: '43',
-        hide: false,
         callback_data: 'b'
       }
     ], [
       {
         text: '666',
-        hide: false,
         callback_data: 'd'
       }, {
         text: '667',
-        hide: false,
         callback_data: 'e'
       }
     ]
@@ -74,7 +69,6 @@ test('row is func that creates one row with one button', async t => {
     [
       {
         text: '42',
-        hide: false,
         callback_data: 'a'
       }
     ]

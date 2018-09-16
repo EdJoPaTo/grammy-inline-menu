@@ -14,7 +14,6 @@ test('one command', async t => {
     t.is(text, 'foo')
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: 'bar',
-      hide: false,
       callback_data: 'a:b:c'
     }]])
 

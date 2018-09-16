@@ -44,8 +44,7 @@ async function buildKeyboardButton({
   }
 
   const buttonWithPromises = {
-    text,
-    hide: false
+    text
   }
 
   if (action) {

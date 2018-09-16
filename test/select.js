@@ -17,11 +17,9 @@ test('option array menu', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
-        hide: false,
         callback_data: 'a:b:c:a'
       }, {
         text: 'b',
-        hide: false,
         callback_data: 'a:b:c:b'
       }
     ]])
@@ -44,11 +42,9 @@ test('option object menu', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'A',
-        hide: false,
         callback_data: 'a:b:c:a'
       }, {
         text: 'B',
-        hide: false,
         callback_data: 'a:b:c:b'
       }
     ]])
@@ -71,11 +67,9 @@ test('option async array menu', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
-        hide: false,
         callback_data: 'a:b:c:a'
       }, {
         text: 'b',
-        hide: false,
         callback_data: 'a:b:c:b'
       }
     ]])
@@ -114,11 +108,9 @@ test('selected key has emoji prefix', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
-        hide: false,
         callback_data: 'a:b:c:a'
       }, {
         text: emojiTrue + ' b',
-        hide: false,
         callback_data: 'a:b:c:b'
       }
     ]])
@@ -143,11 +135,9 @@ test('multiselect has prefixes', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: emojiFalse + ' a',
-        hide: false,
         callback_data: 'a:b:c:a'
       }, {
         text: emojiTrue + ' b',
-        hide: false,
         callback_data: 'a:b:c:b'
       }
     ]])
@@ -171,11 +161,9 @@ test('custom prefix', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'bar a',
-        hide: false,
         callback_data: 'a:b:c:a'
       }, {
         text: 'bar b',
-        hide: false,
         callback_data: 'a:b:c:b'
       }
     ]])
@@ -200,7 +188,6 @@ test('hides key in keyboard', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'b',
-        hide: false,
         callback_data: 'a:b:c:b'
       }
     ]])

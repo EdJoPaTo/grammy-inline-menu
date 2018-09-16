@@ -5,7 +5,6 @@ import TelegrafInlineMenu from '../inline-menu'
 
 const menuKeyboard = [[{
   text: 'Question',
-  hide: false,
   callback_data: 'a:b:c'
 }]]
 
