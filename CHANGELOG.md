@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v2.0.0...v2.0.1) (2018-09-16)
+
+
+### Bug Fixes
+
+* only run action handler.hide when its an action ([a2c0ea5](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/a2c0ea5))
+* **select:** dont call hide without key ([c440a97](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/c440a97))
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v1.7.0...v2.0.0) (2018-09-16)
 
