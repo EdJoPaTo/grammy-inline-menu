@@ -285,7 +285,6 @@ class TelegrafInlineMenu {
     this.addHandler({
       action: actionCodeBase.concat(/(.+)/),
       middleware: hitSelectButton,
-      hide: additionalArgs.hide,
       setMenuAfter: true
     })
 

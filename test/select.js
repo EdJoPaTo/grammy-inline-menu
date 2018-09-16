@@ -213,3 +213,26 @@ test('hidden key can not be set', async t => {
 
   await bot.handleUpdate({callback_query: {data: 'a:b:c:a'}})
 })
+
+test('hide always has two args', async t => {
+  t.plan(2)
+  const menu = new TelegrafInlineMenu('foo')
+  menu.select('c', ['a', 'b'], {
+    setFunc: t.fail,
+    hide: (...args) => {
+      t.is(args.length, 2)
+      return false
+    }
+  })
+
+  const bot = new Telegraf()
+  bot.use(menu.init({actionCode: 'a:b'}))
+
+  bot.context.editMessageText = () => Promise.resolve()
+
+  // Calls hide for every option: +2
+  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+
+  // Does not call hide
+  await bot.handleUpdate({callback_query: {data: 'c'}})
+})
