@@ -1,5 +1,6 @@
 .*
 *.test.js
+test
 token.txt
 
 # exclude npm pack packages
