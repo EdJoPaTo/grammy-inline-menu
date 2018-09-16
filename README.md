@@ -4,164 +4,258 @@
 [![Dependency Status](https://david-dm.org/EdJoPaTo/telegraf-inline-menu/status.svg)](https://david-dm.org/EdJoPaTo/telegraf-inline-menu)
 [![Dependency Status](https://david-dm.org/EdJoPaTo/telegraf-inline-menu/dev-status.svg)](https://david-dm.org/EdJoPaTo/telegraf-inline-menu?type=dev)
 
-In order to build inline menus with Telegraf you need to handle `Markup.inlineKeyboard` and `bot.action` way to often.
-Do this simple with this inline menu library.
+This menu library is made to easily create an inline menu for your Telegram bot.
 
 ## Example
 ```js
-const menu = new TelegrafInlineMenu('main',
+const menu = new TelegrafInlineMenu(
   ctx => `Hey ${ctx.from.first_name}!`
 )
-function toggle(ctx) {
-  ctx.session.exited = !ctx.session.exited
-}
-menu.toggle('excited', 'Excited!', toggle)
+menu.simpleButton('I am excited!', 'a', {
+  doFunc: ctx => `Hey ${ctx.from.first_name}!`
+})
+bot.use(menu.init())
 ```
 
 # Documentation
 
-This menu library is made to be as stateless as possible.
-Restarting the bot will result in a still working bot.
-
-All functions start with a actionCode:
+The menu function arguments start with the text of the resulting button:
 ```js
-menu.toggle(actionCode, text, setFunc)
+menu.simpleButton(text, action, {
+  doFunc
+})
 ```
-This actionCode is a unique identifier in the current menu and should stay the same as long as possible.
-This ensures a smooth user experience as he can be anywhere in a menu and continue seemlessly after bot restarts.
-As it will be used as `callback_data` it should be short in order to allow more data in it.
+The second argument is the action.
+This has to be an unique identifier in the current menu and should stay the same as long as possible.
+It is used to determine the pressed button.
+Keep the action the same as long as possible over updates of the bot to ensure a smooth user experience as the user can continue seemlessly after bot restarts or updates.
+As it will be used as a part in the `callback_data` it should be short in order to allow more data in it.
 
-actionCodes will be concatinated in order to determine the exact location in the menu.
-For Example `a:b:c` indicate the user is in menu `b` below menu `a` and used method `c`.
-
-Other arguments of functions like `text` can be simple strings or functions.
+Arguments in most functions like `text` can be a simple string or a function / Promise.
 When used as functions it will be called when the user accesses the menu.
-This was used in the first line of the Example
+This was used in the first line of the example to return the user `first_name`.
+
+As this is based on Telegraf see their [Docs](https://telegraf.js.org/) or [GitHub Repo](https://github.com/telegraf/telegraf).
+Also see the Telegram [Bot API Documentation](https://core.telegram.org/bots/api).
 
 ## Methods
 
 Methods generally support ES6 Promises as Parameters.
-Optional arguments are possible in the object as the last parameter.
 
 Methods often have these parameters:
-- `actionCode`
-  String or Function. Will be used as 'callback_data'.
-- `text`
+- `text` (String / Function / Promise)
   String or Function that returns the text.
   Will be set as the button text.
-- `setFunc`
-  Will be called when the user selects an option from the menu
-- `joinLastRow` (optional)
-  When set to true the button will try to join the row before
-- `hide` (optional)
+- `action` (String)
+  Will be used as 'callback_data'.
+- `hide` (optional, Function)
   Hides the button in the menu when the Function returns false
+- `joinLastRow` (optional, Boolean)
+  When set to true the button will try to join the row before. Useful in order to create buttons side by side.
 
-### `new TelegrafInlineMenu(actionCode, text, backButtonText, mainMenuButtonText)`
+### `const menu = new TelegrafInlineMenu(text)`
 
 Creates a new Menu.
 
-`actionCode` is the root actionCode.
-Every actionCode generate my other Methods will be a child of this actionCode.
 Example: When this is called with `a` and  `toggle('c', …)` is called the resulting actionCode for the toggle button will be `a:c`.
 
-`test` is the text in the message itself.
+`text` is the text in the message itself.
 This can be a `string` or `function(ctx)`.
 
-`backButtonText` and `mainMenuButtonText` will be used for the back and top buttons.
-Submenus will use these attibutes of parents.
+### `bot.use(menu.init({backButtonText, mainMenuButtonText, actionCode}))`
 
-### `menu.manual(actionCode, text, {hide, joinLastRow, root})`
+This is used to apply the menu to the bot.
+Should be one the last things before using `bot.startPolling()`
 
-Add a Button for a manual (or legacy) bot.action
+#### Arguments
 
-`actionCode` has to be unique in this menu.
+`backButtonText` and `mainMenuButtonText` (both optional) will be used for the back and top buttons.
+
+`actionCode` (optional, for advanced use only)
+When multiple menus that are not submenus of each other are created this is used to define the root actionCode of the current menu. As action codes have to be unique there as to be an own action code for each menu. When this is not given, 'main' is assumed.
+
+### `menu.setCommand(command)`
+This used to entry the current menu by a bot command.
+Normally you would do something like `bot.command('start', …)` in order to get a command.
+This is different as it has to do some extra steps internally.
+
+Each submenu can have its own commands. For example this is useful with a main menu (/start) and a settings submenu (/settings):
+
+```js
+const main = new TelegrafInlineMenu('Main')
+main.setCommand('start')
+const settings = new TelegrafInlineMenu('Settings')
+settings.setCommand('settings')
+main.submenu('Settings', 's', settings)
+```
+
+### `menu.button(text, action, {doFunc, hide, joinLastRow})`
+
+Button for triggering functions.
+Updates menu when `doFunc()` finished.
+
+When your `doFunc` does not update things in the menu use `menu.simpleButton` instead.
+It has the exact same arguments and will not update the menu after the `doFunc()`.
+
+#### Arguments
+
 `text` can be a `string` or a `function(ctx)` that will be set as the Button text.
-`hide(ctx)` (optional) can hide the button when return is true.
-`root` (optional) can be `true` or `false`. When `true` the actionCode is not relative to the menu. This is useful for links to other menus.
 
-### `menu.button(actionCode, text, doFunc, {hide, joinLastRow})`
+`action` has to be unique in this menu.
 
-Simple Button for triggering functions.
-Updates menu when doFunc() resolved.
-
-`actionCode` has to be unique in this menu.
-`text` can be a `string` or a `function(ctx)` that will be set as the Button text.
 `doFunc(ctx)` will be triggered when user presses the button.
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.urlButton(text, url, {hide, joinLastRow})`
+### `menu.simpleButton(text, action, {doFunc, hide, joinLastRow})`
 
-Url button. This button is just a pass through and has no effect on the actionCode system.
+see `menu.button`
 
-`text` and `url` can be `string` or `function(ctx)`.
+### `menu.question(buttonText, action, {questionText, setFunc, hide, joinLastRow})`
+
+When the user presses the button, he will be asked a question.
+The answer he gives is available via `setFunc(ctx, answer)`
+When the user answers with something that is not a text (a photo for example) `answer` will be undefined.
+`ctx.message` contains the full answer.
+
+#### Arguments
+
+`buttonText` can be a `string` or a `function(ctx)` that will be set as the Button text.
+
+`action` has to be unique in this menu.
+
+`setFunc(ctx, answer)` will be called when the user answers the question.
+
+`questionText` can only be a string.
+This has to be globally unique!
+If this is not unique it will collide with the other question with the same text and probably not work as intended.
+
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.switchToChatButton(text, value, {hide, joinLastRow})`
-### `menu.switchToCurrentChatButton(text, value, {hide, joinLastRow})`
-
-Switch buttons. These buttons are just pass throughs and don't have an effect on the actionCode system.
-
-`text` and `value` can be `string` or `function(ctx)`.
-`hide(ctx)` (optional) can hide the button when return is true.
-
-### `menu.submenu(text, menu, {hide, joinLastRow})`
-
-Creates a Button in the menu to a submenu
-
-This method is the only 'special' method as it does not start with 'actionCode'.
-It uses the actionCode of the provided `menu`.
-`text` can be a `string` or `function(ctx)`
-
-`menu` is another TelegrafInlineMenu with an actionCode below the one of the current menu.
-`hide(ctx)` (optional) can hide the button that opens the submenu.
-
-### `menu.toggle(actionCode, text, setFunc, {isSetFunc, hide, joinLastRow})`
-
-Creates a button that toggles a setting
-
-`actionCode` has to be unique in this menu.
-`text` can be a `string` or a `function(ctx)` that will be set as the Button text.
-`setFunc(ctx, newState)` will be called when a user presses the toggle button. `newState` contains the new State (true / false)
-
-`isSetFunc(ctx)` should return the current state of the toggle (true / false).
-This will show an emoji to the user on the button as text prefix.
-`hide(ctx)` (optional) can hide the button when return is true.
-
-### `menu.select(actionCode, options, setFunc, {isSetFunc, prefixFunc, hide, joinLastRow, columns, maxRows})`
+### `menu.select(action, options, {setFunc, isSetFunc, prefixFunc, hide, joinLastRow, columns, maxRows})`
 
 Creates multiple buttons for each provided option.
 
-`actionCode` has to be unique in this menu.
+#### Arguments
+
+`action` has to be unique in this menu.
+
 `options` can be an string array or an object. (Or a function returning one of them)
 The string array will use the value as Button text and as part of the `callback_data`.
-When an object is proviced, key will be part of the `callback_data` while the value is used as Button Text.
+The option as an object has to be in the following format:
+`{key1: buttonText, key2: buttonText, …}`
 
 `setFunc(ctx, key)` will be called when the user selects an entry.
+
 `isSetFunc(ctx, key)` (optional) will be called in order to use this as an exclusive selection.
 When true is returned the key will have an emoji indicating the current selection.
+When `multiselect` is set all entries will have an emoji as they are true or false.
+When `isSetFunc` returns something different than true or false, it will be the prefix instead.
 Can only be used when `prefixFunc` is not used.
 
 `prefixFunc(ctx, key)` (optional) will be called to determine an individual prefix for each option.
 Can only be used when `isSetFunc` is not used.
 
-`hide(ctx, key)` (optional) can be used to hide some or all buttons in the menu when true is returned on the specific key.
+`multiselect` (optional)
+see `isSetFunc`
+
+`hide(ctx, key)` (optional) can be used to hide the button with the given key in the menu when true is returned.
 
 `columns` (Integer, optional) can be provided in order to limit the amount of buttons in one row. (default: 6)
 
 `maxRows` (Integer, optional) can be provided to limit the maximal rows of buttons. (default: 10)
 
-### `menu.list`
+### `menu.toggle(text, action, {setFunc, isSetFunc, hide, joinLastRow})`
 
-This is an alias for `menu.select`
-The wording makes more sense with list that are not exclusive selections.
+Creates a button that toggles a setting.
 
-### `menu.question(actionCode, buttonText, setFunc, {questionText, hide, joinLastRow})`
+#### Arguments
 
-When the user presses the button, he will be asked a question.
-The answer he gives will be given via `setFunc(ctx, answer)`
+`text` can be a `string` or a `function(ctx)` that will be set as the Button text.
 
-`actionCode` has to be unique in this menu.
-`buttonText` can be a `string` or a `function(ctx)` that will be set as the Button text.
-`setFunc(ctx, answer)` will be called when the user answers the question.
-`questionText` (optional) can be a string. This has to be globally unique! If this is not unique it will collide with the other question with the same text and probably not work as intended.
+`action` has to be unique in this menu.
+
+`setFunc(ctx, newState)` will be called when a user presses the toggle button.
+`newState` contains the new State (true / false).
+
+`isSetFunc(ctx)` has to return the current state of the toggle (true / false).
+This will show an emoji to the user on the button as text prefix.
+
 `hide(ctx)` (optional) can hide the button when return is true.
+
+### `menu.submenu(text, action, submenu, {hide, joinLastRow})`
+
+Creates a Button in the menu to a submenu
+
+#### Arguments
+
+`text` can be a `string` or `function(ctx)`
+
+`action` has to be a `string` / `RegExp`
+
+`menu` is another TelegrafInlineMenu.
+`hide(ctx)` (optional) can hide the button that opens the submenu.
+
+#### Usage
+
+As methods return the current menu you can concat button methods like that:
+```js
+const menu = new TelegrafInlineMenu('test')
+menu.manual('Test 1', 'a')
+  .manual('Test 2', 'b')
+```
+
+With submenus this is different in order to create simple submenus.
+As it returns the submenu instead methods attached to the .submenu are added to the submenu instead.
+In the following example the Test1 & 2 buttons are inside the submenu. Test3 button is in the upper menu.
+
+```js
+const menu = new TelegrafInlineMenu('test')
+menu.submenu('Submenu', 's', new TelegrafInlineMenu('Fancy Submenu'))
+  .manual('Test1', 'a')
+  .manual('Test2', 'b')
+
+menu.manual('Test3', 'z')
+```
+
+### `menu.manual(text, action, {hide, joinLastRow, root})`
+
+Add a Button for a manual (or legacy) `bot.action`.
+
+You have to do `bot.action` yourself with the corresponding actionCode.
+`root` can be useful.
+
+#### Arguments
+
+`text` can be a `string` or a `function(ctx)` that will be set as the Button text.
+
+`action` has to be unique in this menu.
+
+`hide(ctx)` (optional) can hide the button when return is true.
+
+`root` (optional) can be `true` or `false`.
+When `true` the action is not relative to the menu and will be 'global'.
+This is useful for links to other menus.
+
+### `menu.urlButton(text, url, {hide, joinLastRow})`
+
+Url button. This button is just a pass through and has no effect on the actionCode system.
+
+#### Arguments
+
+`text` and `url` can be `string` or `function(ctx)`.
+
+`hide(ctx)` (optional) can hide the button when return is true.
+
+### `menu.switchToChatButton(text, value, {hide, joinLastRow})`
+
+Switch button. This button is just a pass through and doesn't have an effect on the actionCode system.
+
+#### Arguments
+
+`text` and `value` can be `string` or `function(ctx)`.
+
+`hide(ctx)` (optional) can hide the button when return is true.
+
+### `menu.switchToCurrentChatButton(text, value, {hide, joinLastRow})`
+
+see `menu.switchToChatButton`

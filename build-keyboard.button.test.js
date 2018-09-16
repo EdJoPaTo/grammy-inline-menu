@@ -1,39 +1,25 @@
 import test from 'ava'
+import ActionCode from './action-code'
 
 const {buildKeyboardButton} = require('./build-keyboard')
 
 test('hide is questioned first and does not trigger other func', async t => {
   const result = await buildKeyboardButton({
     text: () => t.fail(),
-    textPrefix: () => t.fail(),
-    actionCode: 'a',
+    action: 'a',
     hide: () => true
-  }, 42)
+  }, new ActionCode(''), 42)
   t.true(result.hide)
 })
 
 test('async func possible', async t => {
   const result = await buildKeyboardButton({
-    text: () => Promise.resolve(42),
-    textPrefix: () => Promise.resolve(7),
-    actionCode: 'a',
+    text: () => Promise.resolve('42'),
+    action: 'a',
     hide: () => Promise.resolve(false)
-  })
+  }, new ActionCode(''))
   t.deepEqual(result, {
-    text: '7 42',
-    callback_data: 'a',
-    hide: false
-  })
-})
-
-test('textPrefix works', async t => {
-  const result = await buildKeyboardButton({
     text: '42',
-    textPrefix: '7',
-    actionCode: 'a'
-  })
-  t.deepEqual(result, {
-    text: '7 42',
     callback_data: 'a',
     hide: false
   })
@@ -42,11 +28,10 @@ test('textPrefix works', async t => {
 test('urlButton', async t => {
   const result = await buildKeyboardButton({
     text: '42',
-    textPrefix: '7',
     url: () => 'https://edjopato.de'
   })
   t.deepEqual(result, {
-    text: '7 42',
+    text: '42',
     url: 'https://edjopato.de',
     hide: false
   })

@@ -1,12 +1,12 @@
 const {Markup} = require('telegraf')
 
-async function buildKeyboard(buttons, ctx) {
+async function buildKeyboard(buttons, actionCodePrefix, ctx) {
   const resultButtons = await Promise.all(buttons.map(async row => {
     if (typeof row === 'function') {
       const rows = await row(ctx)
-      return Promise.all(rows.map(row => buildKeyboardRow(row, ctx)))
+      return Promise.all(rows.map(row => buildKeyboardRow(row, actionCodePrefix, ctx)))
     }
-    return [await buildKeyboardRow(row, ctx)]
+    return [await buildKeyboardRow(row, actionCodePrefix, ctx)]
   }))
   const resultButtonsFlatted = [].concat(...resultButtons)
   return Markup.inlineKeyboard(resultButtonsFlatted)
@@ -18,14 +18,14 @@ async function buildKeyboardRow(row, ...args) {
 }
 
 async function buildKeyboardButton({
-  actionCode,
+  action,
   hide,
+  root,
   switchToChat,
   switchToCurrentChat,
   text,
-  textPrefix,
   url
-}, ...args) {
+}, actionCodePrefix, ...args) {
   if (hide) {
     hide = await hide(...args)
     if (hide) {
@@ -36,13 +36,11 @@ async function buildKeyboardButton({
   if (typeof text === 'function') {
     text = await text(...args)
   }
-  if (textPrefix) {
-    if (typeof textPrefix === 'function') {
-      textPrefix = await textPrefix(...args)
-    }
-    if (String(textPrefix).length > 0) {
-      text = textPrefix + ' ' + text
-    }
+  if (typeof action === 'function') {
+    action = await action(...args)
+  }
+  if (action && !root) {
+    action = actionCodePrefix.concat(action).get()
   }
 
   const buttonWithPromises = {
@@ -50,8 +48,8 @@ async function buildKeyboardButton({
     hide: false
   }
 
-  if (actionCode) {
-    buttonWithPromises.callback_data = actionCode
+  if (action) {
+    buttonWithPromises.callback_data = action
   } else if (url) {
     buttonWithPromises.url = url
   } else if (switchToChat) {

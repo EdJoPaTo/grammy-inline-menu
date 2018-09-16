@@ -2,7 +2,7 @@
   "name": "telegraf-inline-menu",
   "version": "1.7.0",
   "description": "Inline Menus for Telegraf made simple.",
-  "main": "telegraf-inline-menu.js",
+  "main": "inline-menu.js",
   "engines": {
     "node": ">=8.6"
   },
@@ -48,8 +48,7 @@
       {
         "files": [
           "build-keyboard*.js",
-          "example-depth-two.test.js",
-          "telegraf-inline-menu.test.js"
+          "test/*.js"
         ],
         "rules": {
           "camelcase": [
