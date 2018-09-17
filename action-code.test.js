@@ -41,23 +41,29 @@ test('concat an ActionCode string', t => {
 })
 
 test('concat an ActionCode regex', t => {
-  t.deepEqual(new ActionCode('b').concat(new ActionCode(/(.+)/i)).get(), /^b:(.+)$/i)
+  t.deepEqual(new ActionCode('b').concat(new ActionCode(/(.+)/)).get(), /^b:(.+)$/)
 })
 
 test('regex', t => {
   t.deepEqual(new ActionCode(/(.+)/).get(), /^(.+)$/)
-  t.deepEqual(new ActionCode(/(.+)/i).get(), /^(.+)$/i)
 })
 
 test('concat string with regex', t => {
   t.deepEqual(new ActionCode('b').concat(/(.+)/).get(), /^b:(.+)$/)
-  t.deepEqual(new ActionCode('b').concat(/(.+)/i).get(), /^b:(.+)$/i)
+})
+
+test('concat regex with string', t => {
+  t.deepEqual(new ActionCode(/foo/).concat('bar').get(), /^foo:bar$/)
+})
+
+test('concat regex with regex', t => {
+  t.deepEqual(new ActionCode(/foo/).concat(/bar/).get(), /^foo:bar$/)
 })
 
 test('regex fail flags', t => {
   t.throws(() => new ActionCode(/42/g), /flags/)
   t.throws(() => new ActionCode(/42/gi), /flags/)
-  t.notThrows(() => new ActionCode(/42/i), /flags/)
+  t.throws(() => new ActionCode(/42/i), /flags/)
 })
 
 test('regex fail anchors', t => {

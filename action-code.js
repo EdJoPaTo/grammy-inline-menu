@@ -1,10 +1,9 @@
 class ActionCode {
   constructor(actionCode) {
     if (actionCode instanceof RegExp) {
-      if (actionCode.flags.replace('i', '') !== '') {
-        throw new Error('flags exept i are not supported')
+      if (actionCode.flags !== '') {
+        throw new Error('RegExp flags are not supported')
       }
-      console.assert(actionCode.flags === '', 'using ActionCode with RegExp Flags is depricated')
       if (actionCode.source.startsWith('^') || actionCode.source.endsWith('$')) {
         throw new Error('begin or end anchors are not supported (^, $)')
       }
@@ -47,17 +46,15 @@ class ActionCode {
     if (action instanceof ActionCode) {
       action = action.code
     }
-    if (this.code instanceof RegExp) {
-      throw new TypeError('concat to an RegExp is currently not supported. Open an Issue for it.')
-    }
     if (this.code === 'main') {
       return new ActionCode(action)
     }
-    if (action instanceof RegExp) {
-      const source = this.code + ':' + action.source
-      return new ActionCode(new RegExp(source, action.flags))
+    if (typeof this.code === 'string' && typeof action === 'string') {
+      return new ActionCode(this.code + ':' + action)
     }
-    return new ActionCode(this.code + ':' + action)
+    const prefix = this.code.source || this.code
+    action = action.source || action
+    return new ActionCode(new RegExp(prefix + ':' + action))
   }
 
   parent() {
