@@ -68,11 +68,7 @@ class ActionCode {
   }
 
   parent() {
-    return ActionCode.parent(this.code)
-  }
-
-  static parent(actionCode) {
-    const parts = actionCode.split(':')
+    const parts = this.code.split(':')
     // Remove current
     parts.pop()
     const parent = parts.join(':')

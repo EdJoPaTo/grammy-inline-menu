@@ -390,7 +390,7 @@ function generateBackButtonsAsNeeded(actionCode, {
   if (depth >= (hasMainMenu ? 2 : 1) && backButtonText) {
     buttons.push({
       text: backButtonText,
-      action: ActionCode.parent(actionCode).get(),
+      action: new ActionCode(actionCode).parent().get(),
       root: true
     })
   }

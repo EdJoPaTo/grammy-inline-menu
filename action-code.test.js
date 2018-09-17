@@ -23,12 +23,6 @@ function constructorThrows(t, input) {
   t.throws(() => new ActionCode(input), /must be/)
 }
 
-test('static parent', t => {
-  t.is(ActionCode.parent('a:b').get(), 'a')
-  t.is(ActionCode.parent('a:b:c:d').get(), 'a:b:c')
-  t.is(ActionCode.parent('a').get(), 'main')
-})
-
 test('parent', t => {
   t.is(new ActionCode('a:b').parent().get(), 'a')
   t.is(new ActionCode('a:b:c:d').parent().get(), 'a:b:c')
