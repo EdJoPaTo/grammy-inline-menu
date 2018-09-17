@@ -29,7 +29,7 @@ test('parent', t => {
   t.is(new ActionCode('a').parent().get(), 'main')
 })
 
-test('static concat', t => {
+test('static concat string with string', t => {
   t.is(ActionCode.concat('main', 'a').get(), 'a')
   t.is(ActionCode.concat('a', 'b').get(), 'a:b')
   t.is(ActionCode.concat('a:b:c', 'd').get(), 'a:b:c:d')
@@ -50,7 +50,7 @@ test('regex', t => {
   t.deepEqual(new ActionCode(/(.+)/i).get(), /^(.+)$/i)
 })
 
-test('regex concat', t => {
+test('concat string with regex', t => {
   t.deepEqual(new ActionCode('b').concat(/(.+)/).get(), /^b:(.+)$/)
   t.deepEqual(new ActionCode('b').concat(/(.+)/i).get(), /^b:(.+)$/i)
 })
@@ -71,16 +71,16 @@ test('getRegex from regex', t => {
   t.deepEqual(new ActionCode(/b/).getRegex(), /^b$/)
 })
 
-test('getRegex from non regex', t => {
+test('getRegex from string', t => {
   t.deepEqual(new ActionCode('b').getRegex(), /^b$/)
 })
 
-test('exec', t => {
+test('regex exec', t => {
   t.deepEqual(new ActionCode('b').exec('c'), null)
   t.truthy(new ActionCode('b').exec('b'))
 })
 
-test('test', t => {
+test('regex test', t => {
   t.false(new ActionCode('b').test('c'))
   t.true(new ActionCode('b').test('b'))
 })
