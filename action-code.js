@@ -44,27 +44,20 @@ class ActionCode {
   }
 
   concat(action) {
-    return ActionCode.concat(this.code, action)
-  }
-
-  static concat(prefix, action) {
-    if (prefix instanceof ActionCode) {
-      prefix = prefix.code
-    }
     if (action instanceof ActionCode) {
       action = action.code
     }
-    if (prefix instanceof RegExp) {
+    if (this.code instanceof RegExp) {
       throw new TypeError('concat to an RegExp is currently not supported. Open an Issue for it.')
     }
-    if ((prefix || 'main') === 'main') {
+    if (this.code === 'main') {
       return new ActionCode(action)
     }
     if (action instanceof RegExp) {
-      const source = prefix + ':' + action.source
+      const source = this.code + ':' + action.source
       return new ActionCode(new RegExp(source, action.flags))
     }
-    return new ActionCode(prefix + ':' + action)
+    return new ActionCode(this.code + ':' + action)
   }
 
   parent() {

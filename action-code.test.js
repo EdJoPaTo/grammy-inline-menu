@@ -29,20 +29,16 @@ test('parent', t => {
   t.is(new ActionCode('a').parent().get(), 'main')
 })
 
-test('static concat string with string', t => {
-  t.is(ActionCode.concat('main', 'a').get(), 'a')
-  t.is(ActionCode.concat('a', 'b').get(), 'a:b')
-  t.is(ActionCode.concat('a:b:c', 'd').get(), 'a:b:c:d')
-  t.is(ActionCode.concat('a:b', 'c:d').get(), 'a:b:c:d')
+test('concat string with string', t => {
+  t.is(new ActionCode('main').concat('a').get(), 'a')
+  t.is(new ActionCode('a').concat('b').get(), 'a:b')
+  t.is(new ActionCode('a:b:c').concat('d').get(), 'a:b:c:d')
+  t.is(new ActionCode('a:b').concat('c:d').get(), 'a:b:c:d')
 })
 
 test('concat an ActionCode', t => {
-  t.is(ActionCode.concat('main', new ActionCode('a')).get(), 'a')
-  t.deepEqual(ActionCode.concat('b', new ActionCode(/(.+)/i)).get(), /^b:(.+)$/i)
-})
-
-test('concat two ActionCodes', t => {
-  t.is(ActionCode.concat(new ActionCode('main'), new ActionCode('a')).get(), 'a')
+  t.is(new ActionCode('main').concat(new ActionCode('a')).get(), 'a')
+  t.deepEqual(new ActionCode('b').concat(new ActionCode(/(.+)/i)).get(), /^b:(.+)$/i)
 })
 
 test('regex', t => {
