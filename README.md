@@ -14,7 +14,7 @@ const menu = new TelegrafInlineMenu(
   ctx => `Hey ${ctx.from.first_name}!`
 )
 menu.simpleButton('I am excited!', 'a', {
-  doFunc: ctx => `Hey ${ctx.from.first_name}!`
+  doFunc: ctx => ctx.reply('As am I!')
 })
 bot.use(menu.init())
 ```
