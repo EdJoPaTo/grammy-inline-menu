@@ -44,7 +44,7 @@ class TelegrafInlineMenu {
     if (!options) {
       throw new Error('options has to be set')
     }
-    options.log('generate…', actionCode)
+    options.log('generate…', actionCode.get())
     const text = typeof this.menuText === 'function' ? (await this.menuText(ctx)) : this.menuText
 
     const buttons = [...this.buttons]
@@ -53,7 +53,7 @@ class TelegrafInlineMenu {
       buttons.push(lastButtonRow)
     }
 
-    const keyboardMarkup = await buildKeyboard(buttons, new ActionCode(actionCode), ctx)
+    const keyboardMarkup = await buildKeyboard(buttons, actionCode, ctx)
     options.log('buttons', keyboardMarkup.inline_keyboard)
     const extra = Extra.markdown().markup(keyboardMarkup)
     return {text, extra}
@@ -69,7 +69,7 @@ class TelegrafInlineMenu {
         if (error.description === 'Bad Request: message is not modified') {
           // This is kind of ok.
           // Not changed stuff should not be sended but sometimes it happens…
-          console.warn('menu is not modified. Think about preventing this. Happened while setting menu', actionCode || 'main')
+          console.warn('menu is not modified. Think about preventing this. Happened while setting menu', actionCode.get())
         } else {
           throw error
         }
@@ -102,7 +102,7 @@ class TelegrafInlineMenu {
     options.log('add action reaction', currentActionCode.get(), 'setMenu')
     const setMenuFunc = (ctx, reason) => {
       options.log('set menu', currentActionCode.get(), reason, this)
-      return this.setMenuNow(ctx, currentActionCode.get(), options)
+      return this.setMenuNow(ctx, currentActionCode, options)
     }
     const functions = []
     functions.push(Composer.action(currentActionCode.get(), ctx => setMenuFunc(ctx, 'menu action')))
@@ -383,14 +383,14 @@ function generateBackButtonsAsNeeded(actionCode, {
   backButtonText,
   mainMenuButtonText
 }) {
-  if ((actionCode || 'main') === 'main' || depth === 0) {
+  if (actionCode.get() === 'main' || depth === 0) {
     return []
   }
   const buttons = []
   if (depth >= (hasMainMenu ? 2 : 1) && backButtonText) {
     buttons.push({
       text: backButtonText,
-      action: new ActionCode(actionCode).parent().get(),
+      action: actionCode.parent().get(),
       root: true
     })
   }
