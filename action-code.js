@@ -4,7 +4,9 @@ class ActionCode {
       if (actionCode.flags.replace('i', '') !== '') {
         throw new Error('flags exept i are not supported')
       }
-      console.assert(actionCode.flags === '', 'using ActionCode with RegExp Flags is depricated')
+      if (actionCode.flags !== '') {
+        console.warn('using ActionCode with RegExp Flags is depricated')
+      }
       if (actionCode.source.startsWith('^') || actionCode.source.endsWith('$')) {
         throw new Error('begin or end anchors are not supported (^, $)')
       }
