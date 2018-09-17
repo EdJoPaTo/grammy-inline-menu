@@ -36,8 +36,11 @@ test('concat string with string', t => {
   t.is(new ActionCode('a:b').concat('c:d').get(), 'a:b:c:d')
 })
 
-test('concat an ActionCode', t => {
+test('concat an ActionCode string', t => {
   t.is(new ActionCode('main').concat(new ActionCode('a')).get(), 'a')
+})
+
+test('concat an ActionCode regex', t => {
   t.deepEqual(new ActionCode('b').concat(new ActionCode(/(.+)/i)).get(), /^b:(.+)$/i)
 })
 
