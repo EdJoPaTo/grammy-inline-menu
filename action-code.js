@@ -34,11 +34,11 @@ class ActionCode {
     return new RegExp(`^${this.code}$`)
   }
 
-  exec(value = '') {
+  exec(value) {
     return this.getRegex().exec(value)
   }
 
-  test(value = '') {
+  test(value) {
     return this.getRegex().test(value)
   }
 
