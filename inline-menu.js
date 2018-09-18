@@ -77,10 +77,10 @@ class TelegrafInlineMenu {
   }
 
   init(options = {}) {
-    const actionCode = options.actionCode || 'main'
+    const actionCode = new ActionCode(options.actionCode || 'main')
     delete options.actionCode
     options.depth = 0
-    options.hasMainMenu = actionCode === 'main'
+    options.hasMainMenu = actionCode.get() === 'main'
     // Debug
     // options.log = (...args) => console.log(new Date(), ...args)
     options.log = options.log || (() => {})
@@ -97,15 +97,14 @@ class TelegrafInlineMenu {
     if (!options) {
       throw new Error('options has to be set')
     }
-    options.log('middleware triggered', actionCode, options, this)
-    const currentActionCode = new ActionCode(actionCode)
-    options.log('add action reaction', currentActionCode.get(), 'setMenu')
+    options.log('middleware triggered', actionCode.get(), options, this)
+    options.log('add action reaction', actionCode.get(), 'setMenu')
     const setMenuFunc = (ctx, reason) => {
-      options.log('set menu', currentActionCode.get(), reason, this)
-      return this.setMenuNow(ctx, currentActionCode, options)
+      options.log('set menu', actionCode.get(), reason, this)
+      return this.setMenuNow(ctx, actionCode, options)
     }
     const functions = []
-    functions.push(Composer.action(currentActionCode.get(), ctx => setMenuFunc(ctx, 'menu action')))
+    functions.push(Composer.action(actionCode.get(), ctx => setMenuFunc(ctx, 'menu action')))
     if (this.commands) {
       functions.push(Composer.command(this.commands, ctx => setMenuFunc(ctx, 'command')))
     }
@@ -121,12 +120,12 @@ class TelegrafInlineMenu {
         middlewareOptions.hide = handler.hide
         middlewareOptions.only = handler.only
 
-        const childActionCode = handler.action && currentActionCode.concat(handler.action)
+        const childActionCode = handler.action && actionCode.concat(handler.action)
 
         let middleware
         if (handler.action) {
           if (handler.submenu) {
-            middleware = handler.submenu.middleware(childActionCode.get(), subOptions)
+            middleware = handler.submenu.middleware(childActionCode, subOptions)
           } else {
             // Run the setMenuFunc even when action is hidden.
             // As the button should be hidden already the user must have an old menu
@@ -153,7 +152,7 @@ class TelegrafInlineMenu {
           middleware = handler.middleware
         }
         if (handler.setMenuAfter) {
-          middlewareOptions.afterFunc = ctx => setMenuFunc(ctx, 'after handler ' + (childActionCode || currentActionCode).get())
+          middlewareOptions.afterFunc = ctx => setMenuFunc(ctx, 'after handler ' + (childActionCode || actionCode).get())
         }
         return createHandlerMiddleware(middleware, middlewareOptions)
       })
