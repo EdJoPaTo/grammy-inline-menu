@@ -121,9 +121,10 @@ class TelegrafInlineMenu {
         middlewareOptions.hide = handler.hide
         middlewareOptions.only = handler.only
 
+        const childActionCode = handler.action && currentActionCode.concat(handler.action)
+
         let middleware
         if (handler.action) {
-          const childActionCode = currentActionCode.concat(handler.action)
           if (handler.submenu) {
             middleware = handler.submenu.middleware(childActionCode.get(), subOptions)
           } else {
@@ -142,18 +143,13 @@ class TelegrafInlineMenu {
             }
 
             options.log('add action reaction', childActionCode.get(), handler.middleware)
-            middleware = async (ctx, next) => {
-              await handler.middleware(ctx, next)
-              if (handler.setMenuAfter) {
-                await setMenuFunc(ctx, 'after handler action' + childActionCode.get())
-              }
-            }
+            middleware = handler.middleware
           }
         } else {
           middleware = handler.middleware
-          if (handler.setMenuAfter) {
-            middlewareOptions.afterFunc = ctx => setMenuFunc(ctx, 'after handler else')
-          }
+        }
+        if (handler.setMenuAfter) {
+          middlewareOptions.afterFunc = ctx => setMenuFunc(ctx, 'after handler ' + (childActionCode || currentActionCode).get())
         }
         return createHandlerMiddleware(middleware, middlewareOptions)
       })
