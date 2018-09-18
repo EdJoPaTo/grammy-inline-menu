@@ -128,6 +128,10 @@ class TelegrafInlineMenu {
           if (handler.submenu) {
             middleware = handler.submenu.middleware(childActionCode.get(), subOptions)
           } else {
+            // Run the setMenuFunc even when action is hidden.
+            // As the button should be hidden already the user must have an old menu
+            // Update the menu to show the user why this will not work
+            middlewareOptions.runAfterFuncEvenWhenHidden = true
             middlewareOptions.only = async ctx => {
               if (ctx.updateType !== 'callback_query') {
                 return false
