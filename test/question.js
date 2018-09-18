@@ -224,3 +224,23 @@ test('question button works on old menu', async t => {
 
   await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
 })
+
+test('require setFunc', t => {
+  const menu = new TelegrafInlineMenu('yaay')
+
+  t.throws(() => {
+    menu.question('Question', 'c', {
+      questionText: 'what do you want?'
+    })
+  }, /setFunc/)
+})
+
+test('require questionText', t => {
+  const menu = new TelegrafInlineMenu('yaay')
+
+  t.throws(() => {
+    menu.question('Question', 'c', {
+      setFunc: t.fail
+    })
+  }, /questionText/)
+})

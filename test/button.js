@@ -73,3 +73,11 @@ test('hidden button can not be trigged', async t => {
 
   await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
 })
+
+test('require doFunc', t => {
+  const menu = new TelegrafInlineMenu('yaay')
+
+  t.throws(() => {
+    menu.simpleButton('toggle me', 'c')
+  }, /doFunc/)
+})
