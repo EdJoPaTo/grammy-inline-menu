@@ -197,3 +197,30 @@ test('multiple question setFuncs do not interfere', async t => {
     text: 'less meat'
   }})
 })
+
+test('question button works on old menu', async t => {
+  t.plan(3)
+  const menu = new TelegrafInlineMenu('yaay')
+  menu.question('Question', 'c', {
+    questionText: 'what do you want?',
+    setFunc: t.fail
+  })
+
+  const bot = new Telegraf()
+  bot.use(menu.init({actionCode: 'a:b'}))
+
+  bot.context.editMessageText = t.fail
+  bot.context.deleteMessage = () => {
+    // Method is triggered but fails as the message is to old
+    t.pass()
+    return Promise.reject(new Error('Bad Request: message can\'t be deleted'))
+  }
+  bot.context.reply = (text, extra) => {
+    t.is(text, 'what do you want?')
+    t.deepEqual(extra.reply_markup, {
+      force_reply: true
+    })
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
+})

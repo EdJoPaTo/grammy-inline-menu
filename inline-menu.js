@@ -254,7 +254,7 @@ class TelegrafInlineMenu {
               // Looks like message is to old to be deleted
               return
             }
-            throw error
+            console.error('deleteMessage on question button failed', error)
           })
       ])
     }
