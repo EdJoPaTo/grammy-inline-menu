@@ -198,7 +198,7 @@ test('hides key in keyboard', async t => {
 })
 
 test('hidden key can not be set', async t => {
-  t.plan(2)
+  t.plan(1)
   const menu = new TelegrafInlineMenu('foo')
   menu.select('c', ['a', 'b'], {
     setFunc: t.fail,
@@ -208,7 +208,7 @@ test('hidden key can not be set', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a:b'}))
 
-  bot.context.editMessageText = () => Promise.resolve(t.pass())
+  bot.context.editMessageText = () => Promise.resolve(t.fail())
   bot.use(() => t.pass())
 
   await bot.handleUpdate({callback_query: {data: 'a:b:c:a'}})

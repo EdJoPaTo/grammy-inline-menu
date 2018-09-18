@@ -268,18 +268,13 @@ class TelegrafInlineMenu {
 
     const actionCodeBase = new ActionCode(action)
 
-    const hitSelectButton = async (ctx, next) => {
-      const key = ctx.match[1]
-      if (hide && (await hide(ctx, key))) {
-        // Normally next (setKeyboard) should not be done
-        // As the user had a change to press the hidden key, update the menu to hide the key
-        return next(ctx)
-      }
-      return setFunc(ctx, key)
-    }
+    const keyFromCtx = ctx => ctx.match[1]
+    const hideSelectAction = hide && (ctx => hide(ctx, keyFromCtx(ctx)))
+    const hitSelectButton = ctx => setFunc(ctx, keyFromCtx(ctx))
 
     this.addHandler({
       action: actionCodeBase.concat(/(.+)/),
+      hide: hideSelectAction,
       middleware: hitSelectButton,
       setMenuAfter: true
     })
