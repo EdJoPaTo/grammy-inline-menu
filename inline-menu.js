@@ -264,23 +264,27 @@ class TelegrafInlineMenu {
   }
 
   select(action, options, additionalArgs = {}) {
-    if (!additionalArgs.setFunc) {
-      throw new Error('setFunc is not set. set it')
-    }
     const {setFunc, hide} = additionalArgs
 
     const actionCodeBase = new ActionCode(action)
 
     const keyFromCtx = ctx => ctx.match[1]
     const hideSelectAction = hide && (ctx => hide(ctx, keyFromCtx(ctx)))
-    const hitSelectButton = ctx => setFunc(ctx, keyFromCtx(ctx))
 
-    this.addHandler({
+    const handler = {
       action: actionCodeBase.concat(/(.+)/),
-      hide: hideSelectAction,
-      middleware: hitSelectButton,
-      setMenuAfter: true
-    })
+      hide: hideSelectAction
+    }
+
+    if (setFunc) {
+      const hitSelectButton = ctx => setFunc(ctx, keyFromCtx(ctx))
+      handler.middleware = hitSelectButton
+      handler.setMenuAfter = true
+    } else {
+      throw new Error('setFunc is not set. Provide it.')
+    }
+
+    this.addHandler(handler)
 
     if (typeof options === 'function') {
       this.buttons.push(async ctx => {

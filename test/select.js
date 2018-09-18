@@ -236,3 +236,10 @@ test('hide always has two args', async t => {
   // Does not call hide
   await bot.handleUpdate({callback_query: {data: 'c'}})
 })
+
+test('require setFunc', t => {
+  const menu = new TelegrafInlineMenu('foo')
+  t.throws(() => {
+    menu.select('c', ['a', 'b'])
+  }, /setFunc/)
+})
