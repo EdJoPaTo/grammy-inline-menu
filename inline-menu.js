@@ -266,13 +266,11 @@ class TelegrafInlineMenu {
   select(action, options, additionalArgs = {}) {
     const {setFunc, hide} = additionalArgs
 
-    const actionCodeBase = new ActionCode(action)
-
     const keyFromCtx = ctx => ctx.match[1]
     const hideSelectAction = hide && (ctx => hide(ctx, keyFromCtx(ctx)))
 
     const handler = {
-      action: actionCodeBase.concat(/(.+)/),
+      action: new ActionCode(new RegExp(`${action}-([^:]+)`)),
       hide: hideSelectAction
     }
 
@@ -289,10 +287,10 @@ class TelegrafInlineMenu {
     if (typeof options === 'function') {
       this.buttons.push(async ctx => {
         const optionsResult = await options(ctx)
-        return generateSelectButtons(actionCodeBase, optionsResult, additionalArgs)
+        return generateSelectButtons(action, optionsResult, additionalArgs)
       })
     } else {
-      const result = generateSelectButtons(actionCodeBase, options, additionalArgs)
+      const result = generateSelectButtons(action, options, additionalArgs)
       result.forEach(o => this.buttons.push(o))
     }
 
@@ -348,7 +346,7 @@ class TelegrafInlineMenu {
   }
 }
 
-function generateSelectButtons(actionCodeBase, options, {
+function generateSelectButtons(actionBase, options, {
   columns,
   hide,
   isSetFunc,
@@ -359,7 +357,7 @@ function generateSelectButtons(actionCodeBase, options, {
   const isArray = Array.isArray(options)
   const keys = isArray ? options : Object.keys(options)
   const buttons = keys.map(key => {
-    const action = actionCodeBase.concat(key).get()
+    const action = new ActionCode(actionBase + '-' + key)
     const text = isArray ? key : options[key]
     const textFunc = ctx =>
       prefixEmoji(text, prefixFunc || isSetFunc, {

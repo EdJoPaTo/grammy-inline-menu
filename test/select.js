@@ -17,10 +17,10 @@ test('option array menu', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
-        callback_data: 'a:b:c:a'
+        callback_data: 'a:b:c-a'
       }, {
         text: 'b',
-        callback_data: 'a:b:c:b'
+        callback_data: 'a:b:c-b'
       }
     ]])
     return Promise.resolve()
@@ -42,10 +42,10 @@ test('option object menu', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'A',
-        callback_data: 'a:b:c:a'
+        callback_data: 'a:b:c-a'
       }, {
         text: 'B',
-        callback_data: 'a:b:c:b'
+        callback_data: 'a:b:c-b'
       }
     ]])
     return Promise.resolve()
@@ -67,10 +67,10 @@ test('option async array menu', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
-        callback_data: 'a:b:c:a'
+        callback_data: 'a:b:c-a'
       }, {
         text: 'b',
-        callback_data: 'a:b:c:b'
+        callback_data: 'a:b:c-b'
       }
     ]])
     return Promise.resolve()
@@ -91,7 +91,7 @@ test('selects', async t => {
 
   bot.context.editMessageText = () => Promise.resolve(t.pass())
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a:b:c-b'}})
 })
 
 test('selected key has emoji prefix', async t => {
@@ -108,10 +108,10 @@ test('selected key has emoji prefix', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
-        callback_data: 'a:b:c:a'
+        callback_data: 'a:b:c-a'
       }, {
         text: emojiTrue + ' b',
-        callback_data: 'a:b:c:b'
+        callback_data: 'a:b:c-b'
       }
     ]])
     return Promise.resolve()
@@ -135,10 +135,10 @@ test('multiselect has prefixes', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: emojiFalse + ' a',
-        callback_data: 'a:b:c:a'
+        callback_data: 'a:b:c-a'
       }, {
         text: emojiTrue + ' b',
-        callback_data: 'a:b:c:b'
+        callback_data: 'a:b:c-b'
       }
     ]])
     return Promise.resolve()
@@ -161,10 +161,10 @@ test('custom prefix', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'bar a',
-        callback_data: 'a:b:c:a'
+        callback_data: 'a:b:c-a'
       }, {
         text: 'bar b',
-        callback_data: 'a:b:c:b'
+        callback_data: 'a:b:c-b'
       }
     ]])
     return Promise.resolve()
@@ -188,7 +188,7 @@ test('hides key in keyboard', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'b',
-        callback_data: 'a:b:c:b'
+        callback_data: 'a:b:c-b'
       }
     ]])
     return Promise.resolve()
@@ -211,7 +211,7 @@ test('hidden key can not be set', async t => {
   bot.context.editMessageText = () => Promise.resolve(t.pass())
   bot.use(() => t.pass())
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c:a'}})
+  await bot.handleUpdate({callback_query: {data: 'a:b:c-a'}})
 })
 
 test('hide always has two args', async t => {
