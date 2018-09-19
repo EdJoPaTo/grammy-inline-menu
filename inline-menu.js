@@ -313,7 +313,7 @@ class TelegrafInlineMenu {
 
     const actionFunc = async ctx => {
       const currentState = await additionalArgs.isSetFunc(ctx)
-      return currentState ? action + ':false' : action + ':true'
+      return currentState ? action + '-false' : action + '-true'
     }
 
     const baseHandler = {
@@ -325,12 +325,12 @@ class TelegrafInlineMenu {
     const toggleFalse = ctx => additionalArgs.setFunc(ctx, false)
 
     this.addHandler({...baseHandler,
-      action: new ActionCode(action).concat('true'),
+      action: new ActionCode(action + '-true'),
       middleware: toggleTrue
     })
 
     this.addHandler({...baseHandler,
-      action: new ActionCode(action).concat('false'),
+      action: new ActionCode(action + '-false'),
       middleware: toggleFalse
     })
 
