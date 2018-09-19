@@ -58,11 +58,19 @@ class ActionCode {
   }
 
   parent() {
-    const parts = this.code.split(':')
+    const isRegex = this.code instanceof RegExp
+    const content = isRegex ? this.code.source : this.code
+    const parts = content.split(':')
     // Remove current
     parts.pop()
     const parent = parts.join(':')
-    return new ActionCode(parent || 'main')
+    let newCode
+    if (parent) {
+      newCode = isRegex ? new RegExp(parent) : parent
+    } else {
+      newCode = 'main'
+    }
+    return new ActionCode(newCode)
   }
 }
 

@@ -48,6 +48,11 @@ test('regex', t => {
   t.deepEqual(new ActionCode(/(.+)/).get(), /^(.+)$/)
 })
 
+test('regex parent', t => {
+  t.deepEqual(new ActionCode(/b:(.+)/).parent().get(), /^b$/)
+  t.deepEqual(new ActionCode(/b-(.+)/).parent().get(), 'main')
+})
+
 test('concat string with regex', t => {
   t.deepEqual(new ActionCode('b').concat(/(.+)/).get(), /^b:(.+)$/)
 })
