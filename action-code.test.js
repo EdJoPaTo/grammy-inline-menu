@@ -53,6 +53,15 @@ test('regex parent', t => {
   t.deepEqual(new ActionCode(/b-(.+)/).parent().get(), 'main')
 })
 
+test('regex parent with allowed :', t => {
+  t.deepEqual(new ActionCode(/b:[^:]+/).parent().get(), /^b$/)
+  t.deepEqual(new ActionCode(/b:([^:])/).parent().get(), /^b$/)
+  t.deepEqual(new ActionCode(/b:(a[^:])/).parent().get(), /^b$/)
+  t.deepEqual(new ActionCode(/b:(a[^:]a)/).parent().get(), /^b$/)
+  t.deepEqual(new ActionCode(/b:(a[^a:]a)/).parent().get(), /^b$/)
+  t.deepEqual(new ActionCode(/b:(a[^a:a]a)/).parent().get(), /^b$/)
+})
+
 test('concat string with regex', t => {
   t.deepEqual(new ActionCode('b').concat(/(.+)/).get(), /^b:(.+)$/)
 })

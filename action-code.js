@@ -59,8 +59,21 @@ class ActionCode {
 
   parent() {
     const isRegex = this.code instanceof RegExp
-    const content = isRegex ? this.code.source : this.code
-    const parts = content.split(':')
+    let parts = []
+    if (isRegex) {
+      const {source} = this.code
+      const regex = /(?:(?:\[\^[^\]]*:[^\]]*\])|(?:[^:]))+/g
+      let match
+      do {
+        match = regex.exec(source)
+        if (match) {
+          parts.push(match)
+        }
+      } while (match)
+    } else {
+      parts = this.code.split(':')
+    }
+
     // Remove current
     parts.pop()
     const parent = parts.join(':')
