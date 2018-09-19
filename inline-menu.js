@@ -272,7 +272,10 @@ class TelegrafInlineMenu {
   }
 
   select(action, options, additionalArgs = {}) {
-    const {setFunc, hide} = additionalArgs
+    const {setFunc, submenu, hide} = additionalArgs
+    if (setFunc && submenu) {
+      throw new Error('setFunc and submenu can not be set at the same time.')
+    }
 
     const keyFromCtx = ctx => ctx.match[1]
     const hideSelectAction = hide && (ctx => hide(ctx, keyFromCtx(ctx)))
@@ -286,8 +289,10 @@ class TelegrafInlineMenu {
       const hitSelectButton = ctx => setFunc(ctx, keyFromCtx(ctx))
       handler.middleware = hitSelectButton
       handler.setMenuAfter = true
+    } else if (submenu) {
+      handler.submenu = submenu
     } else {
-      throw new Error('setFunc is not set. Provide it.')
+      throw new Error('Neither setFunc or submenu are set. Provide one of them.')
     }
 
     this.addHandler(handler)
