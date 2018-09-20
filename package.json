@@ -48,6 +48,7 @@
       {
         "files": [
           "build-keyboard*.js",
+          "middleware-helper.is-action.test.js",
           "test/*.js"
         ],
         "rules": {
