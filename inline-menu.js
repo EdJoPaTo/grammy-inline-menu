@@ -122,7 +122,10 @@ class TelegrafInlineMenu {
     }
     const functions = []
     functions.push(Composer.action(actionCode.get(), ctx => setMenuFunc(ctx, 'menu action')))
-    if (this.commands) {
+    if (this.commands.length > 0) {
+      if (actionCode.get() instanceof RegExp) {
+        throw new TypeError('commands can not point on menus that are not always the same')
+      }
       functions.push(Composer.command(this.commands, ctx => setMenuFunc(ctx, 'command')))
     }
 
