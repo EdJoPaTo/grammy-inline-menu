@@ -41,9 +41,6 @@ class TelegrafInlineMenu {
   }
 
   async generate(ctx, actionCode, options) {
-    if (!options) {
-      throw new Error('options has to be set')
-    }
     options.log('generate…', actionCode.get())
     const text = typeof this.menuText === 'function' ? (await this.menuText(ctx)) : this.menuText
 
@@ -112,6 +109,8 @@ class TelegrafInlineMenu {
       throw new Error('use this menu with .init(): but.use(menu.init(args))')
     }
     if (!options) {
+      // This Error is not needed as this function is (should) only be called internally.
+      // But as options is only used later the root of the error is not that easy to find without Error.
       throw new Error('options has to be set')
     }
     options.log('middleware triggered', actionCode.get(), options, this)
