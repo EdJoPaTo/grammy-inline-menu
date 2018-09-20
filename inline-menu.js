@@ -82,7 +82,7 @@ class TelegrafInlineMenu {
           // Not changed stuff should not be sended but sometimes it happens…
           console.warn('menu is not modified. Think about preventing this. Happened while setting menu', actionCode.get())
         } else {
-          throw error
+          console.error('setMenuNow failed', actionCode.get(), error)
         }
       })
   }
