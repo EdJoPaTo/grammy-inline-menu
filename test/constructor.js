@@ -18,6 +18,21 @@ test('simple text without buttons', async t => {
   await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
+test('main menu', async t => {
+  const menu = new TelegrafInlineMenu('yaay')
+
+  const bot = new Telegraf()
+  bot.use(menu.init())
+
+  bot.context.editMessageText = (text, extra) => {
+    t.is(text, 'yaay')
+    t.deepEqual(extra.reply_markup, {})
+    return Promise.resolve()
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'main'}})
+})
+
 test('markdown text', async t => {
   const menu = new TelegrafInlineMenu('yaay')
 
