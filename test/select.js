@@ -241,7 +241,7 @@ test('require additionalArgs', t => {
   const menu = new TelegrafInlineMenu('foo')
   t.throws(() => {
     menu.select('c', ['a', 'b'])
-  }, /Cannot.+of.+undefined/)
+  }, /Cannot.+undefined/)
 })
 
 test('require setFunc or submenu', t => {

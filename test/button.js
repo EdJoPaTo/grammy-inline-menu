@@ -79,7 +79,7 @@ test('simpleButton require additionalArgs', t => {
 
   t.throws(() => {
     menu.simpleButton('toggle me', 'c')
-  }, /Cannot.+of.+undefined/)
+  }, /Cannot.+undefined/)
 })
 
 test('button require additionalArgs', t => {
@@ -87,7 +87,7 @@ test('button require additionalArgs', t => {
 
   t.throws(() => {
     menu.button('toggle me', 'c')
-  }, /Cannot.+of.+undefined/)
+  }, /Cannot.+undefined/)
 })
 
 test('require doFunc', t => {
