@@ -5,11 +5,10 @@ import ActionCode from '../action-code'
 
 import TelegrafInlineMenu from '../inline-menu'
 
-test('one command', async t => {
-  t.plan(2)
+function createTestBot(t, command) {
   const menu = new TelegrafInlineMenu('foo')
     .manual('bar', 'c')
-  menu.setCommand('test')
+  menu.setCommand(command)
 
   const bot = new Telegraf()
   bot.context.reply = (text, extra) => {
@@ -23,12 +22,34 @@ test('one command', async t => {
   }
 
   bot.use(menu.init({actionCode: 'a'}))
+  return bot
+}
+
+test('one command', async t => {
+  t.plan(2)
+  const bot = createTestBot(t, 'test')
   bot.command('test', () => t.fail('command not handled'))
   bot.use(ctx => t.fail('update not handled: ' + JSON.stringify(ctx.update)))
 
   await bot.handleUpdate({message: {
     text: '/test',
     entities: [{type: 'bot_command', offset: 0, length: 5}]
+  }})
+})
+
+test('multiple commands', async t => {
+  t.plan(4)
+  const bot = createTestBot(t, ['test1', 'test2'])
+  bot.command(() => t.fail('command not handled'))
+  bot.use(ctx => t.fail('update not handled: ' + JSON.stringify(ctx.update)))
+
+  await bot.handleUpdate({message: {
+    text: '/test1',
+    entities: [{type: 'bot_command', offset: 0, length: 6}]
+  }})
+  await bot.handleUpdate({message: {
+    text: '/test2',
+    entities: [{type: 'bot_command', offset: 0, length: 6}]
   }})
 })
 
