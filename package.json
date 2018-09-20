@@ -13,6 +13,7 @@
     "standard-version": "standard-version",
     "xo": "xo",
     "start": "node example.js",
+    "coverage": "nyc --reporter=lcov --reporter=text ava",
     "prerelease": "npm test",
     "release": "standard-version",
     "pretest": "xo",
