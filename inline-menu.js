@@ -4,7 +4,7 @@ const ActionCode = require('./action-code')
 const {getRowsOfButtons} = require('./align-buttons')
 const {buildKeyboard} = require('./build-keyboard')
 const {prefixEmoji} = require('./prefix')
-const {createHandlerMiddleware} = require('./middleware-helper')
+const {createHandlerMiddleware, isCallbackQueryActionFunc} = require('./middleware-helper')
 
 class TelegrafInlineMenu {
   constructor(text) {
@@ -131,19 +131,7 @@ class TelegrafInlineMenu {
             // As the button should be hidden already the user must have an old menu
             // Update the menu to show the user why this will not work
             middlewareOptions.runAfterFuncEvenWhenHidden = true
-            middlewareOptions.only = async ctx => {
-              if (ctx.updateType !== 'callback_query') {
-                return false
-              }
-              ctx.match = childActionCode.exec(ctx.callbackQuery.data)
-              if (!ctx.match) {
-                return false
-              }
-              if (handler.only && !(await handler.only(ctx))) {
-                return false
-              }
-              return true
-            }
+            middlewareOptions.only = isCallbackQueryActionFunc(childActionCode, handler.only)
 
             options.log('add action reaction', childActionCode.get(), handler.middleware)
             middleware = handler.middleware

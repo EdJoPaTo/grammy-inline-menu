@@ -21,6 +21,23 @@ function createHandlerMiddleware(middleware, {
   }
 }
 
+function isCallbackQueryActionFunc(actionCode, additionalConditionFunc) {
+  return async ctx => {
+    if (ctx.updateType !== 'callback_query') {
+      return false
+    }
+    ctx.match = actionCode.exec(ctx.callbackQuery.data)
+    if (!ctx.match) {
+      return false
+    }
+    if (additionalConditionFunc && !(await additionalConditionFunc(ctx))) {
+      return false
+    }
+    return true
+  }
+}
+
 module.exports = {
-  createHandlerMiddleware
+  createHandlerMiddleware,
+  isCallbackQueryActionFunc
 }
