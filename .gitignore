@@ -1,5 +1,6 @@
 node_modules
 .nyc_output
+coverage
 
 # exclude npm pack packages
 *.tgz
