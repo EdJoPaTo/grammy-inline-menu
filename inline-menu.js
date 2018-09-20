@@ -82,8 +82,8 @@ class TelegrafInlineMenu {
     }
     const actionCode = new ActionCode(options.actionCode || 'main')
     delete options.actionCode
-    options.depth = 0
     options.hasMainMenu = actionCode.get() === 'main'
+    options.depth = options.hasMainMenu ? 0 : 1
     // Debug
     // options.log = (...args) => console.log(new Date(), ...args)
     options.log = options.log || (() => {})
@@ -374,7 +374,7 @@ function generateBackButtonsAsNeeded(actionCode, {
     return []
   }
   const buttons = []
-  if (depth >= (hasMainMenu ? 2 : 1) && backButtonText) {
+  if (depth > 1 && backButtonText) {
     buttons.push({
       text: backButtonText,
       action: actionCode.parent().get(),
