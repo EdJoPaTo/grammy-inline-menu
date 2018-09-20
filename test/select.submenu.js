@@ -22,7 +22,7 @@ function generateTestBasics() {
   const bot = new Telegraf()
   bot.use(menu.init({
     backButtonText: 'back',
-    actionCode: 'a:b'
+    actionCode: 'a'
   }))
 
   return bot
@@ -35,16 +35,16 @@ test('upper menu correct', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
-        callback_data: 'a:b:c-a'
+        callback_data: 'a:c-a'
       }, {
         text: 'b',
-        callback_data: 'a:b:c-b'
+        callback_data: 'a:c-b'
       }
     ]])
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('submenu correct', async t => {
@@ -54,18 +54,18 @@ test('submenu correct', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'Hit a!',
-        callback_data: 'a:b:c-a:d'
+        callback_data: 'a:c-a:d'
       }
     ], [
       {
         text: 'back',
-        callback_data: 'a:b'
+        callback_data: 'a'
       }
     ]])
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c-a'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c-a'}})
 })
 
 test('submenu button works', async t => {
@@ -77,5 +77,5 @@ test('submenu button works', async t => {
   }
   bot.use(t.fail)
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c-a:d'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c-a:d'}})
 })
