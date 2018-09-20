@@ -69,4 +69,8 @@ bot.use(menu.init({
   mainMenuButtonText: 'back to main menu…'
 }))
 
+bot.catch(error => {
+  console.log('telegraf error', error.response, error.parameters, error.on || error)
+})
+
 bot.startPolling()
