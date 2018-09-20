@@ -12,17 +12,17 @@ test('menu correct', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: emojiTrue + ' toggle me',
-      callback_data: 'a:b:c-false'
+      callback_data: 'a:c-false'
     }]])
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('toggles', async t => {
@@ -34,9 +34,9 @@ test('toggles', async t => {
 
   const bot = new Telegraf()
   bot.context.editMessageText = () => Promise.resolve()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c-true'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c-true'}})
 })
 
 async function ownPrefixTest(t, currentState, prefix) {
@@ -49,17 +49,17 @@ async function ownPrefixTest(t, currentState, prefix) {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: prefix + ' toggle me',
-      callback_data: 'a:b:c-' + !currentState
+      callback_data: 'a:c-' + !currentState
     }]])
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 }
 
 test('own true prefix', ownPrefixTest, true, '42')

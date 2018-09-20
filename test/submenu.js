@@ -5,7 +5,7 @@ import TelegrafInlineMenu from '../inline-menu'
 
 const menuKeyboard = [[{
   text: 'Submenu',
-  callback_data: 'a:b:c'
+  callback_data: 'a:c'
 }]]
 
 const baseInitOptions = {
@@ -18,14 +18,14 @@ test('root menu correct', async t => {
   menu.submenu('Submenu', 'c', new TelegrafInlineMenu('bar'))
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('no submenu on hide', async t => {
@@ -35,14 +35,14 @@ test('no submenu on hide', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = () => Promise.resolve(
     t.fail('so submenu on hide')
   )
   bot.use(t.pass)
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
 
 test('submenu without back button', async t => {
@@ -50,14 +50,14 @@ test('submenu without back button', async t => {
   menu.submenu('Submenu', 'c', new TelegrafInlineMenu('bar'))
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, undefined)
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
 
 test('submenu with back button', async t => {
@@ -65,17 +65,17 @@ test('submenu with back button', async t => {
   menu.submenu('Submenu', 'c', new TelegrafInlineMenu('bar'))
 
   const bot = new Telegraf()
-  bot.use(menu.init({backButtonText: baseInitOptions.backButtonText, actionCode: 'a:b'}))
+  bot.use(menu.init({backButtonText: baseInitOptions.backButtonText, actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: 'back…',
-      callback_data: 'a:b'
+      callback_data: 'a'
     }]])
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
 
 test('submenu with main button', async t => {

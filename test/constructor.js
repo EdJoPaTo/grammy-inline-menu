@@ -7,7 +7,7 @@ test('simple text without buttons', async t => {
   const menu = new TelegrafInlineMenu('yaay')
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.is(text, 'yaay')
@@ -15,14 +15,14 @@ test('simple text without buttons', async t => {
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('markdown text', async t => {
   const menu = new TelegrafInlineMenu('yaay')
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.is(text, 'yaay')
@@ -30,21 +30,21 @@ test('markdown text', async t => {
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('async text func', async t => {
   const menu = new TelegrafInlineMenu(() => Promise.resolve('yaay'))
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = text => {
     t.is(text, 'yaay')
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('menu.middleware fails with .init() hint', t => {
@@ -54,4 +54,13 @@ test('menu.middleware fails with .init() hint', t => {
   // Normally user would use bot.use.
   // But telegraf will later use .middleware() on it. in order to check this faster, trigger this directly
   t.throws(() => bot.use(menu.middleware()), /but\.use\(menu\.init/)
+})
+
+test('menu.init requires action code to be at the base level', t => {
+  const menu = new TelegrafInlineMenu('yaay')
+  const bot = new Telegraf()
+
+  t.throws(() => {
+    bot.use(menu.init({actionCode: 'a:b'}))
+  }, /actioncode/i)
 })

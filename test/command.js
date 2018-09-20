@@ -14,13 +14,13 @@ test('one command', async t => {
     t.is(text, 'foo')
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: 'bar',
-      callback_data: 'a:b:c'
+      callback_data: 'a:c'
     }]])
 
     return Promise.resolve()
   }
 
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
   bot.command('test', () => t.fail('command not handled'))
   bot.use(ctx => t.fail('update not handled: ' + JSON.stringify(ctx.update)))
 

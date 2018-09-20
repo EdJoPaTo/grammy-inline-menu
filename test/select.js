@@ -11,22 +11,22 @@ test('option array menu', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
-        callback_data: 'a:b:c-a'
+        callback_data: 'a:c-a'
       }, {
         text: 'b',
-        callback_data: 'a:b:c-b'
+        callback_data: 'a:c-b'
       }
     ]])
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('option object menu', async t => {
@@ -36,22 +36,22 @@ test('option object menu', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'A',
-        callback_data: 'a:b:c-a'
+        callback_data: 'a:c-a'
       }, {
         text: 'B',
-        callback_data: 'a:b:c-b'
+        callback_data: 'a:c-b'
       }
     ]])
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('option async array menu', async t => {
@@ -61,22 +61,22 @@ test('option async array menu', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
-        callback_data: 'a:b:c-a'
+        callback_data: 'a:c-a'
       }, {
         text: 'b',
-        callback_data: 'a:b:c-b'
+        callback_data: 'a:c-b'
       }
     ]])
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('selects', async t => {
@@ -87,11 +87,11 @@ test('selects', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = () => Promise.resolve(t.pass())
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c-b'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c-b'}})
 })
 
 test('selected key has emoji prefix', async t => {
@@ -102,22 +102,22 @@ test('selected key has emoji prefix', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
-        callback_data: 'a:b:c-a'
+        callback_data: 'a:c-a'
       }, {
         text: emojiTrue + ' b',
-        callback_data: 'a:b:c-b'
+        callback_data: 'a:c-b'
       }
     ]])
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('multiselect has prefixes', async t => {
@@ -129,22 +129,22 @@ test('multiselect has prefixes', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: emojiFalse + ' a',
-        callback_data: 'a:b:c-a'
+        callback_data: 'a:c-a'
       }, {
         text: emojiTrue + ' b',
-        callback_data: 'a:b:c-b'
+        callback_data: 'a:c-b'
       }
     ]])
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('custom prefix', async t => {
@@ -155,22 +155,22 @@ test('custom prefix', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'bar a',
-        callback_data: 'a:b:c-a'
+        callback_data: 'a:c-a'
       }, {
         text: 'bar b',
-        callback_data: 'a:b:c-b'
+        callback_data: 'a:c-b'
       }
     ]])
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('hides key in keyboard', async t => {
@@ -182,19 +182,19 @@ test('hides key in keyboard', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'b',
-        callback_data: 'a:b:c-b'
+        callback_data: 'a:c-b'
       }
     ]])
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('hidden key can not be set', async t => {
@@ -206,12 +206,12 @@ test('hidden key can not be set', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = () => Promise.resolve(t.pass())
   bot.use(() => t.pass())
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c-a'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c-a'}})
 })
 
 test('hide always has two args', async t => {
@@ -226,12 +226,12 @@ test('hide always has two args', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = () => Promise.resolve()
 
   // Calls hide for every option: +2
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 
   // Does not call hide
   await bot.handleUpdate({callback_query: {data: 'c'}})

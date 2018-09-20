@@ -77,6 +77,9 @@ class TelegrafInlineMenu {
   }
 
   init(options = {}) {
+    if (options.actionCode && options.actionCode.indexOf(':') >= 0) {
+      throw new Error('ActionCode has to start at the base level (without ":")')
+    }
     const actionCode = new ActionCode(options.actionCode || 'main')
     delete options.actionCode
     options.depth = 0

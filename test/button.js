@@ -5,7 +5,7 @@ import TelegrafInlineMenu from '../inline-menu'
 
 const menuKeyboard = [[{
   text: 'hit me',
-  callback_data: 'a:b:c'
+  callback_data: 'a:c'
 }]]
 
 test('manual menu correct', async t => {
@@ -13,14 +13,14 @@ test('manual menu correct', async t => {
   menu.manual('hit me', 'c')
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('simpleButton works', async t => {
@@ -30,11 +30,11 @@ test('simpleButton works', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = t.fail
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
 
 test('button updates menu', async t => {
@@ -45,14 +45,14 @@ test('button updates menu', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
 
 test('hidden button can not be trigged', async t => {
@@ -67,11 +67,11 @@ test('hidden button can not be trigged', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = t.fail
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
 
 test('require doFunc', t => {

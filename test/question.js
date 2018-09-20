@@ -5,7 +5,7 @@ import TelegrafInlineMenu from '../inline-menu'
 
 const menuKeyboard = [[{
   text: 'Question',
-  callback_data: 'a:b:c'
+  callback_data: 'a:c'
 }]]
 
 test('menu correct', async t => {
@@ -16,14 +16,14 @@ test('menu correct', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve()
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
 test('sends question text', async t => {
@@ -35,7 +35,7 @@ test('sends question text', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = t.fail
   bot.context.deleteMessage = () => Promise.resolve(t.pass())
@@ -46,7 +46,7 @@ test('sends question text', async t => {
     })
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
 
 test('setFunc on answer', async t => {
@@ -58,7 +58,7 @@ test('setFunc on answer', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = t.fail
   bot.context.reply = (text, extra) => {
@@ -87,7 +87,7 @@ test('dont setFunc on wrong input text', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = t.fail
   bot.context.reply = () => Promise.resolve(
@@ -113,7 +113,7 @@ test('dont setFunc on hide', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = t.fail
   bot.context.reply = () => Promise.resolve(
@@ -139,7 +139,7 @@ test('accepts other stuff than text', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = t.fail
   bot.context.reply = (text, extra) => {
@@ -173,7 +173,7 @@ test('multiple question setFuncs do not interfere', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = t.fail
   bot.context.reply = () => Promise.resolve()
@@ -207,7 +207,7 @@ test('question button works on old menu', async t => {
   })
 
   const bot = new Telegraf()
-  bot.use(menu.init({actionCode: 'a:b'}))
+  bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = t.fail
   bot.context.deleteMessage = () => {
@@ -222,7 +222,7 @@ test('question button works on old menu', async t => {
     })
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:b:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
 
 test('require setFunc', t => {
