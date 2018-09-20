@@ -230,7 +230,7 @@ class TelegrafInlineMenu {
     return this.simpleButton(text, action, additionalArgs)
   }
 
-  question(text, action, additionalArgs = {}) {
+  question(text, action, additionalArgs) {
     const {questionText, setFunc, hide} = additionalArgs
     if (!questionText) {
       throw new Error('questionText is not set. set it')
@@ -271,7 +271,7 @@ class TelegrafInlineMenu {
     })
   }
 
-  select(action, options, additionalArgs = {}) {
+  select(action, options, additionalArgs) {
     const {setFunc, submenu, hide} = additionalArgs
     if (setFunc && submenu) {
       throw new Error('setFunc and submenu can not be set at the same time.')

@@ -74,10 +74,26 @@ test('hidden button can not be trigged', async t => {
   await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
 
-test('require doFunc', t => {
+test('simpleButton require additionalArgs', t => {
   const menu = new TelegrafInlineMenu('yaay')
 
   t.throws(() => {
     menu.simpleButton('toggle me', 'c')
+  }, /Cannot.+of.+undefined/)
+})
+
+test('button require additionalArgs', t => {
+  const menu = new TelegrafInlineMenu('yaay')
+
+  t.throws(() => {
+    menu.button('toggle me', 'c')
+  }, /Cannot.+of.+undefined/)
+})
+
+test('require doFunc', t => {
+  const menu = new TelegrafInlineMenu('yaay')
+
+  t.throws(() => {
+    menu.simpleButton('toggle me', 'c', {})
   }, /doFunc/)
 })
