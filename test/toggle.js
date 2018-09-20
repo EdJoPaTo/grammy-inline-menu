@@ -25,7 +25,7 @@ test('menu correct', async t => {
   await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
-test('toggles', async t => {
+test('toggles to true', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.toggle('toggle me', 'c', {
     setFunc: (ctx, newState) => t.true(newState),
@@ -37,6 +37,20 @@ test('toggles', async t => {
   bot.use(menu.init({actionCode: 'a'}))
 
   await bot.handleUpdate({callback_query: {data: 'a:c-true'}})
+})
+
+test('toggles to false', async t => {
+  const menu = new TelegrafInlineMenu('yaay')
+  menu.toggle('toggle me', 'c', {
+    setFunc: (ctx, newState) => t.false(newState),
+    isSetFunc: () => true
+  })
+
+  const bot = new Telegraf()
+  bot.context.editMessageText = () => Promise.resolve()
+  bot.use(menu.init({actionCode: 'a'}))
+
+  await bot.handleUpdate({callback_query: {data: 'a:c-false'}})
 })
 
 async function ownPrefixTest(t, currentState, prefix) {
