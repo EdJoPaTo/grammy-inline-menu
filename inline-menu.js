@@ -47,13 +47,27 @@ class TelegrafInlineMenu {
     options.log('generate…', actionCode.get())
     const text = typeof this.menuText === 'function' ? (await this.menuText(ctx)) : this.menuText
 
+    let actualActionCode
+    if (ctx.callbackQuery) {
+      const expectedPartCount = options.depth
+      const actualParts = ctx.callbackQuery.data.split(':')
+      if (actualParts.length === 1 + expectedPartCount) {
+        actualParts.pop()
+      }
+      const menuAction = actualParts.join(':')
+      actualActionCode = new ActionCode(menuAction)
+      options.log('generate with actualActionCode', actualActionCode.get(), actionCode.get(), ctx.callbackQuery.data)
+    } else {
+      actualActionCode = actionCode
+    }
+
     const buttons = [...this.buttons]
-    const lastButtonRow = generateBackButtonsAsNeeded(actionCode, options)
+    const lastButtonRow = generateBackButtonsAsNeeded(actualActionCode, options)
     if (lastButtonRow.length > 0) {
       buttons.push(lastButtonRow)
     }
 
-    const keyboardMarkup = await buildKeyboard(buttons, actionCode, ctx)
+    const keyboardMarkup = await buildKeyboard(buttons, actualActionCode, ctx)
     options.log('buttons', keyboardMarkup.inline_keyboard)
     const extra = Extra.markdown().markup(keyboardMarkup)
     return {text, extra}
