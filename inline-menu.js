@@ -277,7 +277,7 @@ class TelegrafInlineMenu {
       throw new Error('setFunc and submenu can not be set at the same time.')
     }
 
-    const keyFromCtx = ctx => ctx.match[1]
+    const keyFromCtx = ctx => ctx.match[ctx.match.length - 1]
     const hideSelectAction = hide && (ctx => hide(ctx, keyFromCtx(ctx)))
 
     const handler = {
