@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v2.0.2...v3.0.0) (2018-09-20)
+
+
+### Bug Fixes
+
+* **action-code:** fix splitting of action with regex that have : ([58eafa1](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/58eafa1))
+* **action-code:** get parent of regex ([dbb123c](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/dbb123c))
+* **question:** question works again with unexpected deleteMessage errors ([233ed92](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/233ed92))
+* **select:** setFunc and hide key argument are now the last match group ([9d1d736](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/9d1d736))
+* **select:** stop using multiple layers of an ActionCode ([c1dd5b4](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/c1dd5b4))
+* **toggle:** stop using multiple layers of an ActionCode ([48765eb](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/48765eb))
+
+
+### Features
+
+* **action-code:** implement concat of two regex ([19cb546](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/19cb546))
+* generate the menu for the actual ActionCode when possible ([b0d82e2](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/b0d82e2))
+* update menu when user presses a hidden button ([5ba3471](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/5ba3471))
+* **command:** throw Error when setCommand was used on a dynamic menu ([bc6874e](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/bc6874e))
+* **select:** add support for submenu on selection ([2e8f7bb](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/2e8f7bb))
+
+
+### BREAKING CHANGES
+
+* **select:** Select Buttons only in an old, still existing menu
+created before the update will not work. Using another Button or create
+a new menu will fix this.
+* **toggle:** Toggle Buttons only in an old, still existing menu 
+created before the update will not work. Using another Button or create 
+a new menu will fix this.
+* **action-code:** action as RegExp can not have any flag anymore.
+
+
+
 <a name="2.0.2"></a>
 ## [2.0.2](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v2.0.1...v2.0.2) (2018-09-17)
 
