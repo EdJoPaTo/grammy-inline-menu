@@ -48,7 +48,8 @@ class TelegrafInlineMenu {
     if (ctx.callbackQuery) {
       const expectedPartCount = options.depth
       const actualParts = ctx.callbackQuery.data.split(':')
-      if (actualParts.length === 1 + expectedPartCount) {
+      // Go up to the menu that shall be opened
+      while (actualParts.length > expectedPartCount) {
         actualParts.pop()
       }
       const menuAction = actualParts.join(':')
@@ -137,6 +138,7 @@ class TelegrafInlineMenu {
 
     const subOptions = {
       ...options,
+      setParentMenuFunc: setMenuFunc,
       depth: options.depth + 1
     }
 
@@ -165,8 +167,16 @@ class TelegrafInlineMenu {
         } else {
           middleware = handler.middleware
         }
-        if (handler.setMenuAfter) {
-          middlewareOptions.afterFunc = ctx => setMenuFunc(ctx, 'after handler ' + (childActionCode || actionCode).get())
+        if (handler.setParentMenuAfter || handler.setMenuAfter) {
+          const reason = 'after handler ' + (childActionCode || actionCode).get()
+          if (handler.setParentMenuAfter) {
+            if (!options.setParentMenuFunc) {
+              throw new Error('Action will not be able to set parent menu as there is no parent menu: ' + actionCode.get())
+            }
+            middlewareOptions.afterFunc = ctx => options.setParentMenuFunc(ctx, reason)
+          } else {
+            middlewareOptions.afterFunc = ctx => setMenuFunc(ctx, reason)
+          }
         }
         return createHandlerMiddleware(middleware, middlewareOptions)
       })
@@ -226,6 +236,7 @@ class TelegrafInlineMenu {
       action: new ActionCode(action),
       hide: additionalArgs.hide,
       middleware: additionalArgs.doFunc,
+      setParentMenuAfter: additionalArgs.setParentMenuAfter,
       setMenuAfter: additionalArgs.setMenuAfter
     })
     return this.manual(text, action, additionalArgs)
@@ -301,6 +312,7 @@ class TelegrafInlineMenu {
     if (setFunc) {
       const hitSelectButton = ctx => setFunc(ctx, keyFromCtx(ctx))
       handler.middleware = hitSelectButton
+      handler.setParentMenuAfter = additionalArgs.setParentMenuAfter
       handler.setMenuAfter = true
     } else if (submenu) {
       handler.submenu = submenu

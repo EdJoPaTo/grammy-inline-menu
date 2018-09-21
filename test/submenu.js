@@ -106,3 +106,46 @@ test('default init is main', async t => {
   bot.context.editMessageText = () => Promise.resolve(t.pass())
   await bot.handleUpdate({callback_query: {data: 'main'}})
 })
+
+test('setParentMenuAfter', async t => {
+  t.plan(5)
+  const menu = new TelegrafInlineMenu('foo')
+  menu.submenu('submenu', 's', new TelegrafInlineMenu('bar'))
+    .simpleButton('button', 'b', {
+      setParentMenuAfter: true,
+      doFunc: t.pass
+    })
+
+  const bot = new Telegraf()
+  bot.use(menu.init({actionCode: 'a'}))
+  bot.context.editMessageText = (text, extra) => {
+    t.is(text, 'foo')
+    t.deepEqual(extra.reply_markup.inline_keyboard, [[{
+      text: 'submenu',
+      callback_data: 'a:s'
+    }]])
+    return Promise.resolve()
+  }
+  bot.use(ctx => {
+    t.log(ctx.update)
+    t.fail('update missed')
+  })
+
+  // +2
+  await bot.handleUpdate({callback_query: {data: 'a'}})
+  // +2
+  await bot.handleUpdate({callback_query: {data: 'a:s:b'}})
+})
+
+test('setParentMenuAfter when there is no parent fails', t => {
+  const menu = new TelegrafInlineMenu('foo')
+    .simpleButton('button', 'b', {
+      setParentMenuAfter: true,
+      doFunc: t.fail
+    })
+
+  const bot = new Telegraf()
+  t.throws(() => {
+    bot.use(menu.init())
+  }, /set parent menu.+main/)
+})

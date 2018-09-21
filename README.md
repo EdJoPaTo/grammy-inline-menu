@@ -91,7 +91,7 @@ settings.setCommand('settings')
 main.submenu('Settings', 's', settings)
 ```
 
-### `menu.button(text, action, {doFunc, hide, joinLastRow})`
+### `menu.button(text, action, {doFunc, hide, joinLastRow, setParentMenuAfter})`
 
 Button for triggering functions.
 Updates menu when `doFunc()` finished.
@@ -106,7 +106,10 @@ It has the exact same arguments and will not update the menu after the `doFunc()
 `action` has to be unique in this menu.
 
 `doFunc(ctx)` will be triggered when user presses the button.
+
 `hide(ctx)` (optional) can hide the button when return is true.
+
+`setParentMenuAfter` (optional) can be set to true in order to open the parent menu instead of the current menu after the doFunc was executed.
 
 ### `menu.simpleButton(text, action, {doFunc, hide, joinLastRow})`
 
@@ -133,7 +136,7 @@ If this is not unique it will collide with the other question with the same text
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.select(action, options, {setFunc, submenu, isSetFunc, prefixFunc, hide, joinLastRow, columns, maxRows})`
+### `menu.select(action, options, {setFunc, submenu, isSetFunc, prefixFunc, hide, joinLastRow, columns, maxRows, setParentMenuAfter})`
 
 Creates multiple buttons for each provided option.
 
@@ -171,6 +174,9 @@ Can not be used when `submenu` is set.
 `columns` (Integer, optional) can be provided in order to limit the amount of buttons in one row. (default: 6)
 
 `maxRows` (Integer, optional) can be provided to limit the maximal rows of buttons. (default: 10)
+
+`setParentMenuAfter` (optional) can be set to true in order to open the parent menu instead of the current menu after the setFunc was executed.
+Only has an effect when `setFunc` is used.
 
 ### `menu.toggle(text, action, {setFunc, isSetFunc, hide, joinLastRow})`
 
