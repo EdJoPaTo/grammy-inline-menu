@@ -166,6 +166,7 @@ Can only be used when `isSetFunc` is not used.
 see `isSetFunc`
 
 `hide(ctx, key)` (optional) can be used to hide the button with the given key in the menu when true is returned.
+Can not be used when `submenu` is set.
 
 `columns` (Integer, optional) can be provided in order to limit the amount of buttons in one row. (default: 6)
 

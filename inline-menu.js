@@ -275,13 +275,20 @@ class TelegrafInlineMenu {
     if (setFunc && submenu) {
       throw new Error('setFunc and submenu can not be set at the same time.')
     }
+    if (submenu && hide) {
+      // The submenu is a middleware that can do other things than callback_data
+      // question is an example: the reply to the text does not indicate the actionCode.
+      // Without the exact actionCode its not possible to determine the selected key(s) which is needed for hide(…, key)
+      throw new Error('hiding a dynamic submenu is not possible')
+    }
 
     const keyFromCtx = ctx => ctx.match[ctx.match.length - 1]
-    const hideSelectAction = hide && (ctx => hide(ctx, keyFromCtx(ctx)))
-
     const handler = {
-      action: new ActionCode(new RegExp(`${action}-([^:]+)`)),
-      hide: hideSelectAction
+      action: new ActionCode(new RegExp(`${action}-([^:]+)`))
+    }
+
+    if (additionalArgs.hide) {
+      handler.hide = ctx => hide(ctx, keyFromCtx(ctx))
     }
 
     if (setFunc) {

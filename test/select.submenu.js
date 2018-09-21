@@ -79,3 +79,14 @@ test('submenu button works', async t => {
 
   await bot.handleUpdate({callback_query: {data: 'a:c-a:d'}})
 })
+
+test('hide dynamic submenu does not work', t => {
+  const menu = new TelegrafInlineMenu('foo')
+
+  t.throws(() => {
+    menu.select('a', ['a', 'b'], {
+      hide: () => false,
+      submenu: new TelegrafInlineMenu('bar')
+    })
+  }, /dynamic/)
+})
