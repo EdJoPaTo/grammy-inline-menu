@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.1.0"></a>
+# [3.1.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v3.0.0...v3.1.0) (2018-09-21)
+
+
+### Bug Fixes
+
+* **select:** throw Error that hide && submenu can not work ([0c4ae33](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/0c4ae33))
+* throw Error that dynamic menus only can handle buttons ([39b335b](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/39b335b))
+
+
+### Features
+
+* setParentMenuAfter allows to set the parent menu after doFunc ([f2874ba](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/f2874ba))
+
+
+
 <a name="3.0.0"></a>
 # [3.0.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v2.0.2...v3.0.0) (2018-09-20)
 
