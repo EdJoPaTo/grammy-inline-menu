@@ -42,6 +42,10 @@ class ActionCode {
     return this.getRegex().test(value)
   }
 
+  isDynamic() {
+    return this.code instanceof RegExp
+  }
+
   concat(action) {
     if (action instanceof ActionCode) {
       action = action.code

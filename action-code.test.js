@@ -103,3 +103,12 @@ test('regex test', t => {
   t.false(new ActionCode('b').test('c'))
   t.true(new ActionCode('b').test('b'))
 })
+
+test('isDynamic', t => {
+  t.false(new ActionCode('b').isDynamic())
+  t.true(new ActionCode(/(.+)/).isDynamic())
+
+  // This is not dynamic, but its a RegExp.
+  // Just assume its dynamic is easier.
+  t.true(new ActionCode(/b/).isDynamic())
+})
