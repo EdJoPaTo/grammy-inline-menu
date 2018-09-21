@@ -67,5 +67,5 @@ test('command can not be used on dynamic menu', t => {
       depth: 1,
       log: () => {}
     }))
-  }, /command/)
+  }, /command.+menu.+\/\^\.\+\$\/.+test/)
 })

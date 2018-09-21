@@ -113,6 +113,12 @@ class TelegrafInlineMenu {
       // But as options is only used later the root of the error is not that easy to find without Error.
       throw new Error('options has to be set')
     }
+    if (actionCode.isDynamic()) {
+      if (this.commands.length > 0) {
+        throw new Error('commands can not point on dynamic submenus. Happened in menu ' + actionCode.get() + ' with the following commands: ' + this.commands.join(', '))
+      }
+    }
+
     options.log('middleware triggered', actionCode.get(), options, this)
     options.log('add action reaction', actionCode.get(), 'setMenu')
     const setMenuFunc = (ctx, reason) => {
@@ -122,9 +128,6 @@ class TelegrafInlineMenu {
     const functions = []
     functions.push(Composer.action(actionCode.get(), ctx => setMenuFunc(ctx, 'menu action')))
     if (this.commands.length > 0) {
-      if (actionCode.isDynamic()) {
-        throw new TypeError('commands can not point on menus that are not always the same')
-      }
       functions.push(Composer.command(this.commands, ctx => setMenuFunc(ctx, 'command')))
     }
 
