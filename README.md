@@ -133,7 +133,7 @@ If this is not unique it will collide with the other question with the same text
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.select(action, options, {setFunc, isSetFunc, prefixFunc, hide, joinLastRow, columns, maxRows})`
+### `menu.select(action, options, {setFunc, submenu, isSetFunc, prefixFunc, hide, joinLastRow, columns, maxRows})`
 
 Creates multiple buttons for each provided option.
 
@@ -147,6 +147,11 @@ The option as an object has to be in the following format:
 `{key1: buttonText, key2: buttonText, …}`
 
 `setFunc(ctx, key)` will be called when the user selects an entry.
+Can not be used when `submenu` is set.
+
+`submenu` gets opened when the user hits a button.
+The selected property has to be determined from `ctx.match` everywhere below.
+Can not be used when `setFunc` is set.
 
 `isSetFunc(ctx, key)` (optional) will be called in order to use this as an exclusive selection.
 When true is returned the key will have an emoji indicating the current selection.
