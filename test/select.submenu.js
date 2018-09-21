@@ -90,3 +90,19 @@ test('hide dynamic submenu does not work', t => {
     })
   }, /dynamic/)
 })
+
+test('something that is not an action in dynamic menu throws error', t => {
+  const menu = new TelegrafInlineMenu('foo')
+  const submenu = new TelegrafInlineMenu('bar')
+    .question('Question', 'q', {
+      questionText: '42',
+      setFunc: () => {}
+    })
+  menu.select('a', ['a', 'b'], {
+    submenu
+  })
+  const bot = new Telegraf()
+  t.throws(() => {
+    bot.use(menu.init())
+  }, /dynamic.+question.+menu.+a/)
+})

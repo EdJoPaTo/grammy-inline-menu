@@ -117,6 +117,10 @@ class TelegrafInlineMenu {
       if (this.commands.length > 0) {
         throw new Error('commands can not point on dynamic submenus. Happened in menu ' + actionCode.get() + ' with the following commands: ' + this.commands.join(', '))
       }
+      const handlerNotActions = this.handlers.filter(o => !o.action)
+      if (handlerNotActions.length > 0) {
+        throw new Error('a dynamic submenu can only contain buttons. A question for example does not work. Happened in menu ' + actionCode.get())
+      }
     }
 
     options.log('middleware triggered', actionCode.get(), options, this)
