@@ -9,6 +9,8 @@
 This menu library is made to easily create an inline menu for your Telegram bot.
 
 ## Example
+
+![Example Food Menu](docs/example-food.gif)
 ```js
 const menu = new TelegrafInlineMenu(
   ctx => `Hey ${ctx.from.first_name}!`
