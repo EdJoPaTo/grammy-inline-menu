@@ -275,3 +275,52 @@ Switch button. This button is just a pass through and doesn't have an effect on 
 ### `menu.switchToCurrentChatButton(text, value, {hide, joinLastRow})`
 
 see `menu.switchToChatButton`
+
+### `const middleware = menu.replyMenuMiddleware()`
+
+Generate a middleware that can be used when the menu shall be send manually.
+For example when the menu should be changed on external events.
+Also the menu can be manually changed via a simleButton based on external information.
+
+#### Usage
+
+When the menu is always the same you can use the simple variant like other middlewares:
+```js
+bot.command('test', menu.replyMenuMiddleware())
+```
+Hint: `menu.replyMenuMiddleware()` has to be called before .init() in order to work
+
+When the menu can have different config based to upper menus (like select -> submenu) you need to provide the exact actionCode that shall be opened.
+This is something only recommended for expert users as it requires quite a bit understanding of the internal logic.
+
+For example you have an detail menu for a specific product, so do did something like that:
+```js
+const main = new TelegrafInlineMenu('foo')
+const submenu = new TelegrafInlineMenu('details for …')
+main.select('details', ['a', 'b'], {
+  submenu: submenu
+})
+```
+
+When you now want to point from somewhere else to the specific submenu you can either use .manual(…) or or the `replyMenuMiddleware`.
+Lets assume you want to open the details of b.
+As the menu is below the main menu, the resulting ActionCode here is 'details-b'.
+
+With manual you would use a root action:
+```js
+menu.manual('Open details of b', 'details-b', {root: true})
+```
+
+With replyMenuMiddleware this is more complex (and still only recommended for expert users):
+```js
+const main = new TelegrafInlineMenu('foo')
+const submenu = new TelegrafInlineMenu('details for …')
+const replyMiddleware = submenu.replyMenuMiddleware()
+main.select('details', ['a', 'b'], {
+  submenu: submenu
+})
+
+main.simpleButton('Open details for b', 'z', {
+  doFunc: ctx => replyMiddleware.setSpecific(ctx, 'details-b')
+})
+```

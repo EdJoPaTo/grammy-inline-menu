@@ -12,6 +12,7 @@ class TelegrafInlineMenu {
     this.buttons = []
     this.commands = []
     this.handlers = []
+    this.replyMenuMiddlewares = []
   }
 
   setCommand(commands) {
@@ -45,7 +46,7 @@ class TelegrafInlineMenu {
     const text = typeof this.menuText === 'function' ? (await this.menuText(ctx)) : this.menuText
 
     let actualActionCode
-    if (ctx.callbackQuery) {
+    if (ctx.callbackQuery && actionCode.isDynamic()) {
       const expectedPartCount = options.depth
       const actualParts = ctx.callbackQuery.data.split(':')
       // Go up to the menu that shall be opened
@@ -88,6 +89,25 @@ class TelegrafInlineMenu {
       })
   }
 
+  replyMenuMiddleware() {
+    const obj = {
+      middleware: () => {
+        return ctx => obj.setSpecific(ctx)
+      }
+    }
+    obj.setSpecific = (ctx, actionCode) => {
+      if (!obj.setMenuFunc) {
+        throw new Error('This does only work when menu is initialized with bot.use(menu.init())')
+      }
+      if (actionCode) {
+        actionCode = new ActionCode(actionCode)
+      }
+      return obj.setMenuFunc(ctx, actionCode)
+    }
+    this.replyMenuMiddlewares.push(obj)
+    return obj
+  }
+
   init(options = {}) {
     if (options.actionCode && options.actionCode.indexOf(':') >= 0) {
       throw new Error('ActionCode has to start at the base level (without ":")')
@@ -126,14 +146,32 @@ class TelegrafInlineMenu {
 
     options.log('middleware triggered', actionCode.get(), options, this)
     options.log('add action reaction', actionCode.get(), 'setMenu')
-    const setMenuFunc = (ctx, reason) => {
-      options.log('set menu', actionCode.get(), reason, this)
-      return this.setMenuNow(ctx, actionCode, options)
+    const setMenuFunc = (ctx, reason, actionOverride) => {
+      if (actionOverride) {
+        ctx.match = actionCode.exec(actionOverride.get())
+      }
+      options.log('set menu', (actionOverride || actionCode).get(), reason, this)
+      return this.setMenuNow(ctx, actionOverride || actionCode, options)
     }
     const functions = []
     functions.push(Composer.action(actionCode.get(), ctx => setMenuFunc(ctx, 'menu action')))
     if (this.commands.length > 0) {
       functions.push(Composer.command(this.commands, ctx => setMenuFunc(ctx, 'command')))
+    }
+    for (const replyMenuMiddleware of this.replyMenuMiddlewares) {
+      if (replyMenuMiddleware.setMenuFunc) {
+        // Already set.. dont set again
+        throw new Error('replyMenuMiddleware does not work on a menu that is reachable on multiple different ways. This could be implemented but there wasnt a need for this yet. Open an issue on GitHub.')
+      }
+      replyMenuMiddleware.setMenuFunc = (ctx, actionOverride) => {
+        if (actionCode.isDynamic() && !actionOverride) {
+          throw new Error('a dynamic menu can only be set when an actionCode is given')
+        }
+        if (actionOverride && !actionCode.test(actionOverride.get())) {
+          throw new Error('The actionCode has to belong to the menu. ' + actionOverride.get() + ' does not work with the menu ' + actionCode.get())
+        }
+        return setMenuFunc(ctx, 'replyMenuMiddleware', actionOverride)
+      }
     }
 
     const subOptions = {
