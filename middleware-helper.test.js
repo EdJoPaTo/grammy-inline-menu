@@ -18,6 +18,16 @@ test('hide false middleware runs', t => create(t, 1, {m: t.pass, n: t.fail}, {
   hide: () => Promise.resolve(false)
 }))
 
+test('hide true hiddenFunc runs', t => create(t, 1, {m: t.fail, n: t.fail}, {
+  hiddenFunc: t.pass,
+  hide: () => Promise.resolve(true)
+}))
+
+test('hide false hiddenFunc does not run', t => create(t, 1, {m: t.pass, n: t.pass}, {
+  hiddenFunc: t.fail,
+  hide: () => Promise.resolve(false)
+}))
+
 test('only true middleware runs', t => create(t, 1, {m: t.pass, n: t.fail}, {
   only: () => Promise.resolve(true)
 }))

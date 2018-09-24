@@ -1,6 +1,7 @@
 function createHandlerMiddleware(middleware, {
   only,
   hide,
+  hiddenFunc,
   runAfterFuncEvenWhenHidden,
   afterFunc
 } = {}) {
@@ -10,7 +11,11 @@ function createHandlerMiddleware(middleware, {
     }
     const isHidden = hide && (await hide(ctx))
     if (isHidden) {
-      await next(ctx)
+      if (hiddenFunc) {
+        await hiddenFunc(ctx, next)
+      } else {
+        await next(ctx)
+      }
     } else {
       await middleware(ctx, next)
     }

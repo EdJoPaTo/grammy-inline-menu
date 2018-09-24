@@ -28,7 +28,7 @@ test('root menu correct', async t => {
   await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
-test('no submenu on hide', async t => {
+test('hidden submenu goes to the parent menu', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.submenu('Submenu', 'c', new TelegrafInlineMenu('bar'), {
     hide: () => true
@@ -37,12 +37,34 @@ test('no submenu on hide', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.editMessageText = () => Promise.resolve(
-    t.fail('so submenu on hide')
-  )
-  bot.use(t.pass)
+  bot.context.editMessageText = (text, extra) => {
+    t.is(text, 'foo')
+    // As the submenu is hidden there are no buttons
+    t.deepEqual(extra.reply_markup.inline_keyboard, [[]])
+    return Promise.resolve()
+  }
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}})
+})
+
+test('hidden submenu goes to the parent menu from the sub sub menu call', async t => {
+  const menu = new TelegrafInlineMenu('foo')
+  menu.submenu('Submenu', 'c', new TelegrafInlineMenu('bar'), {
+    hide: () => true
+  })
+    .submenu('Subsubmenu', 'd', new TelegrafInlineMenu('42'))
+
+  const bot = new Telegraf()
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.editMessageText = (text, extra) => {
+    t.is(text, 'foo')
+    // As the submenu is hidden there are no buttons
+    t.deepEqual(extra.reply_markup.inline_keyboard, [[]])
+    return Promise.resolve()
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a:c:d'}})
 })
 
 test('submenu without back button', async t => {
