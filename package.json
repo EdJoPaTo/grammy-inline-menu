@@ -1,6 +1,6 @@
 {
   "name": "telegraf-inline-menu",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Inline Menus for Telegraf made simple.",
   "main": "inline-menu.js",
   "engines": {
