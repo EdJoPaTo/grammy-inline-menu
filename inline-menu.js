@@ -191,7 +191,18 @@ class TelegrafInlineMenu {
         let middleware
         if (handler.action) {
           if (handler.submenu) {
-            middlewareOptions.hiddenFunc = ctx => setMenuFunc(ctx, 'menu is hidden')
+            middlewareOptions.only = ctx => {
+              return !ctx.callbackQuery || childActionCode.testIsBelow(ctx.callbackQuery.data)
+            }
+
+            middlewareOptions.hiddenFunc = (ctx, next) => {
+              if (!ctx.callbackQuery) {
+                // Only set menu when a hidden button below was used
+                // Without callbackData this can not be determined
+                return next(ctx)
+              }
+              return setMenuFunc(ctx, 'menu is hidden')
+            }
             middleware = handler.submenu.middleware(childActionCode, subOptions)
           } else {
             // Run the setMenuFunc even when action is hidden.

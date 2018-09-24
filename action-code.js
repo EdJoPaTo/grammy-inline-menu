@@ -42,6 +42,12 @@ class ActionCode {
     return this.getRegex().test(value)
   }
 
+  testIsBelow(value) {
+    const source = this.code instanceof RegExp ? this.code.source : this.code
+    const regex = new RegExp(`^${source}`)
+    return regex.test(value)
+  }
+
   isDynamic() {
     return this.code instanceof RegExp
   }

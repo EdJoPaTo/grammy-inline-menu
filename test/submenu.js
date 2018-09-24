@@ -67,6 +67,27 @@ test('hidden submenu goes to the parent menu from the sub sub menu call', async 
   await bot.handleUpdate({callback_query: {data: 'a:c:d'}})
 })
 
+test('hidden submenu before does not cancel not hidden button', async t => {
+  t.plan(1)
+  const menu = new TelegrafInlineMenu('foo')
+  menu.submenu('foo', 'foo', new TelegrafInlineMenu('foo'))
+    .submenu('bar', 'bar', new TelegrafInlineMenu('bar'), {
+      hide: () => true
+    })
+
+  menu.simpleButton('test', 'test', {
+    doFunc: () => {
+      t.pass()
+    }
+  })
+  const bot = new Telegraf()
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.editMessageText = () => Promise.resolve(t.fail('simpleButton does not update the menu. The hidden submenu had'))
+
+  await bot.handleUpdate({callback_query: {data: 'a:test'}})
+})
+
 test('submenu without back button', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.submenu('Submenu', 'c', new TelegrafInlineMenu('bar'))

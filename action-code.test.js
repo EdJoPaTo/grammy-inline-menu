@@ -104,6 +104,13 @@ test('regex test', t => {
   t.true(new ActionCode('b').test('b'))
 })
 
+test('testIsBelow', t => {
+  t.true(new ActionCode('a:b').testIsBelow('a:b'))
+  t.true(new ActionCode('a:b').testIsBelow('a:b:c'))
+  t.false(new ActionCode('a:b').testIsBelow('a:z'))
+  t.true(new ActionCode(/a:b-\d+/).testIsBelow('a:b-42'))
+})
+
 test('isDynamic', t => {
   t.false(new ActionCode('b').isDynamic())
   t.true(new ActionCode(/(.+)/).isDynamic())
