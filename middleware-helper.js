@@ -1,8 +1,8 @@
 function createHandlerMiddleware(middleware, {
+  only,
   hide,
-  afterFunc,
   runAfterFuncEvenWhenHidden,
-  only
+  afterFunc
 } = {}) {
   return async (ctx, next) => {
     if (only && !(await only(ctx))) {
