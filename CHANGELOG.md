@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="3.2.0"></a>
+# [3.2.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v3.1.0...v3.2.0) (2018-09-24)
+
+
+### Features
+
+* **replyMenuMiddleware:** add method to create a menu from outside ([bee5694](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/bee5694))
+* **submenu:** update the menu when hidden submenu button is hit ([ad7c18c](https://github.com/EdJoPaTo/telegraf-inline-menu/commit/ad7c18c))
+
+
+
 <a name="3.1.0"></a>
 # [3.1.0](https://github.com/EdJoPaTo/telegraf-inline-menu/compare/v3.0.0...v3.1.0) (2018-09-21)
 
