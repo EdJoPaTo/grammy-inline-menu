@@ -55,7 +55,7 @@ test('button updates menu', async t => {
   await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
 
-test('hidden button can not be trigged', async t => {
+test('hidden button does not run doFunc', async t => {
   t.plan(1)
   const menu = new TelegrafInlineMenu('yaay')
   menu.simpleButton('hit me', 'c', {
@@ -70,6 +70,25 @@ test('hidden button can not be trigged', async t => {
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = t.fail
+
+  await bot.handleUpdate({callback_query: {data: 'a:c'}})
+})
+
+test('hidden button updates the menu', async t => {
+  t.plan(1)
+  const menu = new TelegrafInlineMenu('yaay')
+  menu.button('hit me', 'c', {
+    doFunc: t.fail,
+    hide: () => true
+  })
+
+  const bot = new Telegraf()
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.editMessageText = text => {
+    t.is(text, 'yaay')
+    return Promise.resolve()
+  }
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
