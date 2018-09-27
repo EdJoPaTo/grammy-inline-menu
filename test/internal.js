@@ -13,33 +13,6 @@ test('add handler action has to be ActionCode', t => {
   t.throws(() => menu.addHandler({action: '42'}), /ActionCode/)
 })
 
-test('add button in ownRow', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-  menu.addButton({text: '42'})
-  t.deepEqual(menu.buttons, [[{
-    text: '42'
-  }]])
-})
-
-test('add button in lastRow but there is none', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-  menu.addButton({text: '42'}, false)
-  t.deepEqual(menu.buttons, [[{
-    text: '42'
-  }]])
-})
-
-test('add button in lastRow', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-  menu.addButton({text: '42'})
-  menu.addButton({text: '43'}, false)
-  t.deepEqual(menu.buttons, [[{
-    text: '42'
-  }, {
-    text: '43'
-  }]])
-})
-
 test.serial('setMenuNow menu is not modified', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
