@@ -160,7 +160,7 @@ class TelegrafInlineMenu {
     }
     for (const replyMenuMiddleware of this.replyMenuMiddlewares) {
       if (replyMenuMiddleware.setMenuFunc) {
-        // Already set.. dont set again
+        // This was already set. This happens when the same menu is used in different positions
         throw new Error('replyMenuMiddleware does not work on a menu that is reachable on multiple different ways. This could be implemented but there wasnt a need for this yet. Open an issue on GitHub.')
       }
       replyMenuMiddleware.setMenuFunc = (ctx, actionOverride) => {
