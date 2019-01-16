@@ -15,6 +15,7 @@ test('manual menu correct', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve()
@@ -32,6 +33,9 @@ test('simpleButton works', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  // This could also be argumented to be a pass as the button was pressed.
+  // But as there is nothing for the menu to do, the user should send the answer on its own.
+  bot.context.answerCbQuery = t.fail
   bot.context.editMessageText = t.fail
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}})
@@ -47,6 +51,7 @@ test('button updates menu', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve()
@@ -69,6 +74,7 @@ test('hidden button does not run doFunc', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = t.fail
   bot.context.editMessageText = t.fail
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}})
@@ -85,6 +91,7 @@ test('hidden button updates the menu', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = text => {
     t.is(text, 'yaay')
     return Promise.resolve()

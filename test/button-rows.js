@@ -20,6 +20,7 @@ test('just create without flags', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[button1], [button2]])
     return Promise.resolve()
@@ -36,6 +37,7 @@ test('joinLastRow', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[button1, button2]])
     return Promise.resolve()
@@ -52,6 +54,7 @@ test('joinLastRow as first button', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[button1, button2]])
     return Promise.resolve()

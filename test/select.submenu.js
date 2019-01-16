@@ -31,6 +31,7 @@ function generateTestBasics() {
 test('upper menu correct', async t => {
   const bot = generateTestBasics()
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
@@ -50,6 +51,7 @@ test('upper menu correct', async t => {
 test('submenu correct', async t => {
   const bot = generateTestBasics()
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {

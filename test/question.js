@@ -18,6 +18,7 @@ test('menu correct', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve()
@@ -27,7 +28,7 @@ test('menu correct', async t => {
 })
 
 test('sends question text', async t => {
-  t.plan(3)
+  t.plan(4)
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
     questionText: 'what do you want?',
@@ -37,6 +38,7 @@ test('sends question text', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve(t.pass())
   bot.context.editMessageText = t.fail
   bot.context.deleteMessage = () => Promise.resolve(t.pass())
   bot.context.reply = (text, extra) => {
@@ -60,6 +62,7 @@ test('setFunc on answer', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = t.fail
   bot.context.editMessageText = t.fail
   bot.context.reply = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
@@ -89,6 +92,7 @@ test('dont setFunc on wrong input text', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = t.fail
   bot.context.editMessageText = t.fail
   bot.context.reply = () => Promise.resolve(
     t.fail('dont reply on wrong text')
@@ -115,6 +119,7 @@ test('dont setFunc on hide', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = t.fail
   bot.context.editMessageText = t.fail
   bot.context.reply = () => Promise.resolve(
     t.fail('on hide nothing has to be replied')
@@ -141,6 +146,7 @@ test('accepts other stuff than text', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = t.fail
   bot.context.editMessageText = t.fail
   bot.context.reply = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
@@ -175,6 +181,7 @@ test('multiple question setFuncs do not interfere', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = t.fail
   bot.context.editMessageText = t.fail
   bot.context.reply = () => Promise.resolve()
 
@@ -209,6 +216,7 @@ test('question button works on old menu', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = t.fail
   bot.context.deleteMessage = () => {
     // Method is triggered but fails as the message is to old
@@ -231,6 +239,7 @@ test.serial('question button deleteMessage fail does not kill question', async t
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = t.fail
   bot.context.deleteMessage = () => {
     // Method is triggered but fails as the message is to old

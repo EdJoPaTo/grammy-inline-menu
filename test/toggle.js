@@ -14,6 +14,7 @@ test('menu correct', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: emojiTrue + ' toggle me',
@@ -33,6 +34,7 @@ test('toggles to true', async t => {
   })
 
   const bot = new Telegraf()
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = () => Promise.resolve()
   bot.use(menu.init({actionCode: 'a'}))
 
@@ -47,6 +49,7 @@ test('toggles to false', async t => {
   })
 
   const bot = new Telegraf()
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = () => Promise.resolve()
   bot.use(menu.init({actionCode: 'a'}))
 
@@ -65,6 +68,7 @@ async function ownPrefixTest(t, currentState, prefix) {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: prefix + ' toggle me',

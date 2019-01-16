@@ -77,6 +77,7 @@ class TelegrafInlineMenu {
     if (ctx.updateType !== 'callback_query') {
       return ctx.reply(text, extra)
     }
+    await ctx.answerCbQuery()
     return ctx.editMessageText(text, extra)
       .catch(error => {
         if (error.description === 'Bad Request: message is not modified') {
@@ -322,6 +323,7 @@ class TelegrafInlineMenu {
       const extra = Extra.markup(Markup.forceReply())
       return Promise.all([
         ctx.reply(questionText, extra),
+        ctx.answerCbQuery(),
         ctx.deleteMessage()
           .catch(error => {
             if (/can't be deleted/.test(error)) {

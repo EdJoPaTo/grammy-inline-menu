@@ -13,6 +13,7 @@ test('option array menu', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
@@ -38,6 +39,7 @@ test('option object menu', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
@@ -63,6 +65,7 @@ test('option async array menu', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
@@ -89,6 +92,7 @@ test('selects', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = () => Promise.resolve(t.pass())
 
   await bot.handleUpdate({callback_query: {data: 'a:c-b'}})
@@ -104,6 +108,7 @@ test('selected key has emoji prefix', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
@@ -131,6 +136,7 @@ test('multiselect has prefixes', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
@@ -157,6 +163,7 @@ test('custom prefix', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
@@ -184,6 +191,7 @@ test('hides key in keyboard', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
@@ -208,6 +216,7 @@ test('hidden key can not be set', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = () => Promise.resolve(t.pass())
   bot.use(() => t.pass())
 
@@ -228,6 +237,7 @@ test('hide always has two args', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = () => Promise.resolve()
 
   // Calls hide for every option: +2

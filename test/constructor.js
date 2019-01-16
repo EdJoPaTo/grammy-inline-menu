@@ -9,6 +9,7 @@ test('simple text without buttons', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.is(text, 'yaay')
     t.deepEqual(extra.reply_markup, {})
@@ -24,6 +25,7 @@ test('main menu', async t => {
   const bot = new Telegraf()
   bot.use(menu.init())
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.is(text, 'yaay')
     t.deepEqual(extra.reply_markup, {})
@@ -39,6 +41,7 @@ test('markdown text', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.is(text, 'yaay')
     t.is(extra.parse_mode, 'Markdown')
@@ -54,6 +57,7 @@ test('async text func', async t => {
   const bot = new Telegraf()
   bot.use(menu.init({actionCode: 'a'}))
 
+  bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = text => {
     t.is(text, 'yaay')
     return Promise.resolve()
