@@ -5,9 +5,11 @@ async function prefixEmoji(text, prefix, options = {}, ...args) {
   if (!options.prefixTrue) {
     options.prefixTrue = emojiTrue
   }
+
   if (!options.prefixFalse) {
     options.prefixFalse = emojiFalse
   }
+
   const {
     prefixFalse,
     prefixTrue,
@@ -26,6 +28,7 @@ async function prefixEmoji(text, prefix, options = {}, ...args) {
       prefix = prefixTrue
     }
   }
+
   if (prefix === false) {
     if (hideFalseEmoji) {
       prefix = undefined
@@ -41,6 +44,7 @@ async function prefixText(text, prefix, ...args) {
   if (typeof text === 'function') {
     text = text(...args)
   }
+
   if (typeof prefix === 'function') {
     prefix = await prefix(...args)
   }
@@ -48,6 +52,7 @@ async function prefixText(text, prefix, ...args) {
   if (!prefix) {
     return text
   }
+
   return `${prefix} ${await text}`
 }
 

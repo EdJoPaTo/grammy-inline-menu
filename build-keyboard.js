@@ -6,6 +6,7 @@ async function buildKeyboard(buttons, actionCodePrefix, ctx) {
       const rows = await row(ctx)
       return Promise.all(rows.map(row => buildKeyboardRow(row, actionCodePrefix, ctx)))
     }
+
     return [await buildKeyboardRow(row, actionCodePrefix, ctx)]
   }))
   const resultButtonsFlatted = [].concat(...resultButtons)
@@ -36,9 +37,11 @@ async function buildKeyboardButton({
   if (typeof text === 'function') {
     text = await text(...args)
   }
+
   if (typeof action === 'function') {
     action = await action(...args)
   }
+
   if (action && !root) {
     action = actionCodePrefix.concat(action).get()
   }

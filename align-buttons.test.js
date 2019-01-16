@@ -10,6 +10,7 @@ function generateCharArray(charA, charZ) {
   for (; i <= j; ++i) {
     a.push(String.fromCharCode(i))
   }
+
   return a
 }
 

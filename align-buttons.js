@@ -5,6 +5,7 @@ function getRowsOfButtons(buttons, columns = 6, maxRows = 10) {
     const slice = buttons.slice(i, i + columns)
     rows.push(slice)
   }
+
   return rows
 }
 

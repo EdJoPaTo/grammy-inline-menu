@@ -77,6 +77,7 @@ test('submenu button works', async t => {
     t.is(text, 'a was hit!')
     return Promise.resolve()
   }
+
   bot.use(t.fail)
 
   await bot.handleUpdate({callback_query: {data: 'a:c-a:d'}})

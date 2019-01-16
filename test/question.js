@@ -68,6 +68,7 @@ test('setFunc on answer', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve()
   }
+
   bot.use(ctx => {
     t.log('update not handled', ctx.update)
     t.fail('something not handled')
@@ -152,6 +153,7 @@ test('accepts other stuff than text', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve()
   }
+
   bot.use(ctx => {
     t.log('update not handled', ctx.update)
     t.fail('something not handled')
@@ -218,12 +220,12 @@ test('question button works on old menu', async t => {
 
   bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = t.fail
+  bot.context.reply = t.pass
   bot.context.deleteMessage = () => {
     // Method is triggered but fails as the message is to old
     t.pass()
     return Promise.reject(new Error('Bad Request: message can\'t be deleted'))
   }
-  bot.context.reply = t.pass
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
@@ -241,12 +243,12 @@ test.serial('question button deleteMessage fail does not kill question', async t
 
   bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = t.fail
+  bot.context.reply = t.pass
   bot.context.deleteMessage = () => {
     // Method is triggered but fails as the message is to old
     t.pass()
     return Promise.reject(new Error('something'))
   }
-  bot.context.reply = t.pass
 
   const normalErrorFunc = console.error
   console.error = t.pass

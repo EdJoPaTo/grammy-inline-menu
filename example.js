@@ -62,6 +62,7 @@ function foodSelectText(ctx) {
   if (!hisChoice) {
     return `${person} is still unsure what to eat.`
   }
+
   return `${person} likes ${hisChoice} currently.`
 }
 

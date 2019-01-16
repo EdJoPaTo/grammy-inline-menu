@@ -1,3 +1,5 @@
+const assert = require('assert').strict
+
 const {Composer, Extra, Markup} = require('telegraf')
 
 const ActionCode = require('./action-code')
@@ -19,6 +21,7 @@ class TelegrafInlineMenu {
     if (!Array.isArray(commands)) {
       commands = [commands]
     }
+
     this.commands = this.commands.concat(commands)
     return this
   }
@@ -35,9 +38,7 @@ class TelegrafInlineMenu {
   }
 
   addHandler(obj) {
-    if (obj.action && !(obj.action instanceof ActionCode)) {
-      throw new TypeError('action has to be an ActionCode')
-    }
+    assert(!obj.action || (obj.action instanceof ActionCode), 'action has to be an ActionCode')
     this.handlers.push(obj)
   }
 
@@ -53,6 +54,7 @@ class TelegrafInlineMenu {
       while (actualParts.length > expectedPartCount) {
         actualParts.pop()
       }
+
       const menuAction = actualParts.join(':')
       actualActionCode = new ActionCode(menuAction)
       options.log('generate with actualActionCode', actualActionCode.get(), actionCode.get(), ctx.callbackQuery.data)
@@ -77,6 +79,7 @@ class TelegrafInlineMenu {
     if (ctx.updateType !== 'callback_query') {
       return ctx.reply(text, extra)
     }
+
     await ctx.answerCbQuery()
     return ctx.editMessageText(text, extra)
       .catch(error => {
@@ -97,22 +100,20 @@ class TelegrafInlineMenu {
       }
     }
     obj.setSpecific = (ctx, actionCode) => {
-      if (!obj.setMenuFunc) {
-        throw new Error('This does only work when menu is initialized with bot.use(menu.init())')
-      }
+      assert(obj.setMenuFunc, 'This does only work when menu is initialized with bot.use(menu.init())')
       if (actionCode) {
         actionCode = new ActionCode(actionCode)
       }
+
       return obj.setMenuFunc(ctx, actionCode)
     }
+
     this.replyMenuMiddlewares.push(obj)
     return obj
   }
 
   init(options = {}) {
-    if (options.actionCode && options.actionCode.indexOf(':') >= 0) {
-      throw new Error('ActionCode has to start at the base level (without ":")')
-    }
+    assert(!options.actionCode || options.actionCode.indexOf(':') < 0, 'ActionCode has to start at the base level (without ":")')
     const actionCode = new ActionCode(options.actionCode || 'main')
     delete options.actionCode
     options.hasMainMenu = actionCode.get() === 'main'
@@ -127,22 +128,16 @@ class TelegrafInlineMenu {
   }
 
   middleware(actionCode, options) {
-    if (!actionCode) {
-      throw new Error('use this menu with .init(): but.use(menu.init(args))')
-    }
-    if (!options) {
-      // This Error is not needed as this function is (should) only be called internally.
-      // But as options is only used later the root of the error is not that easy to find without Error.
-      throw new Error('options has to be set')
-    }
+    assert(actionCode, 'use this menu with .init(): but.use(menu.init(args))')
+    // This assert is not needed as this function (should) only be called internally.
+    // But as options is only used later the root of the error is not that easy to find without.
+    assert(options, 'options has to be set')
+
     if (actionCode.isDynamic()) {
-      if (this.commands.length > 0) {
-        throw new Error('commands can not point on dynamic submenus. Happened in menu ' + actionCode.get() + ' with the following commands: ' + this.commands.join(', '))
-      }
+      assert(this.commands.length === 0, 'commands can not point on dynamic submenus. Happened in menu ' + actionCode.get() + ' with the following commands: ' + this.commands.join(', '))
+
       const handlerNotActions = this.handlers.filter(o => !o.action)
-      if (handlerNotActions.length > 0) {
-        throw new Error('a dynamic submenu can only contain buttons. A question for example does not work. Happened in menu ' + actionCode.get())
-      }
+      assert(handlerNotActions.length === 0, 'a dynamic submenu can only contain buttons. A question for example does not work. Happened in menu ' + actionCode.get())
     }
 
     options.log('middleware triggered', actionCode.get(), options, this)
@@ -151,26 +146,27 @@ class TelegrafInlineMenu {
       if (actionOverride) {
         ctx.match = actionCode.exec(actionOverride.get())
       }
+
       options.log('set menu', (actionOverride || actionCode).get(), reason, this)
       return this.setMenuNow(ctx, actionOverride || actionCode, options)
     }
+
     const functions = []
     functions.push(Composer.action(actionCode.get(), ctx => setMenuFunc(ctx, 'menu action')))
     if (this.commands.length > 0) {
       functions.push(Composer.command(this.commands, ctx => setMenuFunc(ctx, 'command')))
     }
+
     for (const replyMenuMiddleware of this.replyMenuMiddlewares) {
-      if (replyMenuMiddleware.setMenuFunc) {
-        // This was already set. This happens when the same menu is used in different positions
-        throw new Error('replyMenuMiddleware does not work on a menu that is reachable on multiple different ways. This could be implemented but there wasnt a need for this yet. Open an issue on GitHub.')
-      }
+      assert(!replyMenuMiddleware.setMenuFunc, 'replyMenuMiddleware does not work on a menu that is reachable on multiple different ways. This could be implemented but there wasnt a need for this yet. Open an issue on GitHub.')
+
       replyMenuMiddleware.setMenuFunc = (ctx, actionOverride) => {
-        if (actionCode.isDynamic() && !actionOverride) {
-          throw new Error('a dynamic menu can only be set when an actionCode is given')
+        assert(!actionCode.isDynamic() || actionOverride, 'a dynamic menu can only be set when an actionCode is given')
+
+        if (actionOverride) {
+          assert(actionCode.test(actionOverride.get()), 'The actionCode has to belong to the menu. ' + actionOverride.get() + ' does not work with the menu ' + actionCode.get())
         }
-        if (actionOverride && !actionCode.test(actionOverride.get())) {
-          throw new Error('The actionCode has to belong to the menu. ' + actionOverride.get() + ' does not work with the menu ' + actionCode.get())
-        }
+
         return setMenuFunc(ctx, 'replyMenuMiddleware', actionOverride)
       }
     }
@@ -202,8 +198,10 @@ class TelegrafInlineMenu {
                 // Without callbackData this can not be determined
                 return next(ctx)
               }
+
               return setMenuFunc(ctx, 'menu is hidden')
             }
+
             middleware = handler.submenu.middleware(childActionCode, subOptions)
           } else {
             // Run the setMenuFunc even when action is hidden.
@@ -218,17 +216,20 @@ class TelegrafInlineMenu {
         } else {
           middleware = handler.middleware
         }
+
         if (handler.setParentMenuAfter || handler.setMenuAfter) {
           const reason = 'after handler ' + (childActionCode || actionCode).get()
           if (handler.setParentMenuAfter) {
             if (!options.setParentMenuFunc) {
               throw new Error('Action will not be able to set parent menu as there is no parent menu: ' + actionCode.get())
             }
+
             middlewareOptions.afterFunc = ctx => options.setParentMenuFunc(ctx, reason)
           } else {
             middlewareOptions.afterFunc = ctx => setMenuFunc(ctx, reason)
           }
         }
+
         return createHandlerMiddleware(middleware, middlewareOptions)
       })
     const handlerFuncsFlattened = [].concat(...handlerFuncs)
@@ -280,9 +281,8 @@ class TelegrafInlineMenu {
 
   // This button does not update the menu after being pressed
   simpleButton(text, action, additionalArgs) {
-    if (!additionalArgs.doFunc) {
-      throw new Error('doFunc is not set. set it or use menu.manual')
-    }
+    assert(additionalArgs.doFunc, 'doFunc is not set. set it or use menu.manual')
+
     this.addHandler({
       action: new ActionCode(action),
       hide: additionalArgs.hide,
@@ -300,12 +300,8 @@ class TelegrafInlineMenu {
 
   question(text, action, additionalArgs) {
     const {questionText, setFunc, hide} = additionalArgs
-    if (!questionText) {
-      throw new Error('questionText is not set. set it')
-    }
-    if (!setFunc) {
-      throw new Error('setFunc is not set. set it')
-    }
+    assert(questionText, 'questionText is not set. set it')
+    assert(setFunc, 'setFunc is not set. set it')
 
     const parseQuestionAnswer = async ctx => {
       const answer = ctx.message.text
@@ -330,10 +326,12 @@ class TelegrafInlineMenu {
               // Looks like message is to old to be deleted
               return
             }
+
             console.error('deleteMessage on question button failed', error)
           })
       ])
     }
+
     return this.simpleButton(text, action, {
       ...additionalArgs,
       doFunc: hitQuestionButton
@@ -342,14 +340,12 @@ class TelegrafInlineMenu {
 
   select(action, options, additionalArgs) {
     const {setFunc, submenu, hide} = additionalArgs
-    if (setFunc && submenu) {
-      throw new Error('setFunc and submenu can not be set at the same time.')
-    }
-    if (submenu && hide) {
+    if (submenu) {
+      assert(!setFunc, 'setFunc and submenu can not be set at the same time.')
       // The submenu is a middleware that can do other things than callback_data
       // question is an example: the reply to the text does not indicate the actionCode.
       // Without the exact actionCode its not possible to determine the selected key(s) which is needed for hide(…, key)
-      throw new Error('hiding a dynamic submenu is not possible')
+      assert(!hide, 'hiding a dynamic submenu is not possible')
     }
 
     const keyFromCtx = ctx => ctx.match[ctx.match.length - 1]
@@ -388,29 +384,27 @@ class TelegrafInlineMenu {
   }
 
   toggle(text, action, additionalArgs) {
-    if (!additionalArgs.setFunc) {
-      throw new Error('setFunc is not set. set it')
-    }
-    if (!additionalArgs.isSetFunc) {
-      throw new Error('isSetFunc is not set. set it')
-    }
+    const {setFunc, isSetFunc, hide} = additionalArgs
+    assert(setFunc, 'setFunc is not set. set it')
+    assert(isSetFunc, 'isSetFunc is not set. set it')
+
     const textFunc = ctx =>
-      prefixEmoji(text, additionalArgs.isSetFunc, {
+      prefixEmoji(text, isSetFunc, {
         ...additionalArgs
       }, ctx)
 
     const actionFunc = async ctx => {
-      const currentState = await additionalArgs.isSetFunc(ctx)
+      const currentState = await isSetFunc(ctx)
       return currentState ? action + '-false' : action + '-true'
     }
 
     const baseHandler = {
-      hide: additionalArgs.hide,
+      hide,
       setMenuAfter: true
     }
 
-    const toggleTrue = ctx => additionalArgs.setFunc(ctx, true)
-    const toggleFalse = ctx => additionalArgs.setFunc(ctx, false)
+    const toggleTrue = ctx => setFunc(ctx, true)
+    const toggleFalse = ctx => setFunc(ctx, false)
 
     this.addHandler({...baseHandler,
       action: new ActionCode(action + '-true'),
@@ -472,6 +466,7 @@ function generateBackButtonsAsNeeded(actionCode, {
   if (actionCode.get() === 'main' || depth === 0) {
     return []
   }
+
   const buttons = []
   if (depth > 1 && backButtonText) {
     buttons.push({
@@ -480,6 +475,7 @@ function generateBackButtonsAsNeeded(actionCode, {
       root: true
     })
   }
+
   if (depth > 0 && hasMainMenu && mainMenuButtonText) {
     buttons.push({
       text: mainMenuButtonText,
@@ -487,6 +483,7 @@ function generateBackButtonsAsNeeded(actionCode, {
       root: true
     })
   }
+
   return buttons
 }
 

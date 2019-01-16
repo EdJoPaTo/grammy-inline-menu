@@ -30,6 +30,7 @@ test.serial('setMenuNow menu is not modified', async t => {
     t.log('maybe wrong error?', error)
     t.fail('should use console.warn')
   }
+
   console.warn = arg1 => {
     t.regex(arg1, /menu is not modified/)
   }

@@ -177,6 +177,7 @@ test('setParentMenuAfter', async t => {
     }]])
     return Promise.resolve()
   }
+
   bot.use(ctx => {
     t.log(ctx.update)
     t.fail('update missed')

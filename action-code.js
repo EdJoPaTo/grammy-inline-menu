@@ -1,12 +1,11 @@
+const assert = require('assert').strict
+
 class ActionCode {
   constructor(actionCode) {
     if (actionCode instanceof RegExp) {
-      if (actionCode.flags !== '') {
-        throw new Error('RegExp flags are not supported')
-      }
-      if (actionCode.source.startsWith('^') || actionCode.source.endsWith('$')) {
-        throw new Error('begin or end anchors are not supported (^, $)')
-      }
+      assert(!actionCode.flags, 'RegExp flags are not supported')
+      assert(!actionCode.source.startsWith('^') && !actionCode.source.endsWith('$'), 'begin or end anchors are not supported (^, $)')
+
       this.code = actionCode
     } else if (typeof actionCode === 'string') {
       this.code = actionCode || 'main'
@@ -31,6 +30,7 @@ class ActionCode {
       const newSource = `^${source}$`
       return new RegExp(newSource, flags)
     }
+
     return new RegExp(`^${this.code}$`)
   }
 
@@ -56,12 +56,15 @@ class ActionCode {
     if (action instanceof ActionCode) {
       action = action.code
     }
+
     if (this.code === 'main') {
       return new ActionCode(action)
     }
+
     if (typeof this.code === 'string' && typeof action === 'string') {
       return new ActionCode(this.code + ':' + action)
     }
+
     const prefix = this.code.source || this.code
     action = action.source || action
     return new ActionCode(new RegExp(prefix + ':' + action))
@@ -93,6 +96,7 @@ class ActionCode {
     } else {
       newCode = 'main'
     }
+
     return new ActionCode(newCode)
   }
 }

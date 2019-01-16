@@ -9,6 +9,7 @@ function createHandlerMiddleware(middleware, {
     if (only && !(await only(ctx))) {
       return next(ctx)
     }
+
     const isHidden = hide && (await hide(ctx))
     if (isHidden) {
       if (hiddenFunc) {
@@ -31,13 +32,16 @@ function isCallbackQueryActionFunc(actionCode, additionalConditionFunc) {
     if (ctx.updateType !== 'callback_query') {
       return false
     }
+
     ctx.match = actionCode.exec(ctx.callbackQuery.data)
     if (!ctx.match) {
       return false
     }
+
     if (additionalConditionFunc && !(await additionalConditionFunc(ctx))) {
       return false
     }
+
     return true
   }
 }

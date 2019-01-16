@@ -64,6 +64,7 @@ test('fails with different ActionCode than menu expects', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, undefined)
     return Promise.resolve()
   }
+
   bot.catch(error => t.regex(error.message, /actionCode.+b:c/))
 
   await bot.handleUpdate({message: {text: '42'}})
