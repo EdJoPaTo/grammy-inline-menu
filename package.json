@@ -42,6 +42,10 @@
     "standard-version": "^4.4.0",
     "xo": "^0.24.0"
   },
+  "files": [
+    "*.js",
+    "!*.test.js"
+  ],
   "xo": {
     "space": true,
     "semicolon": false,

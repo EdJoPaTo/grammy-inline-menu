@@ -1,8 +1,0 @@
-.*
-*.test.js
-coverage
-test
-token.txt
-
-# exclude npm pack packages
-*.tgz
