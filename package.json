@@ -10,12 +10,9 @@
     "ava": "ava",
     "ava:watch": "ava -w",
     "nyc": "nyc",
-    "standard-version": "standard-version",
     "xo": "xo",
     "start": "node example.js",
     "coverage": "nyc --reporter=lcov --reporter=text ava",
-    "prerelease": "npm test",
-    "release": "standard-version",
     "pretest": "xo",
     "test": "nyc ava"
   },
@@ -39,7 +36,6 @@
   "devDependencies": {
     "ava": "^1.1.0",
     "nyc": "^13.1.0",
-    "standard-version": "^4.4.0",
     "xo": "^0.24.0"
   },
   "files": [

@@ -7,11 +7,3 @@ node_js:
 - '8.6'
 notifications:
   email: false
-deploy:
-  provider: npm
-  email: edjopato@gmail.com
-  api_key:
-    secure: hk4DxbDxsFy/Wg3X98W784UkTxGvvRYnBvQUogO4IPKkO1TvP0eQlTcd2RW6TZqw1Mk007RcMR7XSRy3Wz0+77NiGSb/Xb7TSO7+rpULR29avleQyON6ilRIekfQHrp2emjZxlwbd8+OkOagvVGPrYRD4YIKBjjHKnSTfGIi8sOpEOf3ucljy+xoT6YcUp6ggqgTs0h/JXqiXEiyOK65ouRQBEkcINwPw+ojZazAIgnS54x1itFYnEj3f7sYlkFmk73bqhLJcpK6AT5us9AzHAZLsI3i2rCkypUtePR80Z2emmPV2h47QANa1hs1aAUCrfko9ApvBPxtX9xdlSKWZaLNlMZsfTJEMGEubZ2Xk9GCRTmfTEgcRFS397MempeGgYooyHfrkAZ7bJyzh3yfwQVRmmXrazewaogK98Xh4EaJGMDazU0nVy6WftLLpT+wsX6ghuvkB9iD7jzuaRqqzKCVk9Aj3lLhE9aPqRmny+XjEjhJ4UebnkyYkEp8tmjcakbJ0nKtdyQ6kx9rFG7gMRFY9n43vza/kFUa8QaQ3uSpeXQlPPrGyhZnKvmYf/DbuyuDD+CDMpbLyIGQ9ZCuiCOGxkjNgbTgaYFn/G86qa3tEdGo6NgYHdOMn7XLBxfSg1a4Dd3NoRoL/np4yibnDU3+onHkIwf0tP/nhKf7oeY=
-  on:
-    tags: true
-    repo: EdJoPaTo/telegraf-inline-menu
