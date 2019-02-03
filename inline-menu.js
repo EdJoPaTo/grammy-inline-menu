@@ -7,6 +7,7 @@ const {getRowsOfButtons} = require('./align-buttons')
 const {buildKeyboard} = require('./build-keyboard')
 const {prefixEmoji} = require('./prefix')
 const {createHandlerMiddleware, isCallbackQueryActionFunc} = require('./middleware-helper')
+const {paginationOptions} = require('./pagination')
 
 class TelegrafInlineMenu {
   constructor(text) {
@@ -296,6 +297,47 @@ class TelegrafInlineMenu {
   button(text, action, additionalArgs) {
     additionalArgs.setMenuAfter = true
     return this.simpleButton(text, action, additionalArgs)
+  }
+
+  pagination(action, additionalArgs) {
+    const {setPage, getCurrentPage, getTotalPages} = additionalArgs
+
+    const pageFromCtx = async ctx => {
+      const number = Number(ctx.match[ctx.match.length - 1])
+      const totalPages = await getTotalPages(ctx)
+      return Math.max(1, Math.min(totalPages, number)) || 1
+    }
+
+    const handler = {
+      action: new ActionCode(new RegExp(`${action}-(\\d+)`))
+    }
+
+    const hitPageButton = async ctx => setPage(ctx, await pageFromCtx(ctx))
+    handler.middleware = hitPageButton
+
+    if (additionalArgs.hide) {
+      handler.hide = additionalArgs.hide
+    }
+
+    handler.setParentMenuAfter = additionalArgs.setParentMenuAfter
+    handler.setMenuAfter = true
+
+    this.addHandler(handler)
+
+    const createPaginationButtons = async ctx => {
+      // Numbers are within
+      // currentPage in [1..totalPages]
+      const totalPages = await getTotalPages(ctx)
+      const currentPage = await getCurrentPage(ctx)
+      return paginationOptions(totalPages, currentPage)
+    }
+
+    this.buttons.push(async ctx => {
+      const buttonOptions = await createPaginationButtons(ctx)
+      return generateSelectButtons(action, buttonOptions, additionalArgs)
+    })
+
+    return this
   }
 
   question(text, action, additionalArgs) {
