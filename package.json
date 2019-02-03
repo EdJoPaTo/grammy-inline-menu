@@ -12,7 +12,6 @@
     "nyc": "nyc",
     "xo": "xo",
     "start": "node example.js",
-    "coverage": "nyc --reporter=lcov --reporter=text ava",
     "pretest": "xo",
     "test": "nyc ava"
   },
@@ -42,6 +41,12 @@
     "*.js",
     "!*.test.js"
   ],
+  "nyc": {
+    "reporter": [
+      "lcov",
+      "text"
+    ]
+  },
   "xo": {
     "space": true,
     "semicolon": false,
