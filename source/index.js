@@ -300,7 +300,7 @@ class TelegrafInlineMenu {
   }
 
   pagination(action, additionalArgs) {
-    const {setPage, getCurrentPage, getTotalPages} = additionalArgs
+    const {setPage, getCurrentPage, getTotalPages, hide} = additionalArgs
 
     const pageFromCtx = async ctx => {
       const number = Number(ctx.match[ctx.match.length - 1])
@@ -315,8 +315,8 @@ class TelegrafInlineMenu {
     const hitPageButton = async ctx => setPage(ctx, await pageFromCtx(ctx))
     handler.middleware = hitPageButton
 
-    if (additionalArgs.hide) {
-      handler.hide = additionalArgs.hide
+    if (hide) {
+      handler.hide = hide
     }
 
     handler.setParentMenuAfter = additionalArgs.setParentMenuAfter
@@ -325,6 +325,10 @@ class TelegrafInlineMenu {
     this.addHandler(handler)
 
     const createPaginationButtons = async ctx => {
+      if (hide && await hide(ctx)) {
+        return []
+      }
+
       // Numbers are within
       // currentPage in [1..totalPages]
       const totalPages = await getTotalPages(ctx)

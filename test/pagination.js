@@ -131,6 +131,26 @@ test('sets page 1 when input is bad', async t => {
   await bot.handleUpdate({callback_query: {data: 'a:c-5'}})
 })
 
+test('hidden pagination', async t => {
+  const menu = new TelegrafInlineMenu('foo')
+  menu.pagination('c', {
+    hide: () => true,
+    getCurrentPage: () => t.fail('dont call getCurrentPage when hidden'),
+    getTotalPages: () => t.fail('dont call getTotalPages when hidden')
+  })
+
+  const bot = new Telegraf()
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.answerCbQuery = () => Promise.resolve()
+  bot.context.editMessageText = (text, extra) => {
+    t.falsy(extra.reply_markup.inline_keyboard)
+    return Promise.resolve()
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a'}})
+})
+
 test('require additionalArgs', t => {
   const menu = new TelegrafInlineMenu('foo')
   t.throws(() => {
