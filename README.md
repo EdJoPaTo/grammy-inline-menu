@@ -117,6 +117,23 @@ It has the exact same arguments and will not update the menu after the `doFunc()
 
 see `menu.button`
 
+### `menu.pagination(action, {setPage, getCurrentPage, getTotalPages, hide, setParentMenuAfter})`
+
+Adds a pagination row. The user can select the page he wants to see relative to the current page.
+
+Pages are 1 based. The first page is 1.
+The currentPage has to be within [1..totalPages]
+
+#### Arguments
+
+`action` has to be unique in this menu.
+
+`setPage(ctx, page)` is called when the user presses a page button. Adapt your content based on this selected page.
+
+`getCurrentPage(ctx)` has to return the currently selected page.
+
+`getTotalPages(ctx)` has to return all the available pages.
+
 ### `menu.question(buttonText, action, {questionText, setFunc, hide, joinLastRow})`
 
 When the user presses the button, he will be asked a question.
