@@ -1,9 +1,9 @@
-const fs = require('fs')
+import fs = require('fs')
 
-const Telegraf = require('telegraf')
-const session = require('telegraf/session')
+import Telegraf from 'telegraf'
+import session from 'telegraf/session'
 
-const TelegrafInlineMenu = require('./source')
+import TelegrafInlineMenu = require('./source')
 
 const menu = new TelegrafInlineMenu('Main Menu')
 

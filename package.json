@@ -2,17 +2,17 @@
   "name": "telegraf-inline-menu",
   "version": "3.3.0",
   "description": "Inline Menus for Telegraf made simple.",
-  "main": "source",
+  "main": "dist",
   "engines": {
     "node": ">=8.13"
   },
   "scripts": {
     "ava": "ava",
-    "ava:watch": "ava -w",
     "nyc": "nyc",
     "xo": "xo",
-    "start": "node example.js",
-    "pretest": "xo",
+    "build": "del dist && tsc",
+    "prepare": "npm run build",
+    "start": "ts-node example.ts",
     "test": "nyc ava"
   },
   "repository": {
@@ -34,40 +34,43 @@
     "telegraf": "^3.26.0"
   },
   "devDependencies": {
+    "@sindresorhus/tsconfig": "^0.2.0",
     "ava": "^1.1.0",
+    "del-cli": "^1.1.0",
     "nyc": "^13.1.0",
     "telegraf": "^3.27.0",
-    "xo": "^0.24.0"
+    "ts-node": "^8.0.2",
+    "typescript": "^3.3.1"
   },
   "files": [
-    "source/**/*.js",
-    "!*.test.js"
+    "dist",
+    "!*.test.*"
   ],
+  "ava": {
+    "babel": false,
+    "compileEnhancements": false,
+    "extensions": [
+      "js",
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  },
   "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "coverage",
+      "dist",
+      "test",
+      "**/*.test.*"
+    ],
+    "all": true,
     "reporter": [
       "lcov",
       "text"
-    ]
-  },
-  "xo": {
-    "space": true,
-    "semicolon": false,
-    "overrides": [
-      {
-        "files": [
-          "source/build-keyboard*.js",
-          "source/middleware-helper.is-action.test.js",
-          "test/*.js"
-        ],
-        "rules": {
-          "camelcase": [
-            "warn",
-            {
-              "properties": "never"
-            }
-          ]
-        }
-      }
     ]
   }
 }
