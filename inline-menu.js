@@ -412,15 +412,15 @@ class TelegrafInlineMenu {
 
     this.addHandler(handler)
 
-    if (typeof options === 'function') {
-      this.buttons.push(async ctx => {
-        const optionsResult = await options(ctx)
-        return generateSelectButtons(action, optionsResult, additionalArgs)
-      })
-    } else {
-      const result = generateSelectButtons(action, options, additionalArgs)
-      result.forEach(o => this.buttons.push(o))
+    const optionsBefore = options
+    if (typeof options !== 'function') {
+      options = () => optionsBefore
     }
+
+    this.buttons.push(async ctx => {
+      const optionsResult = await options(ctx)
+      return generateSelectButtons(action, optionsResult, additionalArgs)
+    })
 
     return this
   }
