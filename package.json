@@ -4,7 +4,7 @@
   "description": "Inline Menus for Telegraf made simple.",
   "main": "source",
   "engines": {
-    "node": ">=8.6"
+    "node": ">=8.13"
   },
   "scripts": {
     "ava": "ava",
