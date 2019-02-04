@@ -29,12 +29,14 @@
     "url": "https://github.com/EdJoPaTo/telegraf-inline-menu/issues"
   },
   "homepage": "https://github.com/EdJoPaTo/telegraf-inline-menu#readme",
-  "dependencies": {
+  "dependencies": {},
+  "peerDependencies": {
     "telegraf": "^3.26.0"
   },
   "devDependencies": {
     "ava": "^1.1.0",
     "nyc": "^13.1.0",
+    "telegraf": "^3.26.0",
     "xo": "^0.24.0"
   },
   "files": [
