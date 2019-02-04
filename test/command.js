@@ -1,9 +1,9 @@
 import test from 'ava'
 import Telegraf from 'telegraf'
 
-import ActionCode from '../action-code'
+import ActionCode from '../source/action-code'
 
-import TelegrafInlineMenu from '../inline-menu'
+import TelegrafInlineMenu from '../source'
 
 function createTestBot(t, command) {
   const menu = new TelegrafInlineMenu('foo')

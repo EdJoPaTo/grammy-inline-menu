@@ -3,7 +3,7 @@ const fs = require('fs')
 const Telegraf = require('telegraf')
 const session = require('telegraf/session')
 
-const TelegrafInlineMenu = require('./inline-menu')
+const TelegrafInlineMenu = require('./source')
 
 const menu = new TelegrafInlineMenu('Main Menu')
 

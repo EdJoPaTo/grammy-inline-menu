@@ -2,7 +2,7 @@
   "name": "telegraf-inline-menu",
   "version": "3.2.2",
   "description": "Inline Menus for Telegraf made simple.",
-  "main": "inline-menu.js",
+  "main": "source",
   "engines": {
     "node": ">=8.6"
   },
@@ -38,7 +38,7 @@
     "xo": "^0.24.0"
   },
   "files": [
-    "*.js",
+    "source/**/*.js",
     "!*.test.js"
   ],
   "nyc": {
@@ -53,8 +53,8 @@
     "overrides": [
       {
         "files": [
-          "build-keyboard*.js",
-          "middleware-helper.is-action.test.js",
+          "source/build-keyboard*.js",
+          "source/middleware-helper.is-action.test.js",
           "test/*.js"
         ],
         "rules": {

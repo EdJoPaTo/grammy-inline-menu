@@ -1,7 +1,7 @@
 import test from 'ava'
 import Telegraf from 'telegraf'
 
-import TelegrafInlineMenu from '../inline-menu'
+import TelegrafInlineMenu from '../source'
 
 test('middleware options has to be set', t => {
   const menu = new TelegrafInlineMenu('yaay')

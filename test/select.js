@@ -1,8 +1,8 @@
 import test from 'ava'
 import Telegraf from 'telegraf'
 
-import TelegrafInlineMenu from '../inline-menu'
-import {emojiTrue, emojiFalse} from '../prefix'
+import TelegrafInlineMenu from '../source'
+import {emojiTrue, emojiFalse} from '../source/prefix'
 
 test('option array menu', async t => {
   const menu = new TelegrafInlineMenu('foo')

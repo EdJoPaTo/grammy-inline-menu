@@ -1,7 +1,7 @@
 import test from 'ava'
 import Telegraf from 'telegraf'
 
-import TelegrafInlineMenu from '../inline-menu'
+import TelegrafInlineMenu from '../source'
 
 async function macro(t, {
   addButtonFunc,

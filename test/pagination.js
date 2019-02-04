@@ -1,7 +1,7 @@
 import test from 'ava'
 import Telegraf from 'telegraf'
 
-import TelegrafInlineMenu from '../inline-menu'
+import TelegrafInlineMenu from '../source'
 
 test('creates menu', async t => {
   const menu = new TelegrafInlineMenu('foo')
