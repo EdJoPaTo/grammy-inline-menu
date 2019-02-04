@@ -416,13 +416,10 @@ class TelegrafInlineMenu {
 
     this.addHandler(handler)
 
-    const optionsBefore = options
-    if (typeof options !== 'function') {
-      options = () => optionsBefore
-    }
+    const optionsFunc = typeof options === 'function' ? options : () => options
 
     this.buttons.push(async ctx => {
-      const optionsResult = await options(ctx)
+      const optionsResult = await optionsFunc(ctx)
       return generateSelectButtons(action, optionsResult, additionalArgs)
     })
 
