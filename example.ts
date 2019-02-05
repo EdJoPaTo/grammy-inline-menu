@@ -1,4 +1,4 @@
-import fs = require('fs')
+import {readFileSync} from 'fs'
 
 import Telegraf from 'telegraf'
 import session from 'telegraf/session'
@@ -112,7 +112,7 @@ menu.submenu('Third Menu', 'y', new TelegrafInlineMenu('Third Menu'))
 
 menu.setCommand('start')
 
-const token = fs.readFileSync('token.txt', 'utf8').trim()
+const token = readFileSync('token.txt', 'utf8').trim()
 const bot = new Telegraf(token)
 bot.use(session())
 
