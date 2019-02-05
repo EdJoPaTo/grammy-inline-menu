@@ -6,7 +6,7 @@ interface Middleware {
   (...args: any[]): any;
 }
 
-function create(t: ExecutionContext, plan: number, middleware: Middleware, next: Middleware, options?: any): Promise<any> {
+function create(t: ExecutionContext, plan: number, middleware: Middleware, next: Middleware, options?: any): Promise<void> {
   t.plan(plan)
   const result = createHandlerMiddleware(middleware, options)
   return result(666, next)
