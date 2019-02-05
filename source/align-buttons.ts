@@ -1,7 +1,7 @@
-const DEFAULT_BUTTON_COLUMNS = 6
-const DEFAULT_BUTTON_ROWS = 10
+export const DEFAULT_BUTTON_COLUMNS = 6
+export const DEFAULT_BUTTON_ROWS = 10
 
-function getRowsOfButtons(buttons, columns = DEFAULT_BUTTON_COLUMNS, maxRows = DEFAULT_BUTTON_ROWS) {
+export function getRowsOfButtons<T>(buttons: T[], columns = DEFAULT_BUTTON_COLUMNS, maxRows = DEFAULT_BUTTON_ROWS): T[][] {
   const maxButtons = Math.min(maxRows * columns, buttons.length)
   const rows = []
   for (let i = 0; i < maxButtons; i += columns) {

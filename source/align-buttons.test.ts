@@ -2,7 +2,7 @@ import test from 'ava'
 
 import {getRowsOfButtons} from './align-buttons'
 
-function generateCharArray(charA, charZ) {
+function generateCharArray(charA: string, charZ: string): string[] {
   // https://stackoverflow.com/questions/24597634/how-to-generate-an-array-of-alphabet-in-jquery/24597663#24597663
   const a = []
   let i = charA.charCodeAt(0)
