@@ -71,8 +71,8 @@ async function ownPrefixTest(t, currentState, prefix) {
   bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
-      text: prefix + ' toggle me',
-      callback_data: 'a:c-' + !currentState
+      text: `${prefix} toggle me`,
+      callback_data: `a:c-${!currentState}`
     }]])
     return Promise.resolve()
   }

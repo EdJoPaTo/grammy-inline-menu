@@ -135,10 +135,10 @@ class TelegrafInlineMenu {
     assert(options, 'options has to be set')
 
     if (actionCode.isDynamic()) {
-      assert(this.commands.length === 0, 'commands can not point on dynamic submenus. Happened in menu ' + actionCode.get() + ' with the following commands: ' + this.commands.join(', '))
+      assert(this.commands.length === 0, `commands can not point on dynamic submenus. Happened in menu ${actionCode.get()} with the following commands: ${this.commands.join(', ')}`)
 
       const handlerNotActions = this.handlers.filter(o => !o.action)
-      assert(handlerNotActions.length === 0, 'a dynamic submenu can only contain buttons. A question for example does not work. Happened in menu ' + actionCode.get())
+      assert(handlerNotActions.length === 0, `a dynamic submenu can only contain buttons. A question for example does not work. Happened in menu ${actionCode.get()}`)
     }
 
     options.log('middleware triggered', actionCode.get(), options, this)
@@ -165,7 +165,7 @@ class TelegrafInlineMenu {
         assert(!actionCode.isDynamic() || actionOverride, 'a dynamic menu can only be set when an actionCode is given')
 
         if (actionOverride) {
-          assert(actionCode.test(actionOverride.get()), 'The actionCode has to belong to the menu. ' + actionOverride.get() + ' does not work with the menu ' + actionCode.get())
+          assert(actionCode.test(actionOverride.get()), `The actionCode has to belong to the menu. ${actionOverride.get()} does not work with the menu ${actionCode.get()}`)
         }
 
         return setMenuFunc(ctx, 'replyMenuMiddleware', actionOverride)
@@ -219,10 +219,10 @@ class TelegrafInlineMenu {
         }
 
         if (handler.setParentMenuAfter || handler.setMenuAfter) {
-          const reason = 'after handler ' + (childActionCode || actionCode).get()
+          const reason = `after handler ${(childActionCode || actionCode).get()}`
           if (handler.setParentMenuAfter) {
             if (!options.setParentMenuFunc) {
-              throw new Error('Action will not be able to set parent menu as there is no parent menu: ' + actionCode.get())
+              throw new Error(`Action will not be able to set parent menu as there is no parent menu: ${actionCode.get()}`)
             }
 
             middlewareOptions.afterFunc = ctx => options.setParentMenuFunc(ctx, reason)
@@ -438,7 +438,7 @@ class TelegrafInlineMenu {
 
     const actionFunc = async ctx => {
       const currentState = await isSetFunc(ctx)
-      return currentState ? action + '-false' : action + '-true'
+      return currentState ? `${action}-false` : `${action}-true`
     }
 
     const baseHandler = {
@@ -450,12 +450,12 @@ class TelegrafInlineMenu {
     const toggleFalse = ctx => setFunc(ctx, false)
 
     this.addHandler({...baseHandler,
-      action: new ActionCode(action + '-true'),
+      action: new ActionCode(`${action}-true`),
       middleware: toggleTrue
     })
 
     this.addHandler({...baseHandler,
-      action: new ActionCode(action + '-false'),
+      action: new ActionCode(`${action}-false`),
       middleware: toggleFalse
     })
 
@@ -484,7 +484,7 @@ function generateSelectButtons(actionBase, options, {
   const isArray = Array.isArray(options)
   const keys = isArray ? options : Object.keys(options)
   const buttons = keys.map(key => {
-    const action = new ActionCode(actionBase + '-' + key)
+    const action = new ActionCode(`${actionBase}-${key}`)
     const text = isArray ? key : options[key]
     const textFunc = ctx =>
       prefixEmoji(text, prefixFunc || isSetFunc, {
