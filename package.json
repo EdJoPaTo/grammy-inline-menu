@@ -37,10 +37,10 @@
   "devDependencies": {
     "@sindresorhus/tsconfig": "^0.2.0",
     "@typescript-eslint/eslint-plugin": "^1.2.0",
-    "ava": "^1.1.0",
+    "ava": "^1.2.1",
     "del-cli": "^1.1.0",
     "eslint-config-xo-typescript": "^0.7.0",
-    "nyc": "^13.1.0",
+    "nyc": "^13.2.0",
     "telegraf": "^3.27.0",
     "ts-node": "^8.0.2",
     "typescript": "^3.3.1",
