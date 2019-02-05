@@ -12,6 +12,8 @@
     "xo": "xo",
     "build": "del dist && tsc",
     "prepare": "npm run build",
+    "preexample-js": "npm run build",
+    "example-js": "node example.js",
     "start": "ts-node example.ts",
     "pretest": "xo",
     "test": "nyc ava"
@@ -94,6 +96,22 @@
       ]
     },
     "overrides": [
+      {
+        "files": [
+          "example.ts"
+        ],
+        "rules": {
+          "@typescript-eslint/no-var-requires": "warn"
+        }
+      },
+      {
+        "files": [
+          "example.js"
+        ],
+        "rules": {
+          "@typescript-eslint/no-var-requires": "off"
+        }
+      },
       {
         "files": [
           "source/build-keyboard*.*",
