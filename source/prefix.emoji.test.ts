@@ -7,7 +7,7 @@ import {
 } from './prefix'
 
 test('no prefix', async t => {
-  const result = await prefixEmoji('42')
+  const result = await prefixEmoji('42', undefined)
   t.is(result, '42')
 })
 
@@ -37,14 +37,14 @@ test('value text & prefix false hidden', async t => {
 })
 
 test('async prefix', async t => {
-  const prefix = () => Promise.resolve(true)
+  const prefix = (): Promise<boolean> => Promise.resolve(true)
   const result = await prefixEmoji('42', prefix)
   t.is(result, emojiTrue + ' 42')
 })
 
 test('async text and prefix', async t => {
-  const text = () => Promise.resolve('42')
-  const prefix = () => Promise.resolve(true)
+  const text = (): Promise<string> => Promise.resolve('42')
+  const prefix = (): Promise<boolean> => Promise.resolve(true)
   const result = await prefixEmoji(text, prefix)
   t.is(result, emojiTrue + ' 42')
 })
@@ -58,8 +58,7 @@ test('own true prefix', async t => {
 
 test('own false prefix', async t => {
   const result = await prefixEmoji('42', false, {
-    prefixFalse: 'bar',
-    showFalse: true
+    prefixFalse: 'bar'
   })
   t.is(result, 'bar 42')
 })
