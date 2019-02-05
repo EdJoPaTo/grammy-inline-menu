@@ -86,7 +86,10 @@
     "semicolon": false,
     "rules": {
       "ava/no-ignored-test-files": "warn",
-      "@typescript-eslint/indent": ["error", 2]
+      "@typescript-eslint/indent": [
+        "error",
+        2
+      ]
     },
     "overrides": [
       {
