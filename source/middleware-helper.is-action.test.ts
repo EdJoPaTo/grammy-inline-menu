@@ -1,5 +1,6 @@
 import test from 'ava'
 import Telegraf from 'telegraf'
+import {Update} from 'telegram-typings'
 
 import ActionCode from './action-code'
 
@@ -11,7 +12,7 @@ test('correct callbackQuery', async t => {
     const middleware = isCallbackQueryActionFunc(new ActionCode('a:b'))
     t.true(await middleware(ctx))
   })
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a:b'}} as Update)
 })
 
 test('wrong callbackQuery', async t => {
@@ -20,7 +21,7 @@ test('wrong callbackQuery', async t => {
     const middleware = isCallbackQueryActionFunc(new ActionCode('a:b'))
     t.false(await middleware(ctx))
   })
-  await bot.handleUpdate({callback_query: {data: 'a:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
 })
 
 test('no callbackQuery', async t => {
@@ -29,7 +30,7 @@ test('no callbackQuery', async t => {
     const middleware = isCallbackQueryActionFunc(new ActionCode('a:b'))
     t.false(await middleware(ctx))
   })
-  await bot.handleUpdate({message: {}})
+  await bot.handleUpdate({message: {}} as Update)
 })
 
 test('correct callbackQuery with additional true', async t => {
@@ -38,7 +39,7 @@ test('correct callbackQuery with additional true', async t => {
     const middleware = isCallbackQueryActionFunc(new ActionCode('a:b'), () => true)
     t.true(await middleware(ctx))
   })
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a:b'}} as Update)
 })
 
 test('correct callbackQuery but additional is false', async t => {
@@ -47,5 +48,5 @@ test('correct callbackQuery but additional is false', async t => {
     const middleware = isCallbackQueryActionFunc(new ActionCode('a:b'), () => false)
     t.false(await middleware(ctx))
   })
-  await bot.handleUpdate({callback_query: {data: 'a:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a:b'}} as Update)
 })
