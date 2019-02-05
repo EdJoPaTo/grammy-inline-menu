@@ -69,10 +69,10 @@
     "extension": [
       ".ts"
     ],
+    "include": [
+      "source"
+    ],
     "exclude": [
-      "coverage",
-      "dist",
-      "test",
       "**/*.test.*"
     ],
     "all": true,
