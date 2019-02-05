@@ -5,13 +5,13 @@
  * @param  currentPage current page. Has to be between [1..totalPages]
  * @return returns the ButtonOptions
  */
-function paginationOptions(totalPages, currentPage) {
+export function paginationOptions(totalPages: number, currentPage: number): {} {
   // Numbers have to be within
   // currentPage in [1..totalPages]
   const totalPagesFixed = Math.ceil(totalPages)
   const currentPageFixed = Math.max(1, Math.min(totalPagesFixed, Math.floor(currentPage)))
 
-  const buttons = {}
+  const buttons: any = {}
   if (!isFinite(totalPagesFixed) || !isFinite(currentPage) || totalPagesFixed < 2) {
     return buttons
   }
@@ -24,22 +24,18 @@ function paginationOptions(totalPages, currentPage) {
       buttons[1] = '⏪ 1'
     }
 
-    buttons[before] = '◀️ ' + before
+    buttons[before] = `◀️ ${before}`
   }
 
   buttons[currentPageFixed] = String(currentPageFixed)
 
   if (currentPageFixed < totalPagesFixed) {
-    buttons[after] = '▶️ ' + after
+    buttons[after] = `▶️ ${after}`
 
     if (after < totalPagesFixed) {
-      buttons[totalPagesFixed] = '⏩ ' + totalPagesFixed
+      buttons[totalPagesFixed] = `⏩ ${totalPagesFixed}`
     }
   }
 
   return buttons
-}
-
-module.exports = {
-  paginationOptions
 }
