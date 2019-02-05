@@ -13,6 +13,7 @@
     "build": "del dist && tsc",
     "prepare": "npm run build",
     "start": "ts-node example.ts",
+    "pretest": "xo",
     "test": "nyc ava"
   },
   "repository": {
@@ -35,12 +36,15 @@
   },
   "devDependencies": {
     "@sindresorhus/tsconfig": "^0.2.0",
+    "@typescript-eslint/eslint-plugin": "^1.2.0",
     "ava": "^1.1.0",
     "del-cli": "^1.1.0",
+    "eslint-config-xo-typescript": "^0.7.0",
     "nyc": "^13.1.0",
     "telegraf": "^3.27.0",
     "ts-node": "^8.0.2",
-    "typescript": "^3.3.1"
+    "typescript": "^3.3.1",
+    "xo": "^0.24.0"
   },
   "files": [
     "dist",
@@ -71,6 +75,30 @@
     "reporter": [
       "lcov",
       "text"
+    ]
+  },
+  "xo": {
+    "extends": "xo-typescript",
+    "extensions": [
+      "ts"
+    ],
+    "space": true,
+    "semicolon": false,
+    "rules": {
+      "ava/no-ignored-test-files": "warn",
+      "@typescript-eslint/indent": ["error", 2]
+    },
+    "overrides": [
+      {
+        "files": [
+          "source/build-keyboard*.*",
+          "source/middleware-helper.is-action.test.*",
+          "test/*.*"
+        ],
+        "rules": {
+          "@typescript-eslint/camelcase": "off"
+        }
+      }
     ]
   }
 }
