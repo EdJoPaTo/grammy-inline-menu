@@ -1,6 +1,6 @@
 import test from 'ava'
 
-const ActionCode = require('./action-code')
+import ActionCode from './action-code'
 
 test('constructor', t => {
   t.is(new ActionCode('main').get(), 'main')
@@ -8,20 +8,6 @@ test('constructor', t => {
   t.is(new ActionCode('a').get(), 'a')
   t.is(new ActionCode('a:b').get(), 'a:b')
 })
-
-test('constructor wrongs', t => {
-  t.throws(() => new ActionCode())
-  t.throws(() => new ActionCode({}))
-  t.throws(() => new ActionCode(() => {}))
-})
-
-test('constructorThrows empty', constructorThrows, undefined)
-test('constructorThrows object', constructorThrows, {})
-test('constructorThrows function', constructorThrows, () => {})
-
-function constructorThrows(t, input) {
-  t.throws(() => new ActionCode(input), /must be/)
-}
 
 test('parent', t => {
   t.is(new ActionCode('a:b').parent().get(), 'a')

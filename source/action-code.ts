@@ -1,7 +1,9 @@
 const assert = require('assert').strict
 
 class ActionCode {
-  constructor(actionCode) {
+  readonly code: string | RegExp
+
+  constructor(actionCode: string | RegExp) {
     if (actionCode instanceof RegExp) {
       assert(!actionCode.flags, 'RegExp flags are not supported')
       assert(!actionCode.source.startsWith('^') && !actionCode.source.endsWith('$'), 'begin or end anchors are not supported (^, $)')
@@ -14,7 +16,7 @@ class ActionCode {
     }
   }
 
-  get() {
+  get(): string | RegExp {
     if (this.code instanceof RegExp) {
       const {source, flags} = this.code
       const newSource = `^${source}$`
@@ -24,7 +26,7 @@ class ActionCode {
     return this.code
   }
 
-  getRegex() {
+  getRegex(): RegExp {
     if (this.code instanceof RegExp) {
       const {source, flags} = this.code
       const newSource = `^${source}$`
@@ -34,46 +36,43 @@ class ActionCode {
     return new RegExp(`^${this.code}$`)
   }
 
-  exec(value) {
+  exec(value: string): RegExpExecArray | null {
     return this.getRegex().exec(value)
   }
 
-  test(value) {
+  test(value: string): boolean {
     return this.getRegex().test(value)
   }
 
-  testIsBelow(value) {
+  testIsBelow(value: string): boolean {
     const source = this.code instanceof RegExp ? this.code.source : this.code
     const regex = new RegExp(`^${source}`)
     return regex.test(value)
   }
 
-  isDynamic() {
+  isDynamic(): boolean {
     return this.code instanceof RegExp
   }
 
-  concat(action) {
-    if (action instanceof ActionCode) {
-      action = action.code
-    }
+  concat(action: string | RegExp | ActionCode): ActionCode {
+    const actionExtract = action instanceof ActionCode ? action.code : action
 
     if (this.code === 'main') {
-      return new ActionCode(action)
+      return new ActionCode(actionExtract)
     }
 
-    if (typeof this.code === 'string' && typeof action === 'string') {
-      return new ActionCode(this.code + ':' + action)
+    if (typeof this.code === 'string' && typeof actionExtract === 'string') {
+      return new ActionCode(this.code + ':' + actionExtract)
     }
 
-    const prefix = this.code.source || this.code
-    action = action.source || action
-    return new ActionCode(new RegExp(prefix + ':' + action))
+    const prefix = this.code instanceof RegExp ? this.code.source : this.code
+    const actionString = actionExtract instanceof RegExp ? actionExtract.source : actionExtract
+    return new ActionCode(new RegExp(prefix + ':' + actionString))
   }
 
-  parent() {
-    const isRegex = this.code instanceof RegExp
+  parent(): ActionCode {
     let parts = []
-    if (isRegex) {
+    if (this.code instanceof RegExp) {
       const {source} = this.code
       const regex = /(?:(?:\[\^[^\]]*:[^\]]*\])|(?:[^:]))+/g
       let match
@@ -92,7 +91,7 @@ class ActionCode {
     const parent = parts.join(':')
     let newCode
     if (parent) {
-      newCode = isRegex ? new RegExp(parent) : parent
+      newCode = this.code instanceof RegExp ? new RegExp(parent) : parent
     } else {
       newCode = 'main'
     }
@@ -100,5 +99,7 @@ class ActionCode {
     return new ActionCode(newCode)
   }
 }
+
+export default ActionCode
 
 module.exports = ActionCode
