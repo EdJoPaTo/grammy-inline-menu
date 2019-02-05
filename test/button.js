@@ -12,7 +12,7 @@ test('manual menu correct', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.manual('hit me', 'c')
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -30,7 +30,7 @@ test('simpleButton works', async t => {
     doFunc: t.pass
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   // This could also be argumented to be a pass as the button was pressed.
@@ -48,7 +48,7 @@ test('button updates menu', async t => {
     doFunc: t.pass
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -71,7 +71,7 @@ test('hidden button does not run doFunc', async t => {
     }
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = t.fail
@@ -88,7 +88,7 @@ test('hidden button updates the menu', async t => {
     hide: () => true
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()

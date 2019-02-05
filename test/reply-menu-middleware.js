@@ -6,7 +6,7 @@ import TelegrafInlineMenu from '../source'
 test('middleware works', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('42')
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
 
   bot.on('message', menu.replyMenuMiddleware())
 
@@ -36,7 +36,7 @@ test('works with specific ActionCode', async t => {
   })
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.on('message', ctx => replyMenuMiddleware.setSpecific(ctx, 'a:b-z'))
   bot.use(menu.init({actionCode: 'a'}))
   bot.context.reply = (text, extra) => {
@@ -56,7 +56,7 @@ test('fails with different ActionCode than menu expects', async t => {
   })
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.on('message', ctx => replyMenuMiddleware.setSpecific(ctx, 'b:c'))
   bot.use(menu.init({actionCode: 'a'}))
   bot.context.reply = (text, extra) => {
@@ -78,7 +78,7 @@ test('fails in dynamic menu without specific ActionCode', async t => {
   })
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.on('message', replyMenuMiddleware)
   bot.use(menu.init({actionCode: 'a'}))
   bot.catch(error => {
@@ -109,7 +109,7 @@ test('does not work with menu on multiple positions', t => {
   menu.submenu('x', 'x', submenu)
   menu.submenu('y', 'y', submenu)
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.on('message', submenu.replyMenuMiddleware())
 
   t.throws(() => {

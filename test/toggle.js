@@ -11,7 +11,7 @@ test('menu correct', async t => {
     isSetFunc: () => true
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -33,7 +33,7 @@ test('toggles to true', async t => {
     isSetFunc: () => false
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = () => Promise.resolve()
   bot.use(menu.init({actionCode: 'a'}))
@@ -48,7 +48,7 @@ test('toggles to false', async t => {
     isSetFunc: () => true
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = () => Promise.resolve()
   bot.use(menu.init({actionCode: 'a'}))
@@ -65,7 +65,7 @@ async function ownPrefixTest(t, currentState, prefix) {
     prefixFalse: '666'
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()

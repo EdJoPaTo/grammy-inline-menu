@@ -17,7 +17,7 @@ test('root menu correct', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.submenu('Submenu', 'c', new TelegrafInlineMenu('bar'))
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -35,7 +35,7 @@ test('hidden submenu goes to the parent menu', async t => {
     hide: () => true
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -56,7 +56,7 @@ test('hidden submenu goes to the parent menu from the sub sub menu call', async 
   })
     .submenu('Subsubmenu', 'd', new TelegrafInlineMenu('42'))
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -83,7 +83,7 @@ test('hidden submenu before does not cancel not hidden button', async t => {
       t.pass()
     }
   })
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.editMessageText = () => Promise.resolve(t.fail('simpleButton does not update the menu. The hidden submenu had'))
@@ -95,7 +95,7 @@ test('submenu without back button', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.submenu('Submenu', 'c', new TelegrafInlineMenu('bar'))
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -111,7 +111,7 @@ test('submenu with back button', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.submenu('Submenu', 'c', new TelegrafInlineMenu('bar'))
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({backButtonText: baseInitOptions.backButtonText, actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -130,7 +130,7 @@ test('submenu with main button', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.submenu('Submenu', 'c', new TelegrafInlineMenu('bar'))
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({...baseInitOptions}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -149,7 +149,7 @@ test('default init is main', async t => {
   t.plan(1)
   const menu = new TelegrafInlineMenu('foo')
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({...baseInitOptions}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -166,7 +166,7 @@ test('setParentMenuAfter', async t => {
       doFunc: t.pass
     })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
   bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
@@ -196,7 +196,7 @@ test('setParentMenuAfter when there is no parent fails', t => {
       doFunc: t.fail
     })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   t.throws(() => {
     bot.use(menu.init())
   }, /set parent menu.+main/)

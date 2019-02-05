@@ -10,7 +10,7 @@ function createTestBot(t, command) {
     .manual('bar', 'c')
   menu.setCommand(command)
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.context.reply = (text, extra) => {
     t.is(text, 'foo')
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
@@ -58,7 +58,7 @@ test('command can not be used on dynamic menu', t => {
     .manual('bar', 'c')
   menu.setCommand('test')
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
 
   // Never use menu.middleware, use menu.init
   // This is just done for the test as init doesnt allow this in the first place but the actual way is more complex

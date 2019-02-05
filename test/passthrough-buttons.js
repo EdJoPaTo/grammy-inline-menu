@@ -10,7 +10,7 @@ async function macro(t, {
   const menu = new TelegrafInlineMenu('yaay')
   await addButtonFunc(menu)
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()

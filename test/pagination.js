@@ -10,7 +10,7 @@ test('creates menu', async t => {
     getTotalPages: () => 2
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -37,7 +37,7 @@ test('no pagination with 1 page', async t => {
     getTotalPages: () => 1
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -56,7 +56,7 @@ test('creates menu with async methods', async t => {
     getTotalPages: () => Promise.resolve(2)
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -85,7 +85,7 @@ test('sets page', async t => {
     getTotalPages: () => 2
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -103,7 +103,7 @@ test('sets page not outside of range', async t => {
     getTotalPages: () => 2
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -122,7 +122,7 @@ test('sets page 1 when input is bad', async t => {
     getTotalPages: () => 'bar'
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -139,7 +139,7 @@ test('hidden pagination', async t => {
     getTotalPages: () => t.fail('dont call getTotalPages when hidden')
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()

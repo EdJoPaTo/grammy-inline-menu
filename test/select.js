@@ -10,7 +10,7 @@ test('option array menu', async t => {
     setFunc: t.fail
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -36,7 +36,7 @@ test('option object menu', async t => {
     setFunc: t.fail
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -62,7 +62,7 @@ test('option async array menu', async t => {
     setFunc: t.fail
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -89,7 +89,7 @@ test('selects', async t => {
     setFunc: (ctx, selected) => t.is(selected, 'b')
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -105,7 +105,7 @@ test('selected key has emoji prefix', async t => {
     isSetFunc: (ctx, key) => Promise.resolve(key === 'b')
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -133,7 +133,7 @@ test('multiselect has prefixes', async t => {
     isSetFunc: (ctx, key) => Promise.resolve(key === 'b')
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -160,7 +160,7 @@ test('custom prefix', async t => {
     prefixFunc: () => Promise.resolve('bar')
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -188,7 +188,7 @@ test('hides key in keyboard', async t => {
     hide: (ctx, key) => key === 'a'
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -213,7 +213,7 @@ test('hidden key can not be set', async t => {
     hide: (ctx, key) => key === 'a'
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -234,7 +234,7 @@ test('hide always has two args', async t => {
     }
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()

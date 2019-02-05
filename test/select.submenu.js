@@ -19,7 +19,7 @@ function generateTestBasics() {
     submenu
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({
     backButtonText: 'back',
     actionCode: 'a'
@@ -104,7 +104,7 @@ test('something that is not an action in dynamic menu throws error', t => {
   menu.select('a', ['a', 'b'], {
     submenu
   })
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   t.throws(() => {
     bot.use(menu.init())
   }, /dynamic.+question.+menu.+a/)

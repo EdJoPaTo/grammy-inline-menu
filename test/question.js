@@ -15,7 +15,7 @@ test('menu correct', async t => {
     setFunc: t.fail
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -35,7 +35,7 @@ test('sends question text', async t => {
     setFunc: t.fail
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve(t.pass())
@@ -59,7 +59,7 @@ test('setFunc on answer', async t => {
     setFunc: (ctx, answer) => t.is(answer, 'more money')
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = t.fail
@@ -90,7 +90,7 @@ test('dont setFunc on wrong input text', async t => {
     setFunc: (ctx, answer) => t.is(answer, 'more money')
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = t.fail
@@ -117,7 +117,7 @@ test('dont setFunc on hide', async t => {
     setFunc: (ctx, answer) => t.is(answer, 'more money')
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = t.fail
@@ -144,7 +144,7 @@ test('accepts other stuff than text', async t => {
     setFunc: (ctx, answer) => t.is(answer, undefined)
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = t.fail
@@ -180,7 +180,7 @@ test('multiple question setFuncs do not interfere', async t => {
     setFunc: (ctx, answer) => t.is(answer, 'less meat')
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = t.fail
@@ -215,7 +215,7 @@ test('question button works on old menu', async t => {
     setFunc: t.fail
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -238,7 +238,7 @@ test.serial('question button deleteMessage fail does not kill question', async t
     setFunc: t.fail
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()

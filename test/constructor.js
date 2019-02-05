@@ -6,7 +6,7 @@ import TelegrafInlineMenu from '../source'
 test('simple text without buttons', async t => {
   const menu = new TelegrafInlineMenu('yaay')
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -22,7 +22,7 @@ test('simple text without buttons', async t => {
 test('main menu', async t => {
   const menu = new TelegrafInlineMenu('yaay')
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init())
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -38,7 +38,7 @@ test('main menu', async t => {
 test('markdown text', async t => {
   const menu = new TelegrafInlineMenu('yaay')
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -54,7 +54,7 @@ test('markdown text', async t => {
 test('async text func', async t => {
   const menu = new TelegrafInlineMenu(() => Promise.resolve('yaay'))
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -69,7 +69,7 @@ test('async text func', async t => {
 test('menu.middleware fails with .init() hint', t => {
   const menu = new TelegrafInlineMenu('yaay')
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   // Normally user would use bot.use.
   // But telegraf will later use .middleware() on it. in order to check this faster, trigger this directly
   t.throws(() => bot.use(menu.middleware()), /but\.use\(menu\.init/)
@@ -77,7 +77,7 @@ test('menu.middleware fails with .init() hint', t => {
 
 test('menu.init requires action code to be at the base level', t => {
   const menu = new TelegrafInlineMenu('yaay')
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
 
   t.throws(() => {
     bot.use(menu.init({actionCode: 'a:b'}))

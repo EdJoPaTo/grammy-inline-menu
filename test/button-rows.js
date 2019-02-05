@@ -17,7 +17,7 @@ test('just create without flags', async t => {
     .manual('hit me', 'c')
     .manual('hit me hard', 'd')
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -34,7 +34,7 @@ test('joinLastRow', async t => {
     .manual('hit me', 'c')
     .manual('hit me hard', 'd', {joinLastRow: true})
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()
@@ -51,7 +51,7 @@ test('joinLastRow as first button', async t => {
     .manual('hit me', 'c', {joinLastRow: true})
     .manual('hit me hard', 'd', {joinLastRow: true})
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve()

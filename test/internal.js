@@ -20,7 +20,7 @@ test.serial('setMenuNow menu is not modified', async t => {
     setFunc: t.fail
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   const normalErrorFunc = console.error
@@ -54,7 +54,7 @@ test.serial('setMenuNow other error', async t => {
     setFunc: t.fail
   })
 
-  const bot = new Telegraf()
+  const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   const normalErrorFunc = console.error
