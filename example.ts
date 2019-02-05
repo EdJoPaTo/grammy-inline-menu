@@ -42,7 +42,7 @@ const someMenu = new TelegrafInlineMenu('People like food. What do they like?')
 const people = {Mark: {}, Paul: {}}
 const food = ['bread', 'cake', 'bananas']
 
-function personButtonOptions() {
+function personButtonOptions(): any {
   const result = {}
   Object.keys(people)
     .forEach(person => {
@@ -56,7 +56,7 @@ function personButtonOptions() {
   return result
 }
 
-function foodSelectText(ctx) {
+function foodSelectText(ctx): string {
   const person = ctx.match[1]
   const hisChoice = people[person].food
   if (!hisChoice) {
