@@ -1,14 +1,14 @@
 import test from 'ava'
 import ActionCode from './action-code'
 
-const {buildKeyboard} = require('./build-keyboard')
+import {ButtonInfo, buildKeyboard} from './build-keyboard'
 
 test('one row one key', async t => {
   const buttons = [[{
     text: '42',
     action: 'a'
   }]]
-  const result = await buildKeyboard(buttons, new ActionCode(''))
+  const result = await buildKeyboard(buttons, new ActionCode(''), {})
   t.deepEqual(result.inline_keyboard, [
     [
       {
@@ -35,7 +35,7 @@ test('four buttons in two rows', async t => {
       action: 'e'
     }]
   ]
-  const result = await buildKeyboard(buttons, new ActionCode(''))
+  const result = await buildKeyboard(buttons, new ActionCode(''), {})
   t.deepEqual(result.inline_keyboard, [
     [
       {
@@ -58,13 +58,14 @@ test('four buttons in two rows', async t => {
 })
 
 test('row is func that creates one row with one button', async t => {
+  const keyboardCreator = (): ButtonInfo[][] => ([[{
+    text: '42',
+    action: 'a'
+  }]])
   const buttons = [
-    () => ([[{
-      text: '42',
-      action: 'a'
-    }]])
+    keyboardCreator
   ]
-  const result = await buildKeyboard(buttons, new ActionCode(''))
+  const result = await buildKeyboard(buttons, new ActionCode(''), {})
   t.deepEqual(result.inline_keyboard, [
     [
       {

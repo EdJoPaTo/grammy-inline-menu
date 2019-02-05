@@ -12,7 +12,7 @@ test('simple text without buttons', async t => {
   bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.is(text, 'yaay')
-    t.deepEqual(extra.reply_markup, {})
+    t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve()
   }
 
@@ -28,7 +28,7 @@ test('main menu', async t => {
   bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
     t.is(text, 'yaay')
-    t.deepEqual(extra.reply_markup, {})
+    t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve()
   }
 

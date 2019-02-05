@@ -42,7 +42,7 @@ test('no pagination with 1 page', async t => {
 
   bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
-    t.falsy(extra.reply_markup.inline_keyboard)
+    t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve()
   }
 
@@ -144,7 +144,7 @@ test('hidden pagination', async t => {
 
   bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
-    t.falsy(extra.reply_markup.inline_keyboard)
+    t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve()
   }
 

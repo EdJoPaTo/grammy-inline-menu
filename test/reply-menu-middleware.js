@@ -20,7 +20,7 @@ test('middleware works', async t => {
 
   bot.context.reply = (text, extra) => {
     t.is(text, '42')
-    t.deepEqual(extra.reply_markup.inline_keyboard, undefined)
+    t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve()
   }
 
@@ -41,7 +41,7 @@ test('works with specific ActionCode', async t => {
   bot.use(menu.init({actionCode: 'a'}))
   bot.context.reply = (text, extra) => {
     t.is(text, 'bar z')
-    t.deepEqual(extra.reply_markup.inline_keyboard, undefined)
+    t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve()
   }
 
@@ -61,7 +61,7 @@ test('fails with different ActionCode than menu expects', async t => {
   bot.use(menu.init({actionCode: 'a'}))
   bot.context.reply = (text, extra) => {
     t.is(text, 'bar z')
-    t.deepEqual(extra.reply_markup.inline_keyboard, undefined)
+    t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve()
   }
 

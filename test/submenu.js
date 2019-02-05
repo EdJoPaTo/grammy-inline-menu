@@ -100,7 +100,7 @@ test('submenu without back button', async t => {
 
   bot.context.answerCbQuery = () => Promise.resolve()
   bot.context.editMessageText = (text, extra) => {
-    t.deepEqual(extra.reply_markup.inline_keyboard, undefined)
+    t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve()
   }
 
