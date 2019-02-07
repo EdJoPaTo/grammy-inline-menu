@@ -34,6 +34,14 @@ class ActionCode {
     return new RegExp(`^${this.code}$`)
   }
 
+  getString(): string {
+    if (this.code instanceof RegExp) {
+      throw new TypeError('This is dynamic ActionCode!')
+    }
+
+    return this.code
+  }
+
   exec(value: string): RegExpExecArray | null {
     return this.getRegex().exec(value)
   }

@@ -80,6 +80,14 @@ test('getRegex from string', t => {
   t.deepEqual(new ActionCode('b').getRegex(), /^b$/)
 })
 
+test('getString from regex fails', t => {
+  t.throws(() => new ActionCode(/b/).getString())
+})
+
+test('getString from string', t => {
+  t.deepEqual(new ActionCode('b').getString(), 'b')
+})
+
 test('regex exec', t => {
   t.deepEqual(new ActionCode('b').exec('c'), null)
   t.truthy(new ActionCode('b').exec('b'))

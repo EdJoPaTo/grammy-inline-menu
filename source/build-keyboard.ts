@@ -61,8 +61,8 @@ export async function buildKeyboardButton(buttonInfo: ButtonInfo, actionCodePref
     if (root) {
       button.callback_data = thisActionResult
     } else {
-      // TODO: actionCodePrefix should only be a string or get should only return a string
-      button.callback_data = actionCodePrefix.concat(thisActionResult).get() as string
+      // TODO: actionCodePrefix should only be a string
+      button.callback_data = actionCodePrefix.concat(thisActionResult).getString()
     }
   } else if (url) {
     button.url = typeof url === 'function' ? await url(ctx) : url
