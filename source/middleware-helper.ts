@@ -8,7 +8,7 @@ export interface HandlerOptions {
   hide?: ContextFunc<boolean>;
   hiddenFunc?: ContextNextFunc<void>;
   runAfterFuncEvenWhenHidden?: boolean;
-  afterFunc?: ContextFunc<boolean>;
+  afterFunc?: ContextFunc<void>;
 }
 
 export function createHandlerMiddleware(middleware: ContextNextFunc<void>, options: HandlerOptions = {}): (ctx: any, next: any) => Promise<void> {
