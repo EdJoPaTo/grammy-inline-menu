@@ -162,31 +162,27 @@ class TelegrafInlineMenu {
 
     const handlerFuncs = this.handlers
       .map(handler => {
-        const middlewareOptions = {}
-        middlewareOptions.hide = handler.hide
-        middlewareOptions.only = handler.only
+        assert(handler.action && handler.submenu, 'This only takes submenus. Everything else has to go to the new responders.')
 
         const childActionCode = handler.action && actionCode.concat(handler.action)
-
-        let middleware
-        if (handler.action) {
-          if (handler.submenu) {
-            middlewareOptions.only = ctx => {
-              return !ctx.callbackQuery || childActionCode.testIsBelow(ctx.callbackQuery.data)
-            }
-
-            middlewareOptions.hiddenFunc = (ctx, next) => {
-              if (!ctx.callbackQuery) {
-                // Only set menu when a hidden button below was used
-                // Without callbackData this can not be determined
-                return next(ctx)
-              }
-
-              return setMenuFunc(ctx, 'menu is hidden')
-            }
-
-            middleware = handler.submenu.middleware(childActionCode, subOptions)
+        const hiddenFunc = (ctx, next) => {
+          if (!ctx.callbackQuery) {
+            // Only set menu when a hidden button below was used
+            // Without callbackData this can not be determined
+            return next(ctx)
           }
+
+          console.trace('which test goes through here?')
+          throw new Error('bye test')
+          // DEBUG me
+          // return setMenuFunc(ctx, 'menu is hidden')
+        }
+
+        const middleware = handler.submenu.middleware(childActionCode, subOptions)
+        const middlewareOptions = {
+          only: ctx => !ctx.callbackQuery || childActionCode.testIsBelow(ctx.callbackQuery.data),
+          hide: handler.hide,
+          hiddenFunc
         }
 
         return createHandlerMiddleware(middleware, middlewareOptions)
