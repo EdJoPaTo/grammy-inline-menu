@@ -91,6 +91,37 @@ test('hidden submenu before does not cancel not hidden button', async t => {
   await bot.handleUpdate({callback_query: {data: 'a:test'}})
 })
 
+test('hidden submenu question is lost', async t => {
+  // It is not possible to know the parent menu of that hidden submenu as the question has no callbackQuery that would indicate that
+  t.plan(1)
+  const menu = new TelegrafInlineMenu('foo')
+  menu.submenu('foo', 'foo', new TelegrafInlineMenu('foo'), {
+    hide: () => true
+  })
+    .question('Question', 'q', {
+      questionText: 'bar',
+      setFunc: t.fail
+    })
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.answerCbQuery = t.fail
+  bot.context.editMessageText = t.fail
+  bot.context.reply = t.fail
+
+  bot.use(() => {
+    t.pass()
+  })
+
+  await bot.handleUpdate({message: {
+    reply_to_message: {
+      text: 'bar'
+    },
+    text: 'fancy'
+  }})
+})
+
 test('submenu without back button', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.submenu('Submenu', 'c', new TelegrafInlineMenu('bar'))
