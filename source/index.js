@@ -4,13 +4,13 @@ const {Composer, Extra, Markup} = require('telegraf')
 
 const ActionCode = require('./action-code')
 const {normalizeOptions} = require('./menu-options')
-const {getRowsOfButtons} = require('./align-buttons')
 const {buildKeyboard} = require('./build-keyboard')
 const {prefixEmoji} = require('./prefix')
 const {createHandlerMiddleware, isCallbackQueryActionFunc} = require('./middleware-helper')
 const {paginationOptions} = require('./pagination')
 
 const {generateBackButtons} = require('./buttons/back-and-main')
+const {generateSelectButtons} = require('./buttons/select')
 
 class TelegrafInlineMenu {
   constructor(text) {
@@ -336,7 +336,11 @@ class TelegrafInlineMenu {
 
     this.buttons.push(async ctx => {
       const buttonOptions = await createPaginationButtons(ctx)
-      return generateSelectButtons(action, buttonOptions, additionalArgs)
+      const optionsArr = Object.keys(buttonOptions)
+      const textFunc = (_ctx, key) => buttonOptions[key]
+      return generateSelectButtons(action, optionsArr, {
+        textFunc
+      })
     })
 
     return this
@@ -416,9 +420,20 @@ class TelegrafInlineMenu {
 
     const optionsFunc = typeof options === 'function' ? options : () => options
 
+    const {textFunc, prefixFunc, isSetFunc, multiselect} = additionalArgs
+
     this.buttons.push(async ctx => {
       const optionsResult = await optionsFunc(ctx)
-      return generateSelectButtons(action, optionsResult, additionalArgs)
+      const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
+      const fallbackKeyTextFunc = Array.isArray(optionsResult) ? ((_ctx, key) => key) : ((_ctx, key) => optionsResult[key])
+      const textOnlyFunc = textFunc || fallbackKeyTextFunc
+      const keyTextFunc = (ctx, key, i, arr) => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
+        hideFalseEmoji: !multiselect
+      }, ctx, key, i, arr)
+      return generateSelectButtons(action, keys, {
+        textFunc: keyTextFunc,
+        ...additionalArgs
+      })
     })
 
     return this
@@ -469,33 +484,6 @@ class TelegrafInlineMenu {
     })
     return submenu
   }
-}
-
-function generateSelectButtons(actionBase, options, {
-  columns,
-  hide,
-  isSetFunc,
-  maxRows,
-  multiselect,
-  prefixFunc
-}) {
-  const isArray = Array.isArray(options)
-  const keys = isArray ? options : Object.keys(options)
-  const buttons = keys.map(key => {
-    const action = new ActionCode(`${actionBase}-${key}`)
-    const text = isArray ? key : options[key]
-    const textFunc = ctx =>
-      prefixEmoji(text, prefixFunc || isSetFunc, {
-        hideFalseEmoji: !multiselect
-      }, ctx, key)
-    const hideKey = ctx => hide && hide(ctx, key)
-    return {
-      text: textFunc,
-      action,
-      hide: hideKey
-    }
-  })
-  return getRowsOfButtons(buttons, columns, maxRows)
 }
 
 module.exports = TelegrafInlineMenu
