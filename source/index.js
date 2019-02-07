@@ -172,10 +172,7 @@ class TelegrafInlineMenu {
             return next(ctx)
           }
 
-          console.trace('which test goes through here?')
-          throw new Error('bye test')
-          // DEBUG me
-          // return setMenuFunc(ctx, 'menu is hidden')
+          return setMenuFunc(ctx, 'menu is hidden')
         }
 
         const middleware = handler.submenu.middleware(childActionCode, subOptions)
