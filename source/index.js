@@ -10,6 +10,8 @@ const {prefixEmoji} = require('./prefix')
 const {createHandlerMiddleware, isCallbackQueryActionFunc} = require('./middleware-helper')
 const {paginationOptions} = require('./pagination')
 
+const {generateBackButtons} = require('./buttons/back-and-main')
+
 class TelegrafInlineMenu {
   constructor(text) {
     this.menuText = text
@@ -65,7 +67,7 @@ class TelegrafInlineMenu {
     }
 
     const buttons = [...this.buttons]
-    const lastButtonRow = generateBackButtonsAsNeeded(actualActionCode, options)
+    const lastButtonRow = generateBackButtons(actualActionCode, options)
     if (lastButtonRow.length > 0) {
       buttons.push(lastButtonRow)
     }
@@ -494,36 +496,6 @@ function generateSelectButtons(actionBase, options, {
     }
   })
   return getRowsOfButtons(buttons, columns, maxRows)
-}
-
-function generateBackButtonsAsNeeded(actionCode, {
-  depth,
-  hasMainMenu,
-  backButtonText,
-  mainMenuButtonText
-}) {
-  if (actionCode.get() === 'main' || depth === 0) {
-    return []
-  }
-
-  const buttons = []
-  if (depth > 1 && backButtonText) {
-    buttons.push({
-      text: backButtonText,
-      action: actionCode.parent().get(),
-      root: true
-    })
-  }
-
-  if (depth > 0 && hasMainMenu && mainMenuButtonText) {
-    buttons.push({
-      text: mainMenuButtonText,
-      action: 'main',
-      root: true
-    })
-  }
-
-  return buttons
 }
 
 module.exports = TelegrafInlineMenu
