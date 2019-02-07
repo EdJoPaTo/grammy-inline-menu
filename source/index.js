@@ -3,6 +3,7 @@ const assert = require('assert').strict
 const {Composer, Extra, Markup} = require('telegraf')
 
 const ActionCode = require('./action-code')
+const {normalizeOptions} = require('./menu-options')
 const {getRowsOfButtons} = require('./align-buttons')
 const {buildKeyboard} = require('./build-keyboard')
 const {prefixEmoji} = require('./prefix')
@@ -113,18 +114,13 @@ class TelegrafInlineMenu {
     return obj
   }
 
-  init(options = {}) {
-    assert(!options.actionCode || options.actionCode.indexOf(':') < 0, 'ActionCode has to start at the base level (without ":")')
-    const actionCode = new ActionCode(options.actionCode || 'main')
-    delete options.actionCode
-    options.hasMainMenu = actionCode.get() === 'main'
-    options.depth = options.hasMainMenu ? 0 : 1
+  init(userOptions = {}) {
     // Debug
-    // options.log = (...args) => console.log(new Date(), ...args)
-    options.log = options.log || (() => {})
-    options.log('init', options)
-    const middleware = this.middleware(actionCode, options)
-    options.log('init finished')
+    // userOptions.log = (...args) => console.log(new Date(), ...args)
+    const {actionCode, internalOptions} = normalizeOptions(userOptions)
+    internalOptions.log('init', internalOptions)
+    const middleware = this.middleware(actionCode, internalOptions)
+    internalOptions.log('init finished')
     return middleware
   }
 
