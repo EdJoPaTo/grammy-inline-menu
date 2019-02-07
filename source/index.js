@@ -66,11 +66,10 @@ class TelegrafInlineMenu {
       actualActionCode = actionCode
     }
 
-    const buttons = [...this.buttons]
-    const lastButtonRow = generateBackButtons(actualActionCode, options)
-    if (lastButtonRow.length > 0) {
-      buttons.push(lastButtonRow)
-    }
+    const buttons = [
+      ...this.buttons,
+      generateBackButtons(actualActionCode, options)
+    ]
 
     const keyboardMarkup = await buildKeyboard(buttons, actualActionCode, ctx)
     options.log('buttons', keyboardMarkup.inline_keyboard)

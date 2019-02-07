@@ -42,7 +42,7 @@ test('hidden submenu goes to the parent menu', async t => {
   bot.context.editMessageText = (text, extra) => {
     t.is(text, 'foo')
     // As the submenu is hidden there are no buttons
-    t.deepEqual(extra.reply_markup.inline_keyboard, [[]])
+    t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve()
   }
 
@@ -63,7 +63,7 @@ test('hidden submenu goes to the parent menu from the sub sub menu call', async 
   bot.context.editMessageText = (text, extra) => {
     t.is(text, 'foo')
     // As the submenu is hidden there are no buttons
-    t.deepEqual(extra.reply_markup.inline_keyboard, [[]])
+    t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve()
   }
 
