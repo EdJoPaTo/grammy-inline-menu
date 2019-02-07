@@ -5,6 +5,7 @@
 	],
 	"compilerOptions": {
 		"outDir": "dist",
+		"target": "esnext",
 		"allowJs": true,
 		"declaration": false
 	}
