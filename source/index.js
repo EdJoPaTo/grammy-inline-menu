@@ -5,9 +5,10 @@ const {Composer, Extra, Markup} = require('telegraf')
 const ActionCode = require('./action-code')
 const {normalizeOptions} = require('./menu-options')
 const {prefixEmoji} = require('./prefix')
-const {createHandlerMiddleware, isCallbackQueryActionFunc} = require('./middleware-helper')
+const {createHandlerMiddleware} = require('./middleware-helper')
 
 const MenuButtons = require('./menu-buttons')
+const MenuResponders = require('./menu-responders')
 
 const {generateSelectButtons} = require('./buttons/select')
 const {paginationOptions} = require('./buttons/pagination')
@@ -16,6 +17,7 @@ class TelegrafInlineMenu {
   constructor(text) {
     this.menuText = text
     this.buttons = new MenuButtons()
+    this.responders = new MenuResponders()
     this.commands = []
     this.handlers = []
     this.replyMenuMiddlewares = []
@@ -118,8 +120,8 @@ class TelegrafInlineMenu {
     if (actionCode.isDynamic()) {
       assert(this.commands.length === 0, `commands can not point on dynamic submenus. Happened in menu ${actionCode.get()} with the following commands: ${this.commands.join(', ')}`)
 
-      const handlerNotActions = this.handlers.filter(o => !o.action)
-      assert(handlerNotActions.length === 0, `a dynamic submenu can only contain buttons. A question for example does not work. Happened in menu ${actionCode.get()}`)
+      const hasResponderWithoutAction = this.responders.hasSomeNonActionResponders()
+      assert(!hasResponderWithoutAction, `a dynamic submenu can only contain buttons. A question for example does not work. Happened in menu ${actionCode.get()}`)
     }
 
     options.log('middleware triggered', actionCode.get(), options, this)
@@ -134,7 +136,6 @@ class TelegrafInlineMenu {
     }
 
     const functions = []
-    functions.push(Composer.action(actionCode.get(), ctx => setMenuFunc(ctx, 'menu action')))
     if (this.commands.length > 0) {
       functions.push(Composer.command(this.commands, ctx => setMenuFunc(ctx, 'command')))
     }
@@ -185,30 +186,6 @@ class TelegrafInlineMenu {
             }
 
             middleware = handler.submenu.middleware(childActionCode, subOptions)
-          } else {
-            // Run the setMenuFunc even when action is hidden.
-            // As the button should be hidden already the user must have an old menu
-            // Update the menu to show the user why this will not work
-            middlewareOptions.runAfterFuncEvenWhenHidden = true
-            middlewareOptions.only = isCallbackQueryActionFunc(childActionCode, handler.only)
-
-            options.log('add action reaction', childActionCode.get(), handler.middleware)
-            middleware = handler.middleware
-          }
-        } else {
-          middleware = handler.middleware
-        }
-
-        if (handler.setParentMenuAfter || handler.setMenuAfter) {
-          const reason = `after handler ${(childActionCode || actionCode).get()}`
-          if (handler.setParentMenuAfter) {
-            if (!options.setParentMenuFunc) {
-              throw new Error(`Action will not be able to set parent menu as there is no parent menu: ${actionCode.get()}`)
-            }
-
-            middlewareOptions.afterFunc = ctx => options.setParentMenuFunc(ctx, reason)
-          } else {
-            middlewareOptions.afterFunc = ctx => setMenuFunc(ctx, reason)
           }
         }
 
@@ -216,7 +193,14 @@ class TelegrafInlineMenu {
       })
     const handlerFuncsFlattened = [].concat(...handlerFuncs)
 
+    const responderMiddleware = this.responders.createMiddleware({
+      actionCode,
+      setMenuFunc,
+      setParentMenuFunc: options.setParentMenuFunc
+    })
+
     return Composer.compose([
+      responderMiddleware,
       ...functions,
       ...handlerFuncsFlattened
     ])
@@ -265,7 +249,7 @@ class TelegrafInlineMenu {
   simpleButton(text, action, additionalArgs) {
     assert(additionalArgs.doFunc, 'doFunc is not set. set it or use menu.manual')
 
-    this.addHandler({
+    this.responders.add({
       action: new ActionCode(action),
       hide: additionalArgs.hide,
       middleware: additionalArgs.doFunc,
@@ -289,21 +273,14 @@ class TelegrafInlineMenu {
       return Math.max(1, Math.min(totalPages, number)) || 1
     }
 
-    const handler = {
-      action: new ActionCode(new RegExp(`${action}-(\\d+)`))
-    }
-
     const hitPageButton = async ctx => setPage(ctx, await pageFromCtx(ctx))
-    handler.middleware = hitPageButton
 
-    if (hide) {
-      handler.hide = hide
-    }
-
-    handler.setParentMenuAfter = additionalArgs.setParentMenuAfter
-    handler.setMenuAfter = true
-
-    this.addHandler(handler)
+    this.responders.add({
+      middleware: hitPageButton,
+      action: new ActionCode(new RegExp(`${action}-(\\d+)`)),
+      hide,
+      setMenuAfter: true
+    })
 
     const createPaginationButtons = async ctx => {
       if (hide && await hide(ctx)) {
@@ -339,7 +316,7 @@ class TelegrafInlineMenu {
       await setFunc(ctx, answer)
     }
 
-    this.addHandler({
+    this.responders.add({
       hide,
       setMenuAfter: true,
       only: ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === questionText,
@@ -380,26 +357,27 @@ class TelegrafInlineMenu {
     }
 
     const keyFromCtx = ctx => ctx.match[ctx.match.length - 1]
-    const handler = {
-      action: new ActionCode(new RegExp(`${action}-([^:]+)`))
-    }
-
-    if (additionalArgs.hide) {
-      handler.hide = ctx => hide(ctx, keyFromCtx(ctx))
-    }
+    const actionCode = new ActionCode(new RegExp(`${action}-([^:]+)`))
+    const hideKey = hide ? (ctx => hide(ctx, keyFromCtx(ctx))) : false
 
     if (setFunc) {
       const hitSelectButton = ctx => setFunc(ctx, keyFromCtx(ctx))
-      handler.middleware = hitSelectButton
-      handler.setParentMenuAfter = additionalArgs.setParentMenuAfter
-      handler.setMenuAfter = true
+      this.responders.add({
+        middleware: hitSelectButton,
+        action: actionCode,
+        hide: hideKey,
+        setParentMenuAfter: additionalArgs.setParentMenuAfter,
+        setMenuAfter: true
+      })
     } else if (submenu) {
-      handler.submenu = submenu
+      this.addHandler({
+        submenu,
+        action: actionCode,
+        hide: hideKey
+      })
     } else {
       throw new Error('Neither setFunc or submenu are set. Provide one of them.')
     }
-
-    this.addHandler(handler)
 
     const optionsFunc = typeof options === 'function' ? options : () => options
 
@@ -445,12 +423,12 @@ class TelegrafInlineMenu {
     const toggleTrue = ctx => setFunc(ctx, true)
     const toggleFalse = ctx => setFunc(ctx, false)
 
-    this.addHandler({...baseHandler,
+    this.responders.add({...baseHandler,
       action: new ActionCode(`${action}-true`),
       middleware: toggleTrue
     })
 
-    this.addHandler({...baseHandler,
+    this.responders.add({...baseHandler,
       action: new ActionCode(`${action}-false`),
       middleware: toggleFalse
     })
