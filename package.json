@@ -15,8 +15,8 @@
     "preexample-js": "npm run build",
     "example-js": "node example.js",
     "start": "ts-node example.ts",
-    "pretest": "xo",
-    "test": "nyc ava"
+    "pretest": "npm run build",
+    "test": "xo && nyc ava"
   },
   "repository": {
     "type": "git",
