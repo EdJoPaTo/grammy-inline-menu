@@ -4,18 +4,18 @@ const {Composer, Extra, Markup} = require('telegraf')
 
 const ActionCode = require('./action-code')
 const {normalizeOptions} = require('./menu-options')
-const {buildKeyboard} = require('./build-keyboard')
 const {prefixEmoji} = require('./prefix')
 const {createHandlerMiddleware, isCallbackQueryActionFunc} = require('./middleware-helper')
 const {paginationOptions} = require('./pagination')
 
-const {generateBackButtons} = require('./buttons/back-and-main')
+const MenuButtons = require('./menu-buttons')
+
 const {generateSelectButtons} = require('./buttons/select')
 
 class TelegrafInlineMenu {
   constructor(text) {
     this.menuText = text
-    this.buttons = []
+    this.buttons = new MenuButtons()
     this.commands = []
     this.handlers = []
     this.replyMenuMiddlewares = []
@@ -28,17 +28,6 @@ class TelegrafInlineMenu {
 
     this.commands = this.commands.concat(commands)
     return this
-  }
-
-  addButton(button, ownRow = true) {
-    if (ownRow || this.buttons.length === 0) {
-      this.buttons.push([
-        button
-      ])
-    } else {
-      const lastRow = this.buttons[this.buttons.length - 1]
-      lastRow.push(button)
-    }
   }
 
   addHandler(obj) {
@@ -66,12 +55,7 @@ class TelegrafInlineMenu {
       actualActionCode = actionCode
     }
 
-    const buttons = [
-      ...this.buttons,
-      generateBackButtons(actualActionCode, options)
-    ]
-
-    const keyboardMarkup = await buildKeyboard(buttons, actualActionCode, ctx)
+    const keyboardMarkup = await this.buttons.generateKeyboardMarkup(ctx, actualActionCode, options)
     options.log('buttons', keyboardMarkup.inline_keyboard)
     const extra = Extra.markdown().markup(keyboardMarkup)
     return {text, extra}
@@ -248,7 +232,7 @@ class TelegrafInlineMenu {
 
     joinLastRow
   }) {
-    this.addButton({
+    this.buttons.add({
       action,
       hide,
       root,
@@ -333,7 +317,7 @@ class TelegrafInlineMenu {
       return paginationOptions(totalPages, currentPage)
     }
 
-    this.buttons.push(async ctx => {
+    this.buttons.addCreator(async ctx => {
       const buttonOptions = await createPaginationButtons(ctx)
       const optionsArr = Object.keys(buttonOptions)
       const textFunc = (_ctx, key) => buttonOptions[key]
@@ -421,7 +405,7 @@ class TelegrafInlineMenu {
 
     const {textFunc, prefixFunc, isSetFunc, multiselect} = additionalArgs
 
-    this.buttons.push(async ctx => {
+    this.buttons.addCreator(async ctx => {
       const optionsResult = await optionsFunc(ctx)
       const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
       const fallbackKeyTextFunc = Array.isArray(optionsResult) ? ((_ctx, key) => key) : ((_ctx, key) => optionsResult[key])

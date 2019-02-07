@@ -115,6 +115,7 @@
       {
         "files": [
           "source/build-keyboard*.*",
+          "source/menu-buttons.test.*",
           "source/middleware-helper.is-action.test.*",
           "test/*.*"
         ],

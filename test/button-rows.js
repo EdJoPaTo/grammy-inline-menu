@@ -62,32 +62,3 @@ test('joinLastRow as first button', async t => {
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
 })
-
-// Following Tests use the internal method addButton
-
-test('add button in ownRow', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-  menu.addButton({text: '42'})
-  t.deepEqual(menu.buttons, [[{
-    text: '42'
-  }]])
-})
-
-test('add button in lastRow but there is none', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-  menu.addButton({text: '42'}, false)
-  t.deepEqual(menu.buttons, [[{
-    text: '42'
-  }]])
-})
-
-test('add button in lastRow', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-  menu.addButton({text: '42'})
-  menu.addButton({text: '43'}, false)
-  t.deepEqual(menu.buttons, [[{
-    text: '42'
-  }, {
-    text: '43'
-  }]])
-})
