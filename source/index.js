@@ -157,7 +157,7 @@ class TelegrafInlineMenu {
     const subOptions = {
       ...options,
       setParentMenuFunc: setMenuFunc,
-      depth: options.depth + 1
+      depth: Number(options.depth) + 1
     }
 
     const handlerFuncs = this.handlers
