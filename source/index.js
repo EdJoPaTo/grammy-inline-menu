@@ -6,11 +6,11 @@ const ActionCode = require('./action-code')
 const {normalizeOptions} = require('./menu-options')
 const {prefixEmoji} = require('./prefix')
 const {createHandlerMiddleware, isCallbackQueryActionFunc} = require('./middleware-helper')
-const {paginationOptions} = require('./pagination')
 
 const MenuButtons = require('./menu-buttons')
 
 const {generateSelectButtons} = require('./buttons/select')
+const {paginationOptions} = require('./buttons/pagination')
 
 class TelegrafInlineMenu {
   constructor(text) {
