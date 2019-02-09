@@ -19,7 +19,7 @@ class TelegrafInlineMenu {
     this.buttons = new MenuButtons()
     this.responders = new MenuResponders()
     this.commands = []
-    this.handlers = []
+    this.submenus = []
     this.replyMenuMiddlewares = []
   }
 
@@ -30,11 +30,6 @@ class TelegrafInlineMenu {
 
     this.commands = this.commands.concat(commands)
     return this
-  }
-
-  addHandler(obj) {
-    assert(!obj.action || (obj.action instanceof ActionCode), 'action has to be an ActionCode')
-    this.handlers.push(obj)
   }
 
   async generate(ctx, actionCode, options) {
@@ -160,11 +155,9 @@ class TelegrafInlineMenu {
       depth: Number(options.depth) + 1
     }
 
-    const handlerFuncs = this.handlers
-      .map(handler => {
-        assert(handler.action && handler.submenu, 'This only takes submenus. Everything else has to go to the new responders.')
-
-        const childActionCode = handler.action && actionCode.concat(handler.action)
+    const handlerFuncs = this.submenus
+      .map(({action, submenu, hide}) => {
+        const childActionCode = actionCode.concat(action)
         const hiddenFunc = (ctx, next) => {
           if (!ctx.callbackQuery) {
             // Only set menu when a hidden button below was used
@@ -175,10 +168,10 @@ class TelegrafInlineMenu {
           return setMenuFunc(ctx, 'menu is hidden')
         }
 
-        const middleware = handler.submenu.middleware(childActionCode, subOptions)
+        const middleware = submenu.middleware(childActionCode, subOptions)
         const middlewareOptions = {
           only: ctx => !ctx.callbackQuery || childActionCode.testIsBelow(ctx.callbackQuery.data),
-          hide: handler.hide,
+          hide,
           hiddenFunc
         }
 
@@ -361,7 +354,7 @@ class TelegrafInlineMenu {
         setMenuAfter: true
       })
     } else if (submenu) {
-      this.addHandler({
+      this.submenus.push({
         submenu,
         action: actionCode,
         hide: hideKey
@@ -429,7 +422,7 @@ class TelegrafInlineMenu {
 
   submenu(text, action, submenu, additionalArgs = {}) {
     this.manual(text, action, additionalArgs)
-    this.addHandler({
+    this.submenus.push({
       action: new ActionCode(action),
       hide: additionalArgs.hide,
       submenu

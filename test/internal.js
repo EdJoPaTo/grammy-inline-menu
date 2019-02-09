@@ -8,11 +8,6 @@ test('middleware options has to be set', t => {
   t.throws(() => menu.middleware('something'), /options/)
 })
 
-test('add handler action has to be ActionCode', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-  t.throws(() => menu.addHandler({action: '42'}), /ActionCode/)
-})
-
 test.serial('setMenuNow menu is not modified', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
