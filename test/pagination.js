@@ -13,8 +13,8 @@ test('creates menu', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: '1',
@@ -24,7 +24,7 @@ test('creates menu', async t => {
         callback_data: 'a:c-2'
       }
     ]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -40,10 +40,10 @@ test('no pagination with 1 page', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -59,8 +59,8 @@ test('creates menu with async methods', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: '1',
@@ -70,7 +70,7 @@ test('creates menu with async methods', async t => {
         callback_data: 'a:c-2'
       }
     ]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -80,7 +80,7 @@ test('sets page', async t => {
   t.plan(1)
   const menu = new TelegrafInlineMenu('foo')
   menu.pagination('c', {
-    setPage: (ctx, page) => Promise.resolve(t.is(page, 2)),
+    setPage: (_ctx, page) => Promise.resolve(t.is(page, 2)),
     getCurrentPage: () => 1,
     getTotalPages: () => 2
   })
@@ -88,8 +88,8 @@ test('sets page', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = () => Promise.resolve()
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = () => Promise.resolve(true)
 
   await bot.handleUpdate({callback_query: {data: 'a:c-2'}})
 })
@@ -98,7 +98,7 @@ test('sets page not outside of range', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('foo')
   menu.pagination('c', {
-    setPage: (ctx, page) => Promise.resolve(t.true(page >= 1 && page <= 2)),
+    setPage: (_ctx, page) => Promise.resolve(t.true(page >= 1 && page <= 2)),
     getCurrentPage: () => 1,
     getTotalPages: () => 2
   })
@@ -106,8 +106,8 @@ test('sets page not outside of range', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = () => Promise.resolve()
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = () => Promise.resolve(true)
 
   await bot.handleUpdate({callback_query: {data: 'a:c-0'}})
   await bot.handleUpdate({callback_query: {data: 'a:c-3'}})
@@ -117,7 +117,7 @@ test('sets page 1 when input is bad', async t => {
   t.plan(1)
   const menu = new TelegrafInlineMenu('foo')
   menu.pagination('c', {
-    setPage: (ctx, page) => Promise.resolve(t.is(page, 1)),
+    setPage: (_ctx, page) => Promise.resolve(t.is(page, 1)),
     getCurrentPage: () => 'foo',
     getTotalPages: () => 'bar'
   })
@@ -125,8 +125,8 @@ test('sets page 1 when input is bad', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = () => Promise.resolve()
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = () => Promise.resolve(true)
 
   await bot.handleUpdate({callback_query: {data: 'a:c-5'}})
 })
@@ -142,10 +142,10 @@ test('hidden pagination', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})

@@ -14,13 +14,13 @@ test('menu correct', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: emojiTrue + ' toggle me',
       callback_data: 'a:c-false'
     }]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -29,13 +29,13 @@ test('menu correct', async t => {
 test('toggles to true', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.toggle('toggle me', 'c', {
-    setFunc: (ctx, newState) => t.true(newState),
+    setFunc: (_ctx, newState) => t.true(newState),
     isSetFunc: () => false
   })
 
   const bot = new Telegraf('')
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = () => Promise.resolve()
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = () => Promise.resolve(true)
   bot.use(menu.init({actionCode: 'a'}))
 
   await bot.handleUpdate({callback_query: {data: 'a:c-true'}})
@@ -44,13 +44,13 @@ test('toggles to true', async t => {
 test('toggles to false', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.toggle('toggle me', 'c', {
-    setFunc: (ctx, newState) => t.false(newState),
+    setFunc: (_ctx, newState) => t.false(newState),
     isSetFunc: () => true
   })
 
   const bot = new Telegraf('')
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = () => Promise.resolve()
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = () => Promise.resolve(true)
   bot.use(menu.init({actionCode: 'a'}))
 
   await bot.handleUpdate({callback_query: {data: 'a:c-false'}})
@@ -68,13 +68,13 @@ async function ownPrefixTest(t, currentState, prefix) {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: `${prefix} toggle me`,
       callback_data: `a:c-${!currentState}`
     }]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})

@@ -18,10 +18,10 @@ test('menu correct', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
+  bot.context.answerCbQuery = () => Promise.resolve(true)
   bot.context.editMessageText = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -39,7 +39,7 @@ test('sends question text', async t => {
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve(t.pass())
-  bot.context.editMessageText = t.fail
+  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.deleteMessage = () => Promise.resolve(t.pass())
   bot.context.reply = (text, extra) => {
     t.is(text, 'what do you want?')
@@ -62,11 +62,11 @@ test('setFunc on answer', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = t.fail
-  bot.context.editMessageText = t.fail
+  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.reply = (text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   bot.use(ctx => {
@@ -87,14 +87,14 @@ test('dont setFunc on wrong input text', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
     questionText: 'what do you want?',
-    setFunc: (ctx, answer) => t.is(answer, 'more money')
+    setFunc: (_ctx, answer) => t.is(answer, 'more money')
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = t.fail
-  bot.context.editMessageText = t.fail
+  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.reply = () => Promise.resolve(
     t.fail('dont reply on wrong text')
   )
@@ -114,14 +114,14 @@ test('dont setFunc on hide', async t => {
   menu.question('Question', 'c', {
     questionText: 'what do you want?',
     hide: () => true,
-    setFunc: (ctx, answer) => t.is(answer, 'more money')
+    setFunc: (_ctx, answer) => t.is(answer, 'more money')
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = t.fail
-  bot.context.editMessageText = t.fail
+  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.reply = () => Promise.resolve(
     t.fail('on hide nothing has to be replied')
   )
@@ -141,17 +141,17 @@ test('accepts other stuff than text', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
     questionText: 'what do you want?',
-    setFunc: (ctx, answer) => t.is(answer, undefined)
+    setFunc: (_ctx, answer) => t.is(answer, undefined)
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = t.fail
-  bot.context.editMessageText = t.fail
-  bot.context.reply = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.reply = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   bot.use(ctx => {
@@ -173,19 +173,19 @@ test('multiple question setFuncs do not interfere', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
     questionText: 'what do you want to have?',
-    setFunc: (ctx, answer) => t.is(answer, 'more money')
+    setFunc: (_ctx, answer) => t.is(answer, 'more money')
   })
   menu.question('Question', 'd', {
     questionText: 'what do you want to eat?',
-    setFunc: (ctx, answer) => t.is(answer, 'less meat')
+    setFunc: (_ctx, answer) => t.is(answer, 'less meat')
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = t.fail
-  bot.context.editMessageText = t.fail
-  bot.context.reply = () => Promise.resolve()
+  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.reply = () => Promise.resolve(true)
 
   bot.use(ctx => {
     t.log('update not handled', ctx.update)
@@ -218,8 +218,8 @@ test('question button works on old menu', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = t.fail
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.reply = t.pass
   bot.context.deleteMessage = () => {
     // Method is triggered but fails as the message is to old
@@ -241,8 +241,8 @@ test.serial('question button deleteMessage fail does not kill question', async t
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = t.fail
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.reply = t.pass
   bot.context.deleteMessage = () => {
     // Method is triggered but fails as the message is to old

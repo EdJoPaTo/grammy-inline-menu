@@ -13,8 +13,8 @@ test('option array menu', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
@@ -24,7 +24,7 @@ test('option array menu', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -39,8 +39,8 @@ test('option object menu', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'A',
@@ -50,7 +50,7 @@ test('option object menu', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -65,8 +65,8 @@ test('option async array menu', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
@@ -76,7 +76,7 @@ test('option async array menu', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -86,13 +86,13 @@ test('selects', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('foo')
   menu.select('c', ['a', 'b'], {
-    setFunc: (ctx, selected) => t.is(selected, 'b')
+    setFunc: (_ctx, selected) => t.is(selected, 'b')
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
+  bot.context.answerCbQuery = () => Promise.resolve(true)
   bot.context.editMessageText = () => Promise.resolve(t.pass())
 
   await bot.handleUpdate({callback_query: {data: 'a:c-b'}})
@@ -102,14 +102,14 @@ test('selected key has emoji prefix', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.select('c', ['a', 'b'], {
     setFunc: t.fail,
-    isSetFunc: (ctx, key) => Promise.resolve(key === 'b')
+    isSetFunc: (_ctx, key) => Promise.resolve(key === 'b')
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
@@ -119,7 +119,7 @@ test('selected key has emoji prefix', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -130,14 +130,14 @@ test('multiselect has prefixes', async t => {
   menu.select('c', ['a', 'b'], {
     multiselect: true,
     setFunc: t.fail,
-    isSetFunc: (ctx, key) => Promise.resolve(key === 'b')
+    isSetFunc: (_ctx, key) => Promise.resolve(key === 'b')
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: emojiFalse + ' a',
@@ -147,7 +147,7 @@ test('multiselect has prefixes', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -163,8 +163,8 @@ test('custom prefix', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'bar a',
@@ -174,7 +174,7 @@ test('custom prefix', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -185,21 +185,21 @@ test('hides key in keyboard', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.select('c', ['a', 'b'], {
     setFunc: t.fail,
-    hide: (ctx, key) => key === 'a'
+    hide: (_ctx, key) => key === 'a'
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'b',
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -210,13 +210,13 @@ test('hidden key can not be set', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.select('c', ['a', 'b'], {
     setFunc: t.fail,
-    hide: (ctx, key) => key === 'a'
+    hide: (_ctx, key) => key === 'a'
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
+  bot.context.answerCbQuery = () => Promise.resolve(true)
   bot.context.editMessageText = () => Promise.resolve(t.pass())
   bot.use(() => t.pass())
 
@@ -237,8 +237,8 @@ test('hide always has two args', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = () => Promise.resolve()
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = () => Promise.resolve(true)
 
   // Calls hide for every option: +2
   await bot.handleUpdate({callback_query: {data: 'a'}})

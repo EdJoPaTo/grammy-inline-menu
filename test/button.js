@@ -15,10 +15,10 @@ test('manual menu correct', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -35,8 +35,8 @@ test('simpleButton works', async t => {
 
   // This could also be argumented to be a pass as the button was pressed.
   // But as there is nothing for the menu to do, the user should send the answer on its own.
-  bot.context.answerCbQuery = t.fail
-  bot.context.editMessageText = t.fail
+  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
@@ -51,10 +51,10 @@ test('button updates menu', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}})
@@ -74,8 +74,8 @@ test('hidden button does not run doFunc', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = t.fail
-  bot.context.editMessageText = t.fail
+  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
@@ -91,10 +91,10 @@ test('hidden button updates the menu', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve()
+  bot.context.answerCbQuery = () => Promise.resolve(true)
   bot.context.editMessageText = text => {
     t.is(text, 'yaay')
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}})

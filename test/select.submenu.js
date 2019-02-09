@@ -31,8 +31,8 @@ function generateTestBasics() {
 test('upper menu correct', async t => {
   const bot = generateTestBasics()
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
@@ -42,7 +42,7 @@ test('upper menu correct', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
@@ -51,8 +51,8 @@ test('upper menu correct', async t => {
 test('submenu correct', async t => {
   const bot = generateTestBasics()
 
-  bot.context.answerCbQuery = () => Promise.resolve()
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'Hit a!',
@@ -64,7 +64,7 @@ test('submenu correct', async t => {
         callback_data: 'a'
       }
     ]])
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   await bot.handleUpdate({callback_query: {data: 'a:c-a'}})
@@ -72,10 +72,10 @@ test('submenu correct', async t => {
 
 test('submenu button works', async t => {
   const bot = generateTestBasics()
-  bot.context.editMessageText = t.fail
+  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.answerCbQuery = text => {
     t.is(text, 'a was hit!')
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   bot.use(t.fail)

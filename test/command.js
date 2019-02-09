@@ -18,7 +18,7 @@ function createTestBot(t, command) {
       callback_data: 'a:c'
     }]])
 
-    return Promise.resolve()
+    return Promise.resolve(true)
   }
 
   bot.use(menu.init({actionCode: 'a'}))
