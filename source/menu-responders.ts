@@ -3,11 +3,12 @@ import ActionCode from './action-code'
 import {createHandlerMiddleware, HandlerOptions, isCallbackQueryActionFunc} from './middleware-helper'
 
 type ContextFunc<T> = (ctx: any) => Promise<T> | T
+type ContextNextMinimumFunc = (ctx: any, next?: any) => Promise<void> | void
 type ContextNextFunc = (ctx: any, next: any) => Promise<void>
 type MenuFunc = (ctx: any, reason: string) => Promise<void>
 
 export interface Responder {
-  middleware: ContextNextFunc;
+  middleware: ContextNextMinimumFunc;
   action?: ActionCode;
   only?: ContextFunc<boolean>;
   hide?: ContextFunc<boolean>;
@@ -66,11 +67,10 @@ export function createMiddlewareFromResponder(responder: Responder, environment:
     return createHandlerMiddleware(responder.middleware, handler)
   }
 
-  const childActionCode = actionCode.concat(responder.action)
-
   // When it is hidden the menu should be updated with the current status. Then the user knows why nothing happened.
   handler.runAfterFuncEvenWhenHidden = true
 
+  const childActionCode = actionCode.concat(responder.action)
   handler.only = isCallbackQueryActionFunc(childActionCode, responder.only)
 
   return createHandlerMiddleware(responder.middleware, handler)

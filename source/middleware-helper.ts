@@ -1,7 +1,7 @@
 import ActionCode from './action-code'
 
 type ContextFunc<T> = (ctx: any) => Promise<T> | T
-type ContextNextFunc<T> = (ctx: any, next: any) => Promise<T> | T
+type ContextNextFunc<T> = (ctx: any, next?: any) => Promise<T> | T
 
 export interface HandlerOptions {
   only?: ContextFunc<boolean>;
