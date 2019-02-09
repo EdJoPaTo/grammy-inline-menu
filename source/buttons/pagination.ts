@@ -5,7 +5,7 @@
  * @param  currentPage current page. Has to be between [1..totalPages]
  * @return returns the ButtonOptions
  */
-export function paginationOptions(totalPages: number, currentPage: number): {} {
+export function paginationOptions(totalPages: number, currentPage: number): any {
   // Numbers have to be within
   // currentPage in [1..totalPages]
   const totalPagesFixed = Math.ceil(totalPages)
