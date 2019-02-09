@@ -199,43 +199,41 @@ class TelegrafInlineMenu {
     ])
   }
 
-  basicButton(text, {
-    action,
-    hide,
-    root,
-    switchToChat,
-    switchToCurrentChat,
-    url,
-
-    joinLastRow
-  }) {
+  urlButton(text, url, additionalArgs = {}) {
     this.buttons.add({
-      action,
-      hide,
-      root,
-      switchToChat,
-      switchToCurrentChat,
+      text,
       url,
-
-      text
-    }, !joinLastRow)
+      hide: additionalArgs.hide
+    }, !additionalArgs.joinLastRow)
     return this
   }
 
-  urlButton(text, url, additionalArgs = {}) {
-    return this.basicButton(text, {...additionalArgs, url})
-  }
-
   switchToChatButton(text, value, additionalArgs = {}) {
-    return this.basicButton(text, {...additionalArgs, switchToChat: value})
+    this.buttons.add({
+      text,
+      switchToChat: value,
+      hide: additionalArgs.hide
+    }, !additionalArgs.joinLastRow)
+    return this
   }
 
   switchToCurrentChatButton(text, value, additionalArgs = {}) {
-    return this.basicButton(text, {...additionalArgs, switchToCurrentChat: value})
+    this.buttons.add({
+      text,
+      switchToCurrentChat: value,
+      hide: additionalArgs.hide
+    }, !additionalArgs.joinLastRow)
+    return this
   }
 
   manual(text, action, additionalArgs = {}) {
-    return this.basicButton(text, {...additionalArgs, action})
+    this.buttons.add({
+      text,
+      action,
+      root: additionalArgs.root,
+      hide: additionalArgs.hide
+    }, !additionalArgs.joinLastRow)
+    return this
   }
 
   // This button does not update the menu after being pressed
