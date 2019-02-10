@@ -7,7 +7,7 @@ import {emojiTrue} from '../source/prefix'
 test('menu correct', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.toggle('toggle me', 'c', {
-    setFunc: t.fail,
+    setFunc: () => Promise.reject(new Error('Nothing has to be set when only showing the menu')),
     isSetFunc: () => true
   })
 
@@ -20,6 +20,26 @@ test('menu correct', async t => {
       text: emojiTrue + ' toggle me',
       callback_data: 'a:c-false'
     }]])
+    return Promise.resolve(true)
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a'}})
+})
+
+test('hidden', async t => {
+  const menu = new TelegrafInlineMenu('yaay')
+  menu.toggle('toggle me', 'c', {
+    hide: () => true,
+    setFunc: () => Promise.reject(new Error('When hidden other funcs shouldn\'t be called.')),
+    isSetFunc: () => Promise.reject(new Error('When hidden other funcs shouldn\'t be called.'))
+  })
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
+    t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve(true)
   }
 
