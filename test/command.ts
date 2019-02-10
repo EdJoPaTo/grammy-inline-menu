@@ -1,24 +1,26 @@
-import test from 'ava'
-import Telegraf from 'telegraf'
+import test, {ExecutionContext} from 'ava'
+import Telegraf, {ContextMessageUpdate} from 'telegraf'
+import {Update} from 'telegram-typings'
 
 import ActionCode from '../source/action-code'
-
 import TelegrafInlineMenu from '../source'
 
-function createTestBot(t, command) {
+import {InlineExtra, DUMMY_MESSAGE} from './helpers/telegraf-typing-overrides'
+
+function createTestBot(t: ExecutionContext, command: string | string[]): Telegraf<ContextMessageUpdate> {
   const menu = new TelegrafInlineMenu('foo')
     .manual('bar', 'c')
   menu.setCommand(command)
 
   const bot = new Telegraf('')
-  bot.context.reply = (text, extra) => {
+  bot.context.reply = async (text, extra: InlineExtra) => {
     t.is(text, 'foo')
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: 'bar',
       callback_data: 'a:c'
     }]])
 
-    return Promise.resolve(true)
+    return DUMMY_MESSAGE
   }
 
   bot.use(menu.init({actionCode: 'a'}))
@@ -34,23 +36,23 @@ test('one command', async t => {
   await bot.handleUpdate({message: {
     text: '/test',
     entities: [{type: 'bot_command', offset: 0, length: 5}]
-  }})
+  }} as Update)
 })
 
 test('multiple commands', async t => {
   t.plan(4)
   const bot = createTestBot(t, ['test1', 'test2'])
-  bot.command(() => t.fail('command not handled'))
+  bot.command(['test1', 'test2'], () => t.fail('command not handled'))
   bot.use(ctx => t.fail('update not handled: ' + JSON.stringify(ctx.update)))
 
   await bot.handleUpdate({message: {
     text: '/test1',
     entities: [{type: 'bot_command', offset: 0, length: 6}]
-  }})
+  }} as Update)
   await bot.handleUpdate({message: {
     text: '/test2',
     entities: [{type: 'bot_command', offset: 0, length: 6}]
-  }})
+  }} as Update)
 })
 
 test('command can not be used on dynamic menu', t => {
@@ -64,6 +66,7 @@ test('command can not be used on dynamic menu', t => {
   // This is just done for the test as init doesnt allow this in the first place but the actual way is more complex
   t.throws(() => {
     bot.use(menu.middleware(new ActionCode(/.+/), {
+      hasMainMenu: false,
       depth: 1,
       log: () => {}
     }))

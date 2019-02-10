@@ -1,17 +1,20 @@
 import test from 'ava'
-import Telegraf from 'telegraf'
+import Telegraf, {ContextMessageUpdate} from 'telegraf'
+import {Update} from 'telegram-typings'
 
 import TelegrafInlineMenu from '../source'
 
-function generateTestBasics() {
+import {InlineExtra} from './helpers/telegraf-typing-overrides'
+
+function generateTestBasics(): Telegraf<ContextMessageUpdate> {
   const menu = new TelegrafInlineMenu('foo')
 
-  const submenu = new TelegrafInlineMenu(ctx => ctx.match[1])
+  const submenu = new TelegrafInlineMenu((ctx: any) => ctx.match[1])
     .simpleButton(
-      ctx => `Hit ${ctx.match[1]}!`,
+      (ctx: any) => `Hit ${ctx.match[1]}!`,
       'd',
       {
-        doFunc: ctx => ctx.answerCbQuery(`${ctx.match[1]} was hit!`)
+        doFunc: (ctx: any) => ctx.answerCbQuery(`${ctx.match[1]} was hit!`)
       }
     )
 
@@ -32,7 +35,7 @@ test('upper menu correct', async t => {
   const bot = generateTestBasics()
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra) => {
+  bot.context.editMessageText = (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
@@ -45,14 +48,14 @@ test('upper menu correct', async t => {
     return Promise.resolve(true)
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
 })
 
 test('submenu correct', async t => {
   const bot = generateTestBasics()
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra) => {
+  bot.context.editMessageText = (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'Hit a!',
@@ -67,7 +70,7 @@ test('submenu correct', async t => {
     return Promise.resolve(true)
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:c-a'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c-a'}} as Update)
 })
 
 test('submenu button works', async t => {
@@ -78,9 +81,9 @@ test('submenu button works', async t => {
     return Promise.resolve(true)
   }
 
-  bot.use(t.fail)
+  bot.use(() => t.fail())
 
-  await bot.handleUpdate({callback_query: {data: 'a:c-a:d'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c-a:d'}} as Update)
 })
 
 test('hide dynamic submenu does not work', t => {

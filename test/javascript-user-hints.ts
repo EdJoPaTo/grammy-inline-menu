@@ -7,7 +7,7 @@ import TelegrafInlineMenu from '../source'
 // TypeScript types are preventing these.
 
 test('menu.middleware fails with .init() hint', t => {
-  const menu = new TelegrafInlineMenu('yaay')
+  const menu: any = new TelegrafInlineMenu('yaay')
 
   const bot = new Telegraf('')
   // Normally user would use bot.use.
@@ -18,7 +18,7 @@ test('menu.middleware fails with .init() hint', t => {
 // Buttons
 
 test('simpleButton require additionalArgs', t => {
-  const menu = new TelegrafInlineMenu('yaay')
+  const menu: any = new TelegrafInlineMenu('yaay')
 
   t.throws(() => {
     menu.simpleButton('toggle me', 'c')
@@ -26,7 +26,7 @@ test('simpleButton require additionalArgs', t => {
 })
 
 test('button require additionalArgs', t => {
-  const menu = new TelegrafInlineMenu('yaay')
+  const menu: any = new TelegrafInlineMenu('yaay')
 
   t.throws(() => {
     menu.button('toggle me', 'c')
@@ -34,7 +34,7 @@ test('button require additionalArgs', t => {
 })
 
 test('simpleButton require doFunc', t => {
-  const menu = new TelegrafInlineMenu('yaay')
+  const menu: any = new TelegrafInlineMenu('yaay')
 
   t.throws(() => {
     menu.simpleButton('toggle me', 'c', {})
@@ -44,7 +44,7 @@ test('simpleButton require doFunc', t => {
 // Question
 
 test('question require setFunc', t => {
-  const menu = new TelegrafInlineMenu('yaay')
+  const menu: any = new TelegrafInlineMenu('yaay')
 
   t.throws(() => {
     menu.question('Question', 'c', {
@@ -54,7 +54,7 @@ test('question require setFunc', t => {
 })
 
 test('question require questionText', t => {
-  const menu = new TelegrafInlineMenu('yaay')
+  const menu: any = new TelegrafInlineMenu('yaay')
 
   t.throws(() => {
     menu.question('Question', 'c', {
@@ -66,7 +66,7 @@ test('question require questionText', t => {
 // Select
 
 test('select require additionalArgs', t => {
-  const menu = new TelegrafInlineMenu('foo')
+  const menu: any = new TelegrafInlineMenu('foo')
   t.throws(() => {
     menu.select('c', ['a', 'b'])
   }, /Cannot.+undefined/)
@@ -75,7 +75,7 @@ test('select require additionalArgs', t => {
 // Toggle
 
 test('toggle require setFunc', t => {
-  const menu = new TelegrafInlineMenu('yaay')
+  const menu: any = new TelegrafInlineMenu('yaay')
 
   t.throws(() => {
     menu.toggle('toggle me', 'c', {
@@ -85,7 +85,7 @@ test('toggle require setFunc', t => {
 })
 
 test('toggle require isSetFunc', t => {
-  const menu = new TelegrafInlineMenu('yaay')
+  const menu: any = new TelegrafInlineMenu('yaay')
 
   t.throws(() => {
     menu.toggle('toggle me', 'c', {

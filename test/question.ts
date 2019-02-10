@@ -1,7 +1,10 @@
 import test from 'ava'
 import Telegraf from 'telegraf'
+import {Update} from 'telegram-typings'
 
 import TelegrafInlineMenu from '../source'
+
+import {InlineExtra, DUMMY_MESSAGE, ForceReplyExtra} from './helpers/telegraf-typing-overrides'
 
 const menuKeyboard = [[{
   text: 'Question',
@@ -12,19 +15,19 @@ test('menu correct', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
     questionText: 'what do you want?',
-    setFunc: t.fail
+    setFunc: () => t.fail()
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.editMessageText = (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve(true)
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
 })
 
 test('sends question text', async t => {
@@ -32,23 +35,32 @@ test('sends question text', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
     questionText: 'what do you want?',
-    setFunc: t.fail
+    setFunc: () => t.fail()
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(t.pass())
+  bot.context.answerCbQuery = async () => {
+    t.pass()
+    return true
+  }
+
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.deleteMessage = () => Promise.resolve(t.pass())
-  bot.context.reply = (text, extra) => {
+  bot.context.deleteMessage = async () => {
+    t.pass()
+    return true
+  }
+
+  bot.context.reply = async (text, extra: ForceReplyExtra) => {
     t.is(text, 'what do you want?')
     t.deepEqual(extra.reply_markup, {
       force_reply: true
     })
+    return DUMMY_MESSAGE
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
 })
 
 test('setFunc on answer', async t => {
@@ -56,7 +68,7 @@ test('setFunc on answer', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
     questionText: 'what do you want?',
-    setFunc: (ctx, answer) => t.is(answer, 'more money')
+    setFunc: (_ctx, answer) => t.is(answer, 'more money')
   })
 
   const bot = new Telegraf('')
@@ -64,9 +76,9 @@ test('setFunc on answer', async t => {
 
   bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.reply = (text, extra) => {
+  bot.context.reply = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
-    return Promise.resolve(true)
+    return DUMMY_MESSAGE
   }
 
   bot.use(ctx => {
@@ -79,7 +91,7 @@ test('setFunc on answer', async t => {
       text: 'what do you want?'
     },
     text: 'more money'
-  }})
+  }} as Update)
 })
 
 test('dont setFunc on wrong input text', async t => {
@@ -95,17 +107,15 @@ test('dont setFunc on wrong input text', async t => {
 
   bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.reply = () => Promise.resolve(
-    t.fail('dont reply on wrong text')
-  )
-  bot.use(t.pass)
+  bot.context.reply = () => Promise.reject(new Error('dont reply on wrong text'))
+  bot.use(() => t.pass())
 
   await bot.handleUpdate({message: {
     reply_to_message: {
       text: 'what do you do?'
     },
     text: 'more money'
-  }})
+  }} as Update)
 })
 
 test('dont setFunc on hide', async t => {
@@ -122,18 +132,16 @@ test('dont setFunc on hide', async t => {
 
   bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.reply = () => Promise.resolve(
-    t.fail('on hide nothing has to be replied')
-  )
+  bot.context.reply = () => Promise.reject(new Error('on hide nothing has to be replied'))
 
-  bot.use(t.pass)
+  bot.use(() => t.pass())
 
   await bot.handleUpdate({message: {
     reply_to_message: {
       text: 'what do you want?'
     },
     text: 'more money'
-  }})
+  }} as Update)
 })
 
 test('accepts other stuff than text', async t => {
@@ -149,9 +157,9 @@ test('accepts other stuff than text', async t => {
 
   bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.reply = (_text, extra) => {
+  bot.context.reply = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
-    return Promise.resolve(true)
+    return DUMMY_MESSAGE
   }
 
   bot.use(ctx => {
@@ -165,7 +173,7 @@ test('accepts other stuff than text', async t => {
     },
     photo: {},
     caption: '42'
-  }})
+  }} as Update)
 })
 
 test('multiple question setFuncs do not interfere', async t => {
@@ -185,7 +193,7 @@ test('multiple question setFuncs do not interfere', async t => {
 
   bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.reply = () => Promise.resolve(true)
+  bot.context.reply = () => Promise.resolve(DUMMY_MESSAGE)
 
   bot.use(ctx => {
     t.log('update not handled', ctx.update)
@@ -197,14 +205,14 @@ test('multiple question setFuncs do not interfere', async t => {
       text: 'what do you want to have?'
     },
     text: 'more money'
-  }})
+  }} as Update)
 
   await bot.handleUpdate({message: {
     reply_to_message: {
       text: 'what do you want to eat?'
     },
     text: 'less meat'
-  }})
+  }} as Update)
 })
 
 test('question button works on old menu', async t => {
@@ -212,7 +220,7 @@ test('question button works on old menu', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
     questionText: 'what do you want?',
-    setFunc: t.fail
+    setFunc: () => t.fail()
   })
 
   const bot = new Telegraf('')
@@ -220,14 +228,18 @@ test('question button works on old menu', async t => {
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.reply = t.pass
+  bot.context.reply = async () => {
+    t.pass()
+    return DUMMY_MESSAGE
+  }
+
   bot.context.deleteMessage = () => {
     // Method is triggered but fails as the message is to old
     t.pass()
     return Promise.reject(new Error('Bad Request: message can\'t be deleted'))
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
 })
 
 test.serial('question button deleteMessage fail does not kill question', async t => {
@@ -235,7 +247,7 @@ test.serial('question button deleteMessage fail does not kill question', async t
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
     questionText: 'what do you want?',
-    setFunc: t.fail
+    setFunc: () => t.fail()
   })
 
   const bot = new Telegraf('')
@@ -243,7 +255,11 @@ test.serial('question button deleteMessage fail does not kill question', async t
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.reply = t.pass
+  bot.context.reply = async () => {
+    t.pass()
+    return DUMMY_MESSAGE
+  }
+
   bot.context.deleteMessage = () => {
     // Method is triggered but fails as the message is to old
     t.pass()
@@ -252,6 +268,6 @@ test.serial('question button deleteMessage fail does not kill question', async t
 
   const normalErrorFunc = console.error
   console.error = t.pass
-  await bot.handleUpdate({callback_query: {data: 'a:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
   console.error = normalErrorFunc
 })

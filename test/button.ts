@@ -1,7 +1,10 @@
 import test from 'ava'
 import Telegraf from 'telegraf'
+import {Update} from 'telegram-typings'
 
 import TelegrafInlineMenu from '../source'
+
+import {InlineExtra} from './helpers/telegraf-typing-overrides'
 
 const menuKeyboard = [[{
   text: 'hit me',
@@ -16,18 +19,18 @@ test('manual menu correct', async t => {
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra) => {
+  bot.context.editMessageText = (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve(true)
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
 })
 
 test('simpleButton works', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.simpleButton('hit me', 'c', {
-    doFunc: t.pass
+    doFunc: () => t.pass()
   })
 
   const bot = new Telegraf('')
@@ -38,33 +41,36 @@ test('simpleButton works', async t => {
   bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
 
-  await bot.handleUpdate({callback_query: {data: 'a:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
 })
 
 test('button updates menu', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('yaay')
   menu.button('hit me', 'c', {
-    doFunc: t.pass
+    doFunc: () => {
+      t.pass()
+      Promise.resolve()
+    }
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra) => {
+  bot.context.editMessageText = (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve(true)
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
 })
 
 test('hidden button does not run doFunc', async t => {
   t.plan(1)
   const menu = new TelegrafInlineMenu('yaay')
   menu.simpleButton('hit me', 'c', {
-    doFunc: t.fail,
+    doFunc: () => t.fail(),
     hide: () => {
       t.pass()
       return Promise.resolve(true)
@@ -77,14 +83,14 @@ test('hidden button does not run doFunc', async t => {
   bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
 
-  await bot.handleUpdate({callback_query: {data: 'a:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
 })
 
 test('hidden button updates the menu', async t => {
   t.plan(1)
   const menu = new TelegrafInlineMenu('yaay')
   menu.button('hit me', 'c', {
-    doFunc: t.fail,
+    doFunc: () => t.fail(),
     hide: () => true
   })
 
@@ -97,5 +103,5 @@ test('hidden button updates the menu', async t => {
     return Promise.resolve(true)
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
 })

@@ -1,7 +1,10 @@
 import test from 'ava'
 import Telegraf from 'telegraf'
+import {Update} from 'telegram-typings'
 
 import TelegrafInlineMenu from '../source'
+
+import {InlineExtra} from './helpers/telegraf-typing-overrides'
 
 const menuKeyboard = [[{
   text: 'Submenu',
@@ -21,12 +24,12 @@ test('root menu correct', async t => {
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra) => {
+  bot.context.editMessageText = (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return Promise.resolve(true)
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
 })
 
 test('hidden submenu goes to the parent menu', async t => {
@@ -39,14 +42,14 @@ test('hidden submenu goes to the parent menu', async t => {
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.editMessageText = (text, extra: InlineExtra) => {
     t.is(text, 'foo')
     // As the submenu is hidden there are no buttons
     t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve(true)
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
 })
 
 test('hidden submenu goes to the parent menu from the sub sub menu call', async t => {
@@ -60,14 +63,14 @@ test('hidden submenu goes to the parent menu from the sub sub menu call', async 
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.editMessageText = (text, extra: InlineExtra) => {
     t.is(text, 'foo')
     // As the submenu is hidden there are no buttons
     t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve(true)
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:c:d'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c:d'}} as Update)
 })
 
 test('hidden submenu before does not cancel not hidden button', async t => {
@@ -86,9 +89,9 @@ test('hidden submenu before does not cancel not hidden button', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.editMessageText = () => Promise.resolve(t.fail('simpleButton does not update the menu. The hidden submenu had'))
+  bot.context.editMessageText = () => Promise.reject(new Error('simpleButton does not update the menu. The hidden submenu had'))
 
-  await bot.handleUpdate({callback_query: {data: 'a:test'}})
+  await bot.handleUpdate({callback_query: {data: 'a:test'}} as Update)
 })
 
 test('hidden submenu question is lost', async t => {
@@ -100,7 +103,7 @@ test('hidden submenu question is lost', async t => {
   })
     .question('Question', 'q', {
       questionText: 'bar',
-      setFunc: t.fail
+      setFunc: () => t.fail()
     })
 
   const bot = new Telegraf('')
@@ -119,7 +122,7 @@ test('hidden submenu question is lost', async t => {
       text: 'bar'
     },
     text: 'fancy'
-  }})
+  }} as Update)
 })
 
 test('submenu without back button', async t => {
@@ -130,12 +133,12 @@ test('submenu without back button', async t => {
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra) => {
+  bot.context.editMessageText = (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [])
     return Promise.resolve(true)
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
 })
 
 test('submenu with back button', async t => {
@@ -146,7 +149,7 @@ test('submenu with back button', async t => {
   bot.use(menu.init({backButtonText: baseInitOptions.backButtonText, actionCode: 'a'}))
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra) => {
+  bot.context.editMessageText = (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: 'back…',
       callback_data: 'a'
@@ -154,7 +157,7 @@ test('submenu with back button', async t => {
     return Promise.resolve(true)
   }
 
-  await bot.handleUpdate({callback_query: {data: 'a:c'}})
+  await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
 })
 
 test('submenu with main button', async t => {
@@ -165,7 +168,7 @@ test('submenu with main button', async t => {
   bot.use(menu.init({...baseInitOptions}))
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra) => {
+  bot.context.editMessageText = (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: 'main…',
       callback_data: 'main'
@@ -173,7 +176,7 @@ test('submenu with main button', async t => {
     return Promise.resolve(true)
   }
 
-  await bot.handleUpdate({callback_query: {data: 'c'}})
+  await bot.handleUpdate({callback_query: {data: 'c'}} as Update)
 })
 
 test('default init is main', async t => {
@@ -184,8 +187,12 @@ test('default init is main', async t => {
   bot.use(menu.init({...baseInitOptions}))
 
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = () => Promise.resolve(t.pass())
-  await bot.handleUpdate({callback_query: {data: 'main'}})
+  bot.context.editMessageText = async () => {
+    t.pass()
+    return true
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'main'}} as Update)
 })
 
 test('setParentMenuAfter', async t => {
@@ -194,13 +201,13 @@ test('setParentMenuAfter', async t => {
   menu.submenu('submenu', 's', new TelegrafInlineMenu('bar'))
     .simpleButton('button', 'b', {
       setParentMenuAfter: true,
-      doFunc: t.pass
+      doFunc: () => t.pass()
     })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
   bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (text, extra) => {
+  bot.context.editMessageText = (text, extra: InlineExtra) => {
     t.is(text, 'foo')
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: 'submenu',
@@ -215,16 +222,16 @@ test('setParentMenuAfter', async t => {
   })
 
   // +2
-  await bot.handleUpdate({callback_query: {data: 'a'}})
+  await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
   // +2
-  await bot.handleUpdate({callback_query: {data: 'a:s:b'}})
+  await bot.handleUpdate({callback_query: {data: 'a:s:b'}} as Update)
 })
 
 test('setParentMenuAfter when there is no parent fails', t => {
   const menu = new TelegrafInlineMenu('foo')
     .simpleButton('button', 'b', {
       setParentMenuAfter: true,
-      doFunc: t.fail
+      doFunc: () => t.fail()
     })
 
   const bot = new Telegraf('')
