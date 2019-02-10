@@ -99,27 +99,3 @@ test('hidden button updates the menu', async t => {
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}})
 })
-
-test('simpleButton require additionalArgs', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-
-  t.throws(() => {
-    menu.simpleButton('toggle me', 'c')
-  }, /Cannot.+undefined/)
-})
-
-test('button require additionalArgs', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-
-  t.throws(() => {
-    menu.button('toggle me', 'c')
-  }, /Cannot.+undefined/)
-})
-
-test('require doFunc', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-
-  t.throws(() => {
-    menu.simpleButton('toggle me', 'c', {})
-  }, /doFunc/)
-})

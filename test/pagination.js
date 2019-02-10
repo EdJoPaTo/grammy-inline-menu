@@ -150,10 +150,3 @@ test('hidden pagination', async t => {
 
   await bot.handleUpdate({callback_query: {data: 'a'}})
 })
-
-test('require additionalArgs', t => {
-  const menu = new TelegrafInlineMenu('foo')
-  t.throws(() => {
-    menu.pagination('c')
-  }, /Cannot.+undefined/)
-})

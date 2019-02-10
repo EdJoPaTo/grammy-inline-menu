@@ -66,15 +66,6 @@ test('async text func', async t => {
   await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
-test('menu.middleware fails with .init() hint', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-
-  const bot = new Telegraf('')
-  // Normally user would use bot.use.
-  // But telegraf will later use .middleware() on it. in order to check this faster, trigger this directly
-  t.throws(() => bot.use(menu.middleware()), /but\.use\(menu\.init/)
-})
-
 test('menu.init requires action code to be at the base level', t => {
   const menu = new TelegrafInlineMenu('yaay')
   const bot = new Telegraf('')

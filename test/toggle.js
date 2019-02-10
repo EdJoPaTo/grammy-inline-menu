@@ -102,23 +102,3 @@ async function ownPrefixTest(t, currentState, prefix) {
 
 test('own true prefix', ownPrefixTest, true, '42')
 test('own false prefix', ownPrefixTest, false, '666')
-
-test('require setFunc', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-
-  t.throws(() => {
-    menu.toggle('toggle me', 'c', {
-      isSetFunc: t.fail
-    })
-  }, /setFunc/)
-})
-
-test('require isSetFunc', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-
-  t.throws(() => {
-    menu.toggle('toggle me', 'c', {
-      setFunc: t.fail
-    })
-  }, /isSetFunc/)
-})

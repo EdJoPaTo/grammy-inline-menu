@@ -274,13 +274,6 @@ test('hide always has two args', async t => {
   await bot.handleUpdate({callback_query: {data: 'c'}})
 })
 
-test('require additionalArgs', t => {
-  const menu = new TelegrafInlineMenu('foo')
-  t.throws(() => {
-    menu.select('c', ['a', 'b'])
-  }, /Cannot.+undefined/)
-})
-
 test('require setFunc or submenu', t => {
   const menu = new TelegrafInlineMenu('foo')
   t.throws(() => {
