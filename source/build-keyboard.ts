@@ -17,7 +17,7 @@ export interface ButtonInfo {
 type ButtonRow = ButtonInfo[]
 type KeyboardPartCreator = (ctx: any) => (Promise<ButtonRow[]> | ButtonRow[])
 
-export async function buildKeyboard(content: (ButtonRow | KeyboardPartCreator)[], actionCodePrefix: ActionCode, ctx: any): Promise<InlineKeyboardMarkup> {
+export async function buildKeyboard(content: (ButtonRow | KeyboardPartCreator)[], actionCodePrefix: string, ctx: any): Promise<InlineKeyboardMarkup> {
   const resultButtons: InlineKeyboardButton[][][] = await Promise.all(content.map(async row => {
     if (typeof row === 'function') {
       const innerKeyboard = await row(ctx)
@@ -34,7 +34,7 @@ export async function buildKeyboard(content: (ButtonRow | KeyboardPartCreator)[]
   }
 }
 
-async function buildKeyboardRow(row: ButtonInfo[], actionCodePrefix: ActionCode, ctx: any): Promise<InlineKeyboardButton[]> {
+async function buildKeyboardRow(row: ButtonInfo[], actionCodePrefix: string, ctx: any): Promise<InlineKeyboardButton[]> {
   const buttons = await Promise.all(
     row.map(buttonInfo => buildKeyboardButton(buttonInfo, actionCodePrefix, ctx))
   )
@@ -43,7 +43,7 @@ async function buildKeyboardRow(row: ButtonInfo[], actionCodePrefix: ActionCode,
   return withoutHidden
 }
 
-export async function buildKeyboardButton(buttonInfo: ButtonInfo, actionCodePrefix: ActionCode, ctx: any): Promise<InlineKeyboardButton | undefined> {
+export async function buildKeyboardButton(buttonInfo: ButtonInfo, actionCodePrefix: string, ctx: any): Promise<InlineKeyboardButton | undefined> {
   const {hide, text, action, url, switchToChat, switchToCurrentChat, root} = buttonInfo
 
   if (hide) {
@@ -62,8 +62,7 @@ export async function buildKeyboardButton(buttonInfo: ButtonInfo, actionCodePref
     if (root) {
       button.callback_data = thisActionResult
     } else {
-      // TODO: actionCodePrefix should only be a string
-      button.callback_data = actionCodePrefix.concat(thisActionResult).getString()
+      button.callback_data = new ActionCode(actionCodePrefix).concat(thisActionResult).getString()
     }
   } else if (url) {
     button.url = typeof url === 'function' ? await url(ctx) : url

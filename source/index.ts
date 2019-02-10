@@ -107,7 +107,7 @@ class TelegrafInlineMenu {
     options.log('generate…', actionCode.get())
     const text = typeof this.menuText === 'function' ? (await this.menuText(ctx)) : this.menuText
 
-    let actualActionCode
+    let actualActionCode: string
     if (actionCode.isDynamic()) {
       if (!ctx.callbackQuery || !ctx.callbackQuery.data) {
         throw new Error('requires a callbackQuery with data in an dynamic menu')
@@ -121,10 +121,10 @@ class TelegrafInlineMenu {
       }
 
       const menuAction = actualParts.join(':')
-      actualActionCode = new ActionCode(menuAction)
-      options.log('generate with actualActionCode', actualActionCode.get(), actionCode.get(), ctx.callbackQuery.data)
+      actualActionCode = new ActionCode(menuAction).getString()
+      options.log('generate with actualActionCode', actualActionCode, actionCode.get(), ctx.callbackQuery.data)
     } else {
-      actualActionCode = actionCode
+      actualActionCode = actionCode.getString()
     }
 
     const keyboardMarkup = await this.buttons.generateKeyboardMarkup(ctx, actualActionCode, options)

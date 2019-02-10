@@ -1,6 +1,5 @@
 import {InlineKeyboardMarkup} from 'telegram-typings'
 
-import ActionCode from './action-code'
 import {ButtonInfo, buildKeyboard} from './build-keyboard'
 import {InternalMenuOptions} from './menu-options'
 
@@ -12,7 +11,7 @@ type KeyboardPartCreator = (ctx: any) => (Promise<ButtonRow[]> | ButtonRow[])
 class MenuButtons {
   readonly buttons: (ButtonRow | KeyboardPartCreator)[] = []
 
-  async generateKeyboardMarkup(ctx: any, actionCodePrefix: ActionCode, options: InternalMenuOptions): Promise<InlineKeyboardMarkup> {
+  async generateKeyboardMarkup(ctx: any, actionCodePrefix: string, options: InternalMenuOptions): Promise<InlineKeyboardMarkup> {
     const resultButtons = [
       ...this.buttons,
       generateBackButtons(actionCodePrefix, options)
