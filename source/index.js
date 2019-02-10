@@ -396,17 +396,14 @@ class TelegrafInlineMenu {
       setMenuAfter: true
     }
 
-    const toggleTrue = ctx => setFunc(ctx, true)
-    const toggleFalse = ctx => setFunc(ctx, false)
-
     this.responders.add({...baseHandler,
       action: new ActionCode(`${action}-true`),
-      middleware: toggleTrue
+      middleware: ctx => setFunc(ctx, true)
     })
 
     this.responders.add({...baseHandler,
       action: new ActionCode(`${action}-false`),
-      middleware: toggleFalse
+      middleware: ctx => setFunc(ctx, false)
     })
 
     return this.manual(textFunc, actionFunc, additionalArgs)
