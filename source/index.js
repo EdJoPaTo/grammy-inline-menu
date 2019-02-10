@@ -85,17 +85,14 @@ class TelegrafInlineMenu {
 
   replyMenuMiddleware() {
     const obj = {
-      middleware: () => {
-        return ctx => obj.setSpecific(ctx)
-      }
-    }
-    obj.setSpecific = (ctx, actionCode) => {
-      assert(obj.setMenuFunc, 'This does only work when menu is initialized with bot.use(menu.init())')
-      if (typeof actionCode === 'string') {
-        actionCode = new ActionCode(actionCode)
-      }
+      middleware: () => (ctx => obj.setSpecific(ctx)),
+      setSpecific: (ctx, actionCode) => {
+        if (!obj.setMenuFunc) {
+          throw new Error('This does only work when menu is initialized with bot.use(menu.init())')
+        }
 
-      return obj.setMenuFunc(ctx, actionCode)
+        return obj.setMenuFunc(ctx, actionCode)
+      }
     }
 
     this.replyMenuMiddlewares.push(obj)
@@ -148,10 +145,10 @@ class TelegrafInlineMenu {
         assert(!actionCode.isDynamic() || actionOverride, 'a dynamic menu can only be set when an actionCode is given')
 
         if (actionOverride) {
-          assert(actionCode.test(actionOverride.getString()), `The actionCode has to belong to the menu. ${actionOverride.get()} does not work with the menu ${actionCode.get()}`)
+          assert(actionCode.test(actionOverride), `The actionCode has to belong to the menu. ${actionOverride} does not work with the menu ${actionCode.get()}`)
         }
 
-        return setMenuFunc(ctx, 'replyMenuMiddleware', actionOverride)
+        return setMenuFunc(ctx, 'replyMenuMiddleware', new ActionCode(actionOverride))
       }
     }
 
