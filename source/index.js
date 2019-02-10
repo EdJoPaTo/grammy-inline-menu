@@ -381,15 +381,24 @@ class TelegrafInlineMenu {
     assert(setFunc, 'setFunc is not set. set it')
     assert(isSetFunc, 'isSetFunc is not set. set it')
 
-    const textFunc = ctx =>
-      prefixEmoji(text, isSetFunc, {
-        ...additionalArgs
-      }, ctx)
+    const hideFunc = async (ctx, state) => {
+      if (hide && await hide(ctx)) {
+        return true
+      }
 
-    const actionFunc = async ctx => {
-      const currentState = await isSetFunc(ctx)
-      return currentState ? `${action}-false` : `${action}-true`
+      const isSet = await isSetFunc(ctx)
+      return isSet === state
     }
+
+    this.manual(ctx => prefixEmoji(text, false, additionalArgs, ctx), `${action}-true`, {
+      ...additionalArgs,
+      hide: ctx => hideFunc(ctx, true)
+    })
+
+    this.manual(ctx => prefixEmoji(text, true, additionalArgs, ctx), `${action}-false`, {
+      ...additionalArgs,
+      hide: ctx => hideFunc(ctx, false)
+    })
 
     const baseHandler = {
       hide,
@@ -406,7 +415,7 @@ class TelegrafInlineMenu {
       middleware: ctx => setFunc(ctx, false)
     })
 
-    return this.manual(textFunc, actionFunc, additionalArgs)
+    return this
   }
 
   submenu(text, action, submenu, additionalArgs = {}) {
