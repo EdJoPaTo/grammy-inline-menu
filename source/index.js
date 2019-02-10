@@ -121,7 +121,7 @@ class TelegrafInlineMenu {
     options.log('add action reaction', actionCode.get(), 'setMenu')
     const setMenuFunc = (ctx, reason, actionOverride) => {
       if (actionOverride) {
-        ctx.match = actionCode.exec(actionOverride.get())
+        ctx.match = actionCode.exec(actionOverride.getString())
       }
 
       options.log('set menu', (actionOverride || actionCode).get(), reason, this)
@@ -140,7 +140,7 @@ class TelegrafInlineMenu {
         assert(!actionCode.isDynamic() || actionOverride, 'a dynamic menu can only be set when an actionCode is given')
 
         if (actionOverride) {
-          assert(actionCode.test(actionOverride.get()), `The actionCode has to belong to the menu. ${actionOverride.get()} does not work with the menu ${actionCode.get()}`)
+          assert(actionCode.test(actionOverride.getString()), `The actionCode has to belong to the menu. ${actionOverride.get()} does not work with the menu ${actionCode.get()}`)
         }
 
         return setMenuFunc(ctx, 'replyMenuMiddleware', actionOverride)
