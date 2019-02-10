@@ -1,12 +1,15 @@
-const assert = require('assert').strict
-
 class ActionCode {
   readonly code: string | RegExp
 
   constructor(actionCode: string | RegExp) {
     if (actionCode instanceof RegExp) {
-      assert(!actionCode.flags, 'RegExp flags are not supported')
-      assert(!actionCode.source.startsWith('^') && !actionCode.source.endsWith('$'), 'begin or end anchors are not supported (^, $)')
+      if (actionCode.flags) {
+        throw new Error('RegExp flags are not supported')
+      }
+
+      if (actionCode.source.startsWith('^') || actionCode.source.endsWith('$')) {
+        throw new Error('begin or end anchors are not supported (^, $)')
+      }
 
       this.code = actionCode
     } else {

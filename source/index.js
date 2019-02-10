@@ -1,5 +1,3 @@
-const assert = require('assert').strict
-
 const {Composer, Extra, Markup} = require('telegraf')
 
 const ActionCode = require('./action-code')
@@ -429,6 +427,15 @@ class TelegrafInlineMenu {
     })
     return submenu
   }
+}
+
+function assert(value, message) {
+  if (value) {
+    // Everything is ok
+    return
+  }
+
+  throw new Error(message)
 }
 
 module.exports = TelegrafInlineMenu
