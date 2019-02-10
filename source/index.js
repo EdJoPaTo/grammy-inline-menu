@@ -59,11 +59,12 @@ class TelegrafInlineMenu {
   async setMenuNow(ctx, actionCode, options) {
     const {text, extra} = await this.generate(ctx, actionCode, options)
     if (ctx.updateType !== 'callback_query') {
-      return ctx.reply(text, extra)
+      await ctx.reply(text, extra)
+      return
     }
 
     await ctx.answerCbQuery()
-    return ctx.editMessageText(text, extra)
+    await ctx.editMessageText(text, extra)
       .catch(error => {
         if (error.description === 'Bad Request: message is not modified') {
           // This is kind of ok.
@@ -299,9 +300,9 @@ class TelegrafInlineMenu {
       middleware: parseQuestionAnswer
     })
 
-    const hitQuestionButton = ctx => {
+    const hitQuestionButton = async ctx => {
       const extra = Extra.markup(Markup.forceReply())
-      return Promise.all([
+      await Promise.all([
         ctx.reply(questionText, extra),
         ctx.answerCbQuery(),
         ctx.deleteMessage()
