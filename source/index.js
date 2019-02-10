@@ -26,7 +26,10 @@ class TelegrafInlineMenu {
       commands = [commands]
     }
 
-    this.commands = this.commands.concat(commands)
+    for (const c of commands) {
+      this.commands.push(c)
+    }
+
     return this
   }
 
@@ -35,7 +38,11 @@ class TelegrafInlineMenu {
     const text = typeof this.menuText === 'function' ? (await this.menuText(ctx)) : this.menuText
 
     let actualActionCode
-    if (ctx.callbackQuery && actionCode.isDynamic()) {
+    if (actionCode.isDynamic()) {
+      if (!ctx.callbackQuery || !ctx.callbackQuery.data) {
+        throw new Error('requires a callbackQuery with data in an dynamic menu')
+      }
+
       const expectedPartCount = options.depth
       const actualParts = ctx.callbackQuery.data.split(':')
       // Go up to the menu that shall be opened
