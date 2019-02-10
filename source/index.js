@@ -83,7 +83,7 @@ class TelegrafInlineMenu {
     }
     obj.setSpecific = (ctx, actionCode) => {
       assert(obj.setMenuFunc, 'This does only work when menu is initialized with bot.use(menu.init())')
-      if (actionCode) {
+      if (typeof actionCode === 'string') {
         actionCode = new ActionCode(actionCode)
       }
 
@@ -261,7 +261,7 @@ class TelegrafInlineMenu {
 
     const createPaginationButtons = async ctx => {
       if (hide && await hide(ctx)) {
-        return []
+        return {}
       }
 
       // Numbers are within
