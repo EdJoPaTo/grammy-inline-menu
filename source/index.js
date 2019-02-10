@@ -167,15 +167,12 @@ class TelegrafInlineMenu {
         }
 
         const middleware = submenu.middleware(childActionCode, subOptions)
-        const middlewareOptions = {
+        return createHandlerMiddleware(middleware, {
           only: ctx => !ctx.callbackQuery || childActionCode.testIsBelow(ctx.callbackQuery.data),
           hide,
           hiddenFunc
-        }
-
-        return createHandlerMiddleware(middleware, middlewareOptions)
+        })
       })
-    const handlerFuncsFlattened = [].concat(...handlerFuncs)
 
     const responderMiddleware = this.responders.createMiddleware({
       actionCode,
@@ -186,7 +183,7 @@ class TelegrafInlineMenu {
     return Composer.compose([
       responderMiddleware,
       ...functions,
-      ...handlerFuncsFlattened
+      ...handlerFuncs
     ])
   }
 
@@ -255,10 +252,8 @@ class TelegrafInlineMenu {
       return Math.max(1, Math.min(totalPages, number)) || 1
     }
 
-    const hitPageButton = async ctx => setPage(ctx, await pageFromCtx(ctx))
-
     this.responders.add({
-      middleware: hitPageButton,
+      middleware: async ctx => setPage(ctx, await pageFromCtx(ctx)),
       action: new ActionCode(new RegExp(`${action}-(\\d+)`)),
       hide,
       setMenuAfter: true
@@ -279,9 +274,8 @@ class TelegrafInlineMenu {
     this.buttons.addCreator(async ctx => {
       const buttonOptions = await createPaginationButtons(ctx)
       const optionsArr = Object.keys(buttonOptions)
-      const textFunc = (_ctx, key) => buttonOptions[key]
       return generateSelectButtons(action, optionsArr, {
-        textFunc
+        textFunc: (_ctx, key) => buttonOptions[key]
       })
     })
 
@@ -343,9 +337,8 @@ class TelegrafInlineMenu {
     const hideKey = hide ? (ctx => hide(ctx, keyFromCtx(ctx))) : false
 
     if (setFunc) {
-      const hitSelectButton = ctx => setFunc(ctx, keyFromCtx(ctx))
       this.responders.add({
-        middleware: hitSelectButton,
+        middleware: ctx => setFunc(ctx, keyFromCtx(ctx)),
         action: actionCode,
         hide: hideKey,
         setParentMenuAfter: additionalArgs.setParentMenuAfter,
@@ -370,9 +363,9 @@ class TelegrafInlineMenu {
       const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
       const fallbackKeyTextFunc = Array.isArray(optionsResult) ? ((_ctx, key) => key) : ((_ctx, key) => optionsResult[key])
       const textOnlyFunc = textFunc || fallbackKeyTextFunc
-      const keyTextFunc = (ctx, key, i, arr) => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
+      const keyTextFunc = (...args) => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
         hideFalseEmoji: !multiselect
-      }, ctx, key, i, arr)
+      }, ...args)
       return generateSelectButtons(action, keys, {
         textFunc: keyTextFunc,
         ...additionalArgs
