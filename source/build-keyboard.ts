@@ -26,8 +26,9 @@ export async function buildKeyboard(content: (ButtonRow | KeyboardPartCreator)[]
 
     return [await buildKeyboardRow(row, actionCodePrefix, ctx)]
   }))
-  // TODO: .flat requires NodeJS 11 / ES2019. This is not that nice as a library. There should be a better solution here.
-  const resultButtonsFlatted = resultButtons.flat(1)
+  const resultButtonsFlatted = resultButtons
+    // .flat(1) requires NodeJS 11 / ES2019. This would be nice but is to far away for now.
+    .reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
     .filter(o => o.length > 0)
   return {
     inline_keyboard: resultButtonsFlatted
