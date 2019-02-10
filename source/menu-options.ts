@@ -12,6 +12,7 @@ export interface InternalMenuOptions {
   depth: number;
   backButtonText?: string;
   mainMenuButtonText?: string;
+  setParentMenuFunc?: (ctx: any, reason: string) => Promise<void>;
   log: (...args: any[]) => void;
 }
 
