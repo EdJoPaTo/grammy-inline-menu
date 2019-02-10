@@ -3,7 +3,7 @@ import {ButtonInfo} from '../build-keyboard'
 import {getRowsOfButtons} from '../align-buttons'
 
 type ContextKeyFunc<T> = (ctx: any, key: string) => Promise<T> | T
-type ContextKeyIndexArrFunc<T> = (ctx: any, key: string, index?: number, array?: string[]) => Promise<T> | T
+type ContextKeyIndexArrFunc<T> = (ctx: any, key: string, index: number, array: string[]) => Promise<T> | T
 
 interface SelectButtonOptions {
   columns?: number;
