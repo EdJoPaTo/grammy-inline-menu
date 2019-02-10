@@ -82,6 +82,33 @@ test('option async array menu', async t => {
   await bot.handleUpdate({callback_query: {data: 'a'}})
 })
 
+test('option array with textFunc', async t => {
+  const menu = new TelegrafInlineMenu('foo')
+  menu.select('c', ['a', 'b'], {
+    textFunc: (_ctx, key) => key.toUpperCase(),
+    setFunc: t.fail
+  })
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra) => {
+    t.deepEqual(extra.reply_markup.inline_keyboard, [[
+      {
+        text: 'A',
+        callback_data: 'a:c-a'
+      }, {
+        text: 'B',
+        callback_data: 'a:c-b'
+      }
+    ]])
+    return Promise.resolve(true)
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a'}})
+})
+
 test('selects', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('foo')
