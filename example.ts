@@ -2,7 +2,7 @@ import {readFileSync} from 'fs'
 
 import Telegraf from 'telegraf'
 
-import TelegrafInlineMenu = require('./source')
+import TelegrafInlineMenu from './source'
 
 const session = require('telegraf/session')
 
@@ -12,30 +12,30 @@ menu.urlButton('EdJoPaTo.de', 'https://edjopato.de')
 
 let mainMenuToggle = false
 menu.toggle('toggle me', 'a', {
-  setFunc: (_ctx: any, newVal: boolean) => {
+  setFunc: (_ctx, newVal) => {
     mainMenuToggle = newVal
   },
   isSetFunc: () => mainMenuToggle
 })
 
 menu.simpleButton('click me', 'c', {
-  doFunc: (ctx: any) => ctx.answerCbQuery('you clicked me!'),
+  doFunc: ctx => ctx.answerCbQuery('you clicked me!'),
   hide: () => mainMenuToggle
 })
 
 menu.simpleButton('click me harder', 'd', {
-  doFunc: (ctx: any) => ctx.answerCbQuery('you can do better!'),
+  doFunc: ctx => ctx.answerCbQuery('you can do better!'),
   joinLastRow: true,
   hide: () => mainMenuToggle
 })
 
 let selectedKey = 'b'
 menu.select('s', ['A', 'B', 'C'], {
-  setFunc: (ctx: any, key: string) => {
+  setFunc: async (ctx, key) => {
     selectedKey = key
-    return ctx.answerCbQuery(`you selected ${key}`)
+    await ctx.answerCbQuery(`you selected ${key}`)
   },
-  isSetFunc: (_ctx: any, key: string) => key === selectedKey
+  isSetFunc: (_ctx, key) => key === selectedKey
 })
 
 const someMenu = new TelegrafInlineMenu('People like food. What do they like?')
@@ -43,8 +43,8 @@ const someMenu = new TelegrafInlineMenu('People like food. What do they like?')
 const people: any = {Mark: {}, Paul: {}}
 const food = ['bread', 'cake', 'bananas']
 
-function personButtonOptions(): any {
-  const result: any = {}
+function personButtonOptions(): {[key: string]: string} {
+  const result: {[key: string]: string} = {}
   Object.keys(people)
     .forEach(person => {
       const choise = people[person].food
@@ -69,7 +69,7 @@ function foodSelectText(ctx: any): string {
 
 const foodSelectSubmenu = new TelegrafInlineMenu(foodSelectText)
   .toggle('Prefer Tee', 't', {
-    setFunc: (ctx: any, choice: string) => {
+    setFunc: (ctx: any, choice) => {
       const person = ctx.match[1]
       people[person].tee = choice
     },
@@ -79,11 +79,11 @@ const foodSelectSubmenu = new TelegrafInlineMenu(foodSelectText)
     }
   })
   .select('f', food, {
-    setFunc: (ctx: any, key: string) => {
+    setFunc: (ctx: any, key) => {
       const person = ctx.match[1]
       people[person].food = key
     },
-    isSetFunc: (ctx: any, key: string) => {
+    isSetFunc: (ctx: any, key) => {
       const person = ctx.match[1]
       return people[person].food === key
     }
@@ -96,7 +96,7 @@ someMenu.select('p', personButtonOptions, {
 
 someMenu.question('Add person', 'add', {
   questionText: 'Who likes food too?',
-  setFunc: (_ctx: any, key: string) => {
+  setFunc: (_ctx, key) => {
     people[key] = {}
   }
 })
@@ -108,7 +108,7 @@ menu.submenu('Food menu', 'b', someMenu, {
 menu.submenu('Third Menu', 'y', new TelegrafInlineMenu('Third Menu'))
   .setCommand('third')
   .simpleButton('Just a button', 'a', {
-    doFunc: (ctx: any) => ctx.answerCbQuery('Just a callback query answer')
+    doFunc: ctx => ctx.answerCbQuery('Just a callback query answer')
   })
 
 menu.setCommand('start')

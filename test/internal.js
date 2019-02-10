@@ -3,11 +3,6 @@ import Telegraf from 'telegraf'
 
 import TelegrafInlineMenu from '../source'
 
-test('middleware options has to be set', t => {
-  const menu = new TelegrafInlineMenu('yaay')
-  t.throws(() => menu.middleware('something'), /options/)
-})
-
 test.serial('setMenuNow menu is not modified', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {

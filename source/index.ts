@@ -1,27 +1,97 @@
-const {Composer, Extra, Markup} = require('telegraf')
+import {Composer, Extra, Markup, ContextMessageUpdate} from 'telegraf'
 
-const ActionCode = require('./action-code')
-const {normalizeOptions} = require('./menu-options')
-const {prefixEmoji} = require('./prefix')
-const {createHandlerMiddleware} = require('./middleware-helper')
+import ActionCode from './action-code'
+import MenuButtons from './menu-buttons'
+import MenuResponders from './menu-responders'
+import {normalizeOptions, InternalMenuOptions, MenuOptions} from './menu-options'
+import {prefixEmoji, PrefixOptions} from './prefix'
+import {createHandlerMiddleware} from './middleware-helper'
 
-const MenuButtons = require('./menu-buttons')
-const MenuResponders = require('./menu-responders')
+import {generateSelectButtons} from './buttons/select'
+import {paginationOptions} from './buttons/pagination'
 
-const {generateSelectButtons} = require('./buttons/select')
-const {paginationOptions} = require('./buttons/pagination')
+type ConstOrContextFunc<T> = T | ContextFunc<T>
+type ContextFunc<T> = (ctx: ContextMessageUpdate) => Promise<T> | T
+type ContextNextFunc = (ctx: ContextMessageUpdate, next: any) => Promise<void>
+type ContextKeyFunc<T> = (ctx: ContextMessageUpdate, key: string) => Promise<T> | T
+type ContextKeyIndexArrayFunc<T> = (ctx: ContextMessageUpdate, key: string, index: number, array: string[]) => Promise<T> | T
+
+type Middleware = (ctx: ContextMessageUpdate, next?: () => any) => Promise<void>
+
+interface SubmenuEntry {
+  action: ActionCode;
+  submenu: TelegrafInlineMenu;
+  hide?: ContextFunc<boolean>;
+}
+
+interface ReplyMenuMiddleware {
+  middleware: () => ContextNextFunc;
+  setSpecific: (ctx: ContextMessageUpdate, actionCodeOverride: string) => Promise<void>;
+  setMenuFunc?: (ctx: ContextMessageUpdate, actionCodeOverride: string) => Promise<void>;
+}
+
+interface ButtonOptions {
+  hide?: ContextFunc<boolean>;
+  joinLastRow?: boolean;
+}
+
+interface ActionButtonOptions extends ButtonOptions {
+  root?: boolean;
+}
+
+interface SimpleButtonOptions extends ActionButtonOptions {
+  doFunc: ContextFunc<any>;
+  setMenuAfter?: boolean;
+  setParentMenuAfter?: boolean;
+}
+
+interface PaginationOptions {
+  setPage: (ctx: ContextMessageUpdate, page: number) => Promise<void> | void;
+  getCurrentPage: ContextFunc<number>;
+  getTotalPages: ContextFunc<number>;
+  hide?: ContextFunc<boolean>;
+}
+
+interface QuestionOptions extends ButtonOptions {
+  questionText: string;
+  setFunc: (ctx: ContextMessageUpdate, answer: string) => Promise<void> | void;
+}
+
+interface SelectOptions {
+  setFunc?: ContextKeyFunc<void>;
+  submenu?: TelegrafInlineMenu;
+  isSetFunc?: ContextKeyFunc<boolean>;
+  textFunc?: ContextKeyIndexArrayFunc<string>;
+  prefixFunc?: ContextKeyIndexArrayFunc<string>;
+  hide?: ContextKeyFunc<boolean>;
+  setMenuAfter?: boolean;
+  setParentMenuAfter?: boolean;
+  multiselect?: boolean;
+  columns?: number;
+  maxRows?: number;
+}
+
+interface ToggleOptions extends ButtonOptions, PrefixOptions {
+  setFunc: (ctx: ContextMessageUpdate, newState: boolean) => Promise<void> | void;
+  isSetFunc: ContextFunc<boolean>;
+}
 
 class TelegrafInlineMenu {
-  constructor(text) {
-    this.menuText = text
-    this.buttons = new MenuButtons()
-    this.responders = new MenuResponders()
-    this.commands = []
-    this.submenus = []
-    this.replyMenuMiddlewares = []
-  }
+  protected readonly buttons = new MenuButtons();
 
-  setCommand(commands) {
+  protected readonly responders = new MenuResponders();
+
+  protected readonly commands: string[] = [];
+
+  protected readonly submenus: SubmenuEntry[] = [];
+
+  protected readonly replyMenuMiddlewares: ReplyMenuMiddleware[] = [];
+
+  constructor(
+    protected menuText: ConstOrContextFunc<string>
+  ) { }
+
+  setCommand(commands: string | string[]): TelegrafInlineMenu {
     if (!Array.isArray(commands)) {
       commands = [commands]
     }
@@ -33,7 +103,7 @@ class TelegrafInlineMenu {
     return this
   }
 
-  async generate(ctx, actionCode, options) {
+  async generate(ctx: ContextMessageUpdate, actionCode: ActionCode, options: InternalMenuOptions): Promise<{text: string; extra: Extra}> {
     options.log('generate…', actionCode.get())
     const text = typeof this.menuText === 'function' ? (await this.menuText(ctx)) : this.menuText
 
@@ -59,11 +129,11 @@ class TelegrafInlineMenu {
 
     const keyboardMarkup = await this.buttons.generateKeyboardMarkup(ctx, actualActionCode, options)
     options.log('buttons', keyboardMarkup.inline_keyboard)
-    const extra = Extra.markdown().markup(keyboardMarkup)
+    const extra = Extra.markdown().markup(keyboardMarkup) as Extra
     return {text, extra}
   }
 
-  async setMenuNow(ctx, actionCode, options) {
+  async setMenuNow(ctx: any, actionCode: ActionCode, options: InternalMenuOptions): Promise<void> {
     const {text, extra} = await this.generate(ctx, actionCode, options)
     if (ctx.updateType !== 'callback_query') {
       await ctx.reply(text, extra)
@@ -72,7 +142,7 @@ class TelegrafInlineMenu {
 
     await ctx.answerCbQuery()
     await ctx.editMessageText(text, extra)
-      .catch(error => {
+      .catch((error: any) => {
         if (error.description === 'Bad Request: message is not modified') {
           // This is kind of ok.
           // Not changed stuff should not be sended but sometimes it happens…
@@ -83,10 +153,10 @@ class TelegrafInlineMenu {
       })
   }
 
-  replyMenuMiddleware() {
-    const obj = {
-      middleware: () => (ctx => obj.setSpecific(ctx)),
-      setSpecific: (ctx, actionCode) => {
+  replyMenuMiddleware(): ReplyMenuMiddleware {
+    const obj: ReplyMenuMiddleware = {
+      middleware: () => ((ctx: ContextMessageUpdate) => obj.setSpecific(ctx, '')),
+      setSpecific: (ctx: ContextMessageUpdate, actionCode: string) => {
         if (!obj.setMenuFunc) {
           throw new Error('This does only work when menu is initialized with bot.use(menu.init())')
         }
@@ -99,7 +169,7 @@ class TelegrafInlineMenu {
     return obj
   }
 
-  init(userOptions = {}) {
+  init(userOptions: MenuOptions = {}): Middleware {
     // Debug
     // userOptions.log = (...args) => console.log(new Date(), ...args)
     const {actionCode, internalOptions} = normalizeOptions(userOptions)
@@ -109,11 +179,8 @@ class TelegrafInlineMenu {
     return middleware
   }
 
-  middleware(actionCode, options) {
+  middleware(actionCode: ActionCode, options: InternalMenuOptions): Middleware {
     assert(actionCode, 'use this menu with .init(): but.use(menu.init(args))')
-    // This assert is not needed as this function (should) only be called internally.
-    // But as options is only used later the root of the error is not that easy to find without.
-    assert(options, 'options has to be set')
 
     if (actionCode.isDynamic()) {
       assert(this.commands.length === 0, `commands can not point on dynamic submenus. Happened in menu ${actionCode.get()} with the following commands: ${this.commands.join(', ')}`)
@@ -124,7 +191,7 @@ class TelegrafInlineMenu {
 
     options.log('middleware triggered', actionCode.get(), options, this)
     options.log('add action reaction', actionCode.get(), 'setMenu')
-    const setMenuFunc = (ctx, reason, actionOverride) => {
+    const setMenuFunc = (ctx: any, reason: string, actionOverride?: ActionCode): Promise<void> => {
       if (actionOverride) {
         ctx.match = actionCode.exec(actionOverride.getString())
       }
@@ -135,7 +202,8 @@ class TelegrafInlineMenu {
 
     const functions = []
     if (this.commands.length > 0) {
-      functions.push(Composer.command(this.commands, ctx => setMenuFunc(ctx, 'command')))
+      const myComposer: any = Composer
+      functions.push(myComposer.command(this.commands, (ctx: any) => setMenuFunc(ctx, 'command')))
     }
 
     for (const replyMenuMiddleware of this.replyMenuMiddlewares) {
@@ -152,7 +220,7 @@ class TelegrafInlineMenu {
       }
     }
 
-    const subOptions = {
+    const subOptions: InternalMenuOptions = {
       ...options,
       setParentMenuFunc: setMenuFunc,
       depth: Number(options.depth) + 1
@@ -161,7 +229,7 @@ class TelegrafInlineMenu {
     const handlerFuncs = this.submenus
       .map(({action, submenu, hide}) => {
         const childActionCode = actionCode.concat(action)
-        const hiddenFunc = (ctx, next) => {
+        const hiddenFunc: ContextNextFunc = (ctx, next): Promise<void> => {
           if (!ctx.callbackQuery) {
             // Only set menu when a hidden button below was used
             // Without callbackData this can not be determined
@@ -192,7 +260,7 @@ class TelegrafInlineMenu {
     ])
   }
 
-  urlButton(text, url, additionalArgs = {}) {
+  urlButton(text: ConstOrContextFunc<string>, url: ConstOrContextFunc<string>, additionalArgs: ButtonOptions = {}): TelegrafInlineMenu {
     this.buttons.add({
       text,
       url,
@@ -201,7 +269,7 @@ class TelegrafInlineMenu {
     return this
   }
 
-  switchToChatButton(text, value, additionalArgs = {}) {
+  switchToChatButton(text: ConstOrContextFunc<string>, value: ConstOrContextFunc<string>, additionalArgs: ButtonOptions = {}): TelegrafInlineMenu {
     this.buttons.add({
       text,
       switchToChat: value,
@@ -210,7 +278,7 @@ class TelegrafInlineMenu {
     return this
   }
 
-  switchToCurrentChatButton(text, value, additionalArgs = {}) {
+  switchToCurrentChatButton(text: ConstOrContextFunc<string>, value: ConstOrContextFunc<string>, additionalArgs: ButtonOptions = {}): TelegrafInlineMenu {
     this.buttons.add({
       text,
       switchToCurrentChat: value,
@@ -219,7 +287,7 @@ class TelegrafInlineMenu {
     return this
   }
 
-  manual(text, action, additionalArgs = {}) {
+  manual(text: ConstOrContextFunc<string>, action: string, additionalArgs: ActionButtonOptions = {}): TelegrafInlineMenu {
     this.buttons.add({
       text,
       action,
@@ -230,7 +298,7 @@ class TelegrafInlineMenu {
   }
 
   // This button does not update the menu after being pressed
-  simpleButton(text, action, additionalArgs) {
+  simpleButton(text: ConstOrContextFunc<string>, action: string, additionalArgs: SimpleButtonOptions): TelegrafInlineMenu {
     assert(additionalArgs.doFunc, 'doFunc is not set. set it or use menu.manual')
 
     this.responders.add({
@@ -243,15 +311,15 @@ class TelegrafInlineMenu {
     return this.manual(text, action, additionalArgs)
   }
 
-  button(text, action, additionalArgs) {
+  button(text: ConstOrContextFunc<string>, action: string, additionalArgs: SimpleButtonOptions): TelegrafInlineMenu {
     additionalArgs.setMenuAfter = true
     return this.simpleButton(text, action, additionalArgs)
   }
 
-  pagination(action, additionalArgs) {
+  pagination(action: string, additionalArgs: PaginationOptions): TelegrafInlineMenu {
     const {setPage, getCurrentPage, getTotalPages, hide} = additionalArgs
 
-    const pageFromCtx = async ctx => {
+    const pageFromCtx = async (ctx: any): Promise<number> => {
       const number = Number(ctx.match[ctx.match.length - 1])
       const totalPages = await getTotalPages(ctx)
       return Math.max(1, Math.min(totalPages, number)) || 1
@@ -264,7 +332,7 @@ class TelegrafInlineMenu {
       setMenuAfter: true
     })
 
-    const createPaginationButtons = async ctx => {
+    const createPaginationButtons = async (ctx: ContextMessageUpdate): Promise<{[key: string]: string}> => {
       if (hide && await hide(ctx)) {
         return {}
       }
@@ -287,12 +355,12 @@ class TelegrafInlineMenu {
     return this
   }
 
-  question(text, action, additionalArgs) {
+  question(text: ConstOrContextFunc<string>, action: string, additionalArgs: QuestionOptions): TelegrafInlineMenu {
     const {questionText, setFunc, hide} = additionalArgs
     assert(questionText, 'questionText is not set. set it')
     assert(setFunc, 'setFunc is not set. set it')
 
-    const parseQuestionAnswer = async ctx => {
+    const parseQuestionAnswer = async (ctx: any): Promise<void> => {
       const answer = ctx.message.text
       await setFunc(ctx, answer)
     }
@@ -304,13 +372,13 @@ class TelegrafInlineMenu {
       middleware: parseQuestionAnswer
     })
 
-    const hitQuestionButton = async ctx => {
+    const hitQuestionButton = async (ctx: any): Promise<void> => {
       const extra = Extra.markup(Markup.forceReply())
       await Promise.all([
         ctx.reply(questionText, extra),
         ctx.answerCbQuery(),
         ctx.deleteMessage()
-          .catch(error => {
+          .catch((error: any) => {
             if (/can't be deleted/.test(error)) {
               // Looks like message is to old to be deleted
               return
@@ -327,7 +395,7 @@ class TelegrafInlineMenu {
     })
   }
 
-  select(action, options, additionalArgs) {
+  select(action: string, options: ConstOrContextFunc<string[] | {[key: string]: string}>, additionalArgs: SelectOptions): TelegrafInlineMenu {
     const {setFunc, submenu, hide} = additionalArgs
     if (submenu) {
       assert(!setFunc, 'setFunc and submenu can not be set at the same time.')
@@ -337,9 +405,9 @@ class TelegrafInlineMenu {
       assert(!hide, 'hiding a dynamic submenu is not possible')
     }
 
-    const keyFromCtx = ctx => ctx.match[ctx.match.length - 1]
+    const keyFromCtx = (ctx: any): string => ctx.match[ctx.match.length - 1]
     const actionCode = new ActionCode(new RegExp(`${action}-([^:]+)`))
-    const hideKey = hide ? (ctx => hide(ctx, keyFromCtx(ctx))) : false
+    const hideKey = hide ? ((ctx: ContextMessageUpdate) => hide(ctx, keyFromCtx(ctx))) : undefined
 
     if (setFunc) {
       this.responders.add({
@@ -366,9 +434,9 @@ class TelegrafInlineMenu {
     this.buttons.addCreator(async ctx => {
       const optionsResult = await optionsFunc(ctx)
       const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
-      const fallbackKeyTextFunc = Array.isArray(optionsResult) ? ((_ctx, key) => key) : ((_ctx, key) => optionsResult[key])
+      const fallbackKeyTextFunc = Array.isArray(optionsResult) ? ((_ctx: any, key: string) => key) : ((_ctx: any, key: string) => optionsResult[key])
       const textOnlyFunc = textFunc || fallbackKeyTextFunc
-      const keyTextFunc = (...args) => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
+      const keyTextFunc = (...args: any[]): Promise<string> => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
         hideFalseEmoji: !multiselect
       }, ...args)
       return generateSelectButtons(action, keys, {
@@ -380,12 +448,12 @@ class TelegrafInlineMenu {
     return this
   }
 
-  toggle(text, action, additionalArgs) {
+  toggle(text: ConstOrContextFunc<string>, action: string, additionalArgs: ToggleOptions): TelegrafInlineMenu {
     const {setFunc, isSetFunc, hide} = additionalArgs
     assert(setFunc, 'setFunc is not set. set it')
     assert(isSetFunc, 'isSetFunc is not set. set it')
 
-    const hideFunc = async (ctx, state) => {
+    const hideFunc = async (ctx: ContextMessageUpdate, state: boolean): Promise<boolean> => {
       if (hide && await hide(ctx)) {
         return true
       }
@@ -422,7 +490,7 @@ class TelegrafInlineMenu {
     return this
   }
 
-  submenu(text, action, submenu, additionalArgs = {}) {
+  submenu(text: ConstOrContextFunc<string>, action: string, submenu: TelegrafInlineMenu, additionalArgs: ButtonOptions = {}): TelegrafInlineMenu {
     this.manual(text, action, additionalArgs)
     this.submenus.push({
       action: new ActionCode(action),
@@ -433,7 +501,7 @@ class TelegrafInlineMenu {
   }
 }
 
-function assert(value, message) {
+function assert(value: any, message: string): void {
   if (value) {
     // Everything is ok
     return
@@ -443,3 +511,5 @@ function assert(value, message) {
 }
 
 module.exports = TelegrafInlineMenu
+
+export default TelegrafInlineMenu
