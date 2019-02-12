@@ -17,7 +17,7 @@ test('five pages on fifth page', keysCorrectMacro, 5, 5, [1, 4, 5])
 test('go big', keysCorrectMacro, 200, 100, [1, 99, 100, 101, 200])
 test('one page is ommited', keysCorrectMacro, 1, 1, [])
 test('NaN pages is ommited', keysCorrectMacro, NaN, 1, [])
-test('currentPage NaN is ommited', keysCorrectMacro, 5, NaN, [])
+test('currentPage NaN is assumed 1', keysCorrectMacro, 2, NaN, [1, 2])
 test('currentPage greater than totalPages is max page', keysCorrectMacro, 10, 15, [1, 9, 10])
 
 // When there are 19 items / 2 per page there are... 9.5 pages -> 10

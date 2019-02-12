@@ -9,10 +9,10 @@ export function paginationOptions(totalPages: number, currentPage: number): {[ke
   // Numbers have to be within
   // currentPage in [1..totalPages]
   const totalPagesFixed = Math.ceil(totalPages)
-  const currentPageFixed = Math.max(1, Math.min(totalPagesFixed, Math.floor(currentPage)))
+  const currentPageFixed = Math.max(1, Math.min(totalPagesFixed, Math.floor(currentPage || 1)))
 
   const buttons: any = {}
-  if (!isFinite(totalPagesFixed) || !isFinite(currentPage) || totalPagesFixed < 2) {
+  if (!isFinite(totalPagesFixed) || !isFinite(currentPageFixed) || totalPagesFixed < 2) {
     return buttons
   }
 
