@@ -119,6 +119,23 @@ test('sets page not outside of range', async t => {
   await bot.handleUpdate({callback_query: {data: 'a:c-3'}} as Update)
 })
 
+test('sets page 2 when maxPage is 1.5', async t => {
+  const menu = new TelegrafInlineMenu('foo')
+  menu.pagination('c', {
+    setPage: (_ctx, page) => Promise.resolve(t.is(page, 2)),
+    getCurrentPage: () => 1,
+    getTotalPages: () => 1.5 // 3 elements with 2 per page -> 1.5 pages -> ceil 2 pages required
+  })
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = () => Promise.resolve(true)
+
+  await bot.handleUpdate({callback_query: {data: 'a:c-2'}} as Update)
+})
+
 test('sets page 1 when input is bad', async t => {
   t.plan(1)
   const menu = new TelegrafInlineMenu('foo')

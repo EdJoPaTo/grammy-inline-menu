@@ -321,7 +321,7 @@ class TelegrafInlineMenu {
 
     const pageFromCtx = async (ctx: any): Promise<number> => {
       const number = Number(ctx.match[ctx.match.length - 1])
-      const totalPages = await getTotalPages(ctx)
+      const totalPages = Math.ceil(await getTotalPages(ctx))
       return Math.max(1, Math.min(totalPages, number)) || 1
     }
 
