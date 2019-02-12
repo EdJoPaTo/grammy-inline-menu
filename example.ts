@@ -1,9 +1,10 @@
-const {readFileSync} = require('fs')
+import {readFileSync} from 'fs'
 
-const Telegraf = require('telegraf')
+import Telegraf from 'telegraf'
+
+import TelegrafInlineMenu from './source'
+
 const session = require('telegraf/session')
-
-const TelegrafInlineMenu = require('./dist')
 
 const menu = new TelegrafInlineMenu('Main Menu')
 
@@ -39,10 +40,15 @@ menu.select('s', ['A', 'B', 'C'], {
 
 const someMenu = new TelegrafInlineMenu('People like food. What do they like?')
 
-const people = {Mark: {}, Paul: {}}
+interface FoodChoises {
+  food?: string;
+  tee?: boolean;
+}
+
+const people: {[key: string]: FoodChoises} = {Mark: {}, Paul: {}}
 const food = ['bread', 'cake', 'bananas']
 
-function personButtonText(_ctx, key) {
+function personButtonText(_ctx: any, key: string): string {
   const entry = people[key]
   if (!entry || !entry.food) {
     return key
@@ -51,7 +57,7 @@ function personButtonText(_ctx, key) {
   return `${key} (${entry.food})`
 }
 
-function foodSelectText(ctx) {
+function foodSelectText(ctx: any): string {
   const person = ctx.match[1]
   const hisChoice = people[person].food
   if (!hisChoice) {
@@ -63,21 +69,21 @@ function foodSelectText(ctx) {
 
 const foodSelectSubmenu = new TelegrafInlineMenu(foodSelectText)
   .toggle('Prefer Tee', 't', {
-    setFunc: (ctx, choice) => {
+    setFunc: (ctx: any, choice) => {
       const person = ctx.match[1]
       people[person].tee = choice
     },
-    isSetFunc: ctx => {
+    isSetFunc: (ctx: any) => {
       const person = ctx.match[1]
       return people[person].tee === true
     }
   })
   .select('f', food, {
-    setFunc: (ctx, key) => {
+    setFunc: (ctx: any, key) => {
       const person = ctx.match[1]
       people[person].food = key
     },
-    isSetFunc: (ctx, key) => {
+    isSetFunc: (ctx: any, key) => {
       const person = ctx.match[1]
       return people[person].food === key
     }
@@ -117,7 +123,7 @@ bot.use(menu.init({
   mainMenuButtonText: 'back to main menu…'
 }))
 
-bot.catch(error => {
+bot.catch((error: any) => {
   console.log('telegraf error', error.response, error.parameters, error.on || error)
 })
 

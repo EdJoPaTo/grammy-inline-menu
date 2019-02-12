@@ -184,6 +184,10 @@ Can only be used when `prefixFunc` is not used.
 `prefixFunc(ctx, key)` (optional) will be called to determine an individual prefix for each option.
 Can only be used when `isSetFunc` is not used.
 
+`textFunc(ctx, key)` (optional) will be called to determine the text of the given key. 
+When `options` is an object this text will override the options.
+When not given the key itself is assumed to be the text.
+
 `multiselect` (optional)
 see `isSetFunc`
 
