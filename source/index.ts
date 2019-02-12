@@ -8,14 +8,13 @@ import {normalizeOptions, InternalMenuOptions, MenuOptions} from './menu-options
 import {prefixEmoji, PrefixOptions} from './prefix'
 import {createHandlerMiddleware} from './middleware-helper'
 
-import {generateSelectButtons} from './buttons/select'
+import {generateSelectButtons, selectButtonCreator, SelectButtonCreatorOptions} from './buttons/select'
 import {paginationOptions} from './buttons/pagination'
 
 type ConstOrContextFunc<T> = T | ContextFunc<T>
 type ContextFunc<T> = (ctx: ContextMessageUpdate) => Promise<T> | T
 type ContextNextFunc = (ctx: ContextMessageUpdate, next: any) => Promise<void>
 type ContextKeyFunc<T> = (ctx: ContextMessageUpdate, key: string) => Promise<T> | T
-type ContextKeyIndexArrayFunc<T> = (ctx: ContextMessageUpdate, key: string, index: number, array: string[]) => Promise<T> | T
 
 type Middleware = (ctx: ContextMessageUpdate, next?: () => any) => Promise<void>
 
@@ -58,25 +57,21 @@ interface QuestionOptions extends ButtonOptions {
   setFunc: (ctx: ContextMessageUpdate, answer: string) => Promise<void> | void;
 }
 
-interface SelectOptions {
-  isSetFunc?: ContextKeyFunc<boolean>;
-  textFunc?: ContextKeyIndexArrayFunc<string>;
-  prefixFunc?: ContextKeyIndexArrayFunc<string>;
-  multiselect?: boolean;
+interface SelectPaginationOptions {
   columns?: number;
   maxRows?: number;
   setPage?: (ctx: ContextMessageUpdate, page: number) => Promise<void> | void;
   getCurrentPage?: ContextFunc<number>;
 }
 
-interface SelectActionOptions extends SelectOptions {
+interface SelectActionOptions extends SelectButtonCreatorOptions, SelectPaginationOptions {
   setFunc: ContextKeyFunc<void>;
   hide?: ContextKeyFunc<boolean>;
   setMenuAfter?: boolean;
   setParentMenuAfter?: boolean;
 }
 
-interface SelectSubmenuOptions extends SelectOptions {
+interface SelectSubmenuOptions extends SelectButtonCreatorOptions, SelectPaginationOptions {
   submenu: TelegrafInlineMenu;
   hide?: ContextFunc<boolean>;
 }
@@ -436,29 +431,18 @@ class TelegrafInlineMenu {
 
     const optionsFunc = typeof options === 'function' ? options : () => options
 
-    const {textFunc, prefixFunc, isSetFunc, multiselect, getCurrentPage} = additionalArgs
+    this.buttons.addCreator(selectButtonCreator(action, optionsFunc, additionalArgs))
 
-    this.buttons.addCreator(async ctx => {
-      const optionsResult = await optionsFunc(ctx)
-      const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
-      const currentPage = (getCurrentPage && await getCurrentPage(ctx)) || 1
-      const fallbackKeyTextFunc = Array.isArray(optionsResult) ? ((_ctx: any, key: string) => key) : ((_ctx: any, key: string) => optionsResult[key])
-      const textOnlyFunc = textFunc || fallbackKeyTextFunc
-      const keyTextFunc = (...args: any[]): Promise<string> => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
-        hideFalseEmoji: !multiselect
-      }, ...args)
-      return generateSelectButtons(action, keys, {
-        textFunc: keyTextFunc,
-        currentPage,
-        ...additionalArgs
-      })
-    })
+    this.selectPagination(action, optionsFunc, additionalArgs)
+    return this
+  }
 
-    const {setPage, columns, maxRows} = additionalArgs
+  private selectPagination(baseAction: string, optionsFunc: ContextFunc<string[] | {[key: string]: string}>, additionalArgs: SelectPaginationOptions): void {
+    const {setPage, getCurrentPage, columns, maxRows} = additionalArgs
     const maxButtons = maximumButtonsPerPage(columns, maxRows)
 
     if (setPage && getCurrentPage) {
-      this.pagination(`${action}Page`, {
+      this.pagination(`${baseAction}Page`, {
         setPage,
         getCurrentPage,
         getTotalPages: async ctx => {
@@ -472,8 +456,6 @@ class TelegrafInlineMenu {
     } else {
       throw new Error('setPage and getCurrentPage have to be provided both in order to have a propper pagination.')
     }
-
-    return this
   }
 
   toggle(text: ConstOrContextFunc<string>, action: string, additionalArgs: ToggleOptions): TelegrafInlineMenu {
