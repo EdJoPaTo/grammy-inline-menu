@@ -40,21 +40,21 @@ menu.select('s', ['A', 'B', 'C'], {
 
 const someMenu = new TelegrafInlineMenu('People like food. What do they like?')
 
-const people: any = {Mark: {}, Paul: {}}
+interface FoodChoises {
+  food?: string;
+  tee?: boolean;
+}
+
+const people: {[key: string]: FoodChoises} = {Mark: {}, Paul: {}}
 const food = ['bread', 'cake', 'bananas']
 
-function personButtonOptions(): {[key: string]: string} {
-  const result: {[key: string]: string} = {}
-  Object.keys(people)
-    .forEach(person => {
-      const choise = people[person].food
-      if (choise) {
-        result[person] = `${person} (${choise})`
-      } else {
-        result[person] = person
-      }
-    })
-  return result
+function personButtonText(_ctx: any, key: string): string {
+  const entry = people[key]
+  if (!entry || !entry.food) {
+    return key
+  }
+
+  return `${key} (${entry.food})`
 }
 
 function foodSelectText(ctx: any): string {
@@ -89,8 +89,9 @@ const foodSelectSubmenu = new TelegrafInlineMenu(foodSelectText)
     }
   })
 
-someMenu.select('p', personButtonOptions, {
+someMenu.select('p', () => Object.keys(people), {
   submenu: foodSelectSubmenu,
+  textFunc: personButtonText,
   columns: 2
 })
 
