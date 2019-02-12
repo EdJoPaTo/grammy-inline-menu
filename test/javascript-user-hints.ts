@@ -72,6 +72,13 @@ test('select require additionalArgs', t => {
   }, /Cannot.+undefined/)
 })
 
+test('require setFunc or submenu', t => {
+  const menu: any = new TelegrafInlineMenu('foo')
+  t.throws(() => {
+    menu.select('c', ['a', 'b'], {})
+  }, /setFunc.+submenu/)
+})
+
 // Toggle
 
 test('toggle require setFunc', t => {

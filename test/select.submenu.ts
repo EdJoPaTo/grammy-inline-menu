@@ -86,15 +86,44 @@ test('submenu button works', async t => {
   await bot.handleUpdate({callback_query: {data: 'a:c-a:d'}} as Update)
 })
 
-test('hide dynamic submenu does not work', t => {
+test('hide submenu ends up in parent menu', async t => {
+  t.plan(2)
   const menu = new TelegrafInlineMenu('foo')
+    .manual('foo', 'bar')
 
-  t.throws(() => {
-    menu.select('a', ['a', 'b'], {
-      hide: () => false,
-      submenu: new TelegrafInlineMenu('bar')
-    })
-  }, /dynamic/)
+  const submenu = new TelegrafInlineMenu((ctx: any) => ctx.match[1])
+    .simpleButton(
+      (ctx: any) => `Hit ${ctx.match[1]}!`,
+      'd',
+      {
+        doFunc: (ctx: any) => ctx.answerCbQuery(`${ctx.match[1]} was hit!`)
+      }
+    )
+
+  menu.select('c', ['a', 'b'], {
+    submenu,
+    hide: () => true
+  })
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({
+    backButtonText: 'back',
+    actionCode: 'a'
+  }))
+
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+    t.deepEqual(extra.reply_markup.inline_keyboard, [[
+      {
+        text: 'foo',
+        callback_data: 'a:bar'
+      }
+    ]])
+    return Promise.resolve(true)
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a:c-a'}} as Update)
+  await bot.handleUpdate({callback_query: {data: 'a:c-a:d'}} as Update)
 })
 
 test('something that is not an action in dynamic menu throws error', t => {

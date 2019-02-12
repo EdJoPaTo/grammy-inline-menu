@@ -59,19 +59,26 @@ interface QuestionOptions extends ButtonOptions {
 }
 
 interface SelectOptions {
-  setFunc?: ContextKeyFunc<void>;
-  submenu?: TelegrafInlineMenu;
   isSetFunc?: ContextKeyFunc<boolean>;
   textFunc?: ContextKeyIndexArrayFunc<string>;
   prefixFunc?: ContextKeyIndexArrayFunc<string>;
-  hide?: ContextKeyFunc<boolean>;
-  setMenuAfter?: boolean;
-  setParentMenuAfter?: boolean;
   multiselect?: boolean;
   columns?: number;
   maxRows?: number;
   setPage?: (ctx: ContextMessageUpdate, page: number) => Promise<void> | void;
   getCurrentPage?: ContextFunc<number>;
+}
+
+interface SelectActionOptions extends SelectOptions {
+  setFunc: ContextKeyFunc<void>;
+  hide?: ContextKeyFunc<boolean>;
+  setMenuAfter?: boolean;
+  setParentMenuAfter?: boolean;
+}
+
+interface SelectSubmenuOptions extends SelectOptions {
+  submenu: TelegrafInlineMenu;
+  hide?: ContextFunc<boolean>;
 }
 
 interface ToggleOptions extends ButtonOptions, PrefixOptions {
@@ -398,21 +405,17 @@ class TelegrafInlineMenu {
     })
   }
 
-  select(action: string, options: ConstOrContextFunc<string[] | {[key: string]: string}>, additionalArgs: SelectOptions): TelegrafInlineMenu {
-    const {setFunc, submenu, hide} = additionalArgs
-    if (submenu) {
-      assert(!setFunc, 'setFunc and submenu can not be set at the same time.')
-      // The submenu is a middleware that can do other things than callback_data
-      // question is an example: the reply to the text does not indicate the actionCode.
-      // Without the exact actionCode its not possible to determine the selected key(s) which is needed for hide(…, key)
-      assert(!hide, 'hiding a dynamic submenu is not possible')
+  select(action: string, options: ConstOrContextFunc<string[] | {[key: string]: string}>, additionalArgs: SelectActionOptions | SelectSubmenuOptions): TelegrafInlineMenu {
+    if ('submenu' in additionalArgs && 'setFunc' in additionalArgs) {
+      throw new Error('setFunc and submenu can not be set at the same time.')
     }
 
     const keyFromCtx = (ctx: any): string => ctx.match[ctx.match.length - 1]
     const actionCode = new ActionCode(new RegExp(`${action}-([^:]+)`))
-    const hideKey = hide ? ((ctx: ContextMessageUpdate) => hide(ctx, keyFromCtx(ctx))) : undefined
 
-    if (setFunc) {
+    if ('setFunc' in additionalArgs) {
+      const {setFunc, hide} = additionalArgs
+      const hideKey = hide ? ((ctx: ContextMessageUpdate) => hide(ctx, keyFromCtx(ctx))) : undefined
       this.responders.add({
         middleware: ctx => setFunc(ctx, keyFromCtx(ctx)),
         action: actionCode,
@@ -420,11 +423,12 @@ class TelegrafInlineMenu {
         setParentMenuAfter: additionalArgs.setParentMenuAfter,
         setMenuAfter: true
       })
-    } else if (submenu) {
+    } else if ('submenu' in additionalArgs) {
+      const {submenu, hide} = additionalArgs
       this.submenus.push({
         submenu,
         action: actionCode,
-        hide: hideKey
+        hide
       })
     } else {
       throw new Error('Neither setFunc or submenu are set. Provide one of them.')
