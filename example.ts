@@ -89,8 +89,7 @@ const foodSelectSubmenu = new TelegrafInlineMenu(foodSelectText)
     }
   })
 
-someMenu.select('p', () => Object.keys(people), {
-  submenu: foodSelectSubmenu,
+someMenu.selectSubmenu('p', () => Object.keys(people), foodSelectSubmenu, {
   textFunc: personButtonText,
   columns: 2
 })

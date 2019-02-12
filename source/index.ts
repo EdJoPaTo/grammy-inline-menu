@@ -73,8 +73,12 @@ interface SelectActionOptions extends SelectButtonCreatorOptions, SelectPaginati
   setParentMenuAfter?: boolean;
 }
 
-interface SelectSubmenuOptions extends SelectButtonCreatorOptions, SelectPaginationOptions {
+interface OldSelectSubmenuOptions extends SelectButtonCreatorOptions, SelectPaginationOptions {
   submenu: TelegrafInlineMenu;
+  hide?: ContextFunc<boolean>;
+}
+
+interface SelectSubmenuOptions extends SelectButtonCreatorOptions, SelectPaginationOptions {
   hide?: ContextFunc<boolean>;
 }
 
@@ -402,39 +406,47 @@ class TelegrafInlineMenu {
     })
   }
 
-  select(action: string, options: ConstOrContextFunc<SelectOptions>, additionalArgs: SelectActionOptions | SelectSubmenuOptions): TelegrafInlineMenu {
-    if ('submenu' in additionalArgs && 'setFunc' in additionalArgs) {
-      throw new Error('setFunc and submenu can not be set at the same time.')
+  select(action: string, options: ConstOrContextFunc<SelectOptions>, additionalArgs: SelectActionOptions | OldSelectSubmenuOptions): TelegrafInlineMenu {
+    if ('submenu' in additionalArgs) {
+      // TODO: BREAKING CHANGE
+      // throw new Error('Use menu.selectSubmenu() instead!')
+      console.warn('menu.select() with submenu is depricated. Use menu.selectSubmenu() instead!')
+
+      return this.selectSubmenu(action, options, additionalArgs.submenu, additionalArgs)
     }
 
+    const {setFunc, hide} = additionalArgs
     const actionCode = new ActionCode(new RegExp(`${action}-([^:]+)`))
-
-    if ('setFunc' in additionalArgs) {
-      const {setFunc, hide} = additionalArgs
-      const keyFromCtx = (ctx: any): string => ctx.match[ctx.match.length - 1]
-      const hideKey = hide ? ((ctx: ContextMessageUpdate) => hide(ctx, keyFromCtx(ctx))) : undefined
-      this.responders.add({
-        middleware: ctx => setFunc(ctx, keyFromCtx(ctx)),
-        action: actionCode,
-        hide: hideKey,
-        setParentMenuAfter: additionalArgs.setParentMenuAfter,
-        setMenuAfter: true
-      })
-    } else if ('submenu' in additionalArgs) {
-      const {submenu, hide} = additionalArgs
-      this.submenus.push({
-        submenu,
-        action: actionCode,
-        hide
-      })
-    } else {
-      throw new Error('Neither setFunc or submenu are set. Provide one of them.')
-    }
+    const keyFromCtx = (ctx: any): string => ctx.match[ctx.match.length - 1]
+    const hideKey = hide ? ((ctx: ContextMessageUpdate) => hide(ctx, keyFromCtx(ctx))) : undefined
+    this.responders.add({
+      middleware: ctx => setFunc(ctx, keyFromCtx(ctx)),
+      action: actionCode,
+      hide: hideKey,
+      setParentMenuAfter: additionalArgs.setParentMenuAfter,
+      setMenuAfter: true
+    })
 
     const optionsFunc = typeof options === 'function' ? options : () => options
     this.buttons.addCreator(selectButtonCreator(action, optionsFunc, additionalArgs))
     this._selectPagination(action, optionsFunc, additionalArgs)
     return this
+  }
+
+  selectSubmenu(action: string, options: ConstOrContextFunc<SelectOptions>, submenu: TelegrafInlineMenu, additionalArgs: SelectSubmenuOptions): TelegrafInlineMenu {
+    const {hide} = additionalArgs
+    const actionCode = new ActionCode(new RegExp(`${action}-([^:]+)`))
+
+    this.submenus.push({
+      submenu,
+      action: actionCode,
+      hide
+    })
+
+    const optionsFunc = typeof options === 'function' ? options : () => options
+    this.buttons.addCreator(selectButtonCreator(action, optionsFunc, additionalArgs))
+    this._selectPagination(action, optionsFunc, additionalArgs)
+    return submenu
   }
 
   toggle(text: ConstOrContextFunc<string>, action: string, additionalArgs: ToggleOptions): TelegrafInlineMenu {

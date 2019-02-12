@@ -259,13 +259,3 @@ test('hidden key can not be set', async t => {
 
   await bot.handleUpdate({callback_query: {data: 'a:c-a'}} as Update)
 })
-
-test('setFunc and submenu are not allowed', t => {
-  const menu = new TelegrafInlineMenu('foo')
-  t.throws(() => {
-    menu.select('c', ['a', 'b'], {
-      setFunc: () => {},
-      submenu: new TelegrafInlineMenu('bar')
-    })
-  }, /setFunc.+submenu/)
-})

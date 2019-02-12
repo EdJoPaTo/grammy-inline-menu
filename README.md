@@ -155,7 +155,7 @@ If this is not unique it will collide with the other question with the same text
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.select(action, options, {setFunc, submenu, isSetFunc, prefixFunc, hide, joinLastRow, columns, maxRows, setPage, getCurrentPage, setParentMenuAfter})`
+### `menu.select(action, options, {setFunc, isSetFunc, prefixFunc, textFunc, hide, columns, maxRows, setPage, getCurrentPage, setParentMenuAfter})`
 
 Creates multiple buttons for each provided option.
 
@@ -169,11 +169,6 @@ The option as an object has to be in the following format:
 `{key1: buttonText, key2: buttonText, …}`
 
 `setFunc(ctx, key)` will be called when the user selects an entry.
-Can not be used when `submenu` is set.
-
-`submenu` gets opened when the user hits a button.
-The selected property has to be determined from `ctx.match` everywhere below.
-Can not be used when `setFunc` is set.
 
 `isSetFunc(ctx, key)` (optional) will be called in order to use this as an exclusive selection.
 When true is returned the key will have an emoji indicating the current selection.
@@ -192,7 +187,6 @@ When not given the key itself is assumed to be the text.
 see `isSetFunc`
 
 `hide(ctx, key)` (optional) can be used to hide the button with the given key in the menu when true is returned.
-Can not be used when `submenu` is set.
 
 `columns` (Integer, optional) can be provided in order to limit the amount of buttons in one row. (default: 6)
 
@@ -203,6 +197,18 @@ See `menu.pagination()` for that.
 
 `setParentMenuAfter` (optional) can be set to true in order to open the parent menu instead of the current menu after the setFunc was executed.
 Only has an effect when `setFunc` is used.
+
+### `menu.selectSubmenu(action, options, submenu, {isSetFunc, prefixFunc, textFunc, hide, columns, maxRows, setPage, getCurrentPage})`
+
+Creates multiple buttons for each provided option.
+When hitting the option the submenu is opened.
+Needed information can be found in `ctx.match`.
+
+#### Arguments
+
+the same as `menu.select()` except:
+
+`hide(ctx)` (optional) can be used to hide the complete selection when true is returned.
 
 ### `menu.toggle(text, action, {setFunc, isSetFunc, hide, joinLastRow})`
 
