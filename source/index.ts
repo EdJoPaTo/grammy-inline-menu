@@ -57,6 +57,8 @@ interface QuestionOptions extends ButtonOptions {
   setFunc: (ctx: ContextMessageUpdate, answer: string) => Promise<void> | void;
 }
 
+type SelectOptions = string[] | {[key: string]: string}
+
 interface SelectPaginationOptions {
   columns?: number;
   maxRows?: number;
@@ -400,16 +402,16 @@ class TelegrafInlineMenu {
     })
   }
 
-  select(action: string, options: ConstOrContextFunc<string[] | {[key: string]: string}>, additionalArgs: SelectActionOptions | SelectSubmenuOptions): TelegrafInlineMenu {
+  select(action: string, options: ConstOrContextFunc<SelectOptions>, additionalArgs: SelectActionOptions | SelectSubmenuOptions): TelegrafInlineMenu {
     if ('submenu' in additionalArgs && 'setFunc' in additionalArgs) {
       throw new Error('setFunc and submenu can not be set at the same time.')
     }
 
-    const keyFromCtx = (ctx: any): string => ctx.match[ctx.match.length - 1]
     const actionCode = new ActionCode(new RegExp(`${action}-([^:]+)`))
 
     if ('setFunc' in additionalArgs) {
       const {setFunc, hide} = additionalArgs
+      const keyFromCtx = (ctx: any): string => ctx.match[ctx.match.length - 1]
       const hideKey = hide ? ((ctx: ContextMessageUpdate) => hide(ctx, keyFromCtx(ctx))) : undefined
       this.responders.add({
         middleware: ctx => setFunc(ctx, keyFromCtx(ctx)),
@@ -437,7 +439,7 @@ class TelegrafInlineMenu {
     return this
   }
 
-  private selectPagination(baseAction: string, optionsFunc: ContextFunc<string[] | {[key: string]: string}>, additionalArgs: SelectPaginationOptions): void {
+  private selectPagination(baseAction: string, optionsFunc: ContextFunc<SelectOptions>, additionalArgs: SelectPaginationOptions): void {
     const {setPage, getCurrentPage, columns, maxRows} = additionalArgs
     const maxButtons = maximumButtonsPerPage(columns, maxRows)
 
