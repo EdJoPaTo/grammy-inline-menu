@@ -1,4 +1,4 @@
-import {ContextMessageUpdate} from 'telegraf';
+import {ContextMessageUpdate} from 'telegraf'
 
 import {ButtonInfo} from '../build-keyboard'
 import {getRowsOfButtons} from '../align-buttons'
@@ -41,7 +41,7 @@ export interface SelectButtonCreatorOptions {
   hide?: ContextKeyFunc<boolean>;
 }
 
-export function selectButtonCreator(action: string, optionsFunc: ContextFunc<string[] | {[key: string]: string}>,  additionalArgs: SelectButtonCreatorOptions): (ctx: any) => Promise<ButtonInfo[][]> {
+export function selectButtonCreator(action: string, optionsFunc: ContextFunc<string[] | {[key: string]: string}>, additionalArgs: SelectButtonCreatorOptions): (ctx: any) => Promise<ButtonInfo[][]> {
   const {getCurrentPage, textFunc, prefixFunc, isSetFunc, multiselect} = additionalArgs
   return async (ctx: any) => {
     const optionsResult = await optionsFunc(ctx)

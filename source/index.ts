@@ -432,32 +432,9 @@ class TelegrafInlineMenu {
     }
 
     const optionsFunc = typeof options === 'function' ? options : () => options
-
     this.buttons.addCreator(selectButtonCreator(action, optionsFunc, additionalArgs))
-
-    this.selectPagination(action, optionsFunc, additionalArgs)
+    this._selectPagination(action, optionsFunc, additionalArgs)
     return this
-  }
-
-  private selectPagination(baseAction: string, optionsFunc: ContextFunc<SelectOptions>, additionalArgs: SelectPaginationOptions): void {
-    const {setPage, getCurrentPage, columns, maxRows} = additionalArgs
-    const maxButtons = maximumButtonsPerPage(columns, maxRows)
-
-    if (setPage && getCurrentPage) {
-      this.pagination(`${baseAction}Page`, {
-        setPage,
-        getCurrentPage,
-        getTotalPages: async ctx => {
-          const optionsResult = await optionsFunc(ctx)
-          const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
-          return keys.length / maxButtons
-        }
-      })
-    } else if (!setPage && !getCurrentPage) {
-      // No pagination
-    } else {
-      throw new Error('setPage and getCurrentPage have to be provided both in order to have a propper pagination.')
-    }
   }
 
   toggle(text: ConstOrContextFunc<string>, action: string, additionalArgs: ToggleOptions): TelegrafInlineMenu {
@@ -510,6 +487,27 @@ class TelegrafInlineMenu {
       submenu
     })
     return submenu
+  }
+
+  private _selectPagination(baseAction: string, optionsFunc: ContextFunc<SelectOptions>, additionalArgs: SelectPaginationOptions): void {
+    const {setPage, getCurrentPage, columns, maxRows} = additionalArgs
+    const maxButtons = maximumButtonsPerPage(columns, maxRows)
+
+    if (setPage && getCurrentPage) {
+      this.pagination(`${baseAction}Page`, {
+        setPage,
+        getCurrentPage,
+        getTotalPages: async ctx => {
+          const optionsResult = await optionsFunc(ctx)
+          const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
+          return keys.length / maxButtons
+        }
+      })
+    } else if (!setPage && !getCurrentPage) {
+      // No pagination
+    } else {
+      throw new Error('setPage and getCurrentPage have to be provided both in order to have a propper pagination.')
+    }
   }
 }
 
