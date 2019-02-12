@@ -89,7 +89,7 @@
     "space": true,
     "semicolon": false,
     "rules": {
-      "ava/no-ignored-test-files": "warn",
+      "ava/no-ignored-test-files": "off",
       "@typescript-eslint/promise-function-async": "off",
       "@typescript-eslint/indent": [
         "error",
