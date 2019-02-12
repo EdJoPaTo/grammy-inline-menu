@@ -77,9 +77,3 @@ export async function buildKeyboardButton(buttonInfo: ButtonInfo, actionCodePref
 
   return button
 }
-
-module.exports = {
-  buildKeyboard,
-  buildKeyboardRow,
-  buildKeyboardButton
-}

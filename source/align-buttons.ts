@@ -11,9 +11,3 @@ export function getRowsOfButtons<T>(buttons: T[], columns = DEFAULT_BUTTON_COLUM
 
   return rows
 }
-
-module.exports = {
-  DEFAULT_BUTTON_COLUMNS,
-  DEFAULT_BUTTON_ROWS,
-  getRowsOfButtons
-}

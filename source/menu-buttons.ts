@@ -38,5 +38,3 @@ class MenuButtons {
 }
 
 export default MenuButtons
-
-module.exports = MenuButtons

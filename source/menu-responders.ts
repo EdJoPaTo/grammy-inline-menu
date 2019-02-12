@@ -77,4 +77,3 @@ export function createMiddlewareFromResponder(responder: Responder, environment:
 }
 
 export default MenuResponders
-module.exports = MenuResponders

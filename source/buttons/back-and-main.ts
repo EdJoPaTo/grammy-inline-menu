@@ -28,7 +28,3 @@ export function generateBackButtons(actionCode: string, options: InternalMenuOpt
 
   return buttons
 }
-
-module.exports = {
-  generateBackButtons
-}

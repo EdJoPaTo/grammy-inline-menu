@@ -110,5 +110,3 @@ class ActionCode {
 }
 
 export default ActionCode
-
-module.exports = ActionCode

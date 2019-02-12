@@ -62,10 +62,3 @@ export async function prefixText(text: ConstOrFunc<string>, prefix: ConstOrFunc<
 
   return `${prefixResult} ${textResult}`
 }
-
-module.exports = {
-  emojiFalse,
-  emojiTrue,
-  prefixEmoji,
-  prefixText
-}

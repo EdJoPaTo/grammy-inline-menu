@@ -511,5 +511,4 @@ function assert(value: any, message: string): void {
 }
 
 module.exports = TelegrafInlineMenu
-
 export default TelegrafInlineMenu

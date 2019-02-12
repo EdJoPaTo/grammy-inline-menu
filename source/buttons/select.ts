@@ -27,7 +27,3 @@ export function generateSelectButtons(actionBase: string, options: string[], sel
 
   return getRowsOfButtons(buttons, columns, maxRows)
 }
-
-module.exports = {
-  generateSelectButtons
-}

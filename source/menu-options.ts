@@ -38,7 +38,3 @@ export function normalizeOptions(userOptions: MenuOptions): {actionCode: ActionC
     internalOptions
   }
 }
-
-module.exports = {
-  normalizeOptions
-}

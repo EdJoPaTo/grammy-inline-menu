@@ -53,8 +53,3 @@ export function isCallbackQueryActionFunc(actionCode: ActionCode, additionalCond
     return true
   }
 }
-
-module.exports = {
-  createHandlerMiddleware,
-  isCallbackQueryActionFunc
-}
