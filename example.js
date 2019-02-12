@@ -1,4 +1,4 @@
-const fs = require('fs')
+const {readFileSync} = require('fs')
 
 const Telegraf = require('telegraf')
 const session = require('telegraf/session')
@@ -11,7 +11,7 @@ menu.urlButton('EdJoPaTo.de', 'https://edjopato.de')
 
 let mainMenuToggle = false
 menu.toggle('toggle me', 'a', {
-  setFunc: (ctx, newVal) => {
+  setFunc: (_ctx, newVal) => {
     mainMenuToggle = newVal
   },
   isSetFunc: () => mainMenuToggle
@@ -30,11 +30,11 @@ menu.simpleButton('click me harder', 'd', {
 
 let selectedKey = 'b'
 menu.select('s', ['A', 'B', 'C'], {
-  setFunc: (ctx, key) => {
+  setFunc: async (ctx, key) => {
     selectedKey = key
-    return ctx.answerCbQuery(`you selected ${key}`)
+    await ctx.answerCbQuery(`you selected ${key}`)
   },
-  isSetFunc: (ctx, key) => key === selectedKey
+  isSetFunc: (_ctx, key) => key === selectedKey
 })
 
 const someMenu = new TelegrafInlineMenu('People like food. What do they like?')
@@ -95,7 +95,7 @@ someMenu.select('p', personButtonOptions, {
 
 someMenu.question('Add person', 'add', {
   questionText: 'Who likes food too?',
-  setFunc: (ctx, key) => {
+  setFunc: (_ctx, key) => {
     people[key] = {}
   }
 })
@@ -112,7 +112,7 @@ menu.submenu('Third Menu', 'y', new TelegrafInlineMenu('Third Menu'))
 
 menu.setCommand('start')
 
-const token = fs.readFileSync('token.txt', 'utf8').trim()
+const token = readFileSync('token.txt', 'utf8').trim()
 const bot = new Telegraf(token)
 bot.use(session())
 
