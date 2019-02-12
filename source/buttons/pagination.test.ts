@@ -26,8 +26,8 @@ test('when totalPages is float use ceil', keysCorrectMacro, 9.5, 10, [1, 9, 10])
 test('five pages all buttons', t => {
   const result = paginationOptions(5, 3)
   t.deepEqual(result, {
-    1: '⏪ 1',
-    2: '◀️ 2',
+    1: '1 ⏪',
+    2: '2 ◀️',
     3: '3',
     4: '▶️ 4',
     5: '⏩ 5'
@@ -37,7 +37,7 @@ test('five pages all buttons', t => {
 test('three pages are with +/-1 buttons and not first/last buttons', t => {
   const result = paginationOptions(3, 2)
   t.deepEqual(result, {
-    1: '◀️ 1',
+    1: '1 ◀️',
     2: '2',
     3: '▶️ 3'
   })

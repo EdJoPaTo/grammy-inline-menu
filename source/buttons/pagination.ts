@@ -21,10 +21,10 @@ export function paginationOptions(totalPages: number, currentPage: number): {[ke
 
   if (currentPageFixed > 1) {
     if (before > 1) {
-      buttons[1] = '⏪ 1'
+      buttons[1] = '1 ⏪'
     }
 
-    buttons[before] = `◀️ ${before}`
+    buttons[before] = `${before} ◀️`
   }
 
   buttons[currentPageFixed] = String(currentPageFixed)
