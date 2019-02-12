@@ -8,12 +8,13 @@ type ContextKeyIndexArrFunc<T> = (ctx: any, key: string, index: number, array: s
 interface SelectButtonOptions {
   columns?: number;
   maxRows?: number;
+  currentPage?: number;
   textFunc: ContextKeyIndexArrFunc<string>;
   hide?: ContextKeyFunc<boolean>;
 }
 
 export function generateSelectButtons(actionBase: string, options: string[], selectOptions: SelectButtonOptions): ButtonInfo[][] {
-  const {textFunc, hide, columns, maxRows} = selectOptions
+  const {textFunc, hide, columns, maxRows, currentPage} = selectOptions
   const buttons = options.map((key, i, arr) => {
     const action = `${actionBase}-${key}`
     const textKey = async (ctx: any): Promise<string> => textFunc(ctx, key, i, arr)
@@ -25,5 +26,5 @@ export function generateSelectButtons(actionBase: string, options: string[], sel
     }
   })
 
-  return getRowsOfButtons(buttons, columns, maxRows)
+  return getRowsOfButtons(buttons, columns, maxRows, currentPage)
 }

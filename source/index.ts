@@ -3,6 +3,7 @@ import {Composer, Extra, Markup, ContextMessageUpdate} from 'telegraf'
 import ActionCode from './action-code'
 import MenuButtons from './menu-buttons'
 import MenuResponders from './menu-responders'
+import {maximumButtonsPerPage} from './align-buttons'
 import {normalizeOptions, InternalMenuOptions, MenuOptions} from './menu-options'
 import {prefixEmoji, PrefixOptions} from './prefix'
 import {createHandlerMiddleware} from './middleware-helper'
@@ -69,6 +70,8 @@ interface SelectOptions {
   multiselect?: boolean;
   columns?: number;
   maxRows?: number;
+  setPage?: (ctx: ContextMessageUpdate, page: number) => Promise<void> | void;
+  getCurrentPage?: ContextFunc<number>;
 }
 
 interface ToggleOptions extends ButtonOptions, PrefixOptions {
@@ -429,11 +432,12 @@ class TelegrafInlineMenu {
 
     const optionsFunc = typeof options === 'function' ? options : () => options
 
-    const {textFunc, prefixFunc, isSetFunc, multiselect} = additionalArgs
+    const {textFunc, prefixFunc, isSetFunc, multiselect, getCurrentPage} = additionalArgs
 
     this.buttons.addCreator(async ctx => {
       const optionsResult = await optionsFunc(ctx)
       const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
+      const currentPage = (getCurrentPage && await getCurrentPage(ctx)) || 1
       const fallbackKeyTextFunc = Array.isArray(optionsResult) ? ((_ctx: any, key: string) => key) : ((_ctx: any, key: string) => optionsResult[key])
       const textOnlyFunc = textFunc || fallbackKeyTextFunc
       const keyTextFunc = (...args: any[]): Promise<string> => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
@@ -441,9 +445,29 @@ class TelegrafInlineMenu {
       }, ...args)
       return generateSelectButtons(action, keys, {
         textFunc: keyTextFunc,
+        currentPage,
         ...additionalArgs
       })
     })
+
+    const {setPage, columns, maxRows} = additionalArgs
+    const maxButtons = maximumButtonsPerPage(columns, maxRows)
+
+    if (setPage && getCurrentPage) {
+      this.pagination(`${action}Page`, {
+        setPage,
+        getCurrentPage,
+        getTotalPages: async ctx => {
+          const optionsResult = await optionsFunc(ctx)
+          const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
+          return keys.length / maxButtons
+        }
+      })
+    } else if (!setPage && !getCurrentPage) {
+      // No pagination
+    } else {
+      throw new Error('setPage and getCurrentPage have to be provided both in order to have a propper pagination.')
+    }
 
     return this
   }

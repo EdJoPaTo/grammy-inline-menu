@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {getRowsOfButtons} from './align-buttons'
+import {getRowsOfButtons, maximumButtonsPerPage} from './align-buttons'
 
 function generateCharArray(charA: string, charZ: string): string[] {
   // https://stackoverflow.com/questions/24597634/how-to-generate-an-array-of-alphabet-in-jquery/24597663#24597663
@@ -40,4 +40,22 @@ test('trim by maxRows', t => {
     ['D'],
     ['E']
   ])
+})
+
+test('second page', t => {
+  const result = getRowsOfButtons(generateCharArray('A', 'Z'), 1, 3, 2)
+  t.deepEqual(result, [
+    ['D'],
+    ['E'],
+    ['F']
+  ])
+})
+
+test('maximumButtonsPerPage example', t => {
+  t.is(maximumButtonsPerPage(2, 3), 6)
+  t.is(maximumButtonsPerPage(4, 4), 16)
+})
+
+test('maximumButtonsPerPage default', t => {
+  t.is(maximumButtonsPerPage(), 60)
 })

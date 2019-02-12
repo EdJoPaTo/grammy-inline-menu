@@ -155,7 +155,7 @@ If this is not unique it will collide with the other question with the same text
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.select(action, options, {setFunc, submenu, isSetFunc, prefixFunc, hide, joinLastRow, columns, maxRows, setParentMenuAfter})`
+### `menu.select(action, options, {setFunc, submenu, isSetFunc, prefixFunc, hide, joinLastRow, columns, maxRows, setPage, getCurrentPage, setParentMenuAfter})`
 
 Creates multiple buttons for each provided option.
 
@@ -184,7 +184,7 @@ Can only be used when `prefixFunc` is not used.
 `prefixFunc(ctx, key)` (optional) will be called to determine an individual prefix for each option.
 Can only be used when `isSetFunc` is not used.
 
-`textFunc(ctx, key)` (optional) will be called to determine the text of the given key. 
+`textFunc(ctx, key)` (optional) will be called to determine the text of the given key.
 When `options` is an object this text will override the options.
 When not given the key itself is assumed to be the text.
 
@@ -197,6 +197,9 @@ Can not be used when `submenu` is set.
 `columns` (Integer, optional) can be provided in order to limit the amount of buttons in one row. (default: 6)
 
 `maxRows` (Integer, optional) can be provided to limit the maximal rows of buttons. (default: 10)
+
+`setPage(ctx, page)` and `getCurrentPage(ctx)` enables pagination for the given options.
+See `menu.pagination()` for that.
 
 `setParentMenuAfter` (optional) can be set to true in order to open the parent menu instead of the current menu after the setFunc was executed.
 Only has an effect when `setFunc` is used.
