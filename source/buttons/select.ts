@@ -2,7 +2,7 @@ import {ContextMessageUpdate} from 'telegraf'
 
 import {ButtonInfo} from '../build-keyboard'
 import {getRowsOfButtons} from '../align-buttons'
-import {prefixEmoji} from '../prefix'
+import {prefixEmoji, PrefixOptions} from '../prefix'
 
 type ContextFunc<T> = (ctx: ContextMessageUpdate) => Promise<T> | T
 type ContextKeyFunc<T> = (ctx: ContextMessageUpdate, key: string) => Promise<T> | T
@@ -32,7 +32,7 @@ export function generateSelectButtons(actionBase: string, options: string[], sel
   return getRowsOfButtons(buttons, columns, maxRows, currentPage)
 }
 
-export interface SelectButtonCreatorOptions {
+export interface SelectButtonCreatorOptions extends PrefixOptions {
   getCurrentPage?: ContextFunc<number>;
   textFunc?: ContextKeyIndexArrFunc<string>;
   prefixFunc?: ContextKeyIndexArrFunc<string>;
@@ -50,7 +50,8 @@ export function selectButtonCreator(action: string, optionsFunc: ContextFunc<str
     const fallbackKeyTextFunc = Array.isArray(optionsResult) ? ((_ctx: any, key: string) => key) : ((_ctx: any, key: string) => optionsResult[key])
     const textOnlyFunc = textFunc || fallbackKeyTextFunc
     const keyTextFunc = (...args: any[]): Promise<string> => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
-      hideFalseEmoji: !multiselect
+      hideFalseEmoji: !multiselect,
+      ...additionalArgs
     }, ...args)
     return generateSelectButtons(action, keys, {
       textFunc: keyTextFunc,

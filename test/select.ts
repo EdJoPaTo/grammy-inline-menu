@@ -186,7 +186,7 @@ test('multiselect has prefixes', async t => {
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
 })
 
-test('custom prefix', async t => {
+test('custom prefixFunc', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.select('c', ['a', 'b'], {
     setFunc: () => t.fail(),
@@ -204,6 +204,36 @@ test('custom prefix', async t => {
         callback_data: 'a:c-a'
       }, {
         text: 'bar b',
+        callback_data: 'a:c-b'
+      }
+    ]])
+    return Promise.resolve(true)
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
+})
+
+test('custom prefix true/false', async t => {
+  const menu = new TelegrafInlineMenu('foo')
+  menu.select('c', ['a', 'b'], {
+    setFunc: () => t.fail(),
+    multiselect: true,
+    prefixTrue: '🔔',
+    prefixFalse: '🔕',
+    isSetFunc: (_ctx, key) => key === 'a'
+  })
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+    t.deepEqual(extra.reply_markup.inline_keyboard, [[
+      {
+        text: '🔔 a',
+        callback_data: 'a:c-a'
+      }, {
+        text: '🔕 b',
         callback_data: 'a:c-b'
       }
     ]])
