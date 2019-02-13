@@ -243,6 +243,37 @@ test('custom prefix true/false', async t => {
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
 })
 
+test('custom prefix true/false with textFunc', async t => {
+  const menu = new TelegrafInlineMenu('foo')
+  menu.select('c', ['a', 'b'], {
+    setFunc: () => t.fail(),
+    multiselect: true,
+    prefixTrue: '🔔',
+    prefixFalse: '🔕',
+    textFunc: (_ctx, key) => key.toUpperCase(),
+    isSetFunc: (_ctx, key) => key === 'a'
+  })
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+    t.deepEqual(extra.reply_markup.inline_keyboard, [[
+      {
+        text: '🔔 A',
+        callback_data: 'a:c-a'
+      }, {
+        text: '🔕 B',
+        callback_data: 'a:c-b'
+      }
+    ]])
+    return Promise.resolve(true)
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
+})
+
 test('hides key in keyboard', async t => {
   t.plan(1)
   const menu = new TelegrafInlineMenu('foo')

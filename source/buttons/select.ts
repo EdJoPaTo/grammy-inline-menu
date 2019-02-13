@@ -54,9 +54,9 @@ export function selectButtonCreator(action: string, optionsFunc: ContextFunc<str
       ...additionalArgs
     }, ...args)
     return generateSelectButtons(action, keys, {
+      ...additionalArgs,
       textFunc: keyTextFunc,
-      currentPage,
-      ...additionalArgs
+      currentPage
     })
   }
 }
