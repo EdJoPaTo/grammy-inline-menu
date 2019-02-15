@@ -27,7 +27,7 @@ interface SubmenuEntry {
 interface ReplyMenuMiddleware {
   middleware: () => ContextNextFunc;
   setSpecific: (ctx: ContextMessageUpdate, actionCodeOverride: string) => Promise<void>;
-  setMenuFunc?: (ctx: ContextMessageUpdate, actionCodeOverride: string) => Promise<void>;
+  setMenuFunc?: (ctx: ContextMessageUpdate, actionCodeOverride?: string) => Promise<void>;
 }
 
 interface ButtonOptions {
@@ -227,7 +227,7 @@ class TelegrafInlineMenu {
           assert(actionCode.test(actionOverride), `The actionCode has to belong to the menu. ${actionOverride} does not work with the menu ${actionCode.get()}`)
         }
 
-        return setMenuFunc(ctx, 'replyMenuMiddleware', new ActionCode(actionOverride))
+        return setMenuFunc(ctx, 'replyMenuMiddleware', actionOverride ? new ActionCode(actionOverride) : actionCode)
       }
     }
 

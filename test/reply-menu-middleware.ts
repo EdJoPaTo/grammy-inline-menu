@@ -30,6 +30,32 @@ test('middleware works', async t => {
   await bot.handleUpdate({message: {text: 'yaay'}} as Update)
 })
 
+test('correct actionCode in menu buttons', async t => {
+  const menu = new TelegrafInlineMenu('42')
+    .manual('foo', 'bar')
+  const bot = new Telegraf('')
+
+  bot.on('message', menu.replyMenuMiddleware().middleware())
+
+  bot.use(menu.init({actionCode: 'a'}))
+  bot.use(ctx => {
+    t.log('update missed', ctx.update)
+    t.fail('update missed')
+  })
+
+  bot.context.editMessageText = () => Promise.reject(new Error('There shouldn\t be any message edited'))
+
+  bot.context.reply = async (_text, extra: InlineExtra) => {
+    t.deepEqual(extra.reply_markup.inline_keyboard, [[{
+      text: 'foo',
+      callback_data: 'a:bar'
+    }]])
+    return DUMMY_MESSAGE
+  }
+
+  await bot.handleUpdate({message: {text: 'yaay'}} as Update)
+})
+
 test('works with specific ActionCode', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('foo')
