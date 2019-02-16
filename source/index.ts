@@ -1,12 +1,12 @@
 import {Composer, Extra, Markup, ContextMessageUpdate} from 'telegraf'
 
 import ActionCode from './action-code'
+import CombinedMiddleware from './combined-middleware'
 import MenuButtons from './menu-buttons'
 import MenuResponders from './menu-responders'
 import {maximumButtonsPerPage} from './align-buttons'
 import {normalizeOptions, InternalMenuOptions, MenuOptions} from './menu-options'
 import {prefixEmoji, PrefixOptions} from './prefix'
-import {createHandlerMiddleware} from './middleware-helper'
 
 import {generateSelectButtons, selectButtonCreator, SelectButtonCreatorOptions} from './buttons/select'
 import {paginationOptions} from './buttons/pagination'
@@ -250,12 +250,16 @@ class TelegrafInlineMenu {
           return setMenuFunc(ctx, 'menu is hidden')
         }
 
-        const middleware = submenu.middleware(childActionCode, subOptions)
-        return createHandlerMiddleware(middleware, {
-          only: ctx => !ctx.callbackQuery || childActionCode.testIsBelow(ctx.callbackQuery.data),
-          hide,
-          hiddenFunc
-        })
+        const mainFunc = submenu.middleware(childActionCode, subOptions)
+
+        const m = new CombinedMiddleware(mainFunc, hiddenFunc)
+          .addOnly(ctx => !ctx.callbackQuery || childActionCode.testIsBelow(ctx.callbackQuery.data))
+
+        if (hide) {
+          m.addHide(hide)
+        }
+
+        return m.middleware()
       })
 
     const responderMiddleware = this.responders.createMiddleware({

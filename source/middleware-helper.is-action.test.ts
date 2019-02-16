@@ -32,21 +32,3 @@ test('no callbackQuery', async t => {
   })
   await bot.handleUpdate({message: {}} as Update)
 })
-
-test('correct callbackQuery with additional true', async t => {
-  const bot = new Telegraf('')
-  bot.use(async ctx => {
-    const middleware = isCallbackQueryActionFunc(new ActionCode('a:b'), () => true)
-    t.true(await middleware(ctx))
-  })
-  await bot.handleUpdate({callback_query: {data: 'a:b'}} as Update)
-})
-
-test('correct callbackQuery but additional is false', async t => {
-  const bot = new Telegraf('')
-  bot.use(async ctx => {
-    const middleware = isCallbackQueryActionFunc(new ActionCode('a:b'), () => false)
-    t.false(await middleware(ctx))
-  })
-  await bot.handleUpdate({callback_query: {data: 'a:b'}} as Update)
-})

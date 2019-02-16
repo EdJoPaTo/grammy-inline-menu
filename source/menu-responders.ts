@@ -1,6 +1,8 @@
 import {Composer, Middleware, ContextMessageUpdate} from 'telegraf'
+
 import ActionCode from './action-code'
-import {createHandlerMiddleware, HandlerOptions, isCallbackQueryActionFunc} from './middleware-helper'
+import CombinedMiddleware from './combined-middleware'
+import {isCallbackQueryActionFunc} from './middleware-helper'
 
 type ContextFunc<T> = (ctx: any) => Promise<T> | T
 type ContextNextMinimumFunc = (ctx: any, next?: any) => Promise<void> | void
@@ -46,10 +48,15 @@ class MenuResponders {
 }
 
 export function createMiddlewareFromResponder(responder: Responder, environment: ResponderEnvironment): ContextNextFunc {
-  const handler: HandlerOptions = {}
+  const m = new CombinedMiddleware(responder.middleware)
 
-  handler.only = responder.only
-  handler.hide = responder.hide
+  if (responder.only) {
+    m.addOnly(responder.only)
+  }
+
+  if (responder.hide) {
+    m.addHide(responder.hide)
+  }
 
   const {actionCode, setMenuFunc, setParentMenuFunc} = environment
 
@@ -58,22 +65,19 @@ export function createMiddlewareFromResponder(responder: Responder, environment:
       throw new Error(`There is no parent menu for this that could be set. Remove the 'setParentMenuAfter' flag. Occured in menu ${actionCode.get()}`)
     }
 
-    handler.afterFunc = ctx => setParentMenuFunc(ctx, `setParentMenuAfter ${actionCode.get()}`)
+    m.addAfterFunc(ctx => setParentMenuFunc(ctx, `setParentMenuAfter ${actionCode.get()}`), Boolean(responder.action))
   } else if (responder.setMenuAfter) {
-    handler.afterFunc = ctx => setMenuFunc(ctx, `setMenuAfter ${actionCode.get()}`)
+    m.addAfterFunc(ctx => setMenuFunc(ctx, `setMenuAfter ${actionCode.get()}`), Boolean(responder.action))
   }
 
   if (!responder.action) {
-    return createHandlerMiddleware(responder.middleware, handler)
+    return m.middleware()
   }
 
-  // When it is hidden the menu should be updated with the current status. Then the user knows why nothing happened.
-  handler.runAfterFuncEvenWhenHidden = true
-
   const childActionCode = actionCode.concat(responder.action)
-  handler.only = isCallbackQueryActionFunc(childActionCode, responder.only)
+  m.addOnly(isCallbackQueryActionFunc(childActionCode))
 
-  return createHandlerMiddleware(responder.middleware, handler)
+  return m.middleware()
 }
 
 export default MenuResponders
