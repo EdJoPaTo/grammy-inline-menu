@@ -2,6 +2,7 @@ import {Composer, Extra, Markup, ContextMessageUpdate} from 'telegraf'
 
 import ActionCode from './action-code'
 import CombinedMiddleware from './combined-middleware'
+import DuplicateActionGuardian from './duplicate-action-guardian'
 import MenuButtons from './menu-buttons'
 import MenuResponders from './menu-responders'
 import {maximumButtonsPerPage} from './align-buttons'
@@ -88,6 +89,8 @@ interface ToggleOptions extends ButtonOptions, PrefixOptions {
 }
 
 class TelegrafInlineMenu {
+  protected readonly actions = new DuplicateActionGuardian();
+
   protected readonly buttons = new MenuButtons();
 
   protected readonly responders = new MenuResponders();
@@ -317,7 +320,7 @@ class TelegrafInlineMenu {
     assert(additionalArgs.doFunc, 'doFunc is not set. set it or use menu.manual')
 
     this.responders.add({
-      action: new ActionCode(action),
+      action: this.actions.addStatic(action),
       hide: additionalArgs.hide,
       middleware: additionalArgs.doFunc,
       setParentMenuAfter: additionalArgs.setParentMenuAfter,
@@ -342,7 +345,7 @@ class TelegrafInlineMenu {
 
     this.responders.add({
       middleware: async ctx => setPage(ctx, await pageFromCtx(ctx)),
-      action: new ActionCode(new RegExp(`${action}-(\\d+)`)),
+      action: this.actions.addDynamic(action),
       hide,
       setMenuAfter: true
     })
@@ -420,12 +423,11 @@ class TelegrafInlineMenu {
     }
 
     const {setFunc, hide} = additionalArgs
-    const actionCode = new ActionCode(new RegExp(`${action}-([^:]+)`))
     const keyFromCtx = (ctx: any): string => ctx.match[ctx.match.length - 1]
     const hideKey = hide ? ((ctx: ContextMessageUpdate) => hide(ctx, keyFromCtx(ctx))) : undefined
     this.responders.add({
       middleware: ctx => setFunc(ctx, keyFromCtx(ctx)),
-      action: actionCode,
+      action: this.actions.addDynamic(action),
       hide: hideKey,
       setParentMenuAfter: additionalArgs.setParentMenuAfter,
       setMenuAfter: true
@@ -439,11 +441,10 @@ class TelegrafInlineMenu {
 
   selectSubmenu(action: string, options: ConstOrContextFunc<SelectOptions>, submenu: TelegrafInlineMenu, additionalArgs: SelectSubmenuOptions = {}): TelegrafInlineMenu {
     const {hide} = additionalArgs
-    const actionCode = new ActionCode(new RegExp(`${action}-([^:]+)`))
 
     this.submenus.push({
       submenu,
-      action: actionCode,
+      action: this.actions.addDynamic(action),
       hide
     })
 
@@ -483,12 +484,12 @@ class TelegrafInlineMenu {
     }
 
     this.responders.add({...baseHandler,
-      action: new ActionCode(`${action}-true`),
+      action: this.actions.addStatic(`${action}-true`),
       middleware: ctx => setFunc(ctx, true)
     })
 
     this.responders.add({...baseHandler,
-      action: new ActionCode(`${action}-false`),
+      action: this.actions.addStatic(`${action}-false`),
       middleware: ctx => setFunc(ctx, false)
     })
 
@@ -498,7 +499,7 @@ class TelegrafInlineMenu {
   submenu(text: ConstOrContextFunc<string>, action: string, submenu: TelegrafInlineMenu, additionalArgs: ButtonOptions = {}): TelegrafInlineMenu {
     this.manual(text, action, additionalArgs)
     this.submenus.push({
-      action: new ActionCode(action),
+      action: this.actions.addStatic(action),
       hide: additionalArgs.hide,
       submenu
     })
