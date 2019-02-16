@@ -433,7 +433,7 @@ class TelegrafInlineMenu {
     return this
   }
 
-  selectSubmenu(action: string, options: ConstOrContextFunc<SelectOptions>, submenu: TelegrafInlineMenu, additionalArgs: SelectSubmenuOptions): TelegrafInlineMenu {
+  selectSubmenu(action: string, options: ConstOrContextFunc<SelectOptions>, submenu: TelegrafInlineMenu, additionalArgs: SelectSubmenuOptions = {}): TelegrafInlineMenu {
     const {hide} = additionalArgs
     const actionCode = new ActionCode(new RegExp(`${action}-([^:]+)`))
 
