@@ -468,29 +468,16 @@ class TelegrafInlineMenu {
       return isSet === state
     }
 
-    this.manual(ctx => prefixEmoji(text, false, additionalArgs, ctx), `${action}-true`, {
+    this.button(ctx => prefixEmoji(text, false, additionalArgs, ctx), `${action}-true`, {
       ...additionalArgs,
+      doFunc: ctx => setFunc(ctx, true),
       hide: ctx => hideFunc(ctx, true)
     })
 
-    this.manual(ctx => prefixEmoji(text, true, additionalArgs, ctx), `${action}-false`, {
+    this.button(ctx => prefixEmoji(text, true, additionalArgs, ctx), `${action}-false`, {
       ...additionalArgs,
+      doFunc: ctx => setFunc(ctx, false),
       hide: ctx => hideFunc(ctx, false)
-    })
-
-    const baseHandler = {
-      hide,
-      setMenuAfter: true
-    }
-
-    this.responders.add({...baseHandler,
-      action: this.actions.addStatic(`${action}-true`),
-      middleware: ctx => setFunc(ctx, true)
-    })
-
-    this.responders.add({...baseHandler,
-      action: this.actions.addStatic(`${action}-false`),
-      middleware: ctx => setFunc(ctx, false)
     })
 
     return this
