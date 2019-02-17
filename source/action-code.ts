@@ -1,4 +1,4 @@
-class ActionCode {
+export default class ActionCode {
   readonly code: string | RegExp
 
   constructor(actionCode: string | RegExp) {
@@ -108,5 +108,3 @@ class ActionCode {
     return new ActionCode(newCode)
   }
 }
-
-export default ActionCode

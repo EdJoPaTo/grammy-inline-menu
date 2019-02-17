@@ -24,7 +24,7 @@ interface ResponderEnvironment {
   setParentMenuFunc?: MenuFunc;
 }
 
-class MenuResponders {
+export default class MenuResponders {
   readonly responders: Responder[] = []
 
   add(responder: Responder): void {
@@ -79,5 +79,3 @@ export function createMiddlewareFromResponder(responder: Responder, environment:
 
   return m.middleware()
 }
-
-export default MenuResponders

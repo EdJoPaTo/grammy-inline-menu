@@ -88,7 +88,7 @@ interface ToggleOptions extends ButtonOptions, PrefixOptions {
   isSetFunc: ContextFunc<boolean>;
 }
 
-class TelegrafInlineMenu {
+export default class TelegrafInlineMenu {
   protected readonly actions = new DuplicateActionGuardian();
 
   protected readonly buttons = new MenuButtons();
@@ -525,4 +525,3 @@ function assert(value: any, message: string): void {
 }
 
 module.exports = TelegrafInlineMenu
-export default TelegrafInlineMenu

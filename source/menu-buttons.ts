@@ -8,7 +8,7 @@ import {generateBackButtons} from './buttons/back-and-main'
 type ButtonRow = ButtonInfo[]
 type KeyboardPartCreator = (ctx: any) => (Promise<ButtonRow[]> | ButtonRow[])
 
-class MenuButtons {
+export default class MenuButtons {
   readonly buttons: (ButtonRow | KeyboardPartCreator)[] = []
 
   async generateKeyboardMarkup(ctx: any, actionCodePrefix: string, options: InternalMenuOptions): Promise<InlineKeyboardMarkup> {
@@ -36,5 +36,3 @@ class MenuButtons {
     this.buttons.push(creator)
   }
 }
-
-export default MenuButtons
