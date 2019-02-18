@@ -60,9 +60,7 @@ test('works with specific ActionCode', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('foo')
   const submenu = new TelegrafInlineMenu((ctx: any) => `bar ${ctx.match[1]}`)
-  menu.select('b', ['y', 'z'], {
-    submenu
-  })
+  menu.selectSubmenu('b', ['y', 'z'], submenu)
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
 
   const bot = new Telegraf('')
@@ -80,9 +78,7 @@ test('works with specific ActionCode', async t => {
 test('fails with different ActionCode than menu expects', async t => {
   const menu = new TelegrafInlineMenu('foo')
   const submenu = new TelegrafInlineMenu((ctx: any) => `bar ${ctx.match[1]}`)
-  menu.select('b', ['y', 'z'], {
-    submenu
-  })
+  menu.selectSubmenu('b', ['y', 'z'], submenu)
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
 
   const bot = new Telegraf('')
@@ -102,9 +98,7 @@ test('fails with different ActionCode than menu expects', async t => {
 test('fails in dynamic menu without specific ActionCode', async t => {
   const menu = new TelegrafInlineMenu('foo')
   const submenu = new TelegrafInlineMenu('bar')
-  menu.select('b', ['y', 'z'], {
-    submenu
-  })
+  menu.selectSubmenu('b', ['y', 'z'], submenu)
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
 
   const bot = new Telegraf('')
@@ -120,9 +114,7 @@ test('fails in dynamic menu without specific ActionCode', async t => {
 test('fails before init', t => {
   const menu = new TelegrafInlineMenu('foo')
   const submenu = new TelegrafInlineMenu('bar')
-  menu.select('b', ['y', 'z'], {
-    submenu
-  })
+  menu.selectSubmenu('b', ['y', 'z'], submenu)
 
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
   const handler = replyMenuMiddleware.middleware()
