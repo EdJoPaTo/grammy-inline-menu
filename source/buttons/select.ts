@@ -8,6 +8,8 @@ type ContextFunc<T> = (ctx: ContextMessageUpdate) => Promise<T> | T
 type ContextKeyFunc<T> = (ctx: ContextMessageUpdate, key: string) => Promise<T> | T
 type ContextKeyIndexArrFunc<T> = (ctx: ContextMessageUpdate, key: string, index: number, array: string[]) => Promise<T> | T
 
+type OptionsFunc = ContextFunc<string[] | {[key: string]: string}>
+
 interface SelectButtonOptions {
   columns?: number;
   maxRows?: number;
@@ -41,7 +43,7 @@ export interface SelectButtonCreatorOptions extends PrefixOptions {
   hide?: ContextKeyFunc<boolean>;
 }
 
-export function selectButtonCreator(action: string, optionsFunc: ContextFunc<string[] | {[key: string]: string}>, additionalArgs: SelectButtonCreatorOptions): (ctx: any) => Promise<ButtonInfo[][]> {
+export function selectButtonCreator(action: string, optionsFunc: OptionsFunc, additionalArgs: SelectButtonCreatorOptions): (ctx: any) => Promise<ButtonInfo[][]> {
   const {getCurrentPage, textFunc, prefixFunc, isSetFunc, multiselect} = additionalArgs
   return async (ctx: any) => {
     const optionsResult = await optionsFunc(ctx)
@@ -58,5 +60,22 @@ export function selectButtonCreator(action: string, optionsFunc: ContextFunc<str
       textFunc: keyTextFunc,
       currentPage
     })
+  }
+}
+
+export function selectHideFunc(keyFromCtx: (ctx: any) => string, optionsFunc: OptionsFunc, userHideFunc?: ContextKeyFunc<boolean>): ((ctx: any) => Promise<boolean>) {
+  return async (ctx: any) => {
+    const key = keyFromCtx(ctx)
+    const optionsResult = await optionsFunc(ctx)
+    const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
+    if (!keys.includes(key)) {
+      return true
+    }
+
+    if (userHideFunc && await userHideFunc(ctx, key)) {
+      return true
+    }
+
+    return false
   }
 }

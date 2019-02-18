@@ -320,3 +320,24 @@ test('hidden key can not be set', async t => {
 
   await bot.handleUpdate({callback_query: {data: 'a:c-a'}} as Update)
 })
+
+test('not existing key will not be set', async t => {
+  t.plan(2)
+  const menu = new TelegrafInlineMenu('foo')
+  menu.select('c', () => ['b'], {
+    setFunc: () => t.fail()
+  })
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.editMessageText = async () => {
+    t.pass()
+    return true
+  }
+
+  bot.use(() => t.pass())
+
+  await bot.handleUpdate({callback_query: {data: 'a:c-a'}} as Update)
+})

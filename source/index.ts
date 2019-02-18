@@ -9,7 +9,7 @@ import {maximumButtonsPerPage} from './align-buttons'
 import {normalizeOptions, InternalMenuOptions, MenuOptions} from './menu-options'
 import {prefixEmoji, PrefixOptions} from './prefix'
 
-import {generateSelectButtons, selectButtonCreator, SelectButtonCreatorOptions} from './buttons/select'
+import {generateSelectButtons, selectButtonCreator, selectHideFunc, SelectButtonCreatorOptions} from './buttons/select'
 import {paginationOptions} from './buttons/pagination'
 
 type ConstOrContextFunc<T> = T | ContextFunc<T>
@@ -289,16 +289,16 @@ export default class TelegrafInlineMenu {
 
     const {setFunc, hide} = additionalArgs
     const keyFromCtx = (ctx: any): string => ctx.match[ctx.match.length - 1]
-    const hideKey = hide ? ((ctx: ContextMessageUpdate) => hide(ctx, keyFromCtx(ctx))) : undefined
+    const optionsFunc = typeof options === 'function' ? options : () => options
+
     this.responders.add({
       middleware: ctx => setFunc(ctx, keyFromCtx(ctx)),
       action: this.actions.addDynamic(action),
-      hide: hideKey,
+      hide: selectHideFunc(keyFromCtx, optionsFunc, hide),
       setParentMenuAfter: additionalArgs.setParentMenuAfter,
       setMenuAfter: true
     })
 
-    const optionsFunc = typeof options === 'function' ? options : () => options
     this.buttons.addCreator(selectButtonCreator(action, optionsFunc, additionalArgs))
     this._selectPagination(action, optionsFunc, additionalArgs)
     return this
