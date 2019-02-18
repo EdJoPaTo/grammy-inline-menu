@@ -60,14 +60,11 @@ export default class CombinedMiddleware {
         await this.mainFunc(ctx, next)
       }
 
-      const relevantAfterFuncs = this._afterFunc
-        .filter(o => o.runEvenWhenHidden || !isHidden)
-        .map(o => o.func)
-
-      for (const afterFunc of relevantAfterFuncs) {
-        /* eslint no-await-in-loop: "off" */
-        await afterFunc(ctx)
-      }
+      await Promise.all(
+        this._afterFunc
+          .filter(o => o.runEvenWhenHidden || !isHidden)
+          .map(o => o.func(ctx))
+      )
     }
   }
 }
