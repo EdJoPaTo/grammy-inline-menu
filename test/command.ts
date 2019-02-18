@@ -2,7 +2,6 @@ import test, {ExecutionContext} from 'ava'
 import Telegraf, {ContextMessageUpdate} from 'telegraf'
 import {Update} from 'telegram-typings'
 
-import ActionCode from '../source/action-code'
 import TelegrafInlineMenu from '../source'
 
 import {InlineExtra, DUMMY_MESSAGE} from './helpers/telegraf-typing-overrides'
@@ -57,18 +56,12 @@ test('multiple commands', async t => {
 
 test('command can not be used on dynamic menu', t => {
   const menu = new TelegrafInlineMenu('foo')
-    .manual('bar', 'c')
-  menu.setCommand('test')
+  const submenu = menu.selectSubmenu('bar', [], new TelegrafInlineMenu('bar'))
+  submenu.setCommand('test')
 
   const bot = new Telegraf('')
 
-  // Never use menu.middleware, use menu.init
-  // This is just done for the test as init doesnt allow this in the first place but the actual way is more complex
   t.throws(() => {
-    bot.use(menu.middleware(new ActionCode(/.+/), {
-      hasMainMenu: false,
-      depth: 1,
-      log: () => {}
-    }))
-  }, /command.+menu.+\/\^\.\+\$\/.+test/)
+    bot.use(menu.init())
+  }, /command.+menu.+\/\^bar-.+\$\/.+test/)
 })
