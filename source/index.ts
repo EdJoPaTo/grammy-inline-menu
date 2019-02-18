@@ -117,56 +117,6 @@ export default class TelegrafInlineMenu {
     return this
   }
 
-  async generate(ctx: ContextMessageUpdate, actionCode: ActionCode, options: InternalMenuOptions): Promise<{text: string; extra: Extra}> {
-    options.log('generate…', actionCode.get())
-    const text = typeof this.menuText === 'function' ? (await this.menuText(ctx)) : this.menuText
-
-    let actualActionCode: string
-    if (actionCode.isDynamic()) {
-      if (!ctx.callbackQuery || !ctx.callbackQuery.data) {
-        throw new Error('requires a callbackQuery with data in an dynamic menu')
-      }
-
-      const expectedPartCount = options.depth
-      const actualParts = ctx.callbackQuery.data.split(':')
-      // Go up to the menu that shall be opened
-      while (actualParts.length > expectedPartCount) {
-        actualParts.pop()
-      }
-
-      const menuAction = actualParts.join(':')
-      actualActionCode = new ActionCode(menuAction).getString()
-      options.log('generate with actualActionCode', actualActionCode, actionCode.get(), ctx.callbackQuery.data)
-    } else {
-      actualActionCode = actionCode.getString()
-    }
-
-    const keyboardMarkup = await this.buttons.generateKeyboardMarkup(ctx, actualActionCode, options)
-    options.log('buttons', keyboardMarkup.inline_keyboard)
-    const extra = Extra.markdown().markup(keyboardMarkup) as Extra
-    return {text, extra}
-  }
-
-  async setMenuNow(ctx: any, actionCode: ActionCode, options: InternalMenuOptions): Promise<void> {
-    const {text, extra} = await this.generate(ctx, actionCode, options)
-    if (ctx.updateType !== 'callback_query') {
-      await ctx.reply(text, extra)
-      return
-    }
-
-    await ctx.answerCbQuery()
-    await ctx.editMessageText(text, extra)
-      .catch((error: any) => {
-        if (error.description === 'Bad Request: message is not modified') {
-          // This is kind of ok.
-          // Not changed stuff should not be sended but sometimes it happens…
-          console.warn('menu is not modified. Think about preventing this. Happened while setting menu', actionCode.get())
-        } else {
-          console.error('setMenuNow failed', actionCode.get(), error)
-        }
-      })
-  }
-
   replyMenuMiddleware(): ReplyMenuMiddleware {
     const obj: ReplyMenuMiddleware = {
       middleware: () => ((ctx: ContextMessageUpdate) => obj.setSpecific(ctx, '')),
@@ -191,91 +141,6 @@ export default class TelegrafInlineMenu {
     const middleware = this.middleware(actionCode, internalOptions)
     internalOptions.log('init finished')
     return middleware
-  }
-
-  middleware(actionCode: ActionCode, options: InternalMenuOptions): Middleware {
-    assert(actionCode, 'use this menu with .init(): but.use(menu.init(args))')
-
-    if (actionCode.isDynamic()) {
-      assert(this.commands.length === 0, `commands can not point on dynamic submenus. Happened in menu ${actionCode.get()} with the following commands: ${this.commands.join(', ')}`)
-
-      const hasResponderWithoutAction = this.responders.hasSomeNonActionResponders()
-      assert(!hasResponderWithoutAction, `a dynamic submenu can only contain buttons. A question for example does not work. Happened in menu ${actionCode.get()}`)
-    }
-
-    options.log('middleware triggered', actionCode.get(), options, this)
-    options.log('add action reaction', actionCode.get(), 'setMenu')
-    const setMenuFunc = (ctx: any, reason: string, actionOverride?: ActionCode): Promise<void> => {
-      if (actionOverride) {
-        ctx.match = actionCode.exec(actionOverride.getString())
-      }
-
-      options.log('set menu', (actionOverride || actionCode).get(), reason, this)
-      return this.setMenuNow(ctx, actionOverride || actionCode, options)
-    }
-
-    const functions = []
-    if (this.commands.length > 0) {
-      const myComposer: any = Composer
-      functions.push(myComposer.command(this.commands, (ctx: any) => setMenuFunc(ctx, 'command')))
-    }
-
-    for (const replyMenuMiddleware of this.replyMenuMiddlewares) {
-      assert(!replyMenuMiddleware.setMenuFunc, 'replyMenuMiddleware does not work on a menu that is reachable on multiple different ways. This could be implemented but there wasnt a need for this yet. Open an issue on GitHub.')
-
-      replyMenuMiddleware.setMenuFunc = (ctx, actionOverride) => {
-        assert(!actionCode.isDynamic() || actionOverride, 'a dynamic menu can only be set when an actionCode is given')
-
-        if (actionOverride) {
-          assert(actionCode.test(actionOverride), `The actionCode has to belong to the menu. ${actionOverride} does not work with the menu ${actionCode.get()}`)
-        }
-
-        return setMenuFunc(ctx, 'replyMenuMiddleware', actionOverride ? new ActionCode(actionOverride) : actionCode)
-      }
-    }
-
-    const subOptions: InternalMenuOptions = {
-      ...options,
-      setParentMenuFunc: setMenuFunc,
-      depth: Number(options.depth) + 1
-    }
-
-    const handlerFuncs = this.submenus
-      .map(({action, submenu, hide}) => {
-        const childActionCode = actionCode.concat(action)
-        const hiddenFunc: ContextNextFunc = (ctx, next): Promise<void> => {
-          if (!ctx.callbackQuery) {
-            // Only set menu when a hidden button below was used
-            // Without callbackData this can not be determined
-            return next(ctx)
-          }
-
-          return setMenuFunc(ctx, 'menu is hidden')
-        }
-
-        const mainFunc = submenu.middleware(childActionCode, subOptions)
-
-        const m = new CombinedMiddleware(mainFunc, hiddenFunc)
-          .addOnly(ctx => !ctx.callbackQuery || childActionCode.testIsBelow(ctx.callbackQuery.data))
-
-        if (hide) {
-          m.addHide(hide)
-        }
-
-        return m.middleware()
-      })
-
-    const responderMiddleware = this.responders.createMiddleware({
-      actionCode,
-      setMenuFunc,
-      setParentMenuFunc: options.setParentMenuFunc
-    })
-
-    return Composer.compose([
-      responderMiddleware,
-      ...functions,
-      ...handlerFuncs
-    ])
   }
 
   urlButton(text: ConstOrContextFunc<string>, url: ConstOrContextFunc<string>, additionalArgs: ButtonOptions = {}): TelegrafInlineMenu {
@@ -491,6 +356,141 @@ export default class TelegrafInlineMenu {
       submenu
     })
     return submenu
+  }
+
+  protected async generate(ctx: ContextMessageUpdate, actionCode: ActionCode, options: InternalMenuOptions): Promise<{text: string; extra: Extra}> {
+    options.log('generate…', actionCode.get())
+    const text = typeof this.menuText === 'function' ? (await this.menuText(ctx)) : this.menuText
+
+    let actualActionCode: string
+    if (actionCode.isDynamic()) {
+      if (!ctx.callbackQuery || !ctx.callbackQuery.data) {
+        throw new Error('requires a callbackQuery with data in an dynamic menu')
+      }
+
+      const expectedPartCount = options.depth
+      const actualParts = ctx.callbackQuery.data.split(':')
+      // Go up to the menu that shall be opened
+      while (actualParts.length > expectedPartCount) {
+        actualParts.pop()
+      }
+
+      const menuAction = actualParts.join(':')
+      actualActionCode = new ActionCode(menuAction).getString()
+      options.log('generate with actualActionCode', actualActionCode, actionCode.get(), ctx.callbackQuery.data)
+    } else {
+      actualActionCode = actionCode.getString()
+    }
+
+    const keyboardMarkup = await this.buttons.generateKeyboardMarkup(ctx, actualActionCode, options)
+    options.log('buttons', keyboardMarkup.inline_keyboard)
+    const extra = Extra.markdown().markup(keyboardMarkup) as Extra
+    return {text, extra}
+  }
+
+  protected async setMenuNow(ctx: any, actionCode: ActionCode, options: InternalMenuOptions): Promise<void> {
+    const {text, extra} = await this.generate(ctx, actionCode, options)
+    if (ctx.updateType !== 'callback_query') {
+      await ctx.reply(text, extra)
+      return
+    }
+
+    await ctx.answerCbQuery()
+    await ctx.editMessageText(text, extra)
+      .catch((error: any) => {
+        if (error.description === 'Bad Request: message is not modified') {
+          // This is kind of ok.
+          // Not changed stuff should not be sended but sometimes it happens…
+          console.warn('menu is not modified. Think about preventing this. Happened while setting menu', actionCode.get())
+        } else {
+          console.error('setMenuNow failed', actionCode.get(), error)
+        }
+      })
+  }
+
+  protected middleware(actionCode: ActionCode, options: InternalMenuOptions): Middleware {
+    assert(actionCode, 'use this menu with .init(): but.use(menu.init(args))')
+
+    if (actionCode.isDynamic()) {
+      assert(this.commands.length === 0, `commands can not point on dynamic submenus. Happened in menu ${actionCode.get()} with the following commands: ${this.commands.join(', ')}`)
+
+      const hasResponderWithoutAction = this.responders.hasSomeNonActionResponders()
+      assert(!hasResponderWithoutAction, `a dynamic submenu can only contain buttons. A question for example does not work. Happened in menu ${actionCode.get()}`)
+    }
+
+    options.log('middleware triggered', actionCode.get(), options, this)
+    options.log('add action reaction', actionCode.get(), 'setMenu')
+    const setMenuFunc = (ctx: any, reason: string, actionOverride?: ActionCode): Promise<void> => {
+      if (actionOverride) {
+        ctx.match = actionCode.exec(actionOverride.getString())
+      }
+
+      options.log('set menu', (actionOverride || actionCode).get(), reason, this)
+      return this.setMenuNow(ctx, actionOverride || actionCode, options)
+    }
+
+    const functions = []
+    if (this.commands.length > 0) {
+      const myComposer: any = Composer
+      functions.push(myComposer.command(this.commands, (ctx: any) => setMenuFunc(ctx, 'command')))
+    }
+
+    for (const replyMenuMiddleware of this.replyMenuMiddlewares) {
+      assert(!replyMenuMiddleware.setMenuFunc, 'replyMenuMiddleware does not work on a menu that is reachable on multiple different ways. This could be implemented but there wasnt a need for this yet. Open an issue on GitHub.')
+
+      replyMenuMiddleware.setMenuFunc = (ctx, actionOverride) => {
+        assert(!actionCode.isDynamic() || actionOverride, 'a dynamic menu can only be set when an actionCode is given')
+
+        if (actionOverride) {
+          assert(actionCode.test(actionOverride), `The actionCode has to belong to the menu. ${actionOverride} does not work with the menu ${actionCode.get()}`)
+        }
+
+        return setMenuFunc(ctx, 'replyMenuMiddleware', actionOverride ? new ActionCode(actionOverride) : actionCode)
+      }
+    }
+
+    const subOptions: InternalMenuOptions = {
+      ...options,
+      setParentMenuFunc: setMenuFunc,
+      depth: Number(options.depth) + 1
+    }
+
+    const handlerFuncs = this.submenus
+      .map(({action, submenu, hide}) => {
+        const childActionCode = actionCode.concat(action)
+        const hiddenFunc: ContextNextFunc = (ctx, next): Promise<void> => {
+          if (!ctx.callbackQuery) {
+            // Only set menu when a hidden button below was used
+            // Without callbackData this can not be determined
+            return next(ctx)
+          }
+
+          return setMenuFunc(ctx, 'menu is hidden')
+        }
+
+        const mainFunc = submenu.middleware(childActionCode, subOptions)
+
+        const m = new CombinedMiddleware(mainFunc, hiddenFunc)
+          .addOnly(ctx => !ctx.callbackQuery || childActionCode.testIsBelow(ctx.callbackQuery.data))
+
+        if (hide) {
+          m.addHide(hide)
+        }
+
+        return m.middleware()
+      })
+
+    const responderMiddleware = this.responders.createMiddleware({
+      actionCode,
+      setMenuFunc,
+      setParentMenuFunc: options.setParentMenuFunc
+    })
+
+    return Composer.compose([
+      responderMiddleware,
+      ...functions,
+      ...handlerFuncs
+    ])
   }
 
   private _selectPagination(baseAction: string, optionsFunc: ContextFunc<SelectOptions>, additionalArgs: SelectPaginationOptions): void {
