@@ -2,10 +2,12 @@ export const DEFAULT_BUTTON_COLUMNS = 6
 export const DEFAULT_BUTTON_ROWS = 10
 
 export function getRowsOfButtons<T>(buttons: T[], columns = DEFAULT_BUTTON_COLUMNS, maxRows = DEFAULT_BUTTON_ROWS, page = 1): T[][] {
-  const maxButtons = Math.min(maxRows * columns, buttons.length)
+  const buttonsPerPage = maximumButtonsPerPage(columns, maxRows)
   const pageOffset = (page - 1) * maxRows * columns
+  const maxButtonsToShow = Math.min(buttonsPerPage, buttons.length - pageOffset)
+
   const rows = []
-  for (let i = pageOffset; i < maxButtons + pageOffset; i += columns) {
+  for (let i = pageOffset; i < maxButtonsToShow + pageOffset; i += columns) {
     const slice = buttons.slice(i, i + columns)
     rows.push(slice)
   }

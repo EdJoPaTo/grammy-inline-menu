@@ -51,6 +51,14 @@ test('second page', t => {
   ])
 })
 
+test('partial last page', t => {
+  const result = getRowsOfButtons(generateCharArray('A', 'E'), 1, 3, 2)
+  t.deepEqual(result, [
+    ['D'],
+    ['E']
+  ])
+})
+
 test('maximumButtonsPerPage example', t => {
   t.is(maximumButtonsPerPage(2, 3), 6)
   t.is(maximumButtonsPerPage(4, 4), 16)
