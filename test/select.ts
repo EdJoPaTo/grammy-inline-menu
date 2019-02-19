@@ -16,8 +16,8 @@ test('option array menu', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
@@ -27,7 +27,7 @@ test('option array menu', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -42,8 +42,8 @@ test('option object menu', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'A',
@@ -53,7 +53,7 @@ test('option object menu', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -61,15 +61,15 @@ test('option object menu', async t => {
 
 test('option async array menu', async t => {
   const menu = new TelegrafInlineMenu('foo')
-  menu.select('c', () => Promise.resolve(['a', 'b']), {
+  menu.select('c', async () => ['a', 'b'], {
     setFunc: () => t.fail()
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
@@ -79,7 +79,7 @@ test('option async array menu', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -95,8 +95,8 @@ test('option array with textFunc', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'A',
@@ -106,7 +106,7 @@ test('option array with textFunc', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -122,7 +122,7 @@ test('selects', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.answerCbQuery = async () => true
   bot.context.editMessageText = async () => {
     t.pass()
     return true
@@ -141,7 +141,7 @@ test('selects from object', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.answerCbQuery = async () => true
   bot.context.editMessageText = async () => {
     t.pass()
     return true
@@ -154,14 +154,14 @@ test('selected key has emoji prefix', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.select('c', ['a', 'b'], {
     setFunc: () => t.fail(),
-    isSetFunc: (_ctx, key) => Promise.resolve(key === 'b')
+    isSetFunc: async (_ctx, key) => key === 'b'
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
@@ -171,7 +171,7 @@ test('selected key has emoji prefix', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -182,14 +182,14 @@ test('multiselect has prefixes', async t => {
   menu.select('c', ['a', 'b'], {
     multiselect: true,
     setFunc: () => t.fail(),
-    isSetFunc: (_ctx, key) => Promise.resolve(key === 'b')
+    isSetFunc: async (_ctx, key) => key === 'b'
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: emojiFalse + ' a',
@@ -199,7 +199,7 @@ test('multiselect has prefixes', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -209,14 +209,14 @@ test('custom prefixFunc', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.select('c', ['a', 'b'], {
     setFunc: () => t.fail(),
-    prefixFunc: () => Promise.resolve('bar')
+    prefixFunc: async () => 'bar'
   })
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'bar a',
@@ -226,7 +226,7 @@ test('custom prefixFunc', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -245,8 +245,8 @@ test('custom prefix true/false', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: '🔔 a',
@@ -256,7 +256,7 @@ test('custom prefix true/false', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -276,8 +276,8 @@ test('custom prefix true/false with textFunc', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: '🔔 A',
@@ -287,7 +287,7 @@ test('custom prefix true/false with textFunc', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -304,15 +304,15 @@ test('hides key in keyboard', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'b',
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -329,7 +329,7 @@ test('hidden key can not be set', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.answerCbQuery = async () => true
   bot.context.editMessageText = async () => {
     t.pass()
     return true
@@ -350,7 +350,7 @@ test('not existing key will not be set', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.answerCbQuery = async () => true
   bot.context.editMessageText = async () => {
     t.pass()
     return true

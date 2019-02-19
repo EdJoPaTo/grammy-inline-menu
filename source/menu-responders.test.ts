@@ -11,7 +11,7 @@ test('no responders', t => {
 test('only action responder', t => {
   const responders = new MenuResponders()
   responders.add({
-    middleware: () => Promise.resolve(),
+    middleware: async () => {},
     action: new ActionCode('main')
   })
   t.false(responders.hasSomeNonActionResponders())
@@ -20,7 +20,7 @@ test('only action responder', t => {
 test('only non action responder', t => {
   const responders = new MenuResponders()
   responders.add({
-    middleware: () => Promise.resolve()
+    middleware: async () => {}
   })
   t.true(responders.hasSomeNonActionResponders())
 })

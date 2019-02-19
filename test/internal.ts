@@ -26,11 +26,11 @@ test.serial('setMenuNow menu is not modified', async t => {
     t.regex(arg1, /menu is not modified/)
   }
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = () => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async () => {
     const error: any = new Error('Bad Request: message is not modified')
     error.description = 'Bad Request: message is not modified'
-    return Promise.reject(error)
+    throw error
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -54,10 +54,9 @@ test.serial('setMenuNow other error', async t => {
   console.error = t.pass
   console.warn = () => t.fail('other error should use console.error')
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = () => {
-    const error = new Error('something different')
-    return Promise.reject(error)
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async () => {
+    throw new Error('something different')
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)

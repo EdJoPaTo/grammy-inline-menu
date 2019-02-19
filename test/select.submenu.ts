@@ -34,8 +34,8 @@ function generateTestBasics(): Telegraf<ContextMessageUpdate> {
 test('upper menu correct', async t => {
   const bot = generateTestBasics()
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'a',
@@ -45,7 +45,7 @@ test('upper menu correct', async t => {
         callback_data: 'a:c-b'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -54,8 +54,8 @@ test('upper menu correct', async t => {
 test('submenu correct', async t => {
   const bot = generateTestBasics()
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'Hit a!',
@@ -67,7 +67,7 @@ test('submenu correct', async t => {
         callback_data: 'a'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a:c-a'}} as Update)
@@ -76,9 +76,9 @@ test('submenu correct', async t => {
 test('submenu button works', async t => {
   const bot = generateTestBasics()
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.answerCbQuery = text => {
+  bot.context.answerCbQuery = async text => {
     t.is(text, 'a was hit!')
-    return Promise.resolve(true)
+    return true
   }
 
   bot.use(() => t.fail())
@@ -111,15 +111,15 @@ test('hide submenu ends up in parent menu', async t => {
     actionCode: 'a'
   }))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[
       {
         text: 'foo',
         callback_data: 'a:bar'
       }
     ]])
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a:c-a'}} as Update)

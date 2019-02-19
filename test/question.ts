@@ -21,10 +21,10 @@ test('menu correct', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
-  bot.context.editMessageText = (_text, extra: InlineExtra) => {
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
-    return Promise.resolve(true)
+    return true
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
@@ -193,7 +193,7 @@ test('multiple question setFuncs do not interfere', async t => {
 
   bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.reply = () => Promise.resolve(DUMMY_MESSAGE)
+  bot.context.reply = async () => DUMMY_MESSAGE
 
   bot.use(ctx => {
     t.log('update not handled', ctx.update)
@@ -226,17 +226,17 @@ test('question button works on old menu', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.answerCbQuery = async () => true
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.reply = async () => {
     t.pass()
     return DUMMY_MESSAGE
   }
 
-  bot.context.deleteMessage = () => {
+  bot.context.deleteMessage = async () => {
     // Method is triggered but fails as the message is to old
     t.pass()
-    return Promise.reject(new Error('Bad Request: message can\'t be deleted'))
+    throw new Error('Bad Request: message can\'t be deleted')
   }
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
@@ -253,17 +253,17 @@ test.serial('question button deleteMessage fail does not kill question', async t
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.resolve(true)
+  bot.context.answerCbQuery = async () => true
   bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.reply = async () => {
     t.pass()
     return DUMMY_MESSAGE
   }
 
-  bot.context.deleteMessage = () => {
+  bot.context.deleteMessage = async () => {
     // Method is triggered but fails as the message is to old
     t.pass()
-    return Promise.reject(new Error('something'))
+    throw new Error('something')
   }
 
   const normalErrorFunc = console.error

@@ -37,14 +37,14 @@ test('value text & prefix false hidden', async t => {
 })
 
 test('async prefix', async t => {
-  const prefix = (): Promise<boolean> => Promise.resolve(true)
+  const prefix = async (): Promise<boolean> => true
   const result = await prefixEmoji('42', prefix)
   t.is(result, emojiTrue + ' 42')
 })
 
 test('async text and prefix', async t => {
-  const text = (): Promise<string> => Promise.resolve('42')
-  const prefix = (): Promise<boolean> => Promise.resolve(true)
+  const text = async (): Promise<string> => '42'
+  const prefix = async (): Promise<boolean> => true
   const result = await prefixEmoji(text, prefix)
   t.is(result, emojiTrue + ' 42')
 })

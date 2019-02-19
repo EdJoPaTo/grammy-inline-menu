@@ -16,9 +16,9 @@ test('hide is questioned first and does not trigger other func', async t => {
 
 test('async func possible', async t => {
   const result = await buildKeyboardButton({
-    text: () => Promise.resolve('42'),
+    text: async () => '42',
     action: 'a',
-    hide: () => Promise.resolve(false)
+    hide: async () => false
   }, '', {})
   t.deepEqual(result, {
     text: '42',
