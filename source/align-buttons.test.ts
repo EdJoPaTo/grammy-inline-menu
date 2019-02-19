@@ -23,6 +23,11 @@ test('without arg in one line', t => {
   ])
 })
 
+test('without buttons', t => {
+  const result = getRowsOfButtons([])
+  t.deepEqual(result, [])
+})
+
 test('less columns that buttons', t => {
   const result = getRowsOfButtons(generateCharArray('A', 'E'), 3)
   t.deepEqual(result, [
@@ -56,6 +61,15 @@ test('partial last page', t => {
   t.deepEqual(result, [
     ['D'],
     ['E']
+  ])
+})
+
+test('last possible page instead of wanted', t => {
+  const result = getRowsOfButtons(generateCharArray('A', 'F'), 1, 3, 3)
+  t.deepEqual(result, [
+    ['D'],
+    ['E'],
+    ['F']
   ])
 })
 

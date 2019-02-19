@@ -3,7 +3,10 @@ export const DEFAULT_BUTTON_ROWS = 10
 
 export function getRowsOfButtons<T>(buttons: T[], columns = DEFAULT_BUTTON_COLUMNS, maxRows = DEFAULT_BUTTON_ROWS, page = 1): T[][] {
   const buttonsPerPage = maximumButtonsPerPage(columns, maxRows)
-  const pageOffset = (page - 1) * maxRows * columns
+  const totalPages = Math.ceil(buttons.length / buttonsPerPage)
+  const selectedPage = Math.max(Math.min(page, totalPages), 1)
+
+  const pageOffset = (selectedPage - 1) * maxRows * columns
   const maxButtonsToShow = Math.min(buttonsPerPage, buttons.length - pageOffset)
 
   const rows = []
