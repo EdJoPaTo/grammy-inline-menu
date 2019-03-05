@@ -8,9 +8,6 @@
     "node": ">=8.13"
   },
   "scripts": {
-    "ava": "ava",
-    "nyc": "nyc",
-    "xo": "xo",
     "build": "del dist && tsc",
     "prepare": "npm run build",
     "preexample-js": "npm run build",
