@@ -28,7 +28,7 @@ test.serial('setMenuNow menu is not modified', async t => {
 
   bot.context.answerCbQuery = async () => true
   bot.context.editMessageText = async () => {
-    const error: any = new Error('Bad Request: message is not modified')
+    const error: any = new Error('400: Bad Request: message is not modified')
     error.description = 'Bad Request: message is not modified'
     throw error
   }
@@ -47,12 +47,9 @@ test.serial('setMenuNow other error', async t => {
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
-
-  const normalErrorFunc = console.error
-  const normalWarnFunc = console.warn
-
-  console.error = t.pass
-  console.warn = () => t.fail('other error should use console.error')
+  bot.catch((error: any) => {
+    t.is(error.message, 'something different')
+  })
 
   bot.context.answerCbQuery = async () => true
   bot.context.editMessageText = async () => {
@@ -60,6 +57,4 @@ test.serial('setMenuNow other error', async t => {
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
-  console.warn = normalWarnFunc
-  console.error = normalErrorFunc
 })

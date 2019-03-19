@@ -396,16 +396,19 @@ export default class TelegrafInlineMenu {
     }
 
     await ctx.answerCbQuery()
-    await ctx.editMessageText(text, extra)
-      .catch((error: any) => {
-        if (error.description === 'Bad Request: message is not modified') {
-          // This is kind of ok.
-          // Not changed stuff should not be sended but sometimes it happens…
-          console.warn('menu is not modified. Think about preventing this. Happened while setting menu', actionCode.get())
-        } else {
-          console.error('setMenuNow failed', actionCode.get(), error)
-        }
-      })
+
+    try {
+      await ctx.editMessageText(text, extra)
+    } catch (error) {
+      if (error.message === '400: Bad Request: message is not modified') {
+        // This is kind of ok.
+        // Not changed stuff should not be sended but sometimes it happens…
+        console.warn('menu is not modified. Think about preventing this. Happened while setting menu', actionCode.get())
+        return
+      }
+
+      throw error
+    }
   }
 
   protected middleware(actionCode: ActionCode, options: InternalMenuOptions): Middleware {
