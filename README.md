@@ -4,7 +4,8 @@
 [![node](https://img.shields.io/node/v/telegraf-inline-menu.svg)](https://www.npmjs.com/package/telegraf-inline-menu)
 [![Build Status](https://travis-ci.org/EdJoPaTo/telegraf-inline-menu.svg?branch=master)](https://travis-ci.org/EdJoPaTo/telegraf-inline-menu)
 [![Dependency Status](https://david-dm.org/EdJoPaTo/telegraf-inline-menu/status.svg)](https://david-dm.org/EdJoPaTo/telegraf-inline-menu)
-[![Dependency Status](https://david-dm.org/EdJoPaTo/telegraf-inline-menu/dev-status.svg)](https://david-dm.org/EdJoPaTo/telegraf-inline-menu?type=dev)
+[![Peer Dependency Status](https://david-dm.org/EdJoPaTo/telegraf-inline-menu/peer-status.svg)](https://david-dm.org/EdJoPaTo/telegraf-inline-menu?type=peer)
+[![Dev Dependency Status](https://david-dm.org/EdJoPaTo/telegraf-inline-menu/dev-status.svg)](https://david-dm.org/EdJoPaTo/telegraf-inline-menu?type=dev)
 
 This menu library is made to easily create an inline menu for your Telegram bot.
 
