@@ -1,8 +1,9 @@
 import {InlineKeyboardMarkup, ForceReply} from 'telegram-typings'
 
 export interface InlineExtra {
-  reply_markup: InlineKeyboardMarkup;
+  caption?: string;
   parse_mode?: 'Markdown';
+  reply_markup: InlineKeyboardMarkup;
 }
 
 export interface ForceReplyExtra {
