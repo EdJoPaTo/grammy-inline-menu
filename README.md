@@ -58,7 +58,7 @@ Methods often have these parameters:
 - `joinLastRow` (optional, Boolean)
   When set to true the button will try to join the row before. Useful in order to create buttons side by side.
 
-### `const menu = new TelegrafInlineMenu(text)`
+### `const menu = new TelegrafInlineMenu(text, {photo})`
 
 Creates a new Menu.
 
@@ -66,6 +66,10 @@ Example: When this is called with `a` and  `toggle('c', …)` is called the resu
 
 `text` is the text in the message itself.
 This can be a `string` or `function(ctx)`.
+
+`photo` is an identifier for a photo.
+See [Telegraf Documentation: Working with files](https://telegraf.js.org/#/?id=working-with-files).
+Can be the identifier as a constant or a function returning it.
 
 ### `bot.use(menu.init({backButtonText, mainMenuButtonText, actionCode}))`
 
