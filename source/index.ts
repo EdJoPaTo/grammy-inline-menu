@@ -18,6 +18,11 @@ type ContextNextFunc = (ctx: ContextMessageUpdate, next: any) => Promise<void>
 type ContextKeyFunc<T> = (ctx: ContextMessageUpdate, key: string) => Promise<T> | T
 
 type Middleware = (ctx: ContextMessageUpdate, next?: () => any) => Promise<void>
+type Photo = string | {source: Buffer | string}
+
+interface MenuAdditionals {
+  photo?: ConstOrContextFunc<Photo | undefined>;
+}
 
 interface SubmenuEntry {
   action: ActionCode;
@@ -101,9 +106,14 @@ export default class TelegrafInlineMenu {
 
   protected readonly replyMenuMiddlewares: ReplyMenuMiddleware[] = [];
 
+  protected readonly menuPhoto?: ConstOrContextFunc<Photo | undefined>;
+
   constructor(
-    protected menuText: ConstOrContextFunc<string>
-  ) { }
+    protected menuText: ConstOrContextFunc<string>,
+    additionals: MenuAdditionals = {}
+  ) {
+    this.menuPhoto = additionals.photo
+  }
 
   setCommand(commands: string | string[]): TelegrafInlineMenu {
     if (!Array.isArray(commands)) {
@@ -390,15 +400,45 @@ export default class TelegrafInlineMenu {
 
   protected async setMenuNow(ctx: any, actionCode: ActionCode, options: InternalMenuOptions): Promise<void> {
     const {text, extra} = await this.generate(ctx, actionCode, options)
-    if (ctx.updateType !== 'callback_query') {
-      await ctx.reply(text, extra)
+
+    const photo = typeof this.menuPhoto === 'function' ? await this.menuPhoto(ctx) : this.menuPhoto
+    const photoExtra = new Extra({
+      caption: text,
+      ...extra
+    })
+
+    const isPhotoMessage = Boolean(ctx.callbackQuery && ctx.callbackQuery.message && ctx.callbackQuery.message.photo)
+
+    if (ctx.updateType !== 'callback_query' || isPhotoMessage !== Boolean(photo)) {
+      if (ctx.updateType === 'callback_query') {
+        ctx.deleteMessage().catch(() => {})
+      }
+
+      if (photo) {
+        await ctx.replyWithPhoto(photo, photoExtra)
+      } else {
+        await ctx.reply(text, extra)
+      }
+
       return
     }
 
     await ctx.answerCbQuery()
 
     try {
-      await ctx.editMessageText(text, extra)
+      // When photo is set it is a photo message
+      // isPhotoMessage !== photo is ensured above
+      if (photo) {
+        const media = {
+          type: 'photo',
+          media: photo,
+          caption: text
+        }
+
+        await ctx.editMessageMedia(media, photoExtra)
+      } else {
+        await ctx.editMessageText(text, extra)
+      }
     } catch (error) {
       if (error.message === '400: Bad Request: message is not modified') {
         // This is kind of ok.
