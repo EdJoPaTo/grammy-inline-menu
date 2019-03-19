@@ -105,10 +105,19 @@ menu.submenu('Food menu', 'b', someMenu, {
   hide: () => mainMenuToggle
 })
 
-menu.submenu('Third Menu', 'y', new TelegrafInlineMenu('Third Menu'))
-  .setCommand('third')
+let isAndroid = true
+menu.submenu('Photo Menu', 'y', new TelegrafInlineMenu('', {
+  photo: () => isAndroid ? 'https://telegram.org/img/SiteAndroid.jpg' : 'https://telegram.org/img/SiteiOs.jpg'
+}))
+  .setCommand('photo')
   .simpleButton('Just a button', 'a', {
     doFunc: ctx => ctx.answerCbQuery('Just a callback query answer')
+  })
+  .select('img', ['iOS', 'Android'], {
+    isSetFunc: (_ctx, key) => key === 'Android' ? isAndroid : !isAndroid,
+    setFunc: (_ctx, key) => {
+      isAndroid = key === 'Android'
+    }
   })
 
 menu.setCommand('start')
