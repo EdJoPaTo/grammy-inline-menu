@@ -136,3 +136,30 @@ test('something that is not an action in dynamic menu throws error', t => {
     bot.use(menu.init())
   }, /dynamic.+question.+menu.+a/)
 })
+
+test('function as backButtonText is possible', async t => {
+  const menu = new TelegrafInlineMenu('foo')
+  const submenu = new TelegrafInlineMenu((ctx: any) => ctx.match[1])
+
+  menu.selectSubmenu('c', ['a', 'b'], submenu)
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({
+    backButtonText: () => 'back',
+    mainMenuButtonText: () => 'main menu',
+    actionCode: 'a'
+  }))
+
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
+    t.deepEqual(extra.reply_markup.inline_keyboard, [[
+      {
+        text: 'back',
+        callback_data: 'a'
+      }
+    ]])
+    return true
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a:c-a'}} as Update)
+})
