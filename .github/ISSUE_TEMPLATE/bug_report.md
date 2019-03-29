@@ -15,6 +15,10 @@ Did you updated telegraf and telegraf-inline-menu to the latest version?
 * Version of telegraf:
 * Version of telegraf-inline-menu:
 
+What version of NodeJS (and TypeScript) do you use?
+* Version of NodeJS:
+* Version of TypeScript:
+
 **To Reproduce**
 Steps to reproduce the behavior:
 1. Go to '...'
