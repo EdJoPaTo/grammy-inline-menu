@@ -12,8 +12,8 @@ A clear and concise description of what the bug is.
 
 **Versions**
 Did you updated telegraf and telegraf-inline-menu to the latest version?
-* [ ] Version of telegraf: 
-* [ ] Version of telegraf-inline-menu: 
+* Version of telegraf:
+* Version of telegraf-inline-menu:
 
 **To Reproduce**
 Steps to reproduce the behavior:
