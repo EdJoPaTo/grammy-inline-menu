@@ -159,8 +159,8 @@ test('hidden pagination', async t => {
   menu.pagination('c', {
     hide: () => true,
     setPage: () => t.fail(),
-    getCurrentPage: () => Promise.reject(new Error('dont call getCurrentPage when hidden')),
-    getTotalPages: () => Promise.reject(new Error('dont call getTotalPages when hidden'))
+    getCurrentPage: async () => Promise.reject(new Error('dont call getCurrentPage when hidden')),
+    getTotalPages: async () => Promise.reject(new Error('dont call getTotalPages when hidden'))
   })
 
   const bot = new Telegraf('')

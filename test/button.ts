@@ -38,8 +38,8 @@ test('simpleButton works', async t => {
 
   // This could also be argumented to be a pass as the button was pressed.
   // But as there is nothing for the menu to do, the user should send the answer on its own.
-  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.answerCbQuery = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
 })
@@ -77,8 +77,8 @@ test('hidden button does not run doFunc', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.answerCbQuery = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
 
   await bot.handleUpdate({callback_query: {data: 'a:c'}} as Update)
 })

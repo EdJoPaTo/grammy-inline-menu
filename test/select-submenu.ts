@@ -9,12 +9,12 @@ import {InlineExtra} from './helpers/telegraf-typing-overrides'
 function generateTestBasics(): Telegraf<ContextMessageUpdate> {
   const menu = new TelegrafInlineMenu('foo')
 
-  const submenu = new TelegrafInlineMenu((ctx: any) => ctx.match[1])
+  const submenu = new TelegrafInlineMenu((ctx: any): string => ctx.match[1])
     .simpleButton(
       (ctx: any) => `Hit ${ctx.match[1]}!`,
       'd',
       {
-        doFunc: (ctx: any) => ctx.answerCbQuery(`${ctx.match[1]} was hit!`)
+        doFunc: async (ctx: any) => ctx.answerCbQuery(`${ctx.match[1]} was hit!`)
       }
     )
 
@@ -73,7 +73,7 @@ test('submenu correct', async t => {
 
 test('submenu button works', async t => {
   const bot = generateTestBasics()
-  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.answerCbQuery = async text => {
     t.is(text, 'a was hit!')
     return true
@@ -89,12 +89,12 @@ test('hide submenu ends up in parent menu', async t => {
   const menu = new TelegrafInlineMenu('foo')
     .manual('foo', 'bar')
 
-  const submenu = new TelegrafInlineMenu((ctx: any) => ctx.match[1])
+  const submenu = new TelegrafInlineMenu((ctx: any): string => ctx.match[1])
     .simpleButton(
       (ctx: any) => `Hit ${ctx.match[1]}!`,
       'd',
       {
-        doFunc: (ctx: any) => ctx.answerCbQuery(`${ctx.match[1]} was hit!`)
+        doFunc: async (ctx: any) => ctx.answerCbQuery(`${ctx.match[1]} was hit!`)
       }
     )
 
@@ -139,7 +139,7 @@ test('something that is not an action in dynamic menu throws error', t => {
 
 test('function as backButtonText is possible', async t => {
   const menu = new TelegrafInlineMenu('foo')
-  const submenu = new TelegrafInlineMenu((ctx: any) => ctx.match[1])
+  const submenu = new TelegrafInlineMenu((ctx: any): string => ctx.match[1])
 
   menu.selectSubmenu('c', ['a', 'b'], submenu)
 

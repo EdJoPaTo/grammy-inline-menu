@@ -19,7 +19,7 @@ test('middleware works', async t => {
     t.fail('update missed')
   })
 
-  bot.context.editMessageText = () => Promise.reject(new Error('There shouldn\t be any message edited'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('There shouldn\t be any message edited'))
 
   bot.context.reply = async (text, extra: InlineExtra) => {
     t.is(text, '42')
@@ -43,7 +43,7 @@ test('correct actionCode in menu buttons', async t => {
     t.fail('update missed')
   })
 
-  bot.context.editMessageText = () => Promise.reject(new Error('There shouldn\t be any message edited'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('There shouldn\t be any message edited'))
 
   bot.context.reply = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
@@ -64,7 +64,7 @@ test('works with specific ActionCode', async t => {
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
 
   const bot = new Telegraf('')
-  bot.on('message', ctx => replyMenuMiddleware.setSpecific(ctx, 'a:b-z'))
+  bot.on('message', async ctx => replyMenuMiddleware.setSpecific(ctx, 'a:b-z'))
   bot.use(menu.init({actionCode: 'a'}))
   bot.context.reply = async (text, extra: InlineExtra) => {
     t.is(text, 'bar z')
@@ -82,7 +82,7 @@ test('fails with different ActionCode than menu expects', async t => {
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
 
   const bot = new Telegraf('')
-  bot.on('message', ctx => replyMenuMiddleware.setSpecific(ctx, 'b:c'))
+  bot.on('message', async ctx => replyMenuMiddleware.setSpecific(ctx, 'b:c'))
   bot.use(menu.init({actionCode: 'a'}))
   bot.context.reply = async (text, extra: InlineExtra) => {
     t.is(text, 'bar z')

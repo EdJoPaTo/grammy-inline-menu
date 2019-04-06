@@ -21,7 +21,7 @@ export async function buildKeyboard(content: (ButtonRow | KeyboardPartCreator)[]
   const resultButtons: InlineKeyboardButton[][][] = await Promise.all(content.map(async row => {
     if (typeof row === 'function') {
       const innerKeyboard = await row(ctx)
-      return Promise.all(innerKeyboard.map(innerRow => buildKeyboardRow(innerRow, actionCodePrefix, ctx)))
+      return Promise.all(innerKeyboard.map(async innerRow => buildKeyboardRow(innerRow, actionCodePrefix, ctx)))
     }
 
     return [await buildKeyboardRow(row, actionCodePrefix, ctx)]
@@ -37,7 +37,7 @@ export async function buildKeyboard(content: (ButtonRow | KeyboardPartCreator)[]
 
 async function buildKeyboardRow(row: ButtonInfo[], actionCodePrefix: string, ctx: any): Promise<InlineKeyboardButton[]> {
   const buttons = await Promise.all(
-    row.map(buttonInfo => buildKeyboardButton(buttonInfo, actionCodePrefix, ctx))
+    row.map(async buttonInfo => buildKeyboardButton(buttonInfo, actionCodePrefix, ctx))
   )
   const withoutHidden = buttons
     .filter(o => o !== undefined) as InlineKeyboardButton[]

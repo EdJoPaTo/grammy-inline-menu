@@ -10,7 +10,7 @@ import {InlineExtra} from './helpers/telegraf-typing-overrides'
 test('menu correct', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.toggle('toggle me', 'c', {
-    setFunc: () => Promise.reject(new Error('Nothing has to be set when only showing the menu')),
+    setFunc: async () => Promise.reject(new Error('Nothing has to be set when only showing the menu')),
     isSetFunc: () => true
   })
 
@@ -33,8 +33,8 @@ test('hidden', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.toggle('toggle me', 'c', {
     hide: () => true,
-    setFunc: () => Promise.reject(new Error('When hidden other funcs shouldn\'t be called.')),
-    isSetFunc: () => Promise.reject(new Error('When hidden other funcs shouldn\'t be called.'))
+    setFunc: async () => Promise.reject(new Error('When hidden other funcs shouldn\'t be called.')),
+    isSetFunc: async () => Promise.reject(new Error('When hidden other funcs shouldn\'t be called.'))
   })
 
   const bot = new Telegraf('')

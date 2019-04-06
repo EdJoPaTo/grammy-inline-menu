@@ -46,7 +46,7 @@ test('sends question text', async t => {
     return true
   }
 
-  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.deleteMessage = async () => {
     t.pass()
     return true
@@ -74,8 +74,8 @@ test('setFunc on answer', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.answerCbQuery = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.reply = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return DUMMY_MESSAGE
@@ -105,9 +105,9 @@ test('dont setFunc on wrong input text', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.reply = () => Promise.reject(new Error('dont reply on wrong text'))
+  bot.context.answerCbQuery = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.reply = async () => Promise.reject(new Error('dont reply on wrong text'))
   bot.use(() => t.pass())
 
   await bot.handleUpdate({message: {
@@ -130,9 +130,9 @@ test('dont setFunc on hide', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.reply = () => Promise.reject(new Error('on hide nothing has to be replied'))
+  bot.context.answerCbQuery = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.reply = async () => Promise.reject(new Error('on hide nothing has to be replied'))
 
   bot.use(() => t.pass())
 
@@ -155,8 +155,8 @@ test('accepts other stuff than text', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.answerCbQuery = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.reply = async (_text, extra: InlineExtra) => {
     t.deepEqual(extra.reply_markup.inline_keyboard, menuKeyboard)
     return DUMMY_MESSAGE
@@ -191,8 +191,8 @@ test('multiple question setFuncs do not interfere', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.answerCbQuery = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.reply = async () => DUMMY_MESSAGE
 
   bot.use(ctx => {
@@ -227,7 +227,7 @@ test('question button works on old menu', async t => {
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = async () => true
-  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.reply = async () => {
     t.pass()
     return DUMMY_MESSAGE
@@ -254,7 +254,7 @@ test.serial('question button deleteMessage fail does not kill question', async t
   bot.use(menu.init({actionCode: 'a'}))
 
   bot.context.answerCbQuery = async () => true
-  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
   bot.context.reply = async () => {
     t.pass()
     return DUMMY_MESSAGE

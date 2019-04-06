@@ -51,7 +51,7 @@ export function selectButtonCreator(action: string, optionsFunc: OptionsFunc, ad
     const currentPage = (getCurrentPage && await getCurrentPage(ctx)) || 1
     const fallbackKeyTextFunc = Array.isArray(optionsResult) ? ((_ctx: any, key: string) => key) : ((_ctx: any, key: string) => optionsResult[key])
     const textOnlyFunc = textFunc || fallbackKeyTextFunc
-    const keyTextFunc = (...args: any[]): Promise<string> => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
+    const keyTextFunc = async (...args: any[]): Promise<string> => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
       hideFalseEmoji: !multiselect,
       ...additionalArgs
     }, ...args)

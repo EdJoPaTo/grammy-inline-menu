@@ -87,7 +87,7 @@
     "semicolon": false,
     "rules": {
       "ava/no-ignored-test-files": "off",
-      "@typescript-eslint/promise-function-async": "off",
+      "@typescript-eslint/promise-function-async": "warn",
       "@typescript-eslint/indent": [
         "error",
         2

@@ -37,7 +37,7 @@ export default class MenuResponders {
 
   createMiddleware(environment: ResponderEnvironment): Middleware<ContextMessageUpdate> {
     const {actionCode, setMenuFunc} = environment
-    const menuMiddleware = Composer.action(actionCode.get(), ctx => setMenuFunc(ctx, 'menu action'))
+    const menuMiddleware = Composer.action(actionCode.get(), async ctx => setMenuFunc(ctx, 'menu action'))
 
     return Composer.compose([
       menuMiddleware,
@@ -65,9 +65,9 @@ export function createMiddlewareFromResponder(responder: Responder, environment:
       throw new Error(`There is no parent menu for this that could be set. Remove the 'setParentMenuAfter' flag. Occured in menu ${actionCode.get()}`)
     }
 
-    m.addAfterFunc(ctx => setParentMenuFunc(ctx, `setParentMenuAfter ${actionCode.get()}`), Boolean(responder.action))
+    m.addAfterFunc(async ctx => setParentMenuFunc(ctx, `setParentMenuAfter ${actionCode.get()}`), Boolean(responder.action))
   } else if (responder.setMenuAfter) {
-    m.addAfterFunc(ctx => setMenuFunc(ctx, `setMenuAfter ${actionCode.get()}`), Boolean(responder.action))
+    m.addAfterFunc(async ctx => setMenuFunc(ctx, `setMenuAfter ${actionCode.get()}`), Boolean(responder.action))
   }
 
   if (!responder.action) {

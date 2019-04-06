@@ -127,7 +127,7 @@ test('switchToCurrentChat method', async t => {
 })
 
 test('unfinished button', async t => {
-  await t.throwsAsync(() => buildKeyboardButton({
+  await t.throwsAsync(async () => buildKeyboardButton({
     text: '42'
   }, 'main', {}))
 })

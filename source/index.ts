@@ -129,8 +129,8 @@ export default class TelegrafInlineMenu {
 
   replyMenuMiddleware(): ReplyMenuMiddleware {
     const obj: ReplyMenuMiddleware = {
-      middleware: () => ((ctx: ContextMessageUpdate) => obj.setSpecific(ctx, '')),
-      setSpecific: (ctx: ContextMessageUpdate, actionCode: string) => {
+      middleware: () => (async (ctx: ContextMessageUpdate) => obj.setSpecific(ctx, '')),
+      setSpecific: async (ctx: ContextMessageUpdate, actionCode: string) => {
         if (!obj.setMenuFunc) {
           throw new Error('This does only work when menu is initialized with bot.use(menu.init())')
         }
@@ -302,7 +302,7 @@ export default class TelegrafInlineMenu {
     const optionsFunc = typeof options === 'function' ? options : () => options
 
     this.responders.add({
-      middleware: ctx => setFunc(ctx, keyFromCtx(ctx)),
+      middleware: async ctx => setFunc(ctx, keyFromCtx(ctx)),
       action: this.actions.addDynamic(action),
       hide: selectHideFunc(keyFromCtx, optionsFunc, hide),
       setParentMenuAfter: additionalArgs.setParentMenuAfter,
@@ -343,16 +343,16 @@ export default class TelegrafInlineMenu {
       return isSet === state
     }
 
-    this.button(ctx => prefixEmoji(text, false, additionalArgs, ctx), `${action}-true`, {
+    this.button(async ctx => prefixEmoji(text, false, additionalArgs, ctx), `${action}-true`, {
       ...additionalArgs,
-      doFunc: ctx => setFunc(ctx, true),
-      hide: ctx => hideFunc(ctx, true)
+      doFunc: async ctx => setFunc(ctx, true),
+      hide: async ctx => hideFunc(ctx, true)
     })
 
-    this.button(ctx => prefixEmoji(text, true, additionalArgs, ctx), `${action}-false`, {
+    this.button(async ctx => prefixEmoji(text, true, additionalArgs, ctx), `${action}-false`, {
       ...additionalArgs,
-      doFunc: ctx => setFunc(ctx, false),
-      hide: ctx => hideFunc(ctx, false)
+      doFunc: async ctx => setFunc(ctx, false),
+      hide: async ctx => hideFunc(ctx, false)
     })
 
     return this
@@ -463,7 +463,7 @@ export default class TelegrafInlineMenu {
 
     options.log('middleware triggered', actionCode.get(), options, this)
     options.log('add action reaction', actionCode.get(), 'setMenu')
-    const setMenuFunc = (ctx: any, reason: string, actionOverride?: ActionCode): Promise<void> => {
+    const setMenuFunc = async (ctx: any, reason: string, actionOverride?: ActionCode): Promise<void> => {
       if (actionOverride) {
         ctx.match = actionCode.exec(actionOverride.getString())
       }
@@ -475,13 +475,13 @@ export default class TelegrafInlineMenu {
     const functions = []
     if (this.commands.length > 0) {
       const myComposer: any = Composer
-      functions.push(myComposer.command(this.commands, (ctx: any) => setMenuFunc(ctx, 'command')))
+      functions.push(myComposer.command(this.commands, async (ctx: any) => setMenuFunc(ctx, 'command')))
     }
 
     for (const replyMenuMiddleware of this.replyMenuMiddlewares) {
       assert(!replyMenuMiddleware.setMenuFunc, 'replyMenuMiddleware does not work on a menu that is reachable on multiple different ways. This could be implemented but there wasnt a need for this yet. Open an issue on GitHub.')
 
-      replyMenuMiddleware.setMenuFunc = (ctx, actionOverride) => {
+      replyMenuMiddleware.setMenuFunc = async (ctx, actionOverride) => {
         assert(!actionCode.isDynamic() || actionOverride, 'a dynamic menu can only be set when an actionCode is given')
 
         if (actionOverride) {
@@ -501,7 +501,7 @@ export default class TelegrafInlineMenu {
     const handlerFuncs = this.submenus
       .map(({action, submenu, hide}) => {
         const childActionCode = actionCode.concat(action)
-        const hiddenFunc: ContextNextFunc = (ctx, next): Promise<void> => {
+        const hiddenFunc: ContextNextFunc = async (ctx, next): Promise<void> => {
           if (!ctx.callbackQuery) {
             // Only set menu when a hidden button below was used
             // Without callbackData this can not be determined

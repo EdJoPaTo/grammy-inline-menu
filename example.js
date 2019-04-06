@@ -18,12 +18,12 @@ menu.toggle('toggle me', 'a', {
 })
 
 menu.simpleButton('click me', 'c', {
-  doFunc: ctx => ctx.answerCbQuery('you clicked me!'),
+  doFunc: async ctx => ctx.answerCbQuery('you clicked me!'),
   hide: () => mainMenuToggle
 })
 
 menu.simpleButton('click me harder', 'd', {
-  doFunc: ctx => ctx.answerCbQuery('you can do better!'),
+  doFunc: async ctx => ctx.answerCbQuery('you can do better!'),
   joinLastRow: true,
   hide: () => mainMenuToggle
 })
@@ -105,7 +105,7 @@ menu.submenu('Photo Menu', 'y', new TelegrafInlineMenu('', {
 }))
   .setCommand('photo')
   .simpleButton('Just a button', 'a', {
-    doFunc: ctx => ctx.answerCbQuery('Just a callback query answer')
+    doFunc: async ctx => ctx.answerCbQuery('Just a callback query answer')
   })
   .select('img', ['iOS', 'Android'], {
     isSetFunc: (_ctx, key) => key === 'Android' ? isAndroid : !isAndroid,

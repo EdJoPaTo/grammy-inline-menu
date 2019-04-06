@@ -89,7 +89,7 @@ test('hidden submenu before does not cancel not hidden button', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.editMessageText = () => Promise.reject(new Error('simpleButton does not update the menu. The hidden submenu had'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('simpleButton does not update the menu. The hidden submenu had'))
 
   await bot.handleUpdate({callback_query: {data: 'a:test'}} as Update)
 })
@@ -109,9 +109,9 @@ test('hidden submenu question is lost', async t => {
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
 
-  bot.context.answerCbQuery = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.editMessageText = () => Promise.reject(new Error('This method should not be called here!'))
-  bot.context.reply = () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.answerCbQuery = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.reply = async () => Promise.reject(new Error('This method should not be called here!'))
 
   bot.use(() => {
     t.pass()
