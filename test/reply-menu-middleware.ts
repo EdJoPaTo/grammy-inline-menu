@@ -111,16 +111,17 @@ test('fails in dynamic menu without specific ActionCode', async t => {
   await bot.handleUpdate({message: {text: '42'}} as Update)
 })
 
-test('fails before init', t => {
+test('fails before init', async t => {
   const menu = new TelegrafInlineMenu('foo')
   const submenu = new TelegrafInlineMenu('bar')
   menu.selectSubmenu('b', ['y', 'z'], submenu)
 
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
   const handler = replyMenuMiddleware.middleware()
-  t.throws(() => {
-    handler({} as ContextMessageUpdate, () => null)
-  }, /menu.init/)
+  await t.throwsAsync(
+    async () => handler({} as ContextMessageUpdate, () => null),
+    /menu.init/
+  )
 })
 
 test('does not work with menu on multiple positions', t => {
