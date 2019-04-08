@@ -9,7 +9,7 @@
 
 This menu library is made to easily create an inline menu for your Telegram bot.
 
-## Installation
+# Installation
 
 ```
 $ npm install telegraf-inline-menu
@@ -21,9 +21,9 @@ or using `yarn`:
 $ yarn add telegraf-inline-menu
 ```
 
-## Examples
+# Examples
 
-### Basic Example
+## Basic Example
 
 ```js
 const Telegraf = require('telegraf');
@@ -44,13 +44,13 @@ bot.use(menu.init());
 bot.startPolling();
 ```
 
-### More interesting one
+## More interesting one
 
 Look at the code here : [example.js](example.js)
 
 ![Example Food Menu](media/example-food.gif)
 
-## Documentation
+# Documentation
 
 The menu function arguments start with the text of the resulting button:
 
@@ -73,7 +73,7 @@ This was used in the first line of the example to return the user `first_name`.
 As this is based on Telegraf see their [Docs](https://telegraf.js.org/) or [GitHub Repo](https://github.com/telegraf/telegraf).
 Also see the Telegram [Bot API Documentation](https://core.telegram.org/bots/api).
 
-### Methods
+## Methods
 
 Methods generally support ES6 Promises as Parameters.
 
@@ -89,7 +89,7 @@ Methods often have these parameters:
 - `joinLastRow` (optional, Boolean)
   When set to true the button will try to join the row before. Useful in order to create buttons side by side.
 
-#### `const menu = new TelegrafInlineMenu(text, {photo})`
+### `const menu = new TelegrafInlineMenu(text, {photo})`
 
 Creates a new Menu.
 
@@ -102,19 +102,19 @@ This can be a `string` or `function(ctx)`.
 See [Telegraf Documentation: Working with files](https://telegraf.js.org/#/?id=working-with-files).
 Can be the identifier as a constant or a function returning it.
 
-#### `bot.use(menu.init({backButtonText, mainMenuButtonText, actionCode}))`
+### `bot.use(menu.init({backButtonText, mainMenuButtonText, actionCode}))`
 
 This is used to apply the menu to the bot.
 Should be one the last things before using `bot.startPolling()`
 
-##### Arguments
+#### Arguments
 
 `backButtonText` and `mainMenuButtonText` (both optional) will be used for the back and top buttons.
 
 `actionCode` (optional, for advanced use only)
 When multiple menus that are not submenus of each other are created this is used to define the root actionCode of the current menu. As action codes have to be unique there as to be an own action code for each menu. When this is not given, 'main' is assumed.
 
-#### `menu.setCommand(command)`
+### `menu.setCommand(command)`
 
 This used to entry the current menu by a bot command.
 Normally you would do something like `bot.command('start', …)` in order to get a command.
@@ -130,7 +130,7 @@ settings.setCommand('settings');
 main.submenu('Settings', 's', settings);
 ```
 
-#### `menu.button(text, action, {doFunc, hide, joinLastRow, setParentMenuAfter})`
+### `menu.button(text, action, {doFunc, hide, joinLastRow, setParentMenuAfter})`
 
 Button for triggering functions.
 Updates menu when `doFunc()` finished.
@@ -138,7 +138,7 @@ Updates menu when `doFunc()` finished.
 When your `doFunc` does not update things in the menu use `menu.simpleButton` instead.
 It has the exact same arguments and will not update the menu after the `doFunc()`.
 
-##### Arguments
+#### Arguments
 
 `text` can be a `string` or a `function(ctx)` that will be set as the Button text.
 
@@ -150,18 +150,18 @@ It has the exact same arguments and will not update the menu after the `doFunc()
 
 `setParentMenuAfter` (optional) can be set to true in order to open the parent menu instead of the current menu after the doFunc was executed.
 
-#### `menu.simpleButton(text, action, {doFunc, hide, joinLastRow})`
+### `menu.simpleButton(text, action, {doFunc, hide, joinLastRow})`
 
 see `menu.button`
 
-#### `menu.pagination(action, {setPage, getCurrentPage, getTotalPages, hide, setParentMenuAfter})`
+### `menu.pagination(action, {setPage, getCurrentPage, getTotalPages, hide, setParentMenuAfter})`
 
 Adds a pagination row. The user can select the page he wants to see relative to the current page.
 
 Pages are 1 based. The first page is 1.
 The currentPage has to be within [1..totalPages]
 
-##### Arguments
+#### Arguments
 
 `action` has to be unique in this menu.
 
@@ -171,14 +171,14 @@ The currentPage has to be within [1..totalPages]
 
 `getTotalPages(ctx)` has to return all the available pages.
 
-#### `menu.question(buttonText, action, {questionText, setFunc, hide, joinLastRow})`
+### `menu.question(buttonText, action, {questionText, setFunc, hide, joinLastRow})`
 
 When the user presses the button, he will be asked a question.
 The answer he gives is available via `setFunc(ctx, answer)`
 When the user answers with something that is not a text (a photo for example) `answer` will be undefined.
 `ctx.message` contains the full answer.
 
-##### Arguments
+#### Arguments
 
 `buttonText` can be a `string` or a `function(ctx)` that will be set as the Button text.
 
@@ -192,11 +192,11 @@ If this is not unique it will collide with the other question with the same text
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
-#### `menu.select(action, options, {setFunc, isSetFunc, prefixFunc, textFunc, hide, columns, maxRows, setPage, getCurrentPage, setParentMenuAfter})`
+### `menu.select(action, options, {setFunc, isSetFunc, prefixFunc, textFunc, hide, columns, maxRows, setPage, getCurrentPage, setParentMenuAfter})`
 
 Creates multiple buttons for each provided option.
 
-##### Arguments
+#### Arguments
 
 `action` has to be unique in this menu.
 
@@ -235,23 +235,23 @@ See `menu.pagination()` for that.
 `setParentMenuAfter` (optional) can be set to true in order to open the parent menu instead of the current menu after the setFunc was executed.
 Only has an effect when `setFunc` is used.
 
-#### `menu.selectSubmenu(action, options, submenu, {isSetFunc, prefixFunc, textFunc, hide, columns, maxRows, setPage, getCurrentPage})`
+### `menu.selectSubmenu(action, options, submenu, {isSetFunc, prefixFunc, textFunc, hide, columns, maxRows, setPage, getCurrentPage})`
 
 Creates multiple buttons for each provided option.
 When hitting the option the submenu is opened.
 Needed information can be found in `ctx.match`.
 
-##### Arguments
+#### Arguments
 
 the same as `menu.select()` except:
 
 `hide(ctx)` (optional) can be used to hide the complete selection when true is returned.
 
-#### `menu.toggle(text, action, {setFunc, isSetFunc, hide, joinLastRow})`
+### `menu.toggle(text, action, {setFunc, isSetFunc, hide, joinLastRow})`
 
 Creates a button that toggles a setting.
 
-##### Arguments
+#### Arguments
 
 `text` can be a `string` or a `function(ctx)` that will be set as the Button text.
 
@@ -265,11 +265,11 @@ This will show an emoji to the user on the button as text prefix.
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
-#### `menu.submenu(text, action, submenu, {hide, joinLastRow})`
+### `menu.submenu(text, action, submenu, {hide, joinLastRow})`
 
 Creates a Button in the menu to a submenu
 
-##### Arguments
+#### Arguments
 
 `text` can be a `string` or `function(ctx)`
 
@@ -278,7 +278,7 @@ Creates a Button in the menu to a submenu
 `menu` is another TelegrafInlineMenu.
 `hide(ctx)` (optional) can hide the button that opens the submenu.
 
-##### Usage
+#### Usage
 
 As methods return the current menu you can concat button methods like that:
 
@@ -301,14 +301,14 @@ menu
 menu.manual('Test3', 'z');
 ```
 
-#### `menu.manual(text, action, {hide, joinLastRow, root})`
+### `menu.manual(text, action, {hide, joinLastRow, root})`
 
 Add a Button for a manual (or legacy) `bot.action`.
 
 You have to do `bot.action` yourself with the corresponding actionCode.
 `root` can be useful.
 
-##### Arguments
+#### Arguments
 
 `text` can be a `string` or a `function(ctx)` that will be set as the Button text.
 
@@ -320,37 +320,37 @@ You have to do `bot.action` yourself with the corresponding actionCode.
 When `true` the action is not relative to the menu and will be 'global'.
 This is useful for links to other menus.
 
-#### `menu.urlButton(text, url, {hide, joinLastRow})`
+### `menu.urlButton(text, url, {hide, joinLastRow})`
 
 Url button. This button is just a pass through and has no effect on the actionCode system.
 
-##### Arguments
+#### Arguments
 
 `text` and `url` can be `string` or `function(ctx)`.
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
-#### `menu.switchToChatButton(text, value, {hide, joinLastRow})`
+### `menu.switchToChatButton(text, value, {hide, joinLastRow})`
 
 Switch button. This button is just a pass through and doesn't have an effect on the actionCode system.
 
-##### Arguments
+#### Arguments
 
 `text` and `value` can be `string` or `function(ctx)`.
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
-#### `menu.switchToCurrentChatButton(text, value, {hide, joinLastRow})`
+### `menu.switchToCurrentChatButton(text, value, {hide, joinLastRow})`
 
 see `menu.switchToChatButton`
 
-#### `const middleware = menu.replyMenuMiddleware()`
+### `const middleware = menu.replyMenuMiddleware()`
 
 Generate a middleware that can be used when the menu shall be send manually.
 For example when the menu should be changed on external events.
 Also the menu can be manually changed via a simleButton based on external information.
 
-##### Usage
+#### Usage
 
 When the menu is always the same you can use the simple variant like other middlewares:
 
