@@ -9,27 +9,57 @@
 
 This menu library is made to easily create an inline menu for your Telegram bot.
 
-## Example
+## Installation
 
-![Example Food Menu](media/example-food.gif)
-```js
-const menu = new TelegrafInlineMenu(
-  ctx => `Hey ${ctx.from.first_name}!`
-)
-menu.simpleButton('I am excited!', 'a', {
-  doFunc: ctx => ctx.reply('As am I!')
-})
-bot.use(menu.init())
+```
+$ npm install telegraf-inline-menu
 ```
 
-# Documentation
+or using `yarn`:
+
+```
+$ yarn add telegraf-inline-menu
+```
+
+## Examples
+
+### Basic Example
+
+```js
+const Telegraf = require('telegraf');
+const TelegrafInlineMenu = require('telegraf-inline-menu');
+
+const menu = new TelegrafInlineMenu(ctx => `Hey ${ctx.from.first_name}!`);
+
+menu.simpleButton('I am excited!', 'a', {
+  doFunc: ctx => ctx.reply('As am I!')
+});
+
+menu.setCommand('start');
+
+const bot = new Telegraf(process.env.BOT_TOKEN);
+
+bot.use(menu.init());
+
+bot.startPolling();
+```
+
+### More interesting one
+
+Look at the code here : [example.js](example.js)
+
+![Example Food Menu](media/example-food.gif)
+
+## Documentation
 
 The menu function arguments start with the text of the resulting button:
+
 ```js
 menu.simpleButton(text, action, {
   doFunc
-})
+});
 ```
+
 The second argument is the action.
 This has to be an unique identifier in the current menu and should stay the same as long as possible.
 It is used to determine the pressed button.
@@ -43,11 +73,12 @@ This was used in the first line of the example to return the user `first_name`.
 As this is based on Telegraf see their [Docs](https://telegraf.js.org/) or [GitHub Repo](https://github.com/telegraf/telegraf).
 Also see the Telegram [Bot API Documentation](https://core.telegram.org/bots/api).
 
-## Methods
+### Methods
 
 Methods generally support ES6 Promises as Parameters.
 
 Methods often have these parameters:
+
 - `text` (String / Function / Promise)
   String or Function that returns the text.
   Will be set as the button text.
@@ -58,11 +89,11 @@ Methods often have these parameters:
 - `joinLastRow` (optional, Boolean)
   When set to true the button will try to join the row before. Useful in order to create buttons side by side.
 
-### `const menu = new TelegrafInlineMenu(text, {photo})`
+#### `const menu = new TelegrafInlineMenu(text, {photo})`
 
 Creates a new Menu.
 
-Example: When this is called with `a` and  `toggle('c', …)` is called the resulting actionCode for the toggle button will be `a:c`.
+Example: When this is called with `a` and `toggle('c', …)` is called the resulting actionCode for the toggle button will be `a:c`.
 
 `text` is the text in the message itself.
 This can be a `string` or `function(ctx)`.
@@ -71,19 +102,20 @@ This can be a `string` or `function(ctx)`.
 See [Telegraf Documentation: Working with files](https://telegraf.js.org/#/?id=working-with-files).
 Can be the identifier as a constant or a function returning it.
 
-### `bot.use(menu.init({backButtonText, mainMenuButtonText, actionCode}))`
+#### `bot.use(menu.init({backButtonText, mainMenuButtonText, actionCode}))`
 
 This is used to apply the menu to the bot.
 Should be one the last things before using `bot.startPolling()`
 
-#### Arguments
+##### Arguments
 
 `backButtonText` and `mainMenuButtonText` (both optional) will be used for the back and top buttons.
 
 `actionCode` (optional, for advanced use only)
 When multiple menus that are not submenus of each other are created this is used to define the root actionCode of the current menu. As action codes have to be unique there as to be an own action code for each menu. When this is not given, 'main' is assumed.
 
-### `menu.setCommand(command)`
+#### `menu.setCommand(command)`
+
 This used to entry the current menu by a bot command.
 Normally you would do something like `bot.command('start', …)` in order to get a command.
 This is different as it has to do some extra steps internally.
@@ -91,14 +123,14 @@ This is different as it has to do some extra steps internally.
 Each submenu can have its own commands. For example this is useful with a main menu (/start) and a settings submenu (/settings):
 
 ```js
-const main = new TelegrafInlineMenu('Main')
-main.setCommand('start')
-const settings = new TelegrafInlineMenu('Settings')
-settings.setCommand('settings')
-main.submenu('Settings', 's', settings)
+const main = new TelegrafInlineMenu('Main');
+main.setCommand('start');
+const settings = new TelegrafInlineMenu('Settings');
+settings.setCommand('settings');
+main.submenu('Settings', 's', settings);
 ```
 
-### `menu.button(text, action, {doFunc, hide, joinLastRow, setParentMenuAfter})`
+#### `menu.button(text, action, {doFunc, hide, joinLastRow, setParentMenuAfter})`
 
 Button for triggering functions.
 Updates menu when `doFunc()` finished.
@@ -106,7 +138,7 @@ Updates menu when `doFunc()` finished.
 When your `doFunc` does not update things in the menu use `menu.simpleButton` instead.
 It has the exact same arguments and will not update the menu after the `doFunc()`.
 
-#### Arguments
+##### Arguments
 
 `text` can be a `string` or a `function(ctx)` that will be set as the Button text.
 
@@ -118,18 +150,18 @@ It has the exact same arguments and will not update the menu after the `doFunc()
 
 `setParentMenuAfter` (optional) can be set to true in order to open the parent menu instead of the current menu after the doFunc was executed.
 
-### `menu.simpleButton(text, action, {doFunc, hide, joinLastRow})`
+#### `menu.simpleButton(text, action, {doFunc, hide, joinLastRow})`
 
 see `menu.button`
 
-### `menu.pagination(action, {setPage, getCurrentPage, getTotalPages, hide, setParentMenuAfter})`
+#### `menu.pagination(action, {setPage, getCurrentPage, getTotalPages, hide, setParentMenuAfter})`
 
 Adds a pagination row. The user can select the page he wants to see relative to the current page.
 
 Pages are 1 based. The first page is 1.
 The currentPage has to be within [1..totalPages]
 
-#### Arguments
+##### Arguments
 
 `action` has to be unique in this menu.
 
@@ -139,14 +171,14 @@ The currentPage has to be within [1..totalPages]
 
 `getTotalPages(ctx)` has to return all the available pages.
 
-### `menu.question(buttonText, action, {questionText, setFunc, hide, joinLastRow})`
+#### `menu.question(buttonText, action, {questionText, setFunc, hide, joinLastRow})`
 
 When the user presses the button, he will be asked a question.
 The answer he gives is available via `setFunc(ctx, answer)`
 When the user answers with something that is not a text (a photo for example) `answer` will be undefined.
 `ctx.message` contains the full answer.
 
-#### Arguments
+##### Arguments
 
 `buttonText` can be a `string` or a `function(ctx)` that will be set as the Button text.
 
@@ -160,11 +192,11 @@ If this is not unique it will collide with the other question with the same text
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.select(action, options, {setFunc, isSetFunc, prefixFunc, textFunc, hide, columns, maxRows, setPage, getCurrentPage, setParentMenuAfter})`
+#### `menu.select(action, options, {setFunc, isSetFunc, prefixFunc, textFunc, hide, columns, maxRows, setPage, getCurrentPage, setParentMenuAfter})`
 
 Creates multiple buttons for each provided option.
 
-#### Arguments
+##### Arguments
 
 `action` has to be unique in this menu.
 
@@ -203,23 +235,23 @@ See `menu.pagination()` for that.
 `setParentMenuAfter` (optional) can be set to true in order to open the parent menu instead of the current menu after the setFunc was executed.
 Only has an effect when `setFunc` is used.
 
-### `menu.selectSubmenu(action, options, submenu, {isSetFunc, prefixFunc, textFunc, hide, columns, maxRows, setPage, getCurrentPage})`
+#### `menu.selectSubmenu(action, options, submenu, {isSetFunc, prefixFunc, textFunc, hide, columns, maxRows, setPage, getCurrentPage})`
 
 Creates multiple buttons for each provided option.
 When hitting the option the submenu is opened.
 Needed information can be found in `ctx.match`.
 
-#### Arguments
+##### Arguments
 
 the same as `menu.select()` except:
 
 `hide(ctx)` (optional) can be used to hide the complete selection when true is returned.
 
-### `menu.toggle(text, action, {setFunc, isSetFunc, hide, joinLastRow})`
+#### `menu.toggle(text, action, {setFunc, isSetFunc, hide, joinLastRow})`
 
 Creates a button that toggles a setting.
 
-#### Arguments
+##### Arguments
 
 `text` can be a `string` or a `function(ctx)` that will be set as the Button text.
 
@@ -233,11 +265,11 @@ This will show an emoji to the user on the button as text prefix.
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.submenu(text, action, submenu, {hide, joinLastRow})`
+#### `menu.submenu(text, action, submenu, {hide, joinLastRow})`
 
 Creates a Button in the menu to a submenu
 
-#### Arguments
+##### Arguments
 
 `text` can be a `string` or `function(ctx)`
 
@@ -246,13 +278,13 @@ Creates a Button in the menu to a submenu
 `menu` is another TelegrafInlineMenu.
 `hide(ctx)` (optional) can hide the button that opens the submenu.
 
-#### Usage
+##### Usage
 
 As methods return the current menu you can concat button methods like that:
+
 ```js
-const menu = new TelegrafInlineMenu('test')
-menu.manual('Test 1', 'a')
-  .manual('Test 2', 'b')
+const menu = new TelegrafInlineMenu('test');
+menu.manual('Test 1', 'a').manual('Test 2', 'b');
 ```
 
 With submenus this is different in order to create simple submenus.
@@ -260,22 +292,23 @@ As it returns the submenu instead methods attached to the .submenu are added to 
 In the following example the Test1 & 2 buttons are inside the submenu. Test3 button is in the upper menu.
 
 ```js
-const menu = new TelegrafInlineMenu('test')
-menu.submenu('Submenu', 's', new TelegrafInlineMenu('Fancy Submenu'))
+const menu = new TelegrafInlineMenu('test');
+menu
+  .submenu('Submenu', 's', new TelegrafInlineMenu('Fancy Submenu'))
   .manual('Test1', 'a')
-  .manual('Test2', 'b')
+  .manual('Test2', 'b');
 
-menu.manual('Test3', 'z')
+menu.manual('Test3', 'z');
 ```
 
-### `menu.manual(text, action, {hide, joinLastRow, root})`
+#### `menu.manual(text, action, {hide, joinLastRow, root})`
 
 Add a Button for a manual (or legacy) `bot.action`.
 
 You have to do `bot.action` yourself with the corresponding actionCode.
 `root` can be useful.
 
-#### Arguments
+##### Arguments
 
 `text` can be a `string` or a `function(ctx)` that will be set as the Button text.
 
@@ -287,54 +320,57 @@ You have to do `bot.action` yourself with the corresponding actionCode.
 When `true` the action is not relative to the menu and will be 'global'.
 This is useful for links to other menus.
 
-### `menu.urlButton(text, url, {hide, joinLastRow})`
+#### `menu.urlButton(text, url, {hide, joinLastRow})`
 
 Url button. This button is just a pass through and has no effect on the actionCode system.
 
-#### Arguments
+##### Arguments
 
 `text` and `url` can be `string` or `function(ctx)`.
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.switchToChatButton(text, value, {hide, joinLastRow})`
+#### `menu.switchToChatButton(text, value, {hide, joinLastRow})`
 
 Switch button. This button is just a pass through and doesn't have an effect on the actionCode system.
 
-#### Arguments
+##### Arguments
 
 `text` and `value` can be `string` or `function(ctx)`.
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
-### `menu.switchToCurrentChatButton(text, value, {hide, joinLastRow})`
+#### `menu.switchToCurrentChatButton(text, value, {hide, joinLastRow})`
 
 see `menu.switchToChatButton`
 
-### `const middleware = menu.replyMenuMiddleware()`
+#### `const middleware = menu.replyMenuMiddleware()`
 
 Generate a middleware that can be used when the menu shall be send manually.
 For example when the menu should be changed on external events.
 Also the menu can be manually changed via a simleButton based on external information.
 
-#### Usage
+##### Usage
 
 When the menu is always the same you can use the simple variant like other middlewares:
+
 ```js
-bot.command('test', menu.replyMenuMiddleware())
+bot.command('test', menu.replyMenuMiddleware());
 ```
+
 Hint: `menu.replyMenuMiddleware()` has to be called before .init() in order to work
 
 When the menu can have different config based to upper menus (like select -> submenu) you need to provide the exact actionCode that shall be opened.
 This is something only recommended for expert users as it requires quite a bit understanding of the internal logic.
 
 For example you have an detail menu for a specific product, so do did something like that:
+
 ```js
-const main = new TelegrafInlineMenu('foo')
-const submenu = new TelegrafInlineMenu('details for …')
+const main = new TelegrafInlineMenu('foo');
+const submenu = new TelegrafInlineMenu('details for …');
 main.select('details', ['a', 'b'], {
   submenu: submenu
-})
+});
 ```
 
 When you now want to point from somewhere else to the specific submenu you can either use .manual(…) or or the `replyMenuMiddleware`.
@@ -342,20 +378,22 @@ Lets assume you want to open the details of b.
 As the menu is below the main menu, the resulting ActionCode here is 'details-b'.
 
 With manual you would use a root action:
+
 ```js
-menu.manual('Open details of b', 'details-b', {root: true})
+menu.manual('Open details of b', 'details-b', { root: true });
 ```
 
 With replyMenuMiddleware this is more complex (and still only recommended for expert users):
+
 ```js
-const main = new TelegrafInlineMenu('foo')
-const submenu = new TelegrafInlineMenu('details for …')
-const replyMiddleware = submenu.replyMenuMiddleware()
+const main = new TelegrafInlineMenu('foo');
+const submenu = new TelegrafInlineMenu('details for …');
+const replyMiddleware = submenu.replyMenuMiddleware();
 main.select('details', ['a', 'b'], {
   submenu: submenu
-})
+});
 
 main.simpleButton('Open details for b', 'z', {
   doFunc: ctx => replyMiddleware.setSpecific(ctx, 'details-b')
-})
+});
 ```
