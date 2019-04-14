@@ -34,6 +34,15 @@ test.serial('setMenuNow menu is not modified', async t => {
   }
 
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
+
+  bot.context.editMessageText = async () => {
+    const error: any = new Error('400: Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply_markup of the message')
+    error.description = 'Bad Request: message is not modified: specified new message content and reply markup are exactly the same as a current content and reply_markup of the message'
+    throw error
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
+
   console.warn = normalWarnFunc
   console.error = normalErrorFunc
 })
