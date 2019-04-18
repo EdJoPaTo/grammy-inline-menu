@@ -32,6 +32,7 @@ const Telegraf = require('telegraf')
 const TelegrafInlineMenu = require('telegraf-inline-menu')
 
 const menu = new TelegrafInlineMenu(ctx => `Hey ${ctx.from.first_name}!`)
+menu.setCommand('start')
 
 menu.simpleButton('I am excited!', 'a', {
   doFunc: ctx => ctx.reply('As am I!')
