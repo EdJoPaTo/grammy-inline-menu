@@ -286,7 +286,9 @@ As methods return the current menu you can concat button methods like that:
 
 ```js
 const menu = new TelegrafInlineMenu('test')
-menu.manual('Test 1', 'a').manual('Test 2', 'b')
+menu
+  .manual('Test 1', 'a')
+  .manual('Test 2', 'b')
 ```
 
 With submenus this is different in order to create simple submenus.
