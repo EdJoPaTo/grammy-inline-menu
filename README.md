@@ -384,7 +384,7 @@ As the menu is below the main menu, the resulting ActionCode here is 'details-b'
 With manual you would use a root action:
 
 ```js
-menu.manual('Open details of b', 'details-b', { root: true })
+menu.manual('Open details of b', 'details-b', {root: true})
 ```
 
 With replyMenuMiddleware this is more complex (and still only recommended for expert users):
