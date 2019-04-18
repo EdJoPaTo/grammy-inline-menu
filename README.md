@@ -9,6 +9,8 @@
 
 This menu library is made to easily create an inline menu for your Telegram bot.
 
+![Example Food Menu](media/example-food.gif)
+
 # Installation
 
 ```
@@ -26,22 +28,22 @@ $ yarn add telegraf-inline-menu
 ## Basic Example
 
 ```js
-const Telegraf = require('telegraf');
-const TelegrafInlineMenu = require('telegraf-inline-menu');
+const Telegraf = require('telegraf')
+const TelegrafInlineMenu = require('telegraf-inline-menu')
 
-const menu = new TelegrafInlineMenu(ctx => `Hey ${ctx.from.first_name}!`);
+const menu = new TelegrafInlineMenu(ctx => `Hey ${ctx.from.first_name}!`)
 
 menu.simpleButton('I am excited!', 'a', {
   doFunc: ctx => ctx.reply('As am I!')
-});
+})
 
-menu.setCommand('start');
+menu.setCommand('start')
 
-const bot = new Telegraf(process.env.BOT_TOKEN);
+const bot = new Telegraf(process.env.BOT_TOKEN)
 
-bot.use(menu.init());
+bot.use(menu.init())
 
-bot.startPolling();
+bot.startPolling()
 ```
 
 ## More interesting one
@@ -57,7 +59,7 @@ The menu function arguments start with the text of the resulting button:
 ```js
 menu.simpleButton(text, action, {
   doFunc
-});
+})
 ```
 
 The second argument is the action.
@@ -123,11 +125,11 @@ This is different as it has to do some extra steps internally.
 Each submenu can have its own commands. For example this is useful with a main menu (/start) and a settings submenu (/settings):
 
 ```js
-const main = new TelegrafInlineMenu('Main');
-main.setCommand('start');
-const settings = new TelegrafInlineMenu('Settings');
-settings.setCommand('settings');
-main.submenu('Settings', 's', settings);
+const main = new TelegrafInlineMenu('Main')
+main.setCommand('start')
+const settings = new TelegrafInlineMenu('Settings')
+settings.setCommand('settings')
+main.submenu('Settings', 's', settings)
 ```
 
 ### `menu.button(text, action, {doFunc, hide, joinLastRow, setParentMenuAfter})`
@@ -283,8 +285,8 @@ Creates a Button in the menu to a submenu
 As methods return the current menu you can concat button methods like that:
 
 ```js
-const menu = new TelegrafInlineMenu('test');
-menu.manual('Test 1', 'a').manual('Test 2', 'b');
+const menu = new TelegrafInlineMenu('test')
+menu.manual('Test 1', 'a').manual('Test 2', 'b')
 ```
 
 With submenus this is different in order to create simple submenus.
@@ -292,13 +294,13 @@ As it returns the submenu instead methods attached to the .submenu are added to 
 In the following example the Test1 & 2 buttons are inside the submenu. Test3 button is in the upper menu.
 
 ```js
-const menu = new TelegrafInlineMenu('test');
+const menu = new TelegrafInlineMenu('test')
 menu
   .submenu('Submenu', 's', new TelegrafInlineMenu('Fancy Submenu'))
   .manual('Test1', 'a')
-  .manual('Test2', 'b');
+  .manual('Test2', 'b')
 
-menu.manual('Test3', 'z');
+menu.manual('Test3', 'z')
 ```
 
 ### `menu.manual(text, action, {hide, joinLastRow, root})`
@@ -355,7 +357,7 @@ Also the menu can be manually changed via a simleButton based on external inform
 When the menu is always the same you can use the simple variant like other middlewares:
 
 ```js
-bot.command('test', menu.replyMenuMiddleware());
+bot.command('test', menu.replyMenuMiddleware())
 ```
 
 Hint: `menu.replyMenuMiddleware()` has to be called before .init() in order to work
@@ -366,11 +368,11 @@ This is something only recommended for expert users as it requires quite a bit u
 For example you have an detail menu for a specific product, so do did something like that:
 
 ```js
-const main = new TelegrafInlineMenu('foo');
-const submenu = new TelegrafInlineMenu('details for …');
+const main = new TelegrafInlineMenu('foo')
+const submenu = new TelegrafInlineMenu('details for …')
 main.select('details', ['a', 'b'], {
   submenu: submenu
-});
+})
 ```
 
 When you now want to point from somewhere else to the specific submenu you can either use .manual(…) or or the `replyMenuMiddleware`.
@@ -380,20 +382,20 @@ As the menu is below the main menu, the resulting ActionCode here is 'details-b'
 With manual you would use a root action:
 
 ```js
-menu.manual('Open details of b', 'details-b', { root: true });
+menu.manual('Open details of b', 'details-b', { root: true })
 ```
 
 With replyMenuMiddleware this is more complex (and still only recommended for expert users):
 
 ```js
-const main = new TelegrafInlineMenu('foo');
-const submenu = new TelegrafInlineMenu('details for …');
-const replyMiddleware = submenu.replyMenuMiddleware();
+const main = new TelegrafInlineMenu('foo')
+const submenu = new TelegrafInlineMenu('details for …')
+const replyMiddleware = submenu.replyMenuMiddleware()
 main.select('details', ['a', 'b'], {
   submenu: submenu
-});
+})
 
 main.simpleButton('Open details for b', 'z', {
   doFunc: ctx => replyMiddleware.setSpecific(ctx, 'details-b')
-});
+})
 ```
