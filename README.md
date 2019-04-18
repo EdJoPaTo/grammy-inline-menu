@@ -38,7 +38,6 @@ menu.simpleButton('I am excited!', 'a', {
   doFunc: ctx => ctx.reply('As am I!')
 })
 
-menu.setCommand('start')
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
