@@ -9,27 +9,59 @@
 
 This menu library is made to easily create an inline menu for your Telegram bot.
 
-## Example
-
 ![Example Food Menu](media/example-food.gif)
+
+# Installation
+
+```
+$ npm install telegraf-inline-menu
+```
+
+or using `yarn`:
+
+```
+$ yarn add telegraf-inline-menu
+```
+
+# Examples
+
+## Basic Example
+
 ```js
-const menu = new TelegrafInlineMenu(
-  ctx => `Hey ${ctx.from.first_name}!`
-)
+const Telegraf = require('telegraf')
+const TelegrafInlineMenu = require('telegraf-inline-menu')
+
+const menu = new TelegrafInlineMenu(ctx => `Hey ${ctx.from.first_name}!`)
+menu.setCommand('start')
+
 menu.simpleButton('I am excited!', 'a', {
   doFunc: ctx => ctx.reply('As am I!')
 })
+
+
+const bot = new Telegraf(process.env.BOT_TOKEN)
+
 bot.use(menu.init())
+
+bot.startPolling()
 ```
+
+## More interesting one
+
+Look at the code here :  [example.ts](example.ts) / [example.js](example.js)
+
+![Example Food Menu](media/example-food.gif)
 
 # Documentation
 
 The menu function arguments start with the text of the resulting button:
+
 ```js
 menu.simpleButton(text, action, {
   doFunc
 })
 ```
+
 The second argument is the action.
 This has to be an unique identifier in the current menu and should stay the same as long as possible.
 It is used to determine the pressed button.
@@ -48,6 +80,7 @@ Also see the Telegram [Bot API Documentation](https://core.telegram.org/bots/api
 Methods generally support ES6 Promises as Parameters.
 
 Methods often have these parameters:
+
 - `text` (String / Function / Promise)
   String or Function that returns the text.
   Will be set as the button text.
@@ -62,7 +95,7 @@ Methods often have these parameters:
 
 Creates a new Menu.
 
-Example: When this is called with `a` and  `toggle('c', …)` is called the resulting actionCode for the toggle button will be `a:c`.
+Example: When this is called with `a` and `toggle('c', …)` is called the resulting actionCode for the toggle button will be `a:c`.
 
 `text` is the text in the message itself.
 This can be a `string` or `function(ctx)`.
@@ -84,6 +117,7 @@ Should be one the last things before using `bot.startPolling()`
 When multiple menus that are not submenus of each other are created this is used to define the root actionCode of the current menu. As action codes have to be unique there as to be an own action code for each menu. When this is not given, 'main' is assumed.
 
 ### `menu.setCommand(command)`
+
 This used to entry the current menu by a bot command.
 Normally you would do something like `bot.command('start', …)` in order to get a command.
 This is different as it has to do some extra steps internally.
@@ -249,9 +283,11 @@ Creates a Button in the menu to a submenu
 #### Usage
 
 As methods return the current menu you can concat button methods like that:
+
 ```js
 const menu = new TelegrafInlineMenu('test')
-menu.manual('Test 1', 'a')
+menu
+  .manual('Test 1', 'a')
   .manual('Test 2', 'b')
 ```
 
@@ -261,7 +297,8 @@ In the following example the Test1 & 2 buttons are inside the submenu. Test3 but
 
 ```js
 const menu = new TelegrafInlineMenu('test')
-menu.submenu('Submenu', 's', new TelegrafInlineMenu('Fancy Submenu'))
+menu
+  .submenu('Submenu', 's', new TelegrafInlineMenu('Fancy Submenu'))
   .manual('Test1', 'a')
   .manual('Test2', 'b')
 
@@ -320,15 +357,18 @@ Also the menu can be manually changed via a simleButton based on external inform
 #### Usage
 
 When the menu is always the same you can use the simple variant like other middlewares:
+
 ```js
 bot.command('test', menu.replyMenuMiddleware())
 ```
+
 Hint: `menu.replyMenuMiddleware()` has to be called before .init() in order to work
 
 When the menu can have different config based to upper menus (like select -> submenu) you need to provide the exact actionCode that shall be opened.
 This is something only recommended for expert users as it requires quite a bit understanding of the internal logic.
 
 For example you have an detail menu for a specific product, so do did something like that:
+
 ```js
 const main = new TelegrafInlineMenu('foo')
 const submenu = new TelegrafInlineMenu('details for …')
@@ -342,11 +382,13 @@ Lets assume you want to open the details of b.
 As the menu is below the main menu, the resulting ActionCode here is 'details-b'.
 
 With manual you would use a root action:
+
 ```js
 menu.manual('Open details of b', 'details-b', {root: true})
 ```
 
 With replyMenuMiddleware this is more complex (and still only recommended for expert users):
+
 ```js
 const main = new TelegrafInlineMenu('foo')
 const submenu = new TelegrafInlineMenu('details for …')
