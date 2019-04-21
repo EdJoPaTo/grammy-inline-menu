@@ -7,7 +7,7 @@ import {InlineExtra} from './helpers/telegraf-typing-overrides'
 
 async function macro(t: ExecutionContext, addButtonFunc: (menu: TelegrafInlineMenu) => void, expectedKeyboard: any[][]): Promise<void> {
   const menu = new TelegrafInlineMenu('yaay')
-  await addButtonFunc(menu)
+  addButtonFunc(menu)
 
   const bot = new Telegraf('')
   bot.use(menu.init({actionCode: 'a'}))
