@@ -1,8 +1,9 @@
 import {ContextMessageUpdate} from 'telegraf'
 
-import {ButtonInfo} from '../build-keyboard'
-import {getRowsOfButtons} from '../align-buttons'
 import {prefixEmoji, PrefixOptions} from '../prefix'
+
+import {getRowsOfButtons} from './align'
+import {KeyboardPart} from './types'
 
 type ContextFunc<T> = (ctx: ContextMessageUpdate) => Promise<T> | T
 type ContextKeyFunc<T> = (ctx: ContextMessageUpdate, key: string) => Promise<T> | T
@@ -18,7 +19,7 @@ interface SelectButtonOptions {
   hide?: ContextKeyFunc<boolean>;
 }
 
-export function generateSelectButtons(actionBase: string, options: string[], selectOptions: SelectButtonOptions): ButtonInfo[][] {
+export function generateSelectButtons(actionBase: string, options: string[], selectOptions: SelectButtonOptions): KeyboardPart {
   const {textFunc, hide, columns, maxRows, currentPage} = selectOptions
   const buttons = options.map((key, i, arr) => {
     const action = `${actionBase}-${key}`
@@ -43,7 +44,7 @@ export interface SelectButtonCreatorOptions extends PrefixOptions {
   hide?: ContextKeyFunc<boolean>;
 }
 
-export function selectButtonCreator(action: string, optionsFunc: OptionsFunc, additionalArgs: SelectButtonCreatorOptions): (ctx: any) => Promise<ButtonInfo[][]> {
+export function selectButtonCreator(action: string, optionsFunc: OptionsFunc, additionalArgs: SelectButtonCreatorOptions): (ctx: any) => Promise<KeyboardPart> {
   const {getCurrentPage, textFunc, prefixFunc, isSetFunc, multiselect} = additionalArgs
   return async (ctx: any) => {
     const optionsResult = await optionsFunc(ctx)

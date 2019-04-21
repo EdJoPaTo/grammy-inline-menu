@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {buildKeyboardButton} from './build-keyboard'
+import {buildKeyboardButton} from './build-keyboard-button'
 
 test('hide is questioned first and does not trigger other func', async t => {
   const result = await buildKeyboardButton({

@@ -1,6 +1,7 @@
 import test from 'ava'
 
-import {ButtonInfo, buildKeyboard} from './build-keyboard'
+import {buildKeyboard} from './build-keyboard'
+import {ButtonInfo} from './types'
 
 test('one row one key', async t => {
   const buttons = [[{

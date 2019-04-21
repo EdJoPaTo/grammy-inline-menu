@@ -1,12 +1,10 @@
 import {InlineKeyboardMarkup} from 'telegram-typings'
 
-import {ButtonInfo, buildKeyboard} from './build-keyboard'
 import {InternalMenuOptions} from './menu-options'
 
+import {buildKeyboard} from './buttons/build-keyboard'
+import {ButtonInfo, ButtonRow, KeyboardPartCreator} from './buttons/types'
 import {generateBackButtons} from './buttons/back-and-main'
-
-type ButtonRow = ButtonInfo[]
-type KeyboardPartCreator = (ctx: any) => (Promise<ButtonRow[]> | ButtonRow[])
 
 export default class MenuButtons {
   readonly buttons: (ButtonRow | KeyboardPartCreator)[] = []

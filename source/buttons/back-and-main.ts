@@ -1,6 +1,7 @@
 import ActionCode from '../action-code'
-import {ButtonInfo} from '../build-keyboard'
 import {InternalMenuOptions} from '../menu-options'
+
+import {ButtonInfo} from './types'
 
 export function generateBackButtons(actionCode: string, options: InternalMenuOptions): ButtonInfo[] {
   const {depth, hasMainMenu, backButtonText, mainMenuButtonText} = options

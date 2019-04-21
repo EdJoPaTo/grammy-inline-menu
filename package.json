@@ -114,7 +114,7 @@
       },
       {
         "files": [
-          "source/build-keyboard*.ts",
+          "source/buttons/build-keyboard*.ts",
           "source/menu-buttons.test.ts",
           "source/middleware-helper.is-action.test.ts",
           "test/**/*.ts"

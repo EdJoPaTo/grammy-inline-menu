@@ -5,11 +5,11 @@ import CombinedMiddleware from './combined-middleware'
 import DuplicateActionGuardian from './duplicate-action-guardian'
 import MenuButtons from './menu-buttons'
 import MenuResponders from './menu-responders'
-import {maximumButtonsPerPage} from './align-buttons'
 import {normalizeOptions, InternalMenuOptions, MenuOptions} from './menu-options'
 import {prefixEmoji, PrefixOptions} from './prefix'
 
 import {generateSelectButtons, selectButtonCreator, selectHideFunc, SelectButtonCreatorOptions} from './buttons/select'
+import {maximumButtonsPerPage} from './buttons/align'
 import {paginationOptions} from './buttons/pagination'
 
 type ConstOrContextFunc<T> = T | ContextFunc<T>
