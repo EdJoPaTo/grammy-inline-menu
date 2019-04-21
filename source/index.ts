@@ -115,6 +115,8 @@ export default class TelegrafInlineMenu {
     this.menuPhoto = additionals.photo
   }
 
+  // TODO: BREAKING CHANGE: use ...commands: string[]
+  // There will be nothing else to do and it is a lot simpler to use
   setCommand(commands: string | string[]): TelegrafInlineMenu {
     if (!Array.isArray(commands)) {
       commands = [commands]
