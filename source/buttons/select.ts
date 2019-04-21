@@ -49,8 +49,10 @@ export function selectButtonCreator(action: string, optionsFunc: OptionsFunc, ad
   return async (ctx: any) => {
     const optionsResult = await optionsFunc(ctx)
     const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
-    const currentPage = (getCurrentPage && await getCurrentPage(ctx)) || 1
-    const fallbackKeyTextFunc = Array.isArray(optionsResult) ? ((_ctx: any, key: string) => key) : ((_ctx: any, key: string) => optionsResult[key])
+    const currentPage = getCurrentPage ? await getCurrentPage(ctx) : 1
+    const fallbackKeyTextFunc = Array.isArray(optionsResult) ?
+      (_ctx: any, key: string) => key :
+      (_ctx: any, key: string) => optionsResult[key]
     const textOnlyFunc = textFunc || fallbackKeyTextFunc
     const keyTextFunc = async (...args: any[]): Promise<string> => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
       hideFalseEmoji: !multiselect,

@@ -131,7 +131,8 @@ export default class TelegrafInlineMenu {
 
   replyMenuMiddleware(): ReplyMenuMiddleware {
     const obj: ReplyMenuMiddleware = {
-      middleware: () => (async (ctx: ContextMessageUpdate) => obj.setSpecific(ctx, '')),
+      middleware: () =>
+        async (ctx: ContextMessageUpdate) => obj.setSpecific(ctx, ''),
       setSpecific: async (ctx: ContextMessageUpdate, actionCode: string) => {
         if (!obj.setMenuFunc) {
           throw new Error('This does only work when menu is initialized with bot.use(menu.init())')
@@ -372,7 +373,7 @@ export default class TelegrafInlineMenu {
 
   protected async generate(ctx: ContextMessageUpdate, actionCode: ActionCode, options: InternalMenuOptions): Promise<{text: string; extra: Extra}> {
     options.log('generate…', actionCode.get())
-    const text = typeof this.menuText === 'function' ? (await this.menuText(ctx)) : this.menuText
+    const text = typeof this.menuText === 'function' ? await this.menuText(ctx) : this.menuText
 
     let actualActionCode: string
     if (actionCode.isDynamic()) {

@@ -58,10 +58,10 @@ test('four buttons in two rows', async t => {
 })
 
 test('row is func that creates one row with one button', async t => {
-  const keyboardCreator = (): ButtonInfo[][] => ([[{
+  const keyboardCreator = (): ButtonInfo[][] => [[{
     text: '42',
     action: 'a'
-  }]])
+  }]]
   const buttons = [
     keyboardCreator
   ]
