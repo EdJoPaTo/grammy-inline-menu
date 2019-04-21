@@ -273,8 +273,8 @@ export default class TelegrafInlineMenu {
         ctx.reply(questionText, extra),
         ctx.answerCbQuery(),
         ctx.deleteMessage()
-          .catch((error: any) => {
-            if (/can't be deleted/.test(error)) {
+          .catch((error: Error) => {
+            if (error.message.includes('can\'t be deleted')) {
               // Looks like message is to old to be deleted
               return
             }
