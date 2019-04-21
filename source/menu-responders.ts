@@ -1,16 +1,14 @@
 import {Composer, Middleware, ContextMessageUpdate} from 'telegraf'
 
+import {ContextFunc, ContextNextFunc} from './generic-types'
+import {isCallbackQueryActionFunc} from './middleware-helper'
 import ActionCode from './action-code'
 import CombinedMiddleware from './combined-middleware'
-import {isCallbackQueryActionFunc} from './middleware-helper'
 
-type ContextFunc<T> = (ctx: any) => Promise<T> | T
-type ContextNextMinimumFunc = (ctx: any, next?: any) => Promise<void> | void
-type ContextNextFunc = (ctx: any, next: any) => Promise<void>
 type MenuFunc = (ctx: any, reason: string) => Promise<void>
 
 export interface Responder {
-  middleware: ContextNextMinimumFunc;
+  middleware: ContextNextFunc;
   action?: ActionCode;
   only?: ContextFunc<boolean>;
   hide?: ContextFunc<boolean>;

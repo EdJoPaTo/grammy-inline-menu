@@ -1,5 +1,4 @@
-type ConstOrContextFunc<T> = T | ContextFunc<T>
-type ContextFunc<T> = (ctx: any) => Promise<T> | T
+import {ContextFunc, ConstOrContextFunc} from '../generic-types'
 
 type StringOrStringFunc = ConstOrContextFunc<string>
 

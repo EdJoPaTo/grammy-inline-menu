@@ -1,5 +1,4 @@
-type ContextFunc<T> = (ctx: any) => Promise<T> | T
-type ContextNextFunc<T> = (ctx: any, next?: any) => Promise<T> | T
+import {ContextFunc, ContextNextFunc} from './generic-types'
 
 interface AfterFunc {
   runEvenWhenHidden: boolean;
@@ -14,8 +13,8 @@ export default class CombinedMiddleware {
   private readonly _afterFunc: AfterFunc[] = [];
 
   constructor(
-    private readonly mainFunc: ContextNextFunc<void>,
-    private readonly hiddenFunc?: ContextNextFunc<void>
+    private readonly mainFunc: ContextNextFunc,
+    private readonly hiddenFunc?: ContextNextFunc
   ) {}
 
   addOnly(func: ContextFunc<boolean>): CombinedMiddleware {

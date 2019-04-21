@@ -1,13 +1,8 @@
-import {ContextMessageUpdate} from 'telegraf'
-
+import {ContextFunc, ContextKeyFunc, ContextKeyIndexArrFunc} from '../generic-types'
 import {prefixEmoji, PrefixOptions} from '../prefix'
 
 import {getRowsOfButtons} from './align'
 import {KeyboardPart} from './types'
-
-type ContextFunc<T> = (ctx: ContextMessageUpdate) => Promise<T> | T
-type ContextKeyFunc<T> = (ctx: ContextMessageUpdate, key: string) => Promise<T> | T
-type ContextKeyIndexArrFunc<T> = (ctx: ContextMessageUpdate, key: string, index: number, array: ReadonlyArray<string>) => Promise<T> | T
 
 type OptionsFunc = ContextFunc<string[] | {[key: string]: string}>
 

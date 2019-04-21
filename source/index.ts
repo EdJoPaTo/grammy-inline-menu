@@ -1,23 +1,18 @@
 import {Composer, Extra, Markup, ContextMessageUpdate} from 'telegraf'
 
+import {ConstOrContextFunc, ContextFunc, ContextNextFunc, ContextKeyFunc} from './generic-types'
+import {normalizeOptions, InternalMenuOptions, MenuOptions} from './menu-options'
+import {prefixEmoji, PrefixOptions} from './prefix'
 import ActionCode from './action-code'
 import CombinedMiddleware from './combined-middleware'
 import DuplicateActionGuardian from './duplicate-action-guardian'
 import MenuButtons from './menu-buttons'
 import MenuResponders from './menu-responders'
-import {normalizeOptions, InternalMenuOptions, MenuOptions} from './menu-options'
-import {prefixEmoji, PrefixOptions} from './prefix'
 
 import {generateSelectButtons, selectButtonCreator, selectHideFunc, SelectButtonCreatorOptions} from './buttons/select'
 import {maximumButtonsPerPage} from './buttons/align'
 import {paginationOptions} from './buttons/pagination'
 
-type ConstOrContextFunc<T> = T | ContextFunc<T>
-type ContextFunc<T> = (ctx: ContextMessageUpdate) => Promise<T> | T
-type ContextNextFunc = (ctx: ContextMessageUpdate, next: any) => Promise<void>
-type ContextKeyFunc<T> = (ctx: ContextMessageUpdate, key: string) => Promise<T> | T
-
-type Middleware = (ctx: ContextMessageUpdate, next?: () => any) => Promise<void>
 type Photo = string | {source: Buffer | string}
 
 interface MenuAdditionals {
@@ -146,7 +141,7 @@ export default class TelegrafInlineMenu {
     return obj
   }
 
-  init(userOptions: MenuOptions = {}): Middleware {
+  init(userOptions: MenuOptions = {}): ContextNextFunc {
     // Debug
     // userOptions.log = (...args) => console.log(new Date(), ...args)
     const {actionCode, internalOptions} = normalizeOptions(userOptions)
@@ -264,7 +259,7 @@ export default class TelegrafInlineMenu {
     this.responders.add({
       hide,
       setMenuAfter: true,
-      only: ctx => ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === questionText,
+      only: ctx => Boolean(ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === questionText),
       middleware: parseQuestionAnswer
     })
 
@@ -454,7 +449,7 @@ export default class TelegrafInlineMenu {
     }
   }
 
-  protected middleware(actionCode: ActionCode, options: InternalMenuOptions): Middleware {
+  protected middleware(actionCode: ActionCode, options: InternalMenuOptions): ContextNextFunc {
     assert(actionCode, 'use this menu with .init(): but.use(menu.init(args))')
 
     if (actionCode.isDynamic()) {
@@ -517,7 +512,7 @@ export default class TelegrafInlineMenu {
         const mainFunc = submenu.middleware(childActionCode, subOptions)
 
         const m = new CombinedMiddleware(mainFunc, hiddenFunc)
-          .addOnly(ctx => !ctx.callbackQuery || childActionCode.testIsBelow(ctx.callbackQuery.data))
+          .addOnly(ctx => !ctx.callbackQuery || !ctx.callbackQuery.data || childActionCode.testIsBelow(ctx.callbackQuery.data))
 
         if (hide) {
           m.addHide(hide)

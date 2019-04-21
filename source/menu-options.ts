@@ -1,9 +1,5 @@
-import {ContextMessageUpdate} from 'telegraf'
-
+import {ConstOrContextFunc} from './generic-types'
 import ActionCode from './action-code'
-
-type ConstOrContextFunc<T> = T | ContextFunc<T>
-type ContextFunc<T> = (ctx: ContextMessageUpdate) => Promise<T> | T
 
 export interface MenuOptions {
   actionCode?: string;
