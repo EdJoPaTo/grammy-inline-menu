@@ -2,7 +2,14 @@ import {InlineKeyboardMarkup, InlineKeyboardButton} from 'telegram-typings'
 
 import ActionCode from './action-code'
 
-type StringOrStringFunc = string | ((ctx: any) => Promise<string> | string)
+type ConstOrContextFunc<T> = T | ContextFunc<T>
+type ContextFunc<T> = (ctx: any) => Promise<T> | T
+
+type StringOrStringFunc = ConstOrContextFunc<string>
+
+type ButtonRow = ButtonInfo[]
+type KeyboardPart = ButtonRow[]
+type KeyboardPartCreator = ContextFunc<KeyboardPart>
 
 export interface ButtonInfo {
   hide?: ((ctx: any) => Promise<boolean> | boolean);
@@ -13,9 +20,6 @@ export interface ButtonInfo {
   switchToCurrentChat?: StringOrStringFunc;
   url?: StringOrStringFunc;
 }
-
-type ButtonRow = ButtonInfo[]
-type KeyboardPartCreator = (ctx: any) => (Promise<ButtonRow[]> | ButtonRow[])
 
 export async function buildKeyboard(content: (ButtonRow | KeyboardPartCreator)[], actionCodePrefix: string, ctx: any): Promise<InlineKeyboardMarkup> {
   const resultButtons: InlineKeyboardButton[][][] = await Promise.all(content.map(async row => {
