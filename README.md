@@ -87,7 +87,7 @@ Methods often have these parameters:
 - `action` (String)
   Will be used as 'callback_data'.
 - `hide` (optional, Function)
-  Hides the button in the menu when the Function returns false
+  Hides the button in the menu when the Function returns true
 - `joinLastRow` (optional, Boolean)
   When set to true the button will try to join the row before. Useful in order to create buttons side by side.
 
