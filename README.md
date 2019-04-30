@@ -63,7 +63,7 @@ menu.simpleButton(text, action, {
 ```
 
 The second argument is the action.
-This has to be an unique identifier in the current menu and should stay the same as long as possible.
+This has to be an unique identifier in the current menu.
 It is used to determine the pressed button.
 Keep the action the same as long as possible over updates of the bot to ensure a smooth user experience as the user can continue seemlessly after bot restarts or updates.
 As it will be used as a part in the `callback_data` it should be short in order to allow more data in it.
@@ -74,6 +74,46 @@ This was used in the first line of the example to return the user `first_name`.
 
 As this is based on Telegraf see their [Docs](https://telegraf.js.org/) or [GitHub Repo](https://github.com/telegraf/telegraf).
 Also see the Telegram [Bot API Documentation](https://core.telegram.org/bots/api).
+
+## Action Code
+
+The Action Code identifies the specific button within the whole bot.
+It has to stay unique in order to know what specific button was pressed by the user.
+
+When using Telegraf for a callbackButton you would write something like this:
+```js
+bot.command('start', ctx => ctx.reply('Hi!', Markup.inlineKeyboard([
+  Markup.callbackButton('text', 'my-callback-data')
+])))
+
+bot.action('my-callback-data', ctx => ctx.answerCbQuery(''))
+```
+
+This library does the same for you.
+The `callback_data` is generated from the `action` parameters you supply.
+For example the following menu example will use `foo:bar:something` as `callback_data` for the `simpleButton`.
+
+```js
+const mainMenu = new TelegrafInlineMenu('Main Menu')
+const fooMenu = new TelegrafInlineMenu('Foo Menu')
+const barMenu = new TelegrafInlineMenu('Bar Menu')
+
+mainMenu.submenu('Open Foo Menu', 'foo', fooMenu)
+fooMenu.submenu('Open Bar Menu', 'bar', barMenu)
+barMenu.simpleButton('Hit me', 'something', {…})
+
+const bot = new Telegraf()
+bot.use(mainMenu.init())
+```
+
+Make sure the `action` argument is not too long.
+The current length of the `callback_data` can be [up to 64 bytes](https://core.telegram.org/bots/api#inlinekeyboardbutton).
+Especially take care of menu parts with dynamic content like `menu.select` or `menu.selectSubmenu` which tends to longer keys.
+
+(Advanced Usage:) Maybe you noted by now that the main menu has no action in the above example.
+The root menu actionCode can be set with `menu.init({actionCode: 'beep'})` and defaults to `main`.
+See `menu.init` docs for this.
+In order to save 5 bytes in the `callback_data` `main:` is ommited.
 
 ## Methods
 

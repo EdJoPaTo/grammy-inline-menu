@@ -38,7 +38,7 @@ menu.select('s', ['A', 'B', 'C'], {
   isSetFunc: (_ctx, key) => key === selectedKey
 })
 
-const someMenu = new TelegrafInlineMenu('People like food. What do they like?')
+const foodMenu = new TelegrafInlineMenu('People like food. What do they like?')
 
 interface FoodChoises {
   food?: string;
@@ -89,24 +89,24 @@ const foodSelectSubmenu = new TelegrafInlineMenu(foodSelectText)
     }
   })
 
-someMenu.selectSubmenu('p', () => Object.keys(people), foodSelectSubmenu, {
+foodMenu.selectSubmenu('p', () => Object.keys(people), foodSelectSubmenu, {
   textFunc: personButtonText,
   columns: 2
 })
 
-someMenu.question('Add person', 'add', {
+foodMenu.question('Add person', 'add', {
   questionText: 'Who likes food too?',
   setFunc: (_ctx, key) => {
     people[key] = {}
   }
 })
 
-menu.submenu('Food menu', 'b', someMenu, {
+menu.submenu('Food menu', 'food', foodMenu, {
   hide: () => mainMenuToggle
 })
 
 let isAndroid = true
-menu.submenu('Photo Menu', 'y', new TelegrafInlineMenu('', {
+menu.submenu('Photo Menu', 'photo', new TelegrafInlineMenu('', {
   photo: () => isAndroid ? 'https://telegram.org/img/SiteAndroid.jpg' : 'https://telegram.org/img/SiteiOs.jpg'
 }))
   .setCommand('photo')
@@ -125,6 +125,14 @@ menu.setCommand('start')
 const token = readFileSync('token.txt', 'utf8').trim()
 const bot = new Telegraf(token)
 bot.use(session())
+
+bot.use((ctx, next) => {
+  if (ctx.callbackQuery && ctx.callbackQuery.data) {
+    console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
+  }
+
+  return next && next()
+})
 
 bot.use(menu.init({
   backButtonText: 'back…',
