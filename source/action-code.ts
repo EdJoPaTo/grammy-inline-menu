@@ -42,6 +42,10 @@ export default class ActionCode {
       throw new TypeError('This is dynamic ActionCode!')
     }
 
+    if (this.code.length > 64) {
+      throw new Error(`The concatenated ActionCodes are longer than the callback_data supports (${this.code.length} > 64): ${this.code}`)
+    }
+
     return this.code
   }
 

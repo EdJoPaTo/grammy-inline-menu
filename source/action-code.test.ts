@@ -88,6 +88,23 @@ test('getString from string', t => {
   t.deepEqual(new ActionCode('b').getString(), 'b')
 })
 
+test('getString from long content fails', t => {
+  // 'callback_data' is limited to 64 bytes
+
+  // concat multiple length 10 actions will be longer than 64
+  t.throws(
+    () => new ActionCode('abcdf12345')
+      .concat('abcdf12345')
+      .concat('abcdf12345')
+      .concat('abcdf12345')
+      .concat('abcdf12345')
+      .concat('abcdf12345')
+      .concat('abcdf12345')
+      .getString(),
+    /(callback_data).+(\d+ > 64)/
+  )
+})
+
 test('regex exec', t => {
   t.deepEqual(new ActionCode('b').exec('c'), null)
   t.truthy(new ActionCode('b').exec('b'))
