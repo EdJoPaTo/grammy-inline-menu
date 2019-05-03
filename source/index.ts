@@ -337,7 +337,7 @@ export default class TelegrafInlineMenu {
         return true
       }
 
-      const isSet = await isSetFunc(ctx)
+      const isSet = Boolean(await isSetFunc(ctx))
       return isSet === state
     }
 

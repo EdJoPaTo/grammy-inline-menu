@@ -3,7 +3,7 @@ import Telegraf from 'telegraf'
 import {Update} from 'telegram-typings'
 
 import TelegrafInlineMenu from '../source'
-import {emojiTrue} from '../source/prefix'
+import {emojiTrue, emojiFalse} from '../source/prefix'
 
 import {InlineExtra} from './helpers/telegraf-typing-overrides'
 
@@ -22,6 +22,29 @@ test('menu correct', async t => {
     t.deepEqual(extra.reply_markup.inline_keyboard, [[{
       text: emojiTrue + ' toggle me',
       callback_data: 'a:c-false'
+    }]])
+    return true
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
+})
+
+test('isSetFunc falsy is like false', async t => {
+  const menu = new TelegrafInlineMenu('yaay')
+  menu.toggle('toggle me', 'c', {
+    setFunc: async () => Promise.reject(new Error('Nothing has to be set when only showing the menu')),
+    // Returning undefined is not possible from TypeScript but from JavaScript
+    isSetFunc: () => undefined as any
+  })
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
+    t.deepEqual(extra.reply_markup.inline_keyboard, [[{
+      text: emojiFalse + ' toggle me',
+      callback_data: 'a:c-true'
     }]])
     return true
   }
