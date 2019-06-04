@@ -89,19 +89,19 @@ interface ToggleOptions extends ButtonOptions, PrefixOptions {
 }
 
 export default class TelegrafInlineMenu {
-  protected readonly actions = new DuplicateActionGuardian();
+  protected readonly actions = new DuplicateActionGuardian()
 
-  protected readonly buttons = new MenuButtons();
+  protected readonly buttons = new MenuButtons()
 
-  protected readonly responders = new MenuResponders();
+  protected readonly responders = new MenuResponders()
 
-  protected readonly commands: string[] = [];
+  protected readonly commands: string[] = []
 
-  protected readonly submenus: SubmenuEntry[] = [];
+  protected readonly submenus: SubmenuEntry[] = []
 
-  protected readonly replyMenuMiddlewares: ReplyMenuMiddleware[] = [];
+  protected readonly replyMenuMiddlewares: ReplyMenuMiddleware[] = []
 
-  protected readonly menuPhoto?: ConstOrContextFunc<Photo | undefined>;
+  protected readonly menuPhoto?: ConstOrContextFunc<Photo | undefined>
 
   constructor(
     protected menuText: ConstOrContextFunc<string>,

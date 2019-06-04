@@ -6,11 +6,11 @@ interface AfterFunc {
 }
 
 export default class CombinedMiddleware {
-  private readonly _only: ContextFunc<boolean>[] = [];
+  private readonly _only: ContextFunc<boolean>[] = []
 
-  private readonly _hide: ContextFunc<boolean>[] = [];
+  private readonly _hide: ContextFunc<boolean>[] = []
 
-  private readonly _afterFunc: AfterFunc[] = [];
+  private readonly _afterFunc: AfterFunc[] = []
 
   constructor(
     private readonly mainFunc: ContextNextFunc,

@@ -3,9 +3,9 @@ import ActionCode from './action-code'
 const ACTION_DYNAMIC_CONCAT_CHAR = '-'
 
 export default class DuplicateActionGuardian {
-  private readonly _static: string[] = [];
+  private readonly _static: string[] = []
 
-  private readonly _dynamic: string[] = [];
+  private readonly _dynamic: string[] = []
 
   addStatic(action: string): ActionCode {
     if (action.endsWith(ACTION_DYNAMIC_CONCAT_CHAR)) {

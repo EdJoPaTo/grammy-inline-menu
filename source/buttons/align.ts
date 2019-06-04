@@ -1,7 +1,7 @@
 export const DEFAULT_BUTTON_COLUMNS = 6
 export const DEFAULT_BUTTON_ROWS = 10
 
-export function getRowsOfButtons<T>(buttons: ReadonlyArray<T>, columns = DEFAULT_BUTTON_COLUMNS, maxRows = DEFAULT_BUTTON_ROWS, page = 1): T[][] {
+export function getRowsOfButtons<T>(buttons: readonly T[], columns = DEFAULT_BUTTON_COLUMNS, maxRows = DEFAULT_BUTTON_ROWS, page = 1): T[][] {
   const buttonsPerPage = maximumButtonsPerPage(columns, maxRows)
   const totalPages = Math.ceil(buttons.length / buttonsPerPage)
   const selectedPage = Math.max(Math.min(page, totalPages), 1)

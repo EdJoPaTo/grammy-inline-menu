@@ -1,7 +1,7 @@
 import test, {ExecutionContext} from 'ava'
 import {paginationOptions} from './pagination'
 
-function keysCorrectMacro(t: ExecutionContext, totalPages: number, currentPage: number, expectedArr: ReadonlyArray<number>): void {
+function keysCorrectMacro(t: ExecutionContext, totalPages: number, currentPage: number, expectedArr: readonly number[]): void {
   const result = paginationOptions(totalPages, currentPage)
   const keys = Object.keys(result).map(o => Number(o))
   t.deepEqual(keys, expectedArr)
