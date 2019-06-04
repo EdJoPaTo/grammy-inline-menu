@@ -5,7 +5,7 @@ import {Update} from 'telegram-typings'
 import TelegrafInlineMenu from '../source'
 import {emojiTrue, emojiFalse} from '../source/prefix'
 
-import {InlineExtra} from './helpers/telegraf-typing-overrides'
+import {InlineExtra} from './_telegraf-typing-overrides'
 
 test('option array menu', async t => {
   const menu = new TelegrafInlineMenu('foo')

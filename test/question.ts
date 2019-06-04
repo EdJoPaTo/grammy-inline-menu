@@ -4,7 +4,7 @@ import {Update} from 'telegram-typings'
 
 import TelegrafInlineMenu from '../source'
 
-import {InlineExtra, DUMMY_MESSAGE, ForceReplyExtra} from './helpers/telegraf-typing-overrides'
+import {InlineExtra, DUMMY_MESSAGE, ForceReplyExtra} from './_telegraf-typing-overrides'
 
 const menuKeyboard = [[{
   text: 'Question',

@@ -3,7 +3,7 @@ import Telegraf from 'telegraf'
 import {Update} from 'telegram-typings'
 
 import TelegrafInlineMenu from '../source'
-import {InlineExtra} from './helpers/telegraf-typing-overrides'
+import {InlineExtra} from './_telegraf-typing-overrides'
 
 async function macro(t: ExecutionContext, addButtonFunc: (menu: TelegrafInlineMenu) => void, expectedKeyboard: any[][]): Promise<void> {
   const menu = new TelegrafInlineMenu('yaay')

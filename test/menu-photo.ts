@@ -5,7 +5,7 @@ import {Update} from 'telegram-typings'
 import TelegrafInlineMenu from '../source'
 import {emojiTrue} from '../source/prefix'
 
-import {InlineExtra} from './helpers/telegraf-typing-overrides'
+import {InlineExtra} from './_telegraf-typing-overrides'
 
 function createBasicBot(t: ExecutionContext, menu: TelegrafInlineMenu): any {
   menu.toggle('toggle me', 'c', {

@@ -4,7 +4,7 @@ import {Update} from 'telegram-typings'
 
 import TelegrafInlineMenu from '../source'
 
-import {InlineExtra, DUMMY_MESSAGE} from './helpers/telegraf-typing-overrides'
+import {InlineExtra, DUMMY_MESSAGE} from './_telegraf-typing-overrides'
 
 function createTestBot(t: ExecutionContext, command: string | string[]): Telegraf<ContextMessageUpdate> {
   const menu = new TelegrafInlineMenu('foo')
