@@ -565,4 +565,6 @@ function assert(value: any, message: string): void {
   throw new Error(message)
 }
 
+// For CommonJS default export support
 module.exports = TelegrafInlineMenu
+module.exports.default = TelegrafInlineMenu
