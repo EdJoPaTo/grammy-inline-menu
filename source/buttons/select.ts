@@ -4,7 +4,7 @@ import {prefixEmoji, PrefixOptions} from '../prefix'
 import {getRowsOfButtons} from './align'
 import {KeyboardPart} from './types'
 
-type OptionsFunc = ContextFunc<string[] | {[key: string]: string}>
+type OptionsFunc = ContextFunc<(string | number)[] | {[key: string]: string}>
 
 interface SelectButtonOptions {
   columns?: number;
@@ -14,18 +14,20 @@ interface SelectButtonOptions {
   hide?: ContextKeyFunc<boolean>;
 }
 
-export function generateSelectButtons(actionBase: string, options: string[], selectOptions: SelectButtonOptions): KeyboardPart {
+export function generateSelectButtons(actionBase: string, options: readonly (string | number)[], selectOptions: SelectButtonOptions): KeyboardPart {
   const {textFunc, hide, columns, maxRows, currentPage} = selectOptions
-  const buttons = options.map((key, i, arr) => {
-    const action = `${actionBase}-${key}`
-    const textKey = async (ctx: any): Promise<string> => textFunc(ctx, key, i, arr)
-    const hideKey = async (ctx: any): Promise<boolean> => hide ? hide(ctx, key) : false
-    return {
-      text: textKey,
-      action,
-      hide: hideKey
-    }
-  })
+  const buttons = options
+    .map(o => String(o))
+    .map((key, i, arr) => {
+      const action = `${actionBase}-${key}`
+      const textKey = async (ctx: any): Promise<string> => textFunc(ctx, key, i, arr)
+      const hideKey = async (ctx: any): Promise<boolean> => hide ? hide(ctx, key) : false
+      return {
+        text: textKey,
+        action,
+        hide: hideKey
+      }
+    })
 
   return getRowsOfButtons(buttons, columns, maxRows, currentPage)
 }
@@ -66,7 +68,7 @@ export function selectHideFunc(keyFromCtx: (ctx: any) => string, optionsFunc: Op
     const key = keyFromCtx(ctx)
     const optionsResult = await optionsFunc(ctx)
     const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
-    if (!keys.includes(key)) {
+    if (!keys.map(o => String(o)).includes(key)) {
       return true
     }
 

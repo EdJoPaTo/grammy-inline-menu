@@ -131,6 +131,25 @@ test('selects', async t => {
   await bot.handleUpdate({callback_query: {data: 'a:c-b'}} as Update)
 })
 
+test('selects numeric options', async t => {
+  t.plan(2)
+  const menu = new TelegrafInlineMenu('foo')
+  menu.select('c', [3, 4] as any, {
+    setFunc: (_ctx, selected) => t.is(selected, '3')
+  })
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async () => {
+    t.pass()
+    return true
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a:c-3'}} as Update)
+})
+
 test('selects from object', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('foo')
