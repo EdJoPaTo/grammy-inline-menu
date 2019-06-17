@@ -450,7 +450,7 @@ export default class TelegrafInlineMenu {
   }
 
   protected middleware(actionCode: ActionCode, options: InternalMenuOptions): ContextNextFunc {
-    assert(actionCode, 'use this menu with .init(): but.use(menu.init(args))')
+    assert(actionCode, 'use this menu with .init(): bot.use(menu.init(args))')
 
     if (actionCode.isDynamic()) {
       assert(this.commands.length === 0, `commands can not point on dynamic submenus. Happened in menu ${actionCode.get()} with the following commands: ${this.commands.join(', ')}`)

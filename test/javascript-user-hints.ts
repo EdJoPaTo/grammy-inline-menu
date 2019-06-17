@@ -12,7 +12,7 @@ test('menu.middleware fails with .init() hint', t => {
   const bot = new Telegraf('')
   // Normally user would use bot.use.
   // But telegraf will later use .middleware() on it. in order to check this faster, trigger this directly
-  t.throws(() => bot.use(menu.middleware()), /but\.use\(menu\.init/)
+  t.throws(() => bot.use(menu.middleware()), /bot\.use\(menu\.init/)
 })
 
 // Buttons
