@@ -41,7 +41,7 @@
     "@typescript-eslint/parser": "^1.10.2",
     "ava": "^2.0.0",
     "del-cli": "^2.0.0",
-    "eslint-config-xo-typescript": "^0.14.0",
+    "eslint-config-xo-typescript": "^0.15.0",
     "nyc": "^14.0.0",
     "telegraf": "^3.28.0",
     "telegram-typings": "^4.0.0-beta",
@@ -88,7 +88,6 @@
     "semicolon": false,
     "rules": {
       "ava/no-ignored-test-files": "off",
-      "@typescript-eslint/promise-function-async": "warn",
       "@typescript-eslint/indent": [
         "error",
         2
