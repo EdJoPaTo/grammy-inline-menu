@@ -64,7 +64,7 @@ interface SelectPaginationOptions {
   columns?: number;
   maxRows?: number;
   setPage?: (ctx: ContextMessageUpdate, page: number) => Promise<void> | void;
-  getCurrentPage?: ContextFunc<number>;
+  getCurrentPage?: ContextFunc<number | undefined>;
 }
 
 interface SelectActionOptions extends SelectButtonCreatorOptions, SelectPaginationOptions {

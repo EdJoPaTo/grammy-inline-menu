@@ -33,7 +33,7 @@ export function generateSelectButtons(actionBase: string, options: readonly (str
 }
 
 export interface SelectButtonCreatorOptions extends PrefixOptions {
-  getCurrentPage?: ContextFunc<number>;
+  getCurrentPage?: ContextFunc<number | undefined>;
   textFunc?: ContextKeyIndexArrFunc<string>;
   prefixFunc?: ContextKeyIndexArrFunc<string>;
   isSetFunc?: ContextKeyFunc<boolean>;
@@ -46,7 +46,7 @@ export function selectButtonCreator(action: string, optionsFunc: OptionsFunc, ad
   return async (ctx: any) => {
     const optionsResult = await optionsFunc(ctx)
     const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
-    const currentPage = getCurrentPage ? await getCurrentPage(ctx) : 1
+    const currentPage = getCurrentPage && await getCurrentPage(ctx)
     const fallbackKeyTextFunc = Array.isArray(optionsResult) ?
       (_ctx: any, key: string) => key :
       (_ctx: any, key: string) => optionsResult[key]
