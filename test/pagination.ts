@@ -82,6 +82,34 @@ test('creates menu with async methods', async t => {
   await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
 })
 
+test('creates menu with current page undefined', async t => {
+  const menu = new TelegrafInlineMenu('foo')
+  menu.pagination('c', {
+    setPage: () => t.fail(),
+    getCurrentPage: () => undefined,
+    getTotalPages: () => 2
+  })
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.answerCbQuery = async () => true
+  bot.context.editMessageText = async (_text, extra: InlineExtra) => {
+    t.deepEqual(extra.reply_markup.inline_keyboard, [[
+      {
+        text: '1',
+        callback_data: 'a:c-1'
+      }, {
+        text: '▶️ 2',
+        callback_data: 'a:c-2'
+      }
+    ]])
+    return true
+  }
+
+  await bot.handleUpdate({callback_query: {data: 'a'}} as Update)
+})
+
 test('sets page', async t => {
   t.plan(1)
   const menu = new TelegrafInlineMenu('foo')

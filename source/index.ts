@@ -48,7 +48,7 @@ interface SimpleButtonOptions extends ActionButtonOptions {
 
 interface PaginationOptions {
   setPage: (ctx: ContextMessageUpdate, page: number) => Promise<void> | void;
-  getCurrentPage: ContextFunc<number>;
+  getCurrentPage: ContextFunc<number | undefined>;
   getTotalPages: ContextFunc<number>;
   hide?: ContextFunc<boolean>;
 }
