@@ -4,7 +4,7 @@ import DuplicateActionGuardian from './duplicate-action-guardian'
 
 test('static ActionCode', t => {
   const actionCode = new DuplicateActionGuardian().addStatic('bla')
-  t.deepEqual(actionCode.get(), 'bla')
+  t.is(actionCode.get(), 'bla')
 })
 
 test('dynamic ActionCode', t => {

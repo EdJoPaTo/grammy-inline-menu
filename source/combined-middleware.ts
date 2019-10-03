@@ -13,8 +13,8 @@ export default class CombinedMiddleware {
   private readonly _afterFunc: AfterFunc[] = []
 
   constructor(
-    private readonly mainFunc: ContextNextFunc,
-    private readonly hiddenFunc?: ContextNextFunc
+    private readonly _mainFunc: ContextNextFunc,
+    private readonly _hiddenFunc?: ContextNextFunc
   ) {}
 
   addOnly(func: ContextFunc<boolean>): CombinedMiddleware {
@@ -50,13 +50,13 @@ export default class CombinedMiddleware {
       const isHidden = hiddenResults.some(o => o === true)
 
       if (isHidden) {
-        if (this.hiddenFunc) {
-          await this.hiddenFunc(ctx, next)
+        if (this._hiddenFunc) {
+          await this._hiddenFunc(ctx, next)
         } else {
           await next()
         }
       } else {
-        await this.mainFunc(ctx, next)
+        await this._mainFunc(ctx, next)
       }
 
       await Promise.all(

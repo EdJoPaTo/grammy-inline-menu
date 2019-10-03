@@ -36,7 +36,7 @@ test('regex', t => {
 
 test('regex parent', t => {
   t.deepEqual(new ActionCode(/b:(.+)/).parent().get(), /^b$/)
-  t.deepEqual(new ActionCode(/b-(.+)/).parent().get(), 'main')
+  t.is(new ActionCode(/b-(.+)/).parent().get(), 'main')
 })
 
 test('regex parent with allowed :', t => {
@@ -85,7 +85,7 @@ test('getString from regex fails', t => {
 })
 
 test('getString from string', t => {
-  t.deepEqual(new ActionCode('b').getString(), 'b')
+  t.is(new ActionCode('b').getString(), 'b')
 })
 
 test('getString from long content fails', t => {
@@ -106,7 +106,7 @@ test('getString from long content fails', t => {
 })
 
 test('regex exec', t => {
-  t.deepEqual(new ActionCode('b').exec('c'), null)
+  t.is(new ActionCode('b').exec('c'), null)
   t.truthy(new ActionCode('b').exec('b'))
 })
 

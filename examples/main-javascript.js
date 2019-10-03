@@ -44,11 +44,11 @@ const food = ['bread', 'cake', 'bananas']
 
 function personButtonText(_ctx, key) {
   const entry = people[key]
-  if (!entry || !entry.food) {
-    return key
+  if (entry && entry.food) {
+    return `${key} (${entry.food})`
   }
 
-  return `${key} (${entry.food})`
+  return key
 }
 
 function foodSelectText(ctx) {

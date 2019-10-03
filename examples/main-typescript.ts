@@ -49,12 +49,12 @@ const people: {[key: string]: FoodChoises} = {Mark: {}, Paul: {}}
 const food = ['bread', 'cake', 'bananas']
 
 function personButtonText(_ctx: any, key: string): string {
-  const entry = people[key]
-  if (!entry || !entry.food) {
-    return key
+  const entry = people[key] as FoodChoises | undefined
+  if (entry && entry.food) {
+    return `${key} (${entry.food})`
   }
 
-  return `${key} (${entry.food})`
+  return key
 }
 
 function foodSelectText(ctx: any): string {
