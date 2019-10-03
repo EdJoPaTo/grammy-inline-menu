@@ -1,10 +1,9 @@
-import {readFileSync} from 'fs'
+const {readFileSync} = require('fs')
 
-import Telegraf from 'telegraf'
-
-import TelegrafInlineMenu from './source'
-
+const Telegraf = require('telegraf')
 const session = require('telegraf/session')
+
+const TelegrafInlineMenu = require('../dist/source')
 
 const menu = new TelegrafInlineMenu('Main Menu')
 
@@ -40,15 +39,10 @@ menu.select('s', ['A', 'B', 'C'], {
 
 const foodMenu = new TelegrafInlineMenu('People like food. What do they like?')
 
-interface FoodChoises {
-  food?: string;
-  tee?: boolean;
-}
-
-const people: {[key: string]: FoodChoises} = {Mark: {}, Paul: {}}
+const people = {Mark: {}, Paul: {}}
 const food = ['bread', 'cake', 'bananas']
 
-function personButtonText(_ctx: any, key: string): string {
+function personButtonText(_ctx, key) {
   const entry = people[key]
   if (!entry || !entry.food) {
     return key
@@ -57,7 +51,7 @@ function personButtonText(_ctx: any, key: string): string {
   return `${key} (${entry.food})`
 }
 
-function foodSelectText(ctx: any): string {
+function foodSelectText(ctx) {
   const person = ctx.match[1]
   const hisChoice = people[person].food
   if (!hisChoice) {
@@ -69,21 +63,21 @@ function foodSelectText(ctx: any): string {
 
 const foodSelectSubmenu = new TelegrafInlineMenu(foodSelectText)
   .toggle('Prefer Tee', 't', {
-    setFunc: (ctx: any, choice) => {
+    setFunc: (ctx, choice) => {
       const person = ctx.match[1]
       people[person].tee = choice
     },
-    isSetFunc: (ctx: any) => {
+    isSetFunc: ctx => {
       const person = ctx.match[1]
       return people[person].tee === true
     }
   })
   .select('f', food, {
-    setFunc: (ctx: any, key) => {
+    setFunc: (ctx, key) => {
       const person = ctx.match[1]
       people[person].food = key
     },
-    isSetFunc: (ctx: any, key) => {
+    isSetFunc: (ctx, key) => {
       const person = ctx.match[1]
       return people[person].food === key
     }
@@ -127,11 +121,11 @@ const bot = new Telegraf(token)
 bot.use(session())
 
 bot.use((ctx, next) => {
-  if (ctx.callbackQuery && ctx.callbackQuery.data) {
+  if (ctx.callbackQuery) {
     console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
   }
 
-  return next && next()
+  return next()
 })
 
 bot.use(menu.init({
@@ -139,7 +133,7 @@ bot.use(menu.init({
   mainMenuButtonText: 'back to main menu…'
 }))
 
-bot.catch((error: any) => {
+bot.catch(error => {
   console.log('telegraf error', error.response, error.parameters, error.on || error)
 })
 

@@ -1,7 +1,9 @@
 {
 	"extends": "@sindresorhus/tsconfig",
 	"include": [
-		"source"
+		"examples",
+		"source",
+		"test"
 	],
 	"compilerOptions": {
 		"outDir": "dist"
