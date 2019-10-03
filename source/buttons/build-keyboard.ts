@@ -1,9 +1,10 @@
+import {ContextMessageUpdate} from 'telegraf'
 import {InlineKeyboardMarkup, InlineKeyboardButton} from 'telegram-typings'
 
 import {buildKeyboardButton} from './build-keyboard-button'
 import {ButtonInfo, ButtonRow, KeyboardPartCreator} from './types'
 
-export async function buildKeyboard(content: (ButtonRow | KeyboardPartCreator)[], actionCodePrefix: string, ctx: any): Promise<InlineKeyboardMarkup> {
+export async function buildKeyboard(content: (ButtonRow | KeyboardPartCreator)[], actionCodePrefix: string, ctx: ContextMessageUpdate): Promise<InlineKeyboardMarkup> {
   const resultButtons: InlineKeyboardButton[][][] = await Promise.all(content.map(async row => {
     if (typeof row === 'function') {
       const innerKeyboard = await row(ctx)
@@ -21,7 +22,7 @@ export async function buildKeyboard(content: (ButtonRow | KeyboardPartCreator)[]
   }
 }
 
-async function buildKeyboardRow(row: ButtonInfo[], actionCodePrefix: string, ctx: any): Promise<InlineKeyboardButton[]> {
+async function buildKeyboardRow(row: ButtonInfo[], actionCodePrefix: string, ctx: ContextMessageUpdate): Promise<InlineKeyboardButton[]> {
   const buttons = await Promise.all(
     row.map(async buttonInfo => buildKeyboardButton(buttonInfo, actionCodePrefix, ctx))
   )

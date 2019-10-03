@@ -35,13 +35,13 @@ export default class CombinedMiddleware {
     return this
   }
 
-  middleware(): (ctx: any, next: any) => Promise<void> {
-    return async (ctx: any, next: any) => {
+  middleware(): (ctx: any, next: () => any) => Promise<void> {
+    return async (ctx: any, next) => {
       const onlyResults = await Promise.all(
         this._only.map(async o => o(ctx))
       )
       if (onlyResults.some(o => o !== true)) {
-        return next(ctx)
+        return next()
       }
 
       const hiddenResults = await Promise.all(
@@ -53,7 +53,7 @@ export default class CombinedMiddleware {
         if (this.hiddenFunc) {
           await this.hiddenFunc(ctx, next)
         } else {
-          await next(ctx)
+          await next()
         }
       } else {
         await this.mainFunc(ctx, next)

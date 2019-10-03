@@ -2,7 +2,7 @@ import {ContextFunc, ContextKeyFunc, ContextKeyIndexArrFunc} from '../generic-ty
 import {prefixEmoji, PrefixOptions} from '../prefix'
 
 import {getRowsOfButtons} from './align'
-import {KeyboardPart} from './types'
+import {KeyboardPart, ButtonInfo} from './types'
 
 type OptionsFunc = ContextFunc<(string | number)[] | {[key: string]: string}>
 
@@ -18,14 +18,12 @@ export function generateSelectButtons(actionBase: string, options: readonly (str
   const {textFunc, hide, columns, maxRows, currentPage} = selectOptions
   const buttons = options
     .map(o => String(o))
-    .map((key, i, arr) => {
+    .map((key, i, arr): ButtonInfo => {
       const action = `${actionBase}-${key}`
-      const textKey = async (ctx: any): Promise<string> => textFunc(ctx, key, i, arr)
-      const hideKey = async (ctx: any): Promise<boolean> => hide ? hide(ctx, key) : false
       return {
-        text: textKey,
+        text: async ctx => textFunc(ctx, key, i, arr),
         action,
-        hide: hideKey
+        hide: async ctx => hide ? hide(ctx, key) : false
       }
     })
 

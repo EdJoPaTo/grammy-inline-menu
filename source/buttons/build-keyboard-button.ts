@@ -1,10 +1,12 @@
+import {ContextMessageUpdate} from 'telegraf'
+
 import {InlineKeyboardButton} from 'telegram-typings'
 
 import ActionCode from '../action-code'
 
 import {ButtonInfo} from './types'
 
-export async function buildKeyboardButton(buttonInfo: ButtonInfo, actionCodePrefix: string, ctx: any): Promise<InlineKeyboardButton | undefined> {
+export async function buildKeyboardButton(buttonInfo: ButtonInfo, actionCodePrefix: string, ctx: ContextMessageUpdate): Promise<InlineKeyboardButton | undefined> {
   const {hide, text, action, url, switchToChat, switchToCurrentChat, root} = buttonInfo
 
   if (hide) {

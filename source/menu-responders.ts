@@ -5,7 +5,7 @@ import {isCallbackQueryActionFunc} from './middleware-helper'
 import ActionCode from './action-code'
 import CombinedMiddleware from './combined-middleware'
 
-type MenuFunc = (ctx: any, reason: string) => Promise<void>
+type MenuFunc = (ctx: ContextMessageUpdate, reason: string) => Promise<void>
 
 export interface Responder {
   middleware: ContextNextFunc;

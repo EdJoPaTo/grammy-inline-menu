@@ -1,3 +1,4 @@
+import {ContextMessageUpdate} from 'telegraf'
 import {InlineKeyboardMarkup} from 'telegram-typings'
 
 import {InternalMenuOptions} from './menu-options'
@@ -9,7 +10,7 @@ import {generateBackButtons} from './buttons/back-and-main'
 export default class MenuButtons {
   readonly buttons: (ButtonRow | KeyboardPartCreator)[] = []
 
-  async generateKeyboardMarkup(ctx: any, actionCodePrefix: string, options: InternalMenuOptions): Promise<InlineKeyboardMarkup> {
+  async generateKeyboardMarkup(ctx: ContextMessageUpdate, actionCodePrefix: string, options: InternalMenuOptions): Promise<InlineKeyboardMarkup> {
     const resultButtons = [
       ...this.buttons,
       generateBackButtons(actionCodePrefix, options)

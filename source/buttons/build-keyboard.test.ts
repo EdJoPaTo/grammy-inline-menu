@@ -8,7 +8,7 @@ test('one row one key', async t => {
     text: '42',
     action: 'a'
   }]]
-  const result = await buildKeyboard(buttons, '', {})
+  const result = await buildKeyboard(buttons, '', {} as any)
   t.deepEqual(result.inline_keyboard, [
     [
       {
@@ -35,7 +35,7 @@ test('four buttons in two rows', async t => {
       action: 'e'
     }]
   ]
-  const result = await buildKeyboard(buttons, '', {})
+  const result = await buildKeyboard(buttons, '', {} as any)
   t.deepEqual(result.inline_keyboard, [
     [
       {
@@ -65,7 +65,7 @@ test('row is func that creates one row with one button', async t => {
   const buttons = [
     keyboardCreator
   ]
-  const result = await buildKeyboard(buttons, '', {})
+  const result = await buildKeyboard(buttons, '', {} as any)
   t.deepEqual(result.inline_keyboard, [
     [
       {
