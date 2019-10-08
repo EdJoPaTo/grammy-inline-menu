@@ -4,7 +4,9 @@ import {prefixEmoji, PrefixOptions} from '../prefix'
 import {getRowsOfButtons} from './align'
 import {KeyboardPart, ButtonInfo} from './types'
 
-type OptionsFunc = ContextFunc<(string | number)[] | {[key: string]: string}>
+type OptionsDict = Record<string | number, string>
+type OptionsArr = readonly (string | number)[]
+export type SelectOptions = OptionsArr | OptionsDict
 
 interface SelectButtonOptions {
   columns?: number;
@@ -14,7 +16,7 @@ interface SelectButtonOptions {
   hide?: ContextKeyFunc<boolean>;
 }
 
-export function generateSelectButtons(actionBase: string, options: readonly (string | number)[], selectOptions: SelectButtonOptions): KeyboardPart {
+export function generateSelectButtons(actionBase: string, options: OptionsArr, selectOptions: SelectButtonOptions): KeyboardPart {
   const {textFunc, hide, columns, maxRows, currentPage} = selectOptions
   const buttons = options
     .map(o => String(o))
@@ -39,15 +41,15 @@ export interface SelectButtonCreatorOptions extends PrefixOptions {
   hide?: ContextKeyFunc<boolean>;
 }
 
-export function selectButtonCreator(action: string, optionsFunc: OptionsFunc, additionalArgs: SelectButtonCreatorOptions): (ctx: any) => Promise<KeyboardPart> {
+export function selectButtonCreator(action: string, optionsFunc: ContextFunc<SelectOptions>, additionalArgs: SelectButtonCreatorOptions): (ctx: any) => Promise<KeyboardPart> {
   const {getCurrentPage, textFunc, prefixFunc, isSetFunc, multiselect} = additionalArgs
   return async (ctx: any) => {
-    const optionsResult = await optionsFunc(ctx)
+    const optionsResult: OptionsArr | OptionsDict = await optionsFunc(ctx)
     const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
     const currentPage = getCurrentPage && await getCurrentPage(ctx)
     const fallbackKeyTextFunc = Array.isArray(optionsResult) ?
       (_ctx: any, key: string) => key :
-      (_ctx: any, key: string) => optionsResult[key]
+      (_ctx: any, key: string) => (optionsResult as OptionsDict)[key]
     const textOnlyFunc = textFunc || fallbackKeyTextFunc
     const keyTextFunc = async (...args: any[]): Promise<string> => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
       hideFalseEmoji: !multiselect,
@@ -61,7 +63,7 @@ export function selectButtonCreator(action: string, optionsFunc: OptionsFunc, ad
   }
 }
 
-export function selectHideFunc(keyFromCtx: (ctx: any) => string, optionsFunc: OptionsFunc, userHideFunc?: ContextKeyFunc<boolean>): ((ctx: any) => Promise<boolean>) {
+export function selectHideFunc(keyFromCtx: (ctx: any) => string, optionsFunc: ContextFunc<SelectOptions>, userHideFunc?: ContextKeyFunc<boolean>): ((ctx: any) => Promise<boolean>) {
   return async (ctx: any) => {
     const key = keyFromCtx(ctx)
     const optionsResult = await optionsFunc(ctx)

@@ -9,7 +9,7 @@ import DuplicateActionGuardian from './duplicate-action-guardian'
 import MenuButtons from './menu-buttons'
 import MenuResponders from './menu-responders'
 
-import {generateSelectButtons, selectButtonCreator, selectHideFunc, SelectButtonCreatorOptions} from './buttons/select'
+import {generateSelectButtons, selectButtonCreator, selectHideFunc, SelectButtonCreatorOptions, SelectOptions} from './buttons/select'
 import {maximumButtonsPerPage} from './buttons/align'
 import {paginationOptions} from './buttons/pagination'
 
@@ -57,8 +57,6 @@ interface QuestionOptions extends ButtonOptions {
   questionText: string;
   setFunc: (ctx: ContextMessageUpdate, answer: string) => Promise<void> | void;
 }
-
-type SelectOptions = string[] | {[key: string]: string}
 
 interface SelectPaginationOptions {
   columns?: number;
