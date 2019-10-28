@@ -11,8 +11,8 @@
     "build": "del dist && tsc",
     "prepare": "npm run build",
     "preexample-js": "npm run build",
-    "example-js": "node example.js",
-    "start": "ts-node example.ts",
+    "example-js": "node examples/main-javascript.js",
+    "start": "ts-node examples/main-typescript.ts",
     "pretest": "npm run build",
     "test": "xo && nyc ava"
   },
