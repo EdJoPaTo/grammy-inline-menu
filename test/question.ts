@@ -239,6 +239,37 @@ test('multiple question setFuncs do not interfere', async t => {
   }} as Update)
 })
 
+test('does not trigger on unrelated message with formatting', async t => {
+  t.plan(1)
+  const menu = new TelegrafInlineMenu('yaay')
+  menu.question('Question', 'c', {
+    uniqueIdentifier: '666',
+    questionText: 'what do you want to have?',
+    setFunc: () => t.fail()
+  })
+
+  const bot = new Telegraf('')
+  bot.use(menu.init({actionCode: 'a'}))
+
+  bot.context.answerCbQuery = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.editMessageText = async () => Promise.reject(new Error('This method should not be called here!'))
+  bot.context.reply = async () => DUMMY_MESSAGE
+
+  bot.use(() => {
+    t.pass()
+  })
+
+  await bot.handleUpdate({message: {
+    reply_to_message: {
+      text: 'what do you want to have?',
+      entities: [{
+        type: 'bold'
+      }]
+    },
+    text: 'more money'
+  }} as Update)
+})
+
 test('question button works on old menu', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('yaay')
