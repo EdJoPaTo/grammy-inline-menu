@@ -88,23 +88,11 @@ test('select require additionalArgs', t => {
 test('select option submenu is no more', t => {
   const menu: any = new TelegrafInlineMenu('foo')
 
-  const normalConsoleFunc = console.warn
-  console.warn = (arg1: string) => t.regex(arg1, /submenu/)
-
-  menu.select('c', ['a', 'b'], {
-    submenu: new TelegrafInlineMenu('bar')
-  })
-
-  console.warn = normalConsoleFunc
-
-  // TODO: use this after breaking change
-  /*
   t.throws(() => {
     menu.select('c', ['a', 'b'], {
       submenu: new TelegrafInlineMenu('bar')
     })
-  }, /submenu/)
-  */
+  }, /selectSubmenu/)
 })
 
 // Toggle

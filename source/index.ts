@@ -74,11 +74,6 @@ interface SelectActionOptions extends SelectButtonCreatorOptions, SelectPaginati
   setParentMenuAfter?: boolean;
 }
 
-interface OldSelectSubmenuOptions extends SelectButtonCreatorOptions, SelectPaginationOptions {
-  submenu: TelegrafInlineMenu;
-  hide?: ContextFunc<boolean>;
-}
-
 interface SelectSubmenuOptions extends SelectButtonCreatorOptions, SelectPaginationOptions {
   hide?: ContextFunc<boolean>;
 }
@@ -290,13 +285,9 @@ export default class TelegrafInlineMenu {
     })
   }
 
-  select(action: string, options: ConstOrContextFunc<SelectOptions>, additionalArgs: SelectActionOptions | OldSelectSubmenuOptions): TelegrafInlineMenu {
+  select(action: string, options: ConstOrContextFunc<SelectOptions>, additionalArgs: SelectActionOptions): TelegrafInlineMenu {
     if ('submenu' in additionalArgs) {
-      // TODO: BREAKING CHANGE
-      // throw new Error('Use menu.selectSubmenu() instead!')
-      console.warn('menu.select() with submenu is depricated. Use menu.selectSubmenu() instead!')
-
-      return this.selectSubmenu(action, options, additionalArgs.submenu, additionalArgs)
+      throw new Error('Use menu.selectSubmenu() instead!')
     }
 
     const {setFunc, hide} = additionalArgs
