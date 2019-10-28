@@ -102,6 +102,7 @@ test('hidden submenu question is lost', async t => {
     hide: () => true
   })
     .question('Question', 'q', {
+      uniqueIdentifier: '666',
       questionText: 'bar',
       setFunc: () => t.fail()
     })

@@ -7,6 +7,7 @@ import TelegrafInlineMenu from '../source'
 test.serial('setMenuNow menu is not modified', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
+    uniqueIdentifier: '666',
     questionText: 'what do you want?',
     setFunc: () => t.fail()
   })
@@ -50,6 +51,7 @@ test.serial('setMenuNow menu is not modified', async t => {
 test.serial('setMenuNow other error', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
+    uniqueIdentifier: '666',
     questionText: 'what do you want?',
     setFunc: () => t.fail()
   })

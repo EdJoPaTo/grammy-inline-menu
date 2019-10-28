@@ -48,6 +48,7 @@ test('question require setFunc', t => {
 
   t.throws(() => {
     menu.question('Question', 'c', {
+      uniqueIdentifier: '666',
       questionText: 'what do you want?'
     })
   }, /setFunc/)
@@ -58,9 +59,21 @@ test('question require questionText', t => {
 
   t.throws(() => {
     menu.question('Question', 'c', {
-      setFunc: t.fail
+      setFunc: t.fail,
+      uniqueIdentifier: '666'
     })
   }, /questionText/)
+})
+
+test('question require uniqueIdentifier', t => {
+  const menu: any = new TelegrafInlineMenu('yaay')
+
+  t.throws(() => {
+    menu.question('Question', 'c', {
+      setFunc: t.fail,
+      questionText: 'what do you want?'
+    })
+  }, /uniqueIdentifier/)
 })
 
 // Select

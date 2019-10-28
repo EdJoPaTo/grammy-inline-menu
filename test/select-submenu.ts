@@ -127,6 +127,7 @@ test('something that is not an action in dynamic menu throws error', t => {
   const menu = new TelegrafInlineMenu('foo')
   const submenu = new TelegrafInlineMenu('bar')
     .question('Question', 'q', {
+      uniqueIdentifier: '666',
       questionText: '42',
       setFunc: () => {}
     })

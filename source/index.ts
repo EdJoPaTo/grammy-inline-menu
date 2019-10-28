@@ -10,6 +10,7 @@ import MenuButtons from './menu-buttons'
 import MenuResponders from './menu-responders'
 
 import {generateSelectButtons, selectButtonCreator, selectHideFunc, SelectButtonCreatorOptions, SelectOptions} from './buttons/select'
+import {isReplyToQuestion, signQuestionText} from './buttons/question'
 import {maximumButtonsPerPage} from './buttons/align'
 import {paginationOptions} from './buttons/pagination'
 
@@ -54,8 +55,9 @@ interface PaginationOptions {
 }
 
 interface QuestionOptions extends ButtonOptions {
-  questionText: string;
+  questionText: ConstOrContextFunc<string>;
   setFunc: (ctx: ContextMessageUpdate, answer: string | undefined) => Promise<void> | void;
+  uniqueIdentifier: string;
 }
 
 interface SelectPaginationOptions {
@@ -245,9 +247,10 @@ export default class TelegrafInlineMenu {
   }
 
   question(text: ConstOrContextFunc<string>, action: string, additionalArgs: QuestionOptions): TelegrafInlineMenu {
-    const {questionText, setFunc, hide} = additionalArgs
+    const {questionText, uniqueIdentifier, setFunc, hide} = additionalArgs
     assert(questionText, 'questionText is not set. set it')
     assert(setFunc, 'setFunc is not set. set it')
+    assert(uniqueIdentifier, 'uniqueIdentifier is not set. set it')
 
     const parseQuestionAnswer = async (ctx: ContextMessageUpdate): Promise<void> => {
       const answer = ctx.message!.text
@@ -257,14 +260,17 @@ export default class TelegrafInlineMenu {
     this.responders.add({
       hide,
       setMenuAfter: true,
-      only: ctx => Boolean(ctx.message && ctx.message.reply_to_message && ctx.message.reply_to_message.text === questionText),
+      only: ctx => isReplyToQuestion(ctx, uniqueIdentifier),
       middleware: parseQuestionAnswer
     })
 
     const hitQuestionButton = async (ctx: ContextMessageUpdate): Promise<void> => {
-      const extra = Extra.markup(Markup.forceReply())
+      const questionTextString = typeof questionText === 'function' ? await questionText(ctx) : questionText
+      const qText = signQuestionText(questionTextString, uniqueIdentifier)
+
+      const extra = Extra.markdown().markup(Markup.forceReply())
       await Promise.all([
-        ctx.reply(questionText, extra as any),
+        ctx.reply(qText, extra as any),
         ctx.answerCbQuery(),
         ctx.deleteMessage()
           .catch((error: Error) => {

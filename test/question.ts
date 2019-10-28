@@ -14,6 +14,7 @@ const menuKeyboard = [[{
 test('menu correct', async t => {
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
+    uniqueIdentifier: '666',
     questionText: 'what do you want?',
     setFunc: () => t.fail()
   })
@@ -34,6 +35,7 @@ test('sends question text', async t => {
   t.plan(4)
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
+    uniqueIdentifier: '666',
     questionText: 'what do you want?',
     setFunc: () => t.fail()
   })
@@ -53,7 +55,7 @@ test('sends question text', async t => {
   }
 
   bot.context.reply = async (text, extra: ForceReplyExtra) => {
-    t.is(text, 'what do you want?')
+    t.is(text, 'what do you want?[\u200C](http://t.me/#666)')
     t.deepEqual(extra.reply_markup, {
       force_reply: true
     })
@@ -67,6 +69,7 @@ test('setFunc on answer', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
+    uniqueIdentifier: '666',
     questionText: 'what do you want?',
     setFunc: (_ctx, answer) => t.is(answer, 'more money')
   })
@@ -88,7 +91,11 @@ test('setFunc on answer', async t => {
 
   await bot.handleUpdate({message: {
     reply_to_message: {
-      text: 'what do you want?'
+      text: 'what do you want?',
+      entities: [{
+        type: 'text_link',
+        url: 'http://t.me/#666'
+      }]
     },
     text: 'more money'
   }} as Update)
@@ -98,6 +105,7 @@ test('dont setFunc on wrong input text', async t => {
   t.plan(1)
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
+    uniqueIdentifier: '666',
     questionText: 'what do you want?',
     setFunc: (_ctx, answer) => t.is(answer, 'more money')
   })
@@ -122,6 +130,7 @@ test('dont setFunc on hide', async t => {
   t.plan(1)
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
+    uniqueIdentifier: '666',
     questionText: 'what do you want?',
     hide: () => true,
     setFunc: (_ctx, answer) => t.is(answer, 'more money')
@@ -148,6 +157,7 @@ test('accepts other stuff than text', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
+    uniqueIdentifier: '666',
     questionText: 'what do you want?',
     setFunc: (_ctx, answer) => t.is(answer, undefined)
   })
@@ -169,7 +179,11 @@ test('accepts other stuff than text', async t => {
 
   await bot.handleUpdate({message: {
     reply_to_message: {
-      text: 'what do you want?'
+      text: 'what do you want?',
+      entities: [{
+        type: 'text_link',
+        url: 'http://t.me/#666'
+      }]
     },
     photo: {},
     caption: '42'
@@ -180,10 +194,12 @@ test('multiple question setFuncs do not interfere', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
+    uniqueIdentifier: '21',
     questionText: 'what do you want to have?',
     setFunc: (_ctx, answer) => t.is(answer, 'more money')
   })
   menu.question('Question', 'd', {
+    uniqueIdentifier: '42',
     questionText: 'what do you want to eat?',
     setFunc: (_ctx, answer) => t.is(answer, 'less meat')
   })
@@ -202,14 +218,22 @@ test('multiple question setFuncs do not interfere', async t => {
 
   await bot.handleUpdate({message: {
     reply_to_message: {
-      text: 'what do you want to have?'
+      text: 'what do you want to have?',
+      entities: [{
+        type: 'text_link',
+        url: 'http://t.me/#21'
+      }]
     },
     text: 'more money'
   }} as Update)
 
   await bot.handleUpdate({message: {
     reply_to_message: {
-      text: 'what do you want to eat?'
+      text: 'what do you want to eat?',
+      entities: [{
+        type: 'text_link',
+        url: 'http://t.me/#42'
+      }]
     },
     text: 'less meat'
   }} as Update)
@@ -219,6 +243,7 @@ test('question button works on old menu', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
+    uniqueIdentifier: '666',
     questionText: 'what do you want?',
     setFunc: () => t.fail()
   })
@@ -246,6 +271,7 @@ test.serial('question button deleteMessage fail does not kill question', async t
   t.plan(3)
   const menu = new TelegrafInlineMenu('yaay')
   menu.question('Question', 'c', {
+    uniqueIdentifier: '666',
     questionText: 'what do you want?',
     setFunc: () => t.fail()
   })

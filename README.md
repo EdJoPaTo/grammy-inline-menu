@@ -213,7 +213,7 @@ The currentPage has to be within [1..totalPages]
 
 `getTotalPages(ctx)` has to return all the available pages.
 
-### `menu.question(buttonText, action, {questionText, setFunc, hide, joinLastRow})`
+### `menu.question(buttonText, action, {uniqueIdentifier, questionText, setFunc, hide, joinLastRow})`
 
 When the user presses the button, he will be asked a question.
 The answer he gives is available via `setFunc(ctx, answer)`
@@ -228,9 +228,9 @@ When the user answers with something that is not a text (a photo for example) `a
 
 `setFunc(ctx, answer)` will be called when the user answers the question.
 
-`questionText` can only be a string.
-This has to be globally unique!
-If this is not unique it will collide with the other question with the same text and probably not work as intended.
+`uniqueIdentifier` needs to be a globally unique string which identifies this question.
+
+`questionText` can be a `string` or a `function(ctx)` that will be set as the Question text.
 
 `hide(ctx)` (optional) can hide the button when return is true.
 
