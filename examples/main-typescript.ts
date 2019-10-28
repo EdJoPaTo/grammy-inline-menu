@@ -97,7 +97,7 @@ foodMenu.selectSubmenu('p', () => Object.keys(people), foodSelectSubmenu, {
 foodMenu.question('Add person', 'add', {
   questionText: 'Who likes food too?',
   setFunc: (_ctx, key) => {
-    people[key] = {}
+    people[key!] = {}
   }
 })
 

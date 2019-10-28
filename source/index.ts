@@ -55,7 +55,7 @@ interface PaginationOptions {
 
 interface QuestionOptions extends ButtonOptions {
   questionText: string;
-  setFunc: (ctx: ContextMessageUpdate, answer: string) => Promise<void> | void;
+  setFunc: (ctx: ContextMessageUpdate, answer: string | undefined) => Promise<void> | void;
 }
 
 interface SelectPaginationOptions {
@@ -249,8 +249,8 @@ export default class TelegrafInlineMenu {
     assert(questionText, 'questionText is not set. set it')
     assert(setFunc, 'setFunc is not set. set it')
 
-    const parseQuestionAnswer = async (ctx: any): Promise<void> => {
-      const answer = ctx.message.text
+    const parseQuestionAnswer = async (ctx: ContextMessageUpdate): Promise<void> => {
+      const answer = ctx.message!.text
       await setFunc(ctx, answer)
     }
 
@@ -261,10 +261,10 @@ export default class TelegrafInlineMenu {
       middleware: parseQuestionAnswer
     })
 
-    const hitQuestionButton = async (ctx: any): Promise<void> => {
+    const hitQuestionButton = async (ctx: ContextMessageUpdate): Promise<void> => {
       const extra = Extra.markup(Markup.forceReply())
       await Promise.all([
-        ctx.reply(questionText, extra),
+        ctx.reply(questionText, extra as any),
         ctx.answerCbQuery(),
         ctx.deleteMessage()
           .catch((error: Error) => {
