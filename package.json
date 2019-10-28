@@ -69,7 +69,6 @@
       "**/*.d.ts",
       "**/*.test.ts"
     ],
-    "all": true,
     "reporter": [
       "lcov",
       "text"
