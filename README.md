@@ -48,7 +48,7 @@ bot.startPolling()
 
 ## More interesting one
 
-Look at the code here :  [example.ts](example.ts) / [example.js](example.js)
+Look at the code here :  [example.ts](examples/main-typescript.ts) / [example.js](examples/main-javascript.js)
 
 ![Example Food Menu](media/example-food.gif)
 
