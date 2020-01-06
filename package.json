@@ -35,18 +35,18 @@
     "telegraf": "^3.26.0"
   },
   "devDependencies": {
-    "@sindresorhus/tsconfig": "^0.5.0",
-    "@types/node": "^12.0.0",
-    "@typescript-eslint/eslint-plugin": "^2.3.2",
-    "@typescript-eslint/parser": "^2.3.2",
+    "@sindresorhus/tsconfig": "^0.7.0",
+    "@types/node": "^13.1.4",
+    "@typescript-eslint/eslint-plugin": "^2.14.0",
+    "@typescript-eslint/parser": "^2.14.0",
     "ava": "^2.0.0",
     "del-cli": "^3.0.0",
-    "eslint-config-xo-typescript": "^0.19.0",
-    "nyc": "^14.0.0",
+    "eslint-config-xo-typescript": "^0.24.1",
+    "nyc": "^15.0.0",
     "telegraf": "^3.28.0",
     "telegram-typings": "^4.0.0-beta",
     "ts-node": "^8.0.2",
-    "typescript": "^3.4.2",
+    "typescript": "^3.7.4",
     "xo": "^0.25.3"
   },
   "files": [
@@ -83,7 +83,10 @@
     "semicolon": false,
     "rules": {
       "ava/no-ignored-test-files": "off",
-      "@typescript-eslint/strict-boolean-expressions": "off",
+      "@typescript-eslint/no-empty-function": "off",
+      "@typescript-eslint/prefer-nullish-coalescing": "off",
+      "@typescript-eslint/prefer-optional-chain": "off",
+      "@typescript-eslint/restrict-template-expressions": "off",
       "@typescript-eslint/array-type": [
         "error",
         {
