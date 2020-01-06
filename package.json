@@ -83,9 +83,8 @@
     "semicolon": false,
     "rules": {
       "ava/no-ignored-test-files": "off",
-      "@typescript-eslint/no-empty-function": "off",
+      "@typescript-eslint/no-empty-function": "warn",
       "@typescript-eslint/prefer-nullish-coalescing": "off",
-      "@typescript-eslint/prefer-optional-chain": "off",
       "@typescript-eslint/restrict-template-expressions": "off",
       "@typescript-eslint/array-type": [
         "error",
@@ -115,7 +114,8 @@
         ],
         "rules": {
           "@typescript-eslint/no-require-imports": "warn",
-          "@typescript-eslint/no-var-requires": "warn"
+          "@typescript-eslint/no-var-requires": "warn",
+          "@typescript-eslint/prefer-optional-chain": "off"
         }
       },
       {
@@ -125,7 +125,8 @@
         "rules": {
           "@typescript-eslint/explicit-function-return-type": "off",
           "@typescript-eslint/no-require-imports": "off",
-          "@typescript-eslint/no-var-requires": "off"
+          "@typescript-eslint/no-var-requires": "off",
+          "@typescript-eslint/prefer-optional-chain": "off"
         }
       },
       {
@@ -145,6 +146,7 @@
           "source/**/*.test.ts"
         ],
         "rules": {
+          "@typescript-eslint/no-empty-function": "off",
           "ava/no-incorrect-deep-equal": "off",
           "require-atomic-updates": "warn"
         }
