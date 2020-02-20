@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/no-unnecessary-boolean-literal-compare: off */
+
 import {ContextFunc, ContextNextFunc} from './generic-types'
 
 interface AfterFunc {
