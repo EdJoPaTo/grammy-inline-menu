@@ -43,7 +43,8 @@ export default class CombinedMiddleware {
         this._only.map(async o => o(ctx))
       )
       if (onlyResults.some(o => o !== true)) {
-        return next()
+        await next()
+        return
       }
 
       const hiddenResults = await Promise.all(

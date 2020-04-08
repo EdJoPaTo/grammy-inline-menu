@@ -1,3 +1,5 @@
+import {ContextMessageUpdate} from 'telegraf'
+
 import {ContextFunc, ContextKeyFunc, ContextKeyIndexArrFunc} from '../generic-types'
 import {prefixEmoji, PrefixOptions} from '../prefix'
 
@@ -41,9 +43,9 @@ export interface SelectButtonCreatorOptions extends PrefixOptions {
   hide?: ContextKeyFunc<boolean>;
 }
 
-export function selectButtonCreator(action: string, optionsFunc: ContextFunc<SelectOptions>, additionalArgs: SelectButtonCreatorOptions): (ctx: any) => Promise<KeyboardPart> {
+export function selectButtonCreator(action: string, optionsFunc: ContextFunc<SelectOptions>, additionalArgs: SelectButtonCreatorOptions): ContextFunc<KeyboardPart> {
   const {getCurrentPage, textFunc, prefixFunc, isSetFunc, multiselect} = additionalArgs
-  return async (ctx: any) => {
+  return async ctx => {
     const optionsResult: OptionsArr | OptionsDict = await optionsFunc(ctx)
     const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
     const currentPage = getCurrentPage && await getCurrentPage(ctx)
@@ -63,8 +65,8 @@ export function selectButtonCreator(action: string, optionsFunc: ContextFunc<Sel
   }
 }
 
-export function selectHideFunc(keyFromCtx: (ctx: any) => string, optionsFunc: ContextFunc<SelectOptions>, userHideFunc?: ContextKeyFunc<boolean>): ((ctx: any) => Promise<boolean>) {
-  return async (ctx: any) => {
+export function selectHideFunc(keyFromCtx: (ctx: ContextMessageUpdate) => string, optionsFunc: ContextFunc<SelectOptions>, userHideFunc?: ContextKeyFunc<boolean>): ContextFunc<boolean> {
+  return async ctx => {
     const key = keyFromCtx(ctx)
     const optionsResult = await optionsFunc(ctx)
     const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)

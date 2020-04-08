@@ -59,7 +59,7 @@ test('correct actionCode in menu buttons', async t => {
 test('works with specific ActionCode', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('foo')
-  const submenu = new TelegrafInlineMenu((ctx: any) => `bar ${ctx.match[1]}`)
+  const submenu = new TelegrafInlineMenu(ctx => `bar ${ctx.match![1]}`)
   menu.selectSubmenu('b', ['y', 'z'], submenu)
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
 
@@ -77,7 +77,7 @@ test('works with specific ActionCode', async t => {
 
 test('fails with different ActionCode than menu expects', async t => {
   const menu = new TelegrafInlineMenu('foo')
-  const submenu = new TelegrafInlineMenu((ctx: any) => `bar ${ctx.match[1]}`)
+  const submenu = new TelegrafInlineMenu(ctx => `bar ${ctx.match![1]}`)
   menu.selectSubmenu('b', ['y', 'z'], submenu)
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
 

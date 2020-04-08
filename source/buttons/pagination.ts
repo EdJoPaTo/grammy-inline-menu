@@ -5,13 +5,13 @@
  * @param  currentPage current page. Has to be between [1..totalPages]
  * @return returns the ButtonOptions
  */
-export function paginationOptions(totalPages: number, currentPage: number | undefined): {[key: string]: string} {
+export function paginationOptions(totalPages: number, currentPage: number | undefined): Record<number, string> {
   // Numbers have to be within
   // currentPage in [1..totalPages]
   const totalPagesFixed = Math.ceil(totalPages)
   const currentPageFixed = Math.max(1, Math.min(totalPagesFixed, Math.floor(currentPage || 1)))
 
-  const buttons: any = {}
+  const buttons: Record<number, string> = {}
   if (!isFinite(totalPagesFixed) || !isFinite(currentPageFixed) || totalPagesFixed < 2) {
     return buttons
   }

@@ -1,11 +1,11 @@
 import test, {ExecutionContext} from 'ava'
 import Telegraf from 'telegraf'
-import {Update} from 'telegram-typings'
+import {Update, InlineKeyboardButton} from 'telegram-typings'
 
 import TelegrafInlineMenu from '../source'
 import {InlineExtra} from './_telegraf-typing-overrides'
 
-async function macro(t: ExecutionContext, addButtonFunc: (menu: TelegrafInlineMenu) => void, expectedKeyboard: any[][]): Promise<void> {
+async function macro(t: ExecutionContext, addButtonFunc: (menu: TelegrafInlineMenu) => void, expectedKeyboard: InlineKeyboardButton[][]): Promise<void> {
   const menu = new TelegrafInlineMenu('yaay')
   addButtonFunc(menu)
 

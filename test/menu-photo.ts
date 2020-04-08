@@ -111,7 +111,7 @@ test('replace message with photo to remove photo from menu', async t => {
   bot.context.replyWithPhoto = async () => Promise.reject(new Error(errorMessage))
 
   bot.context.deleteMessage = async () => t.pass()
-  bot.context.reply = async (text: any, extra: InlineExtra) => {
+  bot.context.reply = async (text: string, extra: InlineExtra) => {
     t.deepEqual(text, 'yaay')
     t.deepEqual(extra.reply_markup.inline_keyboard, EXPECTED_KEYBOARD)
     return true

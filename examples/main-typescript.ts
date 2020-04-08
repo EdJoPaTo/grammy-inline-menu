@@ -1,6 +1,6 @@
 import {readFileSync} from 'fs'
 
-import Telegraf from 'telegraf'
+import Telegraf, {ContextMessageUpdate} from 'telegraf'
 
 import TelegrafInlineMenu from '../source'
 
@@ -45,10 +45,10 @@ interface FoodChoises {
   tee?: boolean;
 }
 
-const people: {[key: string]: FoodChoises} = {Mark: {}, Paul: {}}
+const people: Record<string, FoodChoises> = {Mark: {}, Paul: {}}
 const food = ['bread', 'cake', 'bananas']
 
-function personButtonText(_ctx: any, key: string): string {
+function personButtonText(_ctx: ContextMessageUpdate, key: string): string {
   const entry = people[key] as FoodChoises | undefined
   if (entry && entry.food) {
     return `${key} (${entry.food})`
@@ -57,8 +57,8 @@ function personButtonText(_ctx: any, key: string): string {
   return key
 }
 
-function foodSelectText(ctx: any): string {
-  const person = ctx.match[1]
+function foodSelectText(ctx: ContextMessageUpdate): string {
+  const person = ctx.match![1]
   const hisChoice = people[person].food
   if (!hisChoice) {
     return `${person} is still unsure what to eat.`
@@ -69,22 +69,22 @@ function foodSelectText(ctx: any): string {
 
 const foodSelectSubmenu = new TelegrafInlineMenu(foodSelectText)
   .toggle('Prefer Tee', 't', {
-    setFunc: (ctx: any, choice) => {
-      const person = ctx.match[1]
+    setFunc: (ctx, choice) => {
+      const person = ctx.match![1]
       people[person].tee = choice
     },
-    isSetFunc: (ctx: any) => {
-      const person = ctx.match[1]
+    isSetFunc: ctx => {
+      const person = ctx.match![1]
       return people[person].tee === true
     }
   })
   .select('f', food, {
-    setFunc: (ctx: any, key) => {
-      const person = ctx.match[1]
+    setFunc: (ctx, key) => {
+      const person = ctx.match![1]
       people[person].food = key
     },
-    isSetFunc: (ctx: any, key) => {
-      const person = ctx.match[1]
+    isSetFunc: (ctx, key) => {
+      const person = ctx.match![1]
       return people[person].food === key
     }
   })

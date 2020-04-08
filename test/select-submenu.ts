@@ -9,12 +9,12 @@ import {InlineExtra} from './_telegraf-typing-overrides'
 function generateTestBasics(): Telegraf<ContextMessageUpdate> {
   const menu = new TelegrafInlineMenu('foo')
 
-  const submenu = new TelegrafInlineMenu((ctx: any): string => ctx.match[1])
+  const submenu = new TelegrafInlineMenu(ctx => ctx.match![1])
     .simpleButton(
-      (ctx: any) => `Hit ${ctx.match[1]}!`,
+      ctx => `Hit ${ctx.match![1]}!`,
       'd',
       {
-        doFunc: async (ctx: any) => ctx.answerCbQuery(`${ctx.match[1]} was hit!`)
+        doFunc: async ctx => ctx.answerCbQuery(`${ctx.match![1]} was hit!`)
       }
     )
 
@@ -89,12 +89,12 @@ test('hide submenu ends up in parent menu', async t => {
   const menu = new TelegrafInlineMenu('foo')
     .manual('foo', 'bar')
 
-  const submenu = new TelegrafInlineMenu((ctx: any): string => ctx.match[1])
+  const submenu = new TelegrafInlineMenu(ctx => ctx.match![1])
     .simpleButton(
-      (ctx: any) => `Hit ${ctx.match[1]}!`,
+      ctx => `Hit ${ctx.match![1]}!`,
       'd',
       {
-        doFunc: async (ctx: any) => ctx.answerCbQuery(`${ctx.match[1]} was hit!`)
+        doFunc: async ctx => ctx.answerCbQuery(`${ctx.match![1]} was hit!`)
       }
     )
 
@@ -140,7 +140,7 @@ test('something that is not an action in dynamic menu throws error', t => {
 
 test('function as backButtonText is possible', async t => {
   const menu = new TelegrafInlineMenu('foo')
-  const submenu = new TelegrafInlineMenu((ctx: any): string => ctx.match[1])
+  const submenu = new TelegrafInlineMenu(ctx => ctx.match![1])
 
   menu.selectSubmenu('c', ['a', 'b'], submenu)
 
@@ -168,7 +168,7 @@ test('function as backButtonText is possible', async t => {
 test('button in submenu results in correct menu', async t => {
   t.plan(2)
   const menu = new TelegrafInlineMenu('foo')
-  const submenu = new TelegrafInlineMenu((ctx: any): string => ctx.match[1])
+  const submenu = new TelegrafInlineMenu(ctx => ctx.match![1])
 
   menu.selectSubmenu('c', ['a', 'b'], submenu)
   submenu.button('Hit a!', 'd', {

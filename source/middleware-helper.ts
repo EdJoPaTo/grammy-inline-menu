@@ -1,9 +1,8 @@
-import {ContextMessageUpdate} from 'telegraf'
-
+import {ContextFunc} from './generic-types'
 import ActionCode from './action-code'
 
-export function isCallbackQueryActionFunc(actionCode: ActionCode): (ctx: any) => Promise<boolean> {
-  return async (ctx: ContextMessageUpdate) => {
+export function isCallbackQueryActionFunc(actionCode: ActionCode): ContextFunc<boolean> {
+  return async ctx => {
     if (ctx.updateType !== 'callback_query' || !ctx.callbackQuery) {
       return false
     }

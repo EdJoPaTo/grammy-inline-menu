@@ -7,7 +7,7 @@ export type KeyboardPart = ButtonRow[]
 export type KeyboardPartCreator = ContextFunc<KeyboardPart>
 
 export interface ButtonInfo {
-  hide?: ((ctx: any) => Promise<boolean> | boolean);
+  hide?: ContextFunc<boolean>;
   root?: boolean;
   text: StringOrStringFunc;
   action?: StringOrStringFunc;

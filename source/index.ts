@@ -205,8 +205,8 @@ export default class TelegrafInlineMenu {
   pagination(action: string, additionalArgs: PaginationOptions): TelegrafInlineMenu {
     const {setPage, getCurrentPage, getTotalPages, hide} = additionalArgs
 
-    const pageFromCtx = async (ctx: any): Promise<number> => {
-      const number = Number(ctx.match[ctx.match.length - 1])
+    const pageFromCtx: ContextFunc<number> = async ctx => {
+      const number = Number(ctx.match![ctx.match!.length - 1])
       const totalPages = Math.ceil(await getTotalPages(ctx))
       return Math.max(1, Math.min(totalPages, number)) || 1
     }
@@ -218,7 +218,7 @@ export default class TelegrafInlineMenu {
       setMenuAfter: true
     })
 
-    const createPaginationButtons = async (ctx: ContextMessageUpdate): Promise<{[key: string]: string}> => {
+    const createPaginationButtons: ContextFunc<Record<string, string>> = async ctx => {
       if (hide && await hide(ctx)) {
         return {}
       }
@@ -291,7 +291,7 @@ export default class TelegrafInlineMenu {
     }
 
     const {setFunc, hide} = additionalArgs
-    const keyFromCtx = (ctx: any): string => ctx.match[ctx.match.length - 1]
+    const keyFromCtx = (ctx: ContextMessageUpdate): string => ctx.match![ctx.match!.length - 1]
     const optionsFunc = typeof options === 'function' ? options : () => options
 
     this.responders.add({
@@ -391,7 +391,7 @@ export default class TelegrafInlineMenu {
     return {text, extra}
   }
 
-  protected async setMenuNow(ctx: any, actionCode: ActionCode, options: InternalMenuOptions): Promise<void> {
+  protected async setMenuNow(ctx: ContextMessageUpdate, actionCode: ActionCode, options: InternalMenuOptions): Promise<void> {
     const {text, extra} = await this.generate(ctx, actionCode, options)
 
     const photo = typeof this.menuPhoto === 'function' ? await this.menuPhoto(ctx) : this.menuPhoto
@@ -408,9 +408,9 @@ export default class TelegrafInlineMenu {
       }
 
       if (photo) {
-        await ctx.replyWithPhoto(photo, photoExtra)
+        await ctx.replyWithPhoto(photo as any, photoExtra as any)
       } else {
-        await ctx.reply(text, extra)
+        await ctx.reply(text, extra as any)
       }
 
       return
@@ -422,15 +422,16 @@ export default class TelegrafInlineMenu {
       // When photo is set it is a photo message
       // isPhotoMessage !== photo is ensured above
       if (photo) {
+        // TODO: Telegraf typings InputMediaPhoto
         const media = {
           type: 'photo',
           media: photo,
           caption: text
         }
 
-        await ctx.editMessageMedia(media, photoExtra)
+        await ctx.editMessageMedia(media as any, photoExtra as any)
       } else {
-        await ctx.editMessageText(text, extra)
+        await ctx.editMessageText(text, extra as any)
       }
     } catch (error) {
       if (error.message.startsWith('400: Bad Request: message is not modified')) {
@@ -458,6 +459,7 @@ export default class TelegrafInlineMenu {
     options.log('add action reaction', actionCode.get(), 'setMenu')
     const setMenuFunc = async (ctx: any, reason: string, actionOverride?: ActionCode): Promise<void> => {
       if (actionOverride) {
+        // TODO: Telegraf typings match: RegExpExecArray | null | undefined
         ctx.match = actionCode.exec(actionOverride.getString())
       }
 
@@ -467,6 +469,7 @@ export default class TelegrafInlineMenu {
 
     const functions = []
     if (this.commands.length > 0) {
+      // TODO: Telegraf typings Composer.command also exists as static
       const myComposer: any = Composer
       functions.push(myComposer.command(this.commands, async (ctx: any) => setMenuFunc(ctx, 'command')))
     }
