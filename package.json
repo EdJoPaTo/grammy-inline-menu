@@ -37,17 +37,14 @@
   "devDependencies": {
     "@sindresorhus/tsconfig": "^0.7.0",
     "@types/node": "^13.1.4",
-    "@typescript-eslint/eslint-plugin": "^2.20.0",
-    "@typescript-eslint/parser": "^2.20.0",
     "ava": "^2.0.0",
     "del-cli": "^3.0.0",
-    "eslint-config-xo-typescript": "^0.26.0",
     "nyc": "^15.0.0",
     "telegraf": "^3.28.0",
     "telegram-typings": "^4.0.0-beta",
     "ts-node": "^8.0.2",
     "typescript": "^3.7.4",
-    "xo": "^0.26.1"
+    "xo": "^0.28.3"
   },
   "files": [
     "dist/source",
@@ -75,39 +72,37 @@
     ]
   },
   "xo": {
-    "extends": "xo-typescript",
-    "extensions": [
-      "ts"
-    ],
     "space": true,
     "semicolon": false,
     "rules": {
       "ava/no-ignored-test-files": "off",
-      "@typescript-eslint/no-empty-function": "warn",
-      "@typescript-eslint/prefer-nullish-coalescing": "off",
-      "@typescript-eslint/restrict-template-expressions": "off",
-      "@typescript-eslint/array-type": [
-        "error",
-        {
-          "default": "array"
-        }
-      ],
-      "@typescript-eslint/no-unnecessary-condition": [
-        "error",
-        {
-          "ignoreRhs": true
-        }
-      ],
-      "@typescript-eslint/indent": [
-        "error",
-        2
-      ],
-      "@typescript-eslint/semi": [
-        "error",
-        "never"
-      ]
+      "unicorn/better-regex": "off",
+      "unicorn/prevent-abbreviations": "warn",
+      "unicorn/string-content": "off"
     },
     "overrides": [
+      {
+        "files": [
+          "**/*.ts"
+        ],
+        "rules": {
+          "@typescript-eslint/no-empty-function": "warn",
+          "@typescript-eslint/prefer-nullish-coalescing": "off",
+          "@typescript-eslint/restrict-template-expressions": "off",
+          "@typescript-eslint/array-type": [
+            "error",
+            {
+              "default": "array"
+            }
+          ],
+          "@typescript-eslint/no-unnecessary-condition": [
+            "error",
+            {
+              "ignoreRhs": true
+            }
+          ]
+        }
+      },
       {
         "files": [
           "examples/**/*.ts"
@@ -115,17 +110,6 @@
         "rules": {
           "@typescript-eslint/no-require-imports": "warn",
           "@typescript-eslint/no-var-requires": "warn",
-          "@typescript-eslint/prefer-optional-chain": "off"
-        }
-      },
-      {
-        "files": [
-          "examples/**/*.js"
-        ],
-        "rules": {
-          "@typescript-eslint/explicit-function-return-type": "off",
-          "@typescript-eslint/no-require-imports": "off",
-          "@typescript-eslint/no-var-requires": "off",
           "@typescript-eslint/prefer-optional-chain": "off"
         }
       },
