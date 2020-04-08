@@ -135,7 +135,7 @@ test('something that is not an action in dynamic menu throws error', t => {
   const bot = new Telegraf('')
   t.throws(() => {
     bot.use(menu.init())
-  }, /dynamic.+question.+menu.+a/)
+  }, {message: /dynamic.+question.+menu.+a/})
 })
 
 test('function as backButtonText is possible', async t => {

@@ -120,7 +120,7 @@ test('fails before init', async t => {
   const handler = replyMenuMiddleware.middleware()
   await t.throwsAsync(
     async () => handler({} as ContextMessageUpdate, () => null),
-    /menu.init/
+    {message: /menu.init/}
   )
 })
 
@@ -136,5 +136,5 @@ test('does not work with menu on multiple positions', t => {
 
   t.throws(() => {
     bot.use(menu.init({actionCode: 'a'}))
-  }, /replyMenuMiddleware does not work on a menu that is reachable on multiple different ways/)
+  }, {message: /replyMenuMiddleware does not work on a menu that is reachable on multiple different ways/})
 })

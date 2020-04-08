@@ -12,7 +12,7 @@ test('menu.middleware fails with .init() hint', t => {
   const bot = new Telegraf('')
   // Normally user would use bot.use.
   // But telegraf will later use .middleware() on it. in order to check this faster, trigger this directly
-  t.throws(() => bot.use(menu.middleware()), /bot\.use\(menu\.init/)
+  t.throws(() => bot.use(menu.middleware()), {message: /bot\.use\(menu\.init/})
 })
 
 // Buttons
@@ -22,7 +22,7 @@ test('simpleButton require additionalArgs', t => {
 
   t.throws(() => {
     menu.simpleButton('toggle me', 'c')
-  }, /Cannot.+undefined/)
+  }, {message: /Cannot.+undefined/})
 })
 
 test('button require additionalArgs', t => {
@@ -30,7 +30,7 @@ test('button require additionalArgs', t => {
 
   t.throws(() => {
     menu.button('toggle me', 'c')
-  }, /Cannot.+undefined/)
+  }, {message: /Cannot.+undefined/})
 })
 
 test('simpleButton require doFunc', t => {
@@ -38,7 +38,7 @@ test('simpleButton require doFunc', t => {
 
   t.throws(() => {
     menu.simpleButton('toggle me', 'c', {})
-  }, /doFunc/)
+  }, {message: /doFunc/})
 })
 
 // Question
@@ -51,7 +51,7 @@ test('question require setFunc', t => {
       uniqueIdentifier: '666',
       questionText: 'what do you want?'
     })
-  }, /setFunc/)
+  }, {message: /setFunc/})
 })
 
 test('question require questionText', t => {
@@ -62,7 +62,7 @@ test('question require questionText', t => {
       setFunc: t.fail,
       uniqueIdentifier: '666'
     })
-  }, /questionText/)
+  }, {message: /questionText/})
 })
 
 test('question require uniqueIdentifier', t => {
@@ -73,7 +73,7 @@ test('question require uniqueIdentifier', t => {
       setFunc: t.fail,
       questionText: 'what do you want?'
     })
-  }, /uniqueIdentifier/)
+  }, {message: /uniqueIdentifier/})
 })
 
 // Select
@@ -82,7 +82,7 @@ test('select require additionalArgs', t => {
   const menu: any = new TelegrafInlineMenu('foo')
   t.throws(() => {
     menu.select('c', ['a', 'b'])
-  }, /Cannot.+undefined/)
+  }, {message: /Cannot.+undefined/})
 })
 
 test('select option submenu is no more', t => {
@@ -92,7 +92,7 @@ test('select option submenu is no more', t => {
     menu.select('c', ['a', 'b'], {
       submenu: new TelegrafInlineMenu('bar')
     })
-  }, /selectSubmenu/)
+  }, {message: /selectSubmenu/})
 })
 
 // Toggle
@@ -104,7 +104,7 @@ test('toggle require setFunc', t => {
     menu.toggle('toggle me', 'c', {
       isSetFunc: t.fail
     })
-  }, /setFunc/)
+  }, {message: /setFunc/})
 })
 
 test('toggle require isSetFunc', t => {
@@ -114,5 +114,5 @@ test('toggle require isSetFunc', t => {
     menu.toggle('toggle me', 'c', {
       setFunc: t.fail
     })
-  }, /isSetFunc/)
+  }, {message: /isSetFunc/})
 })

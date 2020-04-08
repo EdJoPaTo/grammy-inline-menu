@@ -238,5 +238,5 @@ test('setParentMenuAfter when there is no parent fails', t => {
   const bot = new Telegraf('')
   t.throws(() => {
     bot.use(menu.init())
-  }, /parent menu.+main/)
+  }, {message: /parent menu.+main/})
 })

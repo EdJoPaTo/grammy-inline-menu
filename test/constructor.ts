@@ -75,5 +75,5 @@ test('menu.init requires action code to be at the base level', t => {
 
   t.throws(() => {
     bot.use(menu.init({actionCode: 'a:b'}))
-  }, /actioncode/i)
+  }, {message: /actioncode/i})
 })

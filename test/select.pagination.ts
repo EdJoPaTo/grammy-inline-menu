@@ -92,5 +92,5 @@ test('require setPage and getCurrentPage', t => {
       setFunc: () => {},
       setPage: () => {}
     })
-  }, /pagination/)
+  }, {message: /pagination/})
 })

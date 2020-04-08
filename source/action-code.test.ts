@@ -61,15 +61,15 @@ test('concat regex with regex', t => {
 })
 
 test('regex fail flags', t => {
-  t.throws(() => new ActionCode(/42/g), /flags/)
-  t.throws(() => new ActionCode(/42/gi), /flags/)
-  t.throws(() => new ActionCode(/42/i), /flags/)
+  t.throws(() => new ActionCode(/42/g), {message: /flags/})
+  t.throws(() => new ActionCode(/42/gi), {message: /flags/})
+  t.throws(() => new ActionCode(/42/i), {message: /flags/})
 })
 
 test('regex fail anchors', t => {
-  t.throws(() => new ActionCode(/^42$/), /anchor/)
-  t.throws(() => new ActionCode(/^42/), /anchor/)
-  t.throws(() => new ActionCode(/42$/), /anchor/)
+  t.throws(() => new ActionCode(/^42$/), {message: /anchor/})
+  t.throws(() => new ActionCode(/^42/), {message: /anchor/})
+  t.throws(() => new ActionCode(/42$/), {message: /anchor/})
 })
 
 test('getRegex from regex', t => {
@@ -101,7 +101,7 @@ test('getString from long content fails', t => {
       .concat('abcdf12345')
       .concat('abcdf12345')
       .getString(),
-    /(callback_data).+(\d+ > 64)/
+    {message: /(callback_data).+(\d+ > 64)/}
   )
 })
 

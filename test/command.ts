@@ -63,5 +63,5 @@ test('command can not be used on dynamic menu', t => {
 
   t.throws(() => {
     bot.use(menu.init())
-  }, /command.+menu.+\/\^bar-.+\$\/.+test/)
+  }, {message: /command.+menu.+\/\^bar-.+\$\/.+test/})
 })

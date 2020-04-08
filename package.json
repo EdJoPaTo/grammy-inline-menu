@@ -37,7 +37,7 @@
   "devDependencies": {
     "@sindresorhus/tsconfig": "^0.7.0",
     "@types/node": "^13.1.4",
-    "ava": "^2.0.0",
+    "ava": "^3.6.0",
     "del-cli": "^3.0.0",
     "nyc": "^15.0.0",
     "telegraf": "^3.28.0",
@@ -50,10 +50,6 @@
     "dist/source",
     "!*.test.*"
   ],
-  "ava": {
-    "babel": false,
-    "compileEnhancements": false
-  },
   "nyc": {
     "extension": [
       ".ts"
