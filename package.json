@@ -9,12 +9,11 @@
   },
   "scripts": {
     "build": "del dist && tsc",
-    "prepare": "npm run build",
+    "prepack": "npm run build",
     "preexample-js": "npm run build",
     "example-js": "node examples/main-javascript.js",
     "start": "ts-node examples/main-typescript.ts",
-    "pretest": "npm run build",
-    "test": "xo && nyc ava"
+    "test": "tsc && xo && nyc ava"
   },
   "repository": {
     "type": "git",
