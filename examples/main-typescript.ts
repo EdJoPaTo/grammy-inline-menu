@@ -12,8 +12,8 @@ menu.urlButton('EdJoPaTo.de', 'https://edjopato.de')
 
 let mainMenuToggle = false
 menu.toggle('toggle me', 'a', {
-  setFunc: (_ctx, newVal) => {
-    mainMenuToggle = newVal
+  setFunc: (_ctx, newState) => {
+    mainMenuToggle = newState
   },
   isSetFunc: () => mainMenuToggle
 })

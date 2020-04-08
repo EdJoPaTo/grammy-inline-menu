@@ -120,20 +120,20 @@ export default class TelegrafInlineMenu {
   }
 
   replyMenuMiddleware(): ReplyMenuMiddleware {
-    const obj: ReplyMenuMiddleware = {
+    const result: ReplyMenuMiddleware = {
       middleware: () =>
-        async (ctx: ContextMessageUpdate) => obj.setSpecific(ctx, ''),
+        async (ctx: ContextMessageUpdate) => result.setSpecific(ctx, ''),
       setSpecific: async (ctx: ContextMessageUpdate, actionCode: string) => {
-        if (!obj.setMenuFunc) {
+        if (!result.setMenuFunc) {
           throw new Error('This does only work when menu is initialized with bot.use(menu.init())')
         }
 
-        return obj.setMenuFunc(ctx, actionCode)
+        return result.setMenuFunc(ctx, actionCode)
       }
     }
 
-    this.replyMenuMiddlewares.push(obj)
-    return obj
+    this.replyMenuMiddlewares.push(result)
+    return result
   }
 
   init(userOptions: MenuOptions = {}): ContextNextFunc {
@@ -232,8 +232,8 @@ export default class TelegrafInlineMenu {
 
     this.buttons.addCreator(async ctx => {
       const buttonOptions = await createPaginationButtons(ctx)
-      const optionsArr = Object.keys(buttonOptions)
-      return generateSelectButtons(action, optionsArr, {
+      const optionsArray = Object.keys(buttonOptions)
+      return generateSelectButtons(action, optionsArray, {
         textFunc: (_ctx, key) => buttonOptions[key]
       })
     })

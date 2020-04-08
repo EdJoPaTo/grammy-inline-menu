@@ -1,10 +1,10 @@
 import test, {ExecutionContext} from 'ava'
 import {paginationOptions} from './pagination'
 
-function keysCorrectMacro(t: ExecutionContext, totalPages: number, currentPage: number, expectedArr: readonly number[]): void {
+function keysCorrectMacro(t: ExecutionContext, totalPages: number, currentPage: number, expected: readonly number[]): void {
   const result = paginationOptions(totalPages, currentPage)
   const keys = Object.keys(result).map(o => Number(o))
-  t.deepEqual(keys, expectedArr)
+  t.deepEqual(keys, expected)
 }
 
 test('two pages on first page', keysCorrectMacro, 2, 1, [1, 2])

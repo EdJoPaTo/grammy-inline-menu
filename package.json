@@ -72,7 +72,6 @@
     "semicolon": false,
     "rules": {
       "ava/no-ignored-test-files": "off",
-      "unicorn/prevent-abbreviations": "warn",
       "unicorn/string-content": "off"
     },
     "overrides": [

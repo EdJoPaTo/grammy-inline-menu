@@ -36,11 +36,11 @@ test('menu from callback on photo edits photo', async t => {
   const bot = createBasicBot(t, new TelegrafInlineMenu('yaay', {
     photo: PHOTO_MEDIA
   }))
-  const errorMsg = 'only editMessageMedia should be called'
-  bot.context.deleteMessage = async () => Promise.reject(new Error(errorMsg))
-  bot.context.editMessageText = async () => Promise.reject(new Error(errorMsg))
-  bot.context.reply = async () => Promise.reject(new Error(errorMsg))
-  bot.context.replyWithPhoto = async () => Promise.reject(new Error(errorMsg))
+  const errorMessage = 'only editMessageMedia should be called'
+  bot.context.deleteMessage = async () => Promise.reject(new Error(errorMessage))
+  bot.context.editMessageText = async () => Promise.reject(new Error(errorMessage))
+  bot.context.reply = async () => Promise.reject(new Error(errorMessage))
+  bot.context.replyWithPhoto = async () => Promise.reject(new Error(errorMessage))
 
   bot.context.editMessageMedia = async (media: any, extra: InlineExtra) => {
     t.deepEqual(media, {
@@ -59,11 +59,11 @@ test('menu from command replies photo', async t => {
   const bot = createBasicBot(t, new TelegrafInlineMenu('yaay', {
     photo: PHOTO_MEDIA
   }).setCommand('test'))
-  const errorMsg = 'only replyWithPhoto should be called'
-  bot.context.deleteMessage = async () => Promise.reject(new Error(errorMsg))
-  bot.context.editMessageMedia = async () => Promise.reject(new Error(errorMsg))
-  bot.context.editMessageText = async () => Promise.reject(new Error(errorMsg))
-  bot.context.reply = async () => Promise.reject(new Error(errorMsg))
+  const errorMessage = 'only replyWithPhoto should be called'
+  bot.context.deleteMessage = async () => Promise.reject(new Error(errorMessage))
+  bot.context.editMessageMedia = async () => Promise.reject(new Error(errorMessage))
+  bot.context.editMessageText = async () => Promise.reject(new Error(errorMessage))
+  bot.context.reply = async () => Promise.reject(new Error(errorMessage))
 
   bot.context.replyWithPhoto = async (photo: any, extra: InlineExtra) => {
     t.is(photo, PHOTO_MEDIA)
@@ -83,10 +83,10 @@ test('replace message without photo to add photo to menu', async t => {
   const bot = createBasicBot(t, new TelegrafInlineMenu('yaay', {
     photo: PHOTO_MEDIA
   }))
-  const errorMsg = 'replyWithPhoto should be called'
-  bot.context.editMessageMedia = async () => Promise.reject(new Error(errorMsg))
-  bot.context.editMessageText = async () => Promise.reject(new Error(errorMsg))
-  bot.context.reply = async () => Promise.reject(new Error(errorMsg))
+  const errorMessage = 'replyWithPhoto should be called'
+  bot.context.editMessageMedia = async () => Promise.reject(new Error(errorMessage))
+  bot.context.editMessageText = async () => Promise.reject(new Error(errorMessage))
+  bot.context.reply = async () => Promise.reject(new Error(errorMessage))
 
   bot.context.deleteMessage = async () => t.pass()
   bot.context.replyWithPhoto = async (photo: any, extra: InlineExtra) => {
@@ -104,11 +104,11 @@ test('replace message with photo to remove photo from menu', async t => {
   const bot = createBasicBot(t, new TelegrafInlineMenu('yaay', {
     photo: undefined
   }))
-  const errorMsg = 'reply should be called'
-  bot.context.editMessageMedia = async () => Promise.reject(new Error(errorMsg))
-  bot.context.editMessageText = async () => Promise.reject(new Error(errorMsg))
-  bot.context.reply = async () => Promise.reject(new Error(errorMsg))
-  bot.context.replyWithPhoto = async () => Promise.reject(new Error(errorMsg))
+  const errorMessage = 'reply should be called'
+  bot.context.editMessageMedia = async () => Promise.reject(new Error(errorMessage))
+  bot.context.editMessageText = async () => Promise.reject(new Error(errorMessage))
+  bot.context.reply = async () => Promise.reject(new Error(errorMessage))
+  bot.context.replyWithPhoto = async () => Promise.reject(new Error(errorMessage))
 
   bot.context.deleteMessage = async () => t.pass()
   bot.context.reply = async (text: any, extra: InlineExtra) => {

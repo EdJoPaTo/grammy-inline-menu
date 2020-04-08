@@ -20,10 +20,10 @@ export function generateSelectButtons(actionBase: string, options: OptionsArr, s
   const {textFunc, hide, columns, maxRows, currentPage} = selectOptions
   const buttons = options
     .map(o => String(o))
-    .map((key, i, arr): ButtonInfo => {
+    .map((key, index, array): ButtonInfo => {
       const action = `${actionBase}-${key}`
       return {
-        text: async ctx => textFunc(ctx, key, i, arr),
+        text: async ctx => textFunc(ctx, key, index, array),
         action,
         hide: async ctx => hide ? hide(ctx, key) : false
       }
