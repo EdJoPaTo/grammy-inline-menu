@@ -14,7 +14,7 @@ export function paginationOptions(totalPages: number, currentPage: number | unde
   const currentPageFixed = Math.max(1, Math.min(totalPagesFixed, Math.floor(currentPage || 1)))
 
   const buttons: Record<number, string> = {}
-  if (!isFinite(totalPagesFixed) || !isFinite(currentPageFixed) || totalPagesFixed < 2) {
+  if (!Number.isFinite(totalPagesFixed) || !Number.isFinite(currentPageFixed) || totalPagesFixed < 2) {
     return buttons
   }
 

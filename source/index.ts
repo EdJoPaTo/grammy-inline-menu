@@ -269,7 +269,7 @@ export default class TelegrafInlineMenu {
         ctx.answerCbQuery(),
         ctx.deleteMessage()
           .catch((error: Error) => {
-            if (error.message.includes('can\'t be deleted')) {
+            if (error instanceof Error && error.message.includes('can\'t be deleted')) {
               // Looks like message is to old to be deleted
               return
             }
@@ -434,7 +434,7 @@ export default class TelegrafInlineMenu {
         await ctx.editMessageText(text, extra as any)
       }
     } catch (error) {
-      if (error.message.startsWith('400: Bad Request: message is not modified')) {
+      if (error instanceof Error && error.message.startsWith('400: Bad Request: message is not modified')) {
         // This is kind of ok.
         // Not changed stuff should not be sended but sometimes it happens…
         console.warn('menu is not modified. Think about preventing this. Happened while setting menu', actionCode.get())
@@ -501,10 +501,11 @@ export default class TelegrafInlineMenu {
           if (!ctx.callbackQuery) {
             // Only set menu when a hidden button below was used
             // Without callbackData this can not be determined
-            return next(ctx)
+            await next(ctx)
+            return
           }
 
-          return setMenuFunc(ctx, 'menu is hidden')
+          await setMenuFunc(ctx, 'menu is hidden')
         }
 
         const mainFunc = submenu.middleware(childActionCode, subOptions)

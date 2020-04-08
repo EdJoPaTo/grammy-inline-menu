@@ -169,8 +169,8 @@ test('sets page 1 when input is bad', async t => {
   const menu = new TelegrafInlineMenu('foo')
   menu.pagination('c', {
     setPage: async (_ctx, page) => t.is(page, 1),
-    getCurrentPage: () => NaN,
-    getTotalPages: () => NaN
+    getCurrentPage: () => Number.NaN,
+    getTotalPages: () => Number.NaN
   })
 
   const bot = new Telegraf('')
