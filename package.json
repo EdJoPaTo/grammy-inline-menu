@@ -5,7 +5,7 @@
   "main": "dist/source",
   "types": "dist/source",
   "engines": {
-    "node": ">=8.13"
+    "node": ">=10"
   },
   "scripts": {
     "build": "del dist && tsc",
