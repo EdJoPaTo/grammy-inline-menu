@@ -7,7 +7,8 @@ export function isCallbackQueryActionFunc(actionCode: ActionCode): ContextFunc<b
       return false
     }
 
-    ctx.match = actionCode.exec(ctx.callbackQuery.data || '') || undefined
+    // TODO: Telegraf typings ctx.match can be null
+    ctx.match = actionCode.exec(ctx.callbackQuery.data ?? '') ?? undefined
     if (!ctx.match) {
       return false
     }

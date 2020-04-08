@@ -52,8 +52,8 @@ export function selectButtonCreator(action: string, optionsFunc: ContextFunc<Sel
     const fallbackKeyTextFunc = Array.isArray(optionsResult) ?
       (_ctx: any, key: string) => key :
       (_ctx: any, key: string) => (optionsResult as OptionsDict)[key]
-    const textOnlyFunc = textFunc || fallbackKeyTextFunc
-    const keyTextFunc = async (...args: any[]): Promise<string> => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
+    const textOnlyFunc = textFunc ?? fallbackKeyTextFunc
+    const keyTextFunc = async (...args: any[]): Promise<string> => prefixEmoji(textOnlyFunc, prefixFunc ?? isSetFunc, {
       hideFalseEmoji: !multiselect,
       ...additionalArgs
     }, ...args)

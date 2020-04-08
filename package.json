@@ -81,7 +81,6 @@
         ],
         "rules": {
           "@typescript-eslint/no-empty-function": "warn",
-          "@typescript-eslint/prefer-nullish-coalescing": "off",
           "@typescript-eslint/restrict-template-expressions": "off",
           "@typescript-eslint/array-type": [
             "error",

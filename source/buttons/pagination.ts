@@ -1,3 +1,5 @@
+/* eslint @typescript-eslint/prefer-nullish-coalescing: off */
+
 /**
  * Creates ButtonOptions for the paginator
  *

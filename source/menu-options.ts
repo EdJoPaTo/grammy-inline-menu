@@ -24,7 +24,7 @@ export function normalizeOptions(userOptions: MenuOptions): {actionCode: ActionC
     throw new Error('ActionCode has to start at the base level (without ":")')
   }
 
-  const actionCode = new ActionCode(userOptions.actionCode || 'main')
+  const actionCode = new ActionCode(userOptions.actionCode ?? 'main')
   const hasMainMenu = actionCode.get() === 'main'
   const depth = hasMainMenu ? 0 : 1
 
@@ -33,7 +33,7 @@ export function normalizeOptions(userOptions: MenuOptions): {actionCode: ActionC
     depth,
     backButtonText: userOptions.backButtonText,
     mainMenuButtonText: userOptions.mainMenuButtonText,
-    log: userOptions.log || (() => {})
+    log: userOptions.log ?? (() => {})
   }
 
   return {

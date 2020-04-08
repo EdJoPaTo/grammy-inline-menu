@@ -463,8 +463,8 @@ export default class TelegrafInlineMenu {
         ctx.match = actionCode.exec(actionOverride.getString())
       }
 
-      options.log('set menu', (actionOverride || actionCode).get(), reason, this)
-      return this.setMenuNow(ctx, actionOverride || actionCode, options)
+      options.log('set menu', (actionOverride ?? actionCode).get(), reason, this)
+      return this.setMenuNow(ctx, actionOverride ?? actionCode, options)
     }
 
     const functions = []
