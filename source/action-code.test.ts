@@ -45,7 +45,6 @@ test('regex parent with allowed :', t => {
   t.deepEqual(new ActionCode(/b:(a[^:])/).parent().get(), /^b$/)
   t.deepEqual(new ActionCode(/b:(a[^:]a)/).parent().get(), /^b$/)
   t.deepEqual(new ActionCode(/b:(a[^a:]a)/).parent().get(), /^b$/)
-  t.deepEqual(new ActionCode(/b:(a[^a:a]a)/).parent().get(), /^b$/)
 })
 
 test('concat string with regex', t => {

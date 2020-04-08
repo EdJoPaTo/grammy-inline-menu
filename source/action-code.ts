@@ -87,7 +87,7 @@ export default class ActionCode {
     let parts = []
     if (this.code instanceof RegExp) {
       const {source} = this.code
-      const regex = /(?:(?:\[\^[^\]]*:[^\]]*\])|(?:[^:]))+/g
+      const regex = /(?:(?:\[\^[^\]]*:[^\]]*])|[^:])+/g
       let match
       do {
         match = regex.exec(source)
