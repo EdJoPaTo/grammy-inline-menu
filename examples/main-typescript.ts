@@ -4,8 +4,6 @@ import Telegraf, {ContextMessageUpdate} from 'telegraf'
 
 import TelegrafInlineMenu from '../source'
 
-const session = require('telegraf/session')
-
 const menu = new TelegrafInlineMenu('Main Menu')
 
 menu.urlButton('EdJoPaTo.de', 'https://edjopato.de')
@@ -125,7 +123,6 @@ menu.setCommand('start')
 
 const token = readFileSync('token.txt', 'utf8').trim()
 const bot = new Telegraf(token)
-bot.use(session())
 
 bot.use((ctx, next) => {
   if (ctx.callbackQuery && ctx.callbackQuery.data) {

@@ -1,7 +1,6 @@
 const {readFileSync} = require('fs')
 
 const Telegraf = require('telegraf')
-const session = require('telegraf/session')
 
 const TelegrafInlineMenu = require('../dist/source')
 
@@ -119,8 +118,6 @@ menu.setCommand('start')
 
 const token = readFileSync('token.txt', 'utf8').trim()
 const bot = new Telegraf(token)
-bot.use(session())
-
 bot.use((ctx, next) => {
   if (ctx.callbackQuery) {
     console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
