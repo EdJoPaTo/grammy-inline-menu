@@ -43,7 +43,7 @@
     "telegram-typings": "^4.0.0-beta",
     "ts-node": "^8.0.2",
     "typescript": "^3.7.4",
-    "xo": "^0.29.0"
+    "xo": "^0.29.1"
   },
   "files": [
     "dist/source",
@@ -74,8 +74,7 @@
       "@typescript-eslint/no-unsafe-call": "off",
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/prefer-readonly-parameter-types": "off",
-      "ava/no-ignored-test-files": "off",
-      "unicorn/string-content": "off"
+      "ava/no-ignored-test-files": "off"
     },
     "overrides": [
       {
