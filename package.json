@@ -50,6 +50,7 @@
     "!*.test.*"
   ],
   "nyc": {
+    "all": true,
     "extension": [
       ".ts"
     ],
