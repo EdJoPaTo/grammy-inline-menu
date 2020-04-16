@@ -1,7 +1,9 @@
 export const emojiTrue = '✅'
 export const emojiFalse = '🚫'
 
-type ConstOrFunc<T> = T | ((...args: any[]) => Promise<T> | T)
+type ConstOrPromise<T> = T | Promise<T>
+type Func<Arguments extends any[], ReturnType> = (...args: Arguments) => ConstOrPromise<ReturnType>
+type ConstOrFunc<Arguments extends any[], ReturnType> = ReturnType | Func<Arguments, ReturnType>
 
 export interface PrefixOptions {
   prefixTrue?: string;
@@ -10,7 +12,7 @@ export interface PrefixOptions {
   hideFalseEmoji?: boolean;
 }
 
-export async function prefixEmoji(text: ConstOrFunc<string>, prefix: ConstOrFunc<string | boolean | undefined>, options: PrefixOptions = {}, ...args: any[]): Promise<string> {
+export async function prefixEmoji<Arguments extends any[]>(text: ConstOrFunc<Arguments, string>, prefix: ConstOrFunc<Arguments, string | boolean | undefined>, options: PrefixOptions = {}, ...args: Arguments): Promise<string> {
   if (!options.prefixTrue) {
     options.prefixTrue = emojiTrue
   }
@@ -52,7 +54,7 @@ function applyOptionsToPrefix(prefix: string | boolean | undefined, options: Pre
   return prefix
 }
 
-export async function prefixText(text: ConstOrFunc<string>, prefix: ConstOrFunc<string | undefined>, ...args: any[]): Promise<string> {
+export async function prefixText<Arguments extends any[]>(text: ConstOrFunc<Arguments, string>, prefix: ConstOrFunc<Arguments, string | undefined>, ...args: Arguments): Promise<string> {
   const textResult = typeof text === 'function' ? await text(...args) : text
   const prefixResult = typeof prefix === 'function' ? await prefix(...args) : prefix
 
