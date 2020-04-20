@@ -287,6 +287,8 @@ Needed information can be found in `ctx.match`.
 
 the same as `menu.select()` except:
 
+`setFunc` is not available
+
 `hide(ctx)` (optional) can be used to hide the complete selection when true is returned.
 
 ### `menu.toggle(text, action, {setFunc, isSetFunc, hide, joinLastRow})`
