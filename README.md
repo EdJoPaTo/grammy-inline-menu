@@ -287,7 +287,7 @@ Needed information can be found in `ctx.match`.
 
 the same as `menu.select()` except:
 
-`setFunc` is not available
+`setFunc` is not available as you go into `submenu` instead
 
 `hide(ctx)` (optional) can be used to hide the complete selection when true is returned.
 
