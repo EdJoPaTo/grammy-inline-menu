@@ -1,9 +1,9 @@
-import {ContextMessageUpdate} from 'telegraf'
+import {Context as TelegrafContext} from 'telegraf'
 import {MessageEntity} from 'telegram-typings'
 
 const BASE_URL = 'http://t.me/#'
 
-export function isReplyToQuestion(ctx: ContextMessageUpdate, identifier: string): boolean {
+export function isReplyToQuestion(ctx: TelegrafContext, identifier: string): boolean {
   if (!ctx.message || !ctx.message.reply_to_message) {
     return false
   }

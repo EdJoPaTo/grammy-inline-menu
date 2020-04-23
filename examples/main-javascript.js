@@ -118,7 +118,7 @@ menu.setCommand('start')
 
 const token = readFileSync('token.txt', 'utf8').trim()
 const bot = new Telegraf(token)
-bot.use((ctx, next) => {
+bot.use(async (ctx, next) => {
   if (ctx.callbackQuery) {
     console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
   }

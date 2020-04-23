@@ -1,4 +1,4 @@
-import {Composer, Extra, Markup, ContextMessageUpdate} from 'telegraf'
+import {Composer, Extra, Markup, Context as TelegrafContext} from 'telegraf'
 
 import {ConstOrContextFunc, ContextFunc, ContextNextFunc, ContextKeyFunc} from './generic-types'
 import {normalizeOptions, InternalMenuOptions, MenuOptions} from './menu-options'
@@ -28,8 +28,8 @@ interface SubmenuEntry {
 
 interface ReplyMenuMiddleware {
   middleware: () => ContextNextFunc;
-  setSpecific: (ctx: ContextMessageUpdate, actionCodeOverride: string) => Promise<void>;
-  setMenuFunc?: (ctx: ContextMessageUpdate, actionCodeOverride?: string) => Promise<void>;
+  setSpecific: (ctx: TelegrafContext, actionCodeOverride: string) => Promise<void>;
+  setMenuFunc?: (ctx: TelegrafContext, actionCodeOverride?: string) => Promise<void>;
 }
 
 interface ButtonOptions {
@@ -48,7 +48,7 @@ interface SimpleButtonOptions extends ActionButtonOptions {
 }
 
 interface PaginationOptions {
-  setPage: (ctx: ContextMessageUpdate, page: number) => Promise<void> | void;
+  setPage: (ctx: TelegrafContext, page: number) => Promise<void> | void;
   getCurrentPage: ContextFunc<number | undefined>;
   getTotalPages: ContextFunc<number>;
   hide?: ContextFunc<boolean>;
@@ -56,14 +56,14 @@ interface PaginationOptions {
 
 interface QuestionOptions extends ButtonOptions {
   questionText: ConstOrContextFunc<string>;
-  setFunc: (ctx: ContextMessageUpdate, answer: string | undefined) => Promise<void> | void;
+  setFunc: (ctx: TelegrafContext, answer: string | undefined) => Promise<void> | void;
   uniqueIdentifier: string;
 }
 
 interface SelectPaginationOptions {
   columns?: number;
   maxRows?: number;
-  setPage?: (ctx: ContextMessageUpdate, page: number) => Promise<void> | void;
+  setPage?: (ctx: TelegrafContext, page: number) => Promise<void> | void;
   getCurrentPage?: ContextFunc<number | undefined>;
 }
 
@@ -79,7 +79,7 @@ interface SelectSubmenuOptions extends SelectButtonCreatorOptions, SelectPaginat
 }
 
 interface ToggleOptions extends ButtonOptions, PrefixOptions {
-  setFunc: (ctx: ContextMessageUpdate, newState: boolean) => Promise<void> | void;
+  setFunc: (ctx: TelegrafContext, newState: boolean) => Promise<void> | void;
   isSetFunc: ContextFunc<boolean>;
 }
 
@@ -122,8 +122,8 @@ export default class TelegrafInlineMenu {
   replyMenuMiddleware(): ReplyMenuMiddleware {
     const result: ReplyMenuMiddleware = {
       middleware: () =>
-        async (ctx: ContextMessageUpdate) => result.setSpecific(ctx, ''),
-      setSpecific: async (ctx: ContextMessageUpdate, actionCode: string) => {
+        async (ctx: TelegrafContext) => result.setSpecific(ctx, ''),
+      setSpecific: async (ctx: TelegrafContext, actionCode: string) => {
         if (!result.setMenuFunc) {
           throw new Error('This does only work when menu is initialized with bot.use(menu.init())')
         }
@@ -247,7 +247,7 @@ export default class TelegrafInlineMenu {
     assert(setFunc, 'setFunc is not set. set it')
     assert(uniqueIdentifier, 'uniqueIdentifier is not set. set it')
 
-    const parseQuestionAnswer = async (ctx: ContextMessageUpdate): Promise<void> => {
+    const parseQuestionAnswer = async (ctx: TelegrafContext): Promise<void> => {
       const answer = ctx.message!.text
       await setFunc(ctx, answer)
     }
@@ -259,7 +259,7 @@ export default class TelegrafInlineMenu {
       middleware: parseQuestionAnswer
     })
 
-    const hitQuestionButton = async (ctx: ContextMessageUpdate): Promise<void> => {
+    const hitQuestionButton = async (ctx: TelegrafContext): Promise<void> => {
       const questionTextString = typeof questionText === 'function' ? await questionText(ctx) : questionText
       const qText = signQuestionText(questionTextString, uniqueIdentifier)
 
@@ -291,7 +291,7 @@ export default class TelegrafInlineMenu {
     }
 
     const {setFunc, hide} = additionalArgs
-    const keyFromCtx = (ctx: ContextMessageUpdate): string => ctx.match![ctx.match!.length - 1]
+    const keyFromCtx = (ctx: TelegrafContext): string => ctx.match![ctx.match!.length - 1]
     const optionsFunc = typeof options === 'function' ? options : () => options
 
     this.responders.add({
@@ -327,7 +327,7 @@ export default class TelegrafInlineMenu {
     assert(setFunc, 'setFunc is not set. set it')
     assert(isSetFunc, 'isSetFunc is not set. set it')
 
-    const hideFunc = async (ctx: ContextMessageUpdate, state: boolean): Promise<boolean> => {
+    const hideFunc = async (ctx: TelegrafContext, state: boolean): Promise<boolean> => {
       if (hide && await hide(ctx)) {
         return true
       }
@@ -361,7 +361,7 @@ export default class TelegrafInlineMenu {
     return submenu
   }
 
-  protected async generate(ctx: ContextMessageUpdate, actionCode: ActionCode, options: InternalMenuOptions): Promise<{text: string; extra: Extra}> {
+  protected async generate(ctx: TelegrafContext, actionCode: ActionCode, options: InternalMenuOptions): Promise<{text: string; extra: Extra}> {
     options.log('generate…', actionCode.get())
     const text = typeof this.menuText === 'function' ? await this.menuText(ctx) : this.menuText
 
@@ -391,7 +391,7 @@ export default class TelegrafInlineMenu {
     return {text, extra}
   }
 
-  protected async setMenuNow(ctx: ContextMessageUpdate, actionCode: ActionCode, options: InternalMenuOptions): Promise<void> {
+  protected async setMenuNow(ctx: TelegrafContext, actionCode: ActionCode, options: InternalMenuOptions): Promise<void> {
     const {text, extra} = await this.generate(ctx, actionCode, options)
 
     const photo = typeof this.menuPhoto === 'function' ? await this.menuPhoto(ctx) : this.menuPhoto
@@ -501,7 +501,7 @@ export default class TelegrafInlineMenu {
           if (!ctx.callbackQuery) {
             // Only set menu when a hidden button below was used
             // Without callbackData this can not be determined
-            await next(ctx)
+            await next()
             return
           }
 

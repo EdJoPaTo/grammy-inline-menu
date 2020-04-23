@@ -1,4 +1,4 @@
-import {ContextMessageUpdate} from 'telegraf'
+import {Context as TelegrafContext} from 'telegraf'
 
 import {ContextFunc, ContextKeyFunc, ContextKeyIndexArrFunc} from '../generic-types'
 import {prefixEmoji, PrefixOptions} from '../prefix'
@@ -65,7 +65,7 @@ export function selectButtonCreator(action: string, optionsFunc: ContextFunc<Sel
   }
 }
 
-export function selectHideFunc(keyFromCtx: (ctx: ContextMessageUpdate) => string, optionsFunc: ContextFunc<SelectOptions>, userHideFunc?: ContextKeyFunc<boolean>): ContextFunc<boolean> {
+export function selectHideFunc(keyFromCtx: (ctx: TelegrafContext) => string, optionsFunc: ContextFunc<SelectOptions>, userHideFunc?: ContextKeyFunc<boolean>): ContextFunc<boolean> {
   return async ctx => {
     const key = keyFromCtx(ctx)
     const optionsResult = await optionsFunc(ctx)

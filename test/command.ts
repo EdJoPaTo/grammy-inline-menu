@@ -1,12 +1,12 @@
 import test, {ExecutionContext} from 'ava'
-import Telegraf, {ContextMessageUpdate} from 'telegraf'
+import Telegraf, {Context as TelegrafContext} from 'telegraf'
 import {Update} from 'telegram-typings'
 
 import TelegrafInlineMenu from '../source'
 
 import {InlineExtra, DUMMY_MESSAGE} from './_telegraf-typing-overrides'
 
-function createTestBot(t: ExecutionContext, command: string | string[]): Telegraf<ContextMessageUpdate> {
+function createTestBot(t: ExecutionContext, command: string | string[]): Telegraf<TelegrafContext> {
   const menu = new TelegrafInlineMenu('foo')
     .manual('bar', 'c')
   menu.setCommand(command)

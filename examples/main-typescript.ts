@@ -1,6 +1,6 @@
 import {readFileSync} from 'fs'
 
-import Telegraf, {ContextMessageUpdate} from 'telegraf'
+import Telegraf, {Context as TelegrafContext} from 'telegraf'
 
 import TelegrafInlineMenu from '../source'
 
@@ -46,7 +46,7 @@ interface FoodChoises {
 const people: Record<string, FoodChoises> = {Mark: {}, Paul: {}}
 const food = ['bread', 'cake', 'bananas']
 
-function personButtonText(_ctx: ContextMessageUpdate, key: string): string {
+function personButtonText(_ctx: TelegrafContext, key: string): string {
   const entry = people[key] as FoodChoises | undefined
   if (entry && entry.food) {
     return `${key} (${entry.food})`
@@ -55,7 +55,7 @@ function personButtonText(_ctx: ContextMessageUpdate, key: string): string {
   return key
 }
 
-function foodSelectText(ctx: ContextMessageUpdate): string {
+function foodSelectText(ctx: TelegrafContext): string {
   const person = ctx.match![1]
   const hisChoice = people[person].food
   if (!hisChoice) {
@@ -124,12 +124,12 @@ menu.setCommand('start')
 const token = readFileSync('token.txt', 'utf8').trim()
 const bot = new Telegraf(token)
 
-bot.use((ctx, next) => {
+bot.use(async (ctx, next) => {
   if (ctx.callbackQuery && ctx.callbackQuery.data) {
     console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
   }
 
-  return next && next()
+  return next()
 })
 
 bot.use(menu.init({

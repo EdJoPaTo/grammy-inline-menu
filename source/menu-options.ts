@@ -1,4 +1,4 @@
-import {ContextMessageUpdate} from 'telegraf'
+import {Context as TelegrafContext} from 'telegraf'
 
 import {ConstOrContextFunc} from './generic-types'
 import ActionCode from './action-code'
@@ -15,7 +15,7 @@ export interface InternalMenuOptions {
   depth: number;
   backButtonText?: ConstOrContextFunc<string>;
   mainMenuButtonText?: ConstOrContextFunc<string>;
-  setParentMenuFunc?: (ctx: ContextMessageUpdate, reason: string) => Promise<void>;
+  setParentMenuFunc?: (ctx: TelegrafContext, reason: string) => Promise<void>;
   log: (...args: any[]) => void;
 }
 

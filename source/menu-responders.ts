@@ -1,11 +1,11 @@
-import {Composer, Middleware, ContextMessageUpdate} from 'telegraf'
+import {Composer, Middleware, Context as TelegrafContext} from 'telegraf'
 
 import {ContextFunc, ContextNextFunc} from './generic-types'
 import {isCallbackQueryActionFunc} from './middleware-helper'
 import ActionCode from './action-code'
 import CombinedMiddleware from './combined-middleware'
 
-type MenuFunc = (ctx: ContextMessageUpdate, reason: string) => Promise<void>
+type MenuFunc = (ctx: TelegrafContext, reason: string) => Promise<void>
 
 export interface Responder {
   middleware: ContextNextFunc;
@@ -33,7 +33,7 @@ export default class MenuResponders {
     return this.responders.some(o => o.action === undefined)
   }
 
-  createMiddleware(environment: ResponderEnvironment): Middleware<ContextMessageUpdate> {
+  createMiddleware(environment: ResponderEnvironment): Middleware<TelegrafContext> {
     const {actionCode, setMenuFunc} = environment
     const menuMiddleware = Composer.action(actionCode.get(), async ctx => setMenuFunc(ctx, 'menu action'))
 

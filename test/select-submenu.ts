@@ -1,12 +1,12 @@
 import test from 'ava'
-import Telegraf, {ContextMessageUpdate} from 'telegraf'
+import Telegraf, {Context as TelegrafContext} from 'telegraf'
 import {Update} from 'telegram-typings'
 
 import TelegrafInlineMenu from '../source'
 
 import {InlineExtra} from './_telegraf-typing-overrides'
 
-function generateTestBasics(): Telegraf<ContextMessageUpdate> {
+function generateTestBasics(): Telegraf<TelegrafContext> {
   const menu = new TelegrafInlineMenu('foo')
 
   const submenu = new TelegrafInlineMenu(ctx => ctx.match![1])

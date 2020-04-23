@@ -1,5 +1,5 @@
 import test from 'ava'
-import Telegraf, {ContextMessageUpdate} from 'telegraf'
+import Telegraf, {Context as TelegrafContext} from 'telegraf'
 import {Update} from 'telegram-typings'
 
 import TelegrafInlineMenu from '../source'
@@ -119,7 +119,7 @@ test('fails before init', async t => {
   const replyMenuMiddleware = submenu.replyMenuMiddleware()
   const handler = replyMenuMiddleware.middleware()
   await t.throwsAsync(
-    async () => handler({} as ContextMessageUpdate, () => null),
+    async () => handler({} as TelegrafContext, async () => {}),
     {message: /menu.init/}
   )
 })
