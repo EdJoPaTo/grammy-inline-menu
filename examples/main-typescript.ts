@@ -146,4 +146,5 @@ async function startup(): Promise<void> {
   console.log(new Date(), 'Bot started as', bot.options.username)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 startup()
