@@ -1,10 +1,10 @@
 import test, {ExecutionContext} from 'ava'
-import {paginationOptions} from './pagination'
+import {createPaginationChoices} from './pagination'
 
 function keysCorrectMacro(t: ExecutionContext, totalPages: number, currentPage: number, expected: readonly number[]): void {
-  const result = paginationOptions(totalPages, currentPage)
-  const keys = Object.keys(result).map(o => Number(o))
-  t.deepEqual(keys, expected)
+	const result = createPaginationChoices(totalPages, currentPage)
+	const keys = Object.keys(result).map(o => Number(o))
+	t.deepEqual(keys, expected)
 }
 
 test('two pages on first page', keysCorrectMacro, 2, 1, [1, 2])
@@ -24,21 +24,21 @@ test('currentPage greater than totalPages is max page', keysCorrectMacro, 10, 15
 test('when totalPages is float use ceil', keysCorrectMacro, 9.5, 10, [1, 9, 10])
 
 test('five pages all buttons', t => {
-  const result = paginationOptions(5, 3)
-  t.deepEqual(result, {
-    1: '1 ⏪',
-    2: '2 ◀️',
-    3: '3',
-    4: '▶️ 4',
-    5: '⏩ 5'
-  })
+	const result = createPaginationChoices(5, 3)
+	t.deepEqual(result, {
+		1: '1 ⏪',
+		2: '2 ◀️',
+		3: '3',
+		4: '▶️ 4',
+		5: '⏩ 5'
+	})
 })
 
 test('three pages are with +/-1 buttons and not first/last buttons', t => {
-  const result = paginationOptions(3, 2)
-  t.deepEqual(result, {
-    1: '1 ◀️',
-    2: '2',
-    3: '▶️ 3'
-  })
+	const result = createPaginationChoices(3, 2)
+	t.deepEqual(result, {
+		1: '1 ◀️',
+		2: '2',
+		3: '▶️ 3'
+	})
 })

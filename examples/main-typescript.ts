@@ -1,149 +1,149 @@
 import {readFileSync} from 'fs'
 
-import Telegraf, {Context as TelegrafContext} from 'telegraf'
+import {Telegraf, Context as TelegrafContext} from 'telegraf'
 
-import TelegrafInlineMenu from '../source'
+import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../source'
 
-const menu = new TelegrafInlineMenu('Main Menu')
+const menu = new MenuTemplate<TelegrafContext>(() => 'Main Menu\n' + new Date().toISOString())
 
-menu.urlButton('EdJoPaTo.de', 'https://edjopato.de')
+menu.url('EdJoPaTo.de', 'https://edjopato.de')
 
 let mainMenuToggle = false
 menu.toggle('toggle me', 'a', {
-  setFunc: (_ctx, newState) => {
-    mainMenuToggle = newState
-  },
-  isSetFunc: () => mainMenuToggle
+	set: (_, newState) => {
+		mainMenuToggle = newState
+	},
+	isSet: () => mainMenuToggle
 })
 
-menu.simpleButton('click me', 'c', {
-  doFunc: async ctx => ctx.answerCbQuery('you clicked me!'),
-  hide: () => mainMenuToggle
+menu.interact('interaction', 'c', {
+	hide: () => mainMenuToggle,
+	do: async ctx => ctx.answerCbQuery('you clicked me!')
 })
 
-menu.simpleButton('click me harder', 'd', {
-  doFunc: async ctx => ctx.answerCbQuery('you can do better!'),
-  joinLastRow: true,
-  hide: () => mainMenuToggle
+menu.interact('update after action', 'd', {
+	joinLastRow: true,
+	hide: () => mainMenuToggle,
+	do: async (ctx, next) => {
+		await ctx.answerCbQuery('I will update the menu now…')
+		return next()
+	}
 })
 
 let selectedKey = 'b'
 menu.select('s', ['A', 'B', 'C'], {
-  setFunc: async (ctx, key) => {
-    selectedKey = key
-    await ctx.answerCbQuery(`you selected ${key}`)
-  },
-  isSetFunc: (_ctx, key) => key === selectedKey
+	set: async (ctx, key) => {
+		selectedKey = key
+		await ctx.answerCbQuery(`you selected ${key}`)
+	},
+	isSet: (_, key) => key === selectedKey
 })
 
-const foodMenu = new TelegrafInlineMenu('People like food. What do they like?')
+const foodMenu = new MenuTemplate<TelegrafContext>('People like food. What do they like?')
 
 interface FoodChoises {
-  food?: string;
-  tee?: boolean;
+	food?: string;
+	tee?: boolean;
 }
 
 const people: Record<string, FoodChoises> = {Mark: {}, Paul: {}}
 const food = ['bread', 'cake', 'bananas']
 
-function personButtonText(_ctx: TelegrafContext, key: string): string {
-  const entry = people[key] as FoodChoises | undefined
-  if (entry && entry.food) {
-    return `${key} (${entry.food})`
-  }
+function personButtonText(_: TelegrafContext, key: string): string {
+	const entry = people[key] as FoodChoises | undefined
+	if (entry && entry.food) {
+		return `${key} (${entry.food})`
+	}
 
-  return key
+	return key
 }
 
 function foodSelectText(ctx: TelegrafContext): string {
-  const person = ctx.match![1]
-  const hisChoice = people[person].food
-  if (!hisChoice) {
-    return `${person} is still unsure what to eat.`
-  }
+	const person = ctx.match![1]
+	const hisChoice = people[person].food
+	if (!hisChoice) {
+		return `${person} is still unsure what to eat.`
+	}
 
-  return `${person} likes ${hisChoice} currently.`
+	return `${person} likes ${hisChoice} currently.`
 }
 
-const foodSelectSubmenu = new TelegrafInlineMenu(foodSelectText)
-  .toggle('Prefer Tee', 't', {
-    setFunc: (ctx, choice) => {
-      const person = ctx.match![1]
-      people[person].tee = choice
-    },
-    isSetFunc: ctx => {
-      const person = ctx.match![1]
-      return people[person].tee === true
-    }
-  })
-  .select('f', food, {
-    setFunc: (ctx, key) => {
-      const person = ctx.match![1]
-      people[person].food = key
-    },
-    isSetFunc: (ctx, key) => {
-      const person = ctx.match![1]
-      return people[person].food === key
-    }
-  })
-
-foodMenu.selectSubmenu('p', () => Object.keys(people), foodSelectSubmenu, {
-  textFunc: personButtonText,
-  columns: 2
+const foodSelectSubmenu = new MenuTemplate<TelegrafContext>(foodSelectText)
+foodSelectSubmenu.toggle('Prefer Tee', 't', {
+	set: (ctx, choice) => {
+		const person = ctx.match![1]
+		people[person].tee = choice
+	},
+	isSet: ctx => {
+		const person = ctx.match![1]
+		return people[person].tee === true
+	}
 })
-
-foodMenu.question('Add person', 'add', {
-  uniqueIdentifier: '666',
-  questionText: 'Who likes food too?',
-  setFunc: (_ctx, key) => {
-    people[key!] = {}
-  }
+foodSelectSubmenu.select('f', food, {
+	set: (ctx, key) => {
+		const person = ctx.match![1]
+		people[person].food = key
+	},
+	isSet: (ctx, key) => {
+		const person = ctx.match![1]
+		return people[person].food === key
+	}
 })
+foodSelectSubmenu.manualRow(createBackMainMenuButtons())
+
+foodMenu.chooseIntoSubmenu('p', () => Object.keys(people), foodSelectSubmenu, {
+	buttonText: personButtonText,
+	columns: 2
+})
+foodMenu.manualRow(createBackMainMenuButtons())
 
 menu.submenu('Food menu', 'food', foodMenu, {
-  hide: () => mainMenuToggle
+	hide: () => mainMenuToggle
 })
 
 let isAndroid = true
-menu.submenu('Photo Menu', 'photo', new TelegrafInlineMenu('', {
-  photo: () => isAndroid ? 'https://telegram.org/img/SiteAndroid.jpg' : 'https://telegram.org/img/SiteiOs.jpg'
+const photoMenu = new MenuTemplate<TelegrafContext>(() => ({
+	photo: {
+		filename: 'device.jpg',
+		url: isAndroid ? 'https://telegram.org/img/SiteAndroid.jpg' : 'https://telegram.org/img/SiteiOs.jpg'
+	}
 }))
-  .setCommand('photo')
-  .simpleButton('Just a button', 'a', {
-    doFunc: async ctx => ctx.answerCbQuery('Just a callback query answer')
-  })
-  .select('img', ['iOS', 'Android'], {
-    isSetFunc: (_ctx, key) => key === 'Android' ? isAndroid : !isAndroid,
-    setFunc: (_ctx, key) => {
-      isAndroid = key === 'Android'
-    }
-  })
+photoMenu.interact('Just a button', 'a', {
+	do: async ctx => ctx.answerCbQuery('Just a callback query answer')
+})
+photoMenu.select('img', ['iOS', 'Android'], {
+	isSet: (_ctx, key) => key === 'Android' ? isAndroid : !isAndroid,
+	set: (_ctx, key) => {
+		isAndroid = key === 'Android'
+	}
+})
+photoMenu.manualRow(createBackMainMenuButtons())
 
-menu.setCommand('start')
+menu.submenu('Photo Menu', 'photo', photoMenu)
+
+const menuMiddleware = new MenuMiddleware<TelegrafContext>('/', menu)
 
 const token = readFileSync('token.txt', 'utf8').trim()
 const bot = new Telegraf(token)
 
 bot.use(async (ctx, next) => {
-  if (ctx.callbackQuery && ctx.callbackQuery.data) {
-    console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
-  }
+	if (ctx.callbackQuery && ctx.callbackQuery.data) {
+		console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
+	}
 
-  return next()
+	return next()
 })
 
-bot.use(menu.init({
-  backButtonText: 'back…',
-  mainMenuButtonText: 'back to main menu…'
-}))
+bot.command('start', async ctx => menuMiddleware.replyToContext(ctx))
+bot.use(menuMiddleware.middleware())
 
 bot.catch((error: any) => {
-  console.log('telegraf error', error.response, error.parameters, error.on || error)
+	console.log('telegraf error', error.response, error.parameters, error.on || error)
 })
 
 async function startup(): Promise<void> {
-  await bot.launch()
-  console.log(new Date(), 'Bot started as', bot.options.username)
+	await bot.launch()
+	console.log(new Date(), 'Bot started as', bot.options.username)
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

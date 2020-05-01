@@ -1,10 +1,37 @@
-import {Context as TelegrafContext} from 'telegraf'
+export type ConstOrPromise<T> = T | Promise<T>
 
-type ConstOrPromise<T> = T | Promise<T>
+export type ContextFunc<Context, ReturnType> = (context: Context) => ConstOrPromise<ReturnType>
+export type ContextPathFunc<Context, ReturnType> = (context: Context, path: string) => ConstOrPromise<ReturnType>
 
-export type ConstOrContextFunc<ReturnType> = ReturnType | ContextFunc<ReturnType>
+export type ConstOrContextFunc<Context, ReturnType> = ReturnType | ContextFunc<Context, ReturnType>
+export type ConstOrContextPathFunc<Context, ReturnType> = ReturnType | ContextPathFunc<Context, ReturnType>
 
-export type ContextFunc<ReturnType> = (ctx: TelegrafContext) => ConstOrPromise<ReturnType>
-export type ContextNextFunc = (ctx: TelegrafContext, next: () => Promise<void>) => void | Promise<unknown>
-export type ContextKeyFunc<ReturnType> = (ctx: TelegrafContext, key: string) => ConstOrPromise<ReturnType>
-export type ContextKeyIndexArrFunc<ReturnType> = (ctx: TelegrafContext, key: string, index: number, array: readonly string[]) => ConstOrPromise<ReturnType>
+export interface RegExpLike {
+	readonly source: string;
+	readonly flags?: string;
+}
+
+export function isObject(something: unknown): something is Record<string, unknown> {
+	return typeof something === 'object' && something !== null
+}
+
+export function isRegExpExecArray(something: unknown): something is RegExpExecArray {
+	if (!Array.isArray(something)) {
+		return false
+	}
+
+	if (typeof something[0] !== 'string') {
+		return false
+	}
+
+	if (!('index' in something && 'input' in something)) {
+		return false
+	}
+
+	return true
+}
+
+// TODO: remove when .filter(o => o !== undefined) works.
+export function filterNonNullable<T>(): (o: T) => o is NonNullable<T> {
+	return (o): o is NonNullable<T> => o !== null && o !== undefined
+}

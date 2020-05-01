@@ -1,138 +1,116 @@
 {
-  "name": "telegraf-inline-menu",
-  "version": "4.0.1",
-  "description": "Inline Menus for Telegraf made simple.",
-  "main": "dist/source",
-  "types": "dist/source",
-  "engines": {
-    "node": ">=10"
-  },
-  "scripts": {
-    "build": "del dist && tsc",
-    "prepack": "npm run build",
-    "preexample-js": "npm run build",
-    "example-js": "node examples/main-javascript.js",
-    "start": "ts-node examples/main-typescript.ts",
-    "test": "tsc && xo && nyc ava"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/EdJoPaTo/telegraf-inline-menu.git"
-  },
-  "keywords": [
-    "Telegraf",
-    "Telegram"
-  ],
-  "author": "Edgar To",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/EdJoPaTo/telegraf-inline-menu/issues"
-  },
-  "homepage": "https://github.com/EdJoPaTo/telegraf-inline-menu#readme",
-  "dependencies": {},
-  "peerDependencies": {
-    "telegraf": "^3.38.0"
-  },
-  "devDependencies": {
-    "@sindresorhus/tsconfig": "^0.7.0",
-    "@types/node": "^13.1.4",
-    "ava": "^3.6.0",
-    "del-cli": "^3.0.0",
-    "nyc": "^15.0.0",
-    "telegraf": "^3.38.0",
-    "telegram-typings": "^4.0.0-beta",
-    "ts-node": "^8.0.2",
-    "typescript": "^3.7.4",
-    "xo": "^0.30.0"
-  },
-  "files": [
-    "dist/source",
-    "!*.test.*"
-  ],
-  "nyc": {
-    "all": true,
-    "extension": [
-      ".ts"
-    ],
-    "include": [
-      "dist/source",
-      "source"
-    ],
-    "exclude": [
-      "**/*.d.ts",
-      "**/*.test.ts"
-    ],
-    "reporter": [
-      "lcov",
-      "text"
-    ]
-  },
-  "xo": {
-    "space": true,
-    "semicolon": false,
-    "rules": {
-      "@typescript-eslint/no-unsafe-call": "off",
-      "@typescript-eslint/no-unsafe-member-access": "off",
-      "@typescript-eslint/prefer-readonly-parameter-types": "off",
-      "ava/no-ignored-test-files": "off"
-    },
-    "overrides": [
-      {
-        "files": [
-          "**/*.ts"
-        ],
-        "rules": {
-          "@typescript-eslint/no-empty-function": "warn",
-          "@typescript-eslint/restrict-template-expressions": "off",
-          "@typescript-eslint/no-base-to-string": "off",
-          "@typescript-eslint/array-type": [
-            "error",
-            {
-              "default": "array"
-            }
-          ],
-          "@typescript-eslint/no-unnecessary-condition": [
-            "error",
-            {
-              "ignoreRhs": true
-            }
-          ]
-        }
-      },
-      {
-        "files": [
-          "examples/**/*.ts"
-        ],
-        "rules": {
-          "@typescript-eslint/no-unsafe-return": "warn",
-          "@typescript-eslint/prefer-optional-chain": "off"
-        }
-      },
-      {
-        "files": [
-          "source/buttons/build-keyboard*.ts",
-          "source/menu-buttons.test.ts",
-          "source/middleware-helper.is-action.test.ts",
-          "test/**/*.ts"
-        ],
-        "rules": {
-          "@typescript-eslint/camelcase": "off"
-        }
-      },
-      {
-        "files": [
-          "test/**/*.ts",
-          "source/**/*.test.ts"
-        ],
-        "rules": {
-          "@typescript-eslint/no-empty-function": "off",
-          "@typescript-eslint/no-unsafe-call": "off",
-          "@typescript-eslint/no-unsafe-member-access": "off",
-          "@typescript-eslint/no-unsafe-return": "off",
-          "ava/no-incorrect-deep-equal": "off",
-          "require-atomic-updates": "warn"
-        }
-      }
-    ]
-  }
+	"name": "telegraf-inline-menu",
+	"version": "4.0.1",
+	"description": "Inline Menus for Telegraf made simple.",
+	"main": "dist/source",
+	"types": "dist/source",
+	"engines": {
+		"node": ">=10"
+	},
+	"scripts": {
+		"build": "del dist && tsc",
+		"prepack": "npm run build",
+		"preexample-js": "npm run build",
+		"example-js": "node examples/main-javascript.js",
+		"start": "ts-node examples/main-typescript.ts",
+		"test": "tsc && xo && nyc ava"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/EdJoPaTo/telegraf-inline-menu.git"
+	},
+	"keywords": [
+		"Telegraf",
+		"Telegram"
+	],
+	"author": "Edgar To",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/EdJoPaTo/telegraf-inline-menu/issues"
+	},
+	"homepage": "https://github.com/EdJoPaTo/telegraf-inline-menu#readme",
+	"dependencies": {},
+	"peerDependencies": {
+		"telegraf": "^3.38.0"
+	},
+	"devDependencies": {
+		"@sindresorhus/tsconfig": "^0.7.0",
+		"@types/node": "^13.1.4",
+		"ava": "^3.6.0",
+		"del-cli": "^3.0.0",
+		"nyc": "^15.0.0",
+		"telegraf": "^3.38.0",
+		"telegram-typings": "^4.0.0-beta",
+		"ts-node": "^8.0.2",
+		"typescript": "^3.7.4",
+		"xo": "^0.30.0"
+	},
+	"files": [
+		"dist/source",
+		"!*.test.*"
+	],
+	"nyc": {
+		"all": true,
+		"extension": [
+			".ts"
+		],
+		"include": [
+			"dist/source",
+			"source"
+		],
+		"exclude": [
+			"**/*.d.ts",
+			"**/*.test.ts"
+		],
+		"reporter": [
+			"lcov",
+			"text"
+		]
+	},
+	"xo": {
+		"semicolon": false,
+		"rules": {
+			"@typescript-eslint/no-unnecessary-condition": [
+				"error",
+				{
+					"ignoreRhs": true
+				}
+			],
+			"ava/no-ignored-test-files": "off"
+		},
+		"overrides": [
+			{
+				"files": [
+					"examples/**/*.ts"
+				],
+				"rules": {
+					"@typescript-eslint/prefer-optional-chain": "off",
+					"@typescript-eslint/prefer-readonly-parameter-types": "off"
+				}
+			},
+			{
+				"files": [
+					"source/buttons/build-keyboard*.ts",
+					"source/menu-buttons.test.ts",
+					"source/middleware-helper.is-action.test.ts",
+					"test/**/*.ts"
+				],
+				"rules": {
+					"@typescript-eslint/camelcase": "off"
+				}
+			},
+			{
+				"files": [
+					"test/**/*.ts",
+					"source/**/*.test.ts"
+				],
+				"rules": {
+					"@typescript-eslint/prefer-readonly-parameter-types": "off",
+					"@typescript-eslint/no-empty-function": "off",
+					"ava/no-incorrect-deep-equal": "off",
+					"require-atomic-updates": "warn"
+				}
+			}
+		]
+	}
 }
