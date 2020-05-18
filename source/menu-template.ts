@@ -257,7 +257,11 @@ export class MenuTemplate<Context> {
 			options.hide
 		)
 
-		this._keyboard.add(Boolean(options.joinLastRow), async (context, path): Promise<CallbackButtonTemplate> => {
+		this._keyboard.add(Boolean(options.joinLastRow), async (context, path): Promise<CallbackButtonTemplate | undefined> => {
+			if (options.hide && await options.hide(context)) {
+				return undefined
+			}
+
 			const isSet = await options.isSet(context)
 			return {
 				text: await prefixEmoji(text, isSet, options, context, path),
