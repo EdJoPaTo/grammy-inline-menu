@@ -101,25 +101,81 @@ menu.submenu('Food menu', 'food', foodMenu, {
 	hide: () => mainMenuToggle
 })
 
-let isAndroid = true
-const photoMenu = new MenuTemplate<TelegrafContext>(() => ({
-	photo: {
-		filename: 'device.jpg',
-		url: isAndroid ? 'https://telegram.org/img/SiteAndroid.jpg' : 'https://telegram.org/img/SiteiOs.jpg'
+let mediaOption = 'photo1'
+const mediaMenu = new MenuTemplate<TelegrafContext>(() => {
+	if (mediaOption === 'video') {
+		return {
+			type: 'video',
+			media: {
+				filename: 'android.mp4',
+				url: 'https://telegram.org/img/t_main_Android_demo.mp4'
+			},
+			text: 'Just a caption for a video'
+		}
 	}
-}))
-photoMenu.interact('Just a button', 'a', {
+
+	if (mediaOption === 'animation') {
+		return {
+			type: 'animation',
+			media: {
+				filename: 'android.mp4',
+				url: 'https://telegram.org/img/t_main_Android_demo.mp4'
+			},
+			text: 'Just a caption for an animation'
+		}
+	}
+
+	if (mediaOption === 'photo2') {
+		return {
+			type: 'photo',
+			media: {
+				filename: 'android.jpg',
+				url: 'https://telegram.org/img/SiteAndroid.jpg'
+			},
+			text: 'Just a caption for a *photo*',
+			parse_mode: 'Markdown'
+		}
+	}
+
+	if (mediaOption === 'document') {
+		return {
+			type: 'document',
+			media: {
+				filename: 'logos.zip',
+				url: 'https://telegram.org/file/464001088/1/bI7AJLo7oX4.287931.zip/374fe3b0a59dc60005'
+			},
+			text: 'Just a caption for a <b>document</b>',
+			parse_mode: 'HTML'
+		}
+	}
+
+	if (mediaOption === 'just text') {
+		return {
+			text: 'Just some text'
+		}
+	}
+
+	return {
+		type: 'photo',
+		media: {
+			filename: 'ios.jpg',
+			url: 'https://telegram.org/img/SiteiOs.jpg'
+		}
+	}
+})
+mediaMenu.interact('Just a button', 'a', {
 	do: async ctx => ctx.answerCbQuery('Just a callback query answer')
 })
-photoMenu.select('img', ['iOS', 'Android'], {
-	isSet: (_ctx, key) => key === 'Android' ? isAndroid : !isAndroid,
-	set: (_ctx, key) => {
-		isAndroid = key === 'Android'
+mediaMenu.select('type', ['animation', 'document', 'photo1', 'photo2', 'video', 'just text'], {
+	columns: 2,
+	isSet: (_, key) => mediaOption === key,
+	set: (_, key) => {
+		mediaOption = key
 	}
 })
-photoMenu.manualRow(createBackMainMenuButtons())
+mediaMenu.manualRow(createBackMainMenuButtons())
 
-menu.submenu('Photo Menu', 'photo', photoMenu)
+menu.submenu('Media Menu', 'media', mediaMenu)
 
 const menuMiddleware = new MenuMiddleware<TelegrafContext>('/', menu)
 

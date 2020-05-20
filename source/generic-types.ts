@@ -15,6 +15,10 @@ export function isObject(something: unknown): something is Record<string, unknow
 	return typeof something === 'object' && something !== null
 }
 
+export function hasTruthyKey(something: unknown, key: string): boolean {
+	return isObject(something) && key in something && Boolean(something[key])
+}
+
 export function isRegExpExecArray(something: unknown): something is RegExpExecArray {
 	if (!Array.isArray(something)) {
 		return false

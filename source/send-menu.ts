@@ -1,17 +1,19 @@
 import {Telegram, Context as TelegrafContext} from 'telegraf'
 import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessage, Message, InputMediaPhoto} from 'telegraf/typings/telegram-types'
 
-import {Body, TextBody, PhotoBody, isPhotoBody, getBodyText} from './body'
+import {Body, TextBody, MediaBody, isMediaBody, getBodyText, jsUserBodyHints} from './body'
 import {MenuLike, InlineKeyboard} from './menu-like'
 
 export async function replyMenuToContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
 	const body = await menu.renderBody(context, path)
+	jsUserBodyHints(body)
 	const keyboard = await menu.renderKeyboard(context, path)
 	return replyRenderedMenuPartsToContext(body, keyboard, context, extra)
 }
 
 export async function editMenuOnContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraEditMessage> = {}): Promise<void> {
 	const body = await menu.renderBody(context, path)
+	jsUserBodyHints(body)
 	const keyboard = await menu.renderKeyboard(context, path)
 
 	const message = context.callbackQuery?.message
@@ -20,22 +22,22 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 		return
 	}
 
-	if (isPhotoBody(body)) {
-		if (message.photo) {
+	if (isMediaBody(body)) {
+		if ('animation' in message || 'audio' in message || 'document' in message || 'photo' in message || 'video' in message) {
 			const media: InputMediaPhoto = {
-				type: 'photo',
-				media: body.photo,
+				type: body.type,
+				media: body.media,
 				caption: body.text
 			}
 
 			await Promise.all([
-				context.editMessageMedia(media, createPhotoExtra(body, keyboard, extra as any))
+				context.editMessageMedia(media, createMediaExtra(body, keyboard, extra as any))
 					.catch(catchMessageNotModified),
 				context.answerCbQuery()
 			])
 			return
 		}
-	} else if (getBodyText(body)) {
+	} else {
 		const text = getBodyText(body)
 		if (message.text) {
 			await Promise.all([
@@ -65,8 +67,27 @@ function catchMessageNotModified(error: any): void {
 }
 
 async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(body: Body, keyboard: InlineKeyboard, context: Context, extra: Readonly<ExtraReplyMessage>): Promise<Message> {
-	if (isPhotoBody(body)) {
-		return context.replyWithPhoto(body.photo, createPhotoExtra(body, keyboard, extra as any))
+	jsUserBodyHints(body)
+
+	if (isMediaBody(body)) {
+		const mediaExtra = createMediaExtra(body, keyboard, extra as any)
+
+		switch (body.type) {
+			case 'animation':
+				// TODO: use typings when PR is merged https://github.com/telegraf/telegraf/pull/1042
+				return (context as any).replyWithAnimation(body.media, mediaExtra)
+			case 'audio':
+				return context.replyWithAudio(body.media, mediaExtra)
+			case 'document':
+				return context.replyWithDocument(body.media, mediaExtra)
+			case 'photo':
+				return context.replyWithPhoto(body.media, mediaExtra)
+			case 'video':
+				return context.replyWithVideo(body.media, mediaExtra)
+
+			default:
+				throw new Error('The media body could not be replied. Either you specified the type wrong or the type is not implemented.')
+		}
 	}
 
 	const text = getBodyText(body)
@@ -80,10 +101,27 @@ async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(
 export function generateSendMenuToChatFunction<Context>(menu: MenuLike<Context>, path: string): (telegram: Readonly<Telegram>, chatId: string | number, context: Context, extra?: Readonly<ExtraReplyMessage>) => Promise<Message> {
 	return async (telegram, chatId, context, extra = {}) => {
 		const body = await menu.renderBody(context, path)
+		jsUserBodyHints(body)
 		const keyboard = await menu.renderKeyboard(context, path)
 
-		if (isPhotoBody(body)) {
-			return telegram.sendPhoto(chatId, body.photo, createPhotoExtra(body, keyboard, extra as any))
+		if (isMediaBody(body)) {
+			const mediaExtra = createMediaExtra(body, keyboard, extra as any)
+
+			switch (body.type) {
+				case 'animation':
+					return telegram.sendAnimation(chatId, body.media, mediaExtra)
+				case 'audio':
+					return telegram.sendAudio(chatId, body.media, mediaExtra)
+				case 'document':
+					return telegram.sendDocument(chatId, body.media, mediaExtra)
+				case 'photo':
+					return telegram.sendPhoto(chatId, body.media, mediaExtra)
+				case 'video':
+					return telegram.sendVideo(chatId, body.media, mediaExtra)
+
+				default:
+					throw new Error('The media body could not be sent. Either you specified the type wrong or the type is not implemented.')
+			}
 		}
 
 		const text = getBodyText(body)
@@ -105,7 +143,7 @@ function createTextExtra(body: string | TextBody, keyboard: InlineKeyboard, base
 	}
 }
 
-function createPhotoExtra(body: PhotoBody, keyboard: InlineKeyboard, base: Readonly<ExtraPhoto>): ExtraPhoto {
+function createMediaExtra(body: MediaBody, keyboard: InlineKeyboard, base: Readonly<ExtraPhoto>): ExtraPhoto {
 	return {
 		...base,
 		parse_mode: body.parse_mode,

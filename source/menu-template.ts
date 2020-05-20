@@ -1,6 +1,6 @@
 import {InlineKeyboardButton} from 'telegram-typings'
 
-import {Body} from './body'
+import {Body, jsUserBodyHints} from './body'
 import {ButtonAction, ActionHive, ActionFunc} from './action-hive'
 import {Choices, ChoicesRecord, generateChoicesButtons, combineHideAndChoices} from './choices'
 import {ChooseOptions} from './buttons/choose'
@@ -40,7 +40,9 @@ export class MenuTemplate<Context> {
 	 * @param context Context to be supplied to the buttons on on creation
 	 */
 	async renderBody(context: Context, path: string): Promise<Body> {
-		return this._body(context, path)
+		const body = await this._body(context, path)
+		jsUserBodyHints(body)
+		return body
 	}
 
 	/**
