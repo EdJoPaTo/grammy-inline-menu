@@ -52,9 +52,25 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 	// The current menu is incompatible: delete and reply new one
 	await Promise.all([
 		replyRenderedMenuPartsToContext(body, keyboard, context, extra),
-		context.deleteMessage()
-			.catch(() => { /* TODO: maybe try to remove keyboard from the old message? */ })
+		deleteMenuFromContext(context)
 	])
+}
+
+export async function deleteMenuFromContext<Context extends TelegrafContext>(context: Context): Promise<void> {
+	try {
+		await context.deleteMessage()
+	} catch {
+		await context.editMessageReplyMarkup()
+	}
+}
+
+export async function resendMenuToContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
+	const [menuMessage] = await Promise.all([
+		replyMenuToContext(menu, context, path, extra),
+		deleteMenuFromContext(context)
+	])
+
+	return menuMessage
 }
 
 function catchMessageNotModified(error: any): void {
