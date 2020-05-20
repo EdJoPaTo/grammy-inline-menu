@@ -2,7 +2,7 @@
 
 import {InlineKeyboardButton} from 'telegram-typings'
 
-import {ConstOrContextPathFunc, filterNonNullable} from './generic-types'
+import {ConstOrContextPathFunc, ContextPathFunc, filterNonNullable} from './generic-types'
 import {combinePath} from './path'
 
 export interface CallbackButtonTemplate {
@@ -15,7 +15,7 @@ export type ButtonTemplateRow = ButtonTemplate[]
 
 type UncreatedTemplate<Context> = ConstOrContextPathFunc<Context, ButtonTemplate | undefined>
 type RowOfUncreatedTemplates<Context> = Array<UncreatedTemplate<Context>>
-type ButtonTemplateRowGenerator<Context> = ConstOrContextPathFunc<Context, ButtonTemplateRow[]>
+type ButtonTemplateRowGenerator<Context> = ContextPathFunc<Context, ButtonTemplateRow[]>
 type KeyboardTemplateEntry<Context> = RowOfUncreatedTemplates<Context> | ButtonTemplateRowGenerator<Context>
 
 function isRow<Context>(entry: undefined | KeyboardTemplateEntry<Context>): entry is RowOfUncreatedTemplates<Context> {
@@ -68,7 +68,7 @@ async function entryToRows<Context>(entry: KeyboardTemplateEntry<Context>, conte
 		return [filtered]
 	}
 
-	return typeof entry === 'function' ? entry(context, path) : entry
+	return entry(context, path)
 }
 
 function renderRow(templates: readonly ButtonTemplate[], path: string): InlineKeyboardButton[] {

@@ -93,7 +93,7 @@ export class MenuTemplate<Context> {
 	 * Allows for manual creation of many buttons. Less user friendly but very customizable.
 	 * @param creator function generating a keyboard part
 	 */
-	manualRow(creator: ConstOrContextPathFunc<Context, ButtonTemplateRow[]>): void {
+	manualRow(creator: ContextPathFunc<Context, ButtonTemplateRow[]>): void {
 		this._keyboard.addCreator(creator)
 	}
 
