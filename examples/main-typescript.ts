@@ -9,21 +9,21 @@ const menu = new MenuTemplate<TelegrafContext>(() => 'Main Menu\n' + new Date().
 menu.url('EdJoPaTo.de', 'https://edjopato.de')
 
 let mainMenuToggle = false
-menu.toggle('toggle me', 'a', {
+menu.toggle('toggle me', 'toggle me', {
 	set: (_, newState) => {
 		mainMenuToggle = newState
 	},
 	isSet: () => mainMenuToggle
 })
 
-menu.interact('interaction', 'c', {
+menu.interact('interaction', 'interact', {
 	hide: () => mainMenuToggle,
 	do: async ctx => {
 		await ctx.answerCbQuery('you clicked me!')
 	}
 })
 
-menu.interact('update after action', 'd', {
+menu.interact('update after action', 'update afterwards', {
 	joinLastRow: true,
 	hide: () => mainMenuToggle,
 	do: async ctx => {
@@ -33,7 +33,7 @@ menu.interact('update after action', 'd', {
 })
 
 let selectedKey = 'b'
-menu.select('s', ['A', 'B', 'C'], {
+menu.select('select', ['A', 'B', 'C'], {
 	set: async (ctx, key) => {
 		selectedKey = key
 		await ctx.answerCbQuery(`you selected ${key}`)
@@ -71,7 +71,7 @@ function foodSelectText(ctx: TelegrafContext): string {
 }
 
 const foodSelectSubmenu = new MenuTemplate<TelegrafContext>(foodSelectText)
-foodSelectSubmenu.toggle('Prefer Tee', 't', {
+foodSelectSubmenu.toggle('Prefer tea', 'tea', {
 	set: (ctx, choice) => {
 		const person = ctx.match![1]
 		people[person].tee = choice
@@ -81,7 +81,7 @@ foodSelectSubmenu.toggle('Prefer Tee', 't', {
 		return people[person].tee === true
 	}
 })
-foodSelectSubmenu.select('f', food, {
+foodSelectSubmenu.select('food', food, {
 	set: (ctx, key) => {
 		const person = ctx.match![1]
 		people[person].food = key
@@ -93,7 +93,7 @@ foodSelectSubmenu.select('f', food, {
 })
 foodSelectSubmenu.manualRow(createBackMainMenuButtons())
 
-foodMenu.chooseIntoSubmenu('p', () => Object.keys(people), foodSelectSubmenu, {
+foodMenu.chooseIntoSubmenu('person', () => Object.keys(people), foodSelectSubmenu, {
 	buttonText: personButtonText,
 	columns: 2
 })
@@ -165,7 +165,7 @@ const mediaMenu = new MenuTemplate<TelegrafContext>(() => {
 		}
 	}
 })
-mediaMenu.interact('Just a button', 'a', {
+mediaMenu.interact('Just a button', 'randomButton', {
 	do: async ctx => {
 		await ctx.answerCbQuery('Just a callback query answer')
 	}
@@ -182,6 +182,7 @@ mediaMenu.manualRow(createBackMainMenuButtons())
 menu.submenu('Media Menu', 'media', mediaMenu)
 
 const menuMiddleware = new MenuMiddleware<TelegrafContext>('/', menu)
+console.log(menuMiddleware.tree())
 
 const token = readFileSync('token.txt', 'utf8').trim()
 const bot = new Telegraf(token)

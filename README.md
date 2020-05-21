@@ -112,7 +112,22 @@ bot.use((ctx, next) => {
 bot.use(menuMiddleware)
 ```
 
+You can also take a look on all the regular expressions the menu middleware is using to notice a button click with `console.log(menuMiddleware.tree())`.
+Dont be scared by the output and try to find where you can find the structure in the sourcecode.
+When you hit a button the specific callback data will be matched by one of the regular expressions.
+Also try to create a new button and find it within the tree.
+
 If you want to manually send your submenu `/my-submenu/` you have to supply the same path that is used when you press the button in the menu.
+
+## Improve the docs
+
+If you have any questions on how the library works head out to the issues and ask ahead.
+You can also join the [Telegraf community chat](https://t.me/TelegrafJSChat) in order to talk about the questions on your mind.
+
+When you think there is something to improve on this explanation, feel free to open a Pull Request!
+I already get stuck in my bubble on how this is working.
+You are the expert on getting the knowledge about this library.
+Lets improve things together!
 
 # FAQ
 

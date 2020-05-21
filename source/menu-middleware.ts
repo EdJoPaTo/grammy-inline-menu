@@ -61,6 +61,14 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 		return replyMenuToContext(responder.menu, context, path)
 	}
 
+	/**
+	 * The tree structure can be shown for debugging purposes.
+	 * You can take a look on the menu you created.
+	 */
+	tree(): string {
+		return 'Menu Tree\n' + responderTree(this._responder)
+	}
+
 	middleware(): (context: Context, next: () => Promise<void>) => void {
 		const composer = new Composer<Context>()
 
@@ -181,4 +189,36 @@ function createResponder<Context extends TelegrafContext>(menuTrigger: RegExpLik
 		actionResponders,
 		submenuResponders
 	}
+}
+
+function responderTree<Context>(responder: MenuResponder<Context>, indention = ''): string {
+	let text = treeLine(indention, responder.type, responder.trigger.source)
+
+	const subIndention = '  ' + indention
+
+	for (const action of responder.actionResponders) {
+		text += treeLine(subIndention, action.type, action.trigger.source)
+	}
+
+	for (const submenu of responder.submenuResponders) {
+		text += responderTree(submenu, subIndention)
+	}
+
+	return text
+}
+
+function treeLine(indention: string, type: string, regexSource: string): string {
+	let text = indention + type
+
+	const offset = Math.max(1, 30 - text.length)
+	for (let i = 0; i < offset; i++) {
+		text += ' '
+	}
+
+	text += regexSource
+		.replace(/\\\//g, '/')
+		.replace(/^\^/, '')
+		.replace(/\$$/, '')
+	text += '\n'
+	return text
 }
