@@ -56,7 +56,7 @@ export class MenuTemplate<Context> {
 	 * Creates the actions that the buttons of the template want to happen. Usage only recommended for advanced usage of this library.
 	 * @param path Path within the menu. Will be used for the relativePaths
 	 */
-	renderActionHandlers(path: RegExpLike): Set<ButtonAction<Context>> {
+	renderActionHandlers(path: RegExpLike): ReadonlySet<ButtonAction<Context>> {
 		return this._actions.list(path)
 	}
 

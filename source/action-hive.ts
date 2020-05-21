@@ -27,7 +27,7 @@ export class ActionHive<Context> {
 		})
 	}
 
-	list(path: RegExpLike): Set<ButtonAction<Context>> {
+	list(path: RegExpLike): ReadonlySet<ButtonAction<Context>> {
 		const result: Set<ButtonAction<Context>> = new Set()
 		for (const {trigger, doFunction} of this._actions) {
 			result.add({
