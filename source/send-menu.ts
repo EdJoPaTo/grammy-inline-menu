@@ -5,6 +5,8 @@ import {Body, TextBody, MediaBody, isMediaBody, getBodyText, jsUserBodyHints} fr
 import {InlineKeyboard} from './keyboard'
 import {MenuLike} from './menu-like'
 
+export type SendMenuFunc<Context> = (menu: MenuLike<Context>, context: Context, path: string) => Promise<unknown>
+
 export async function replyMenuToContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
 	const body = await menu.renderBody(context, path)
 	jsUserBodyHints(body)

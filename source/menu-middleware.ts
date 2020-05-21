@@ -1,17 +1,48 @@
 import {Composer, Context as TelegrafContext} from 'telegraf'
 import {Message} from 'telegraf/typings/telegram-types'
 
-import {combineTrigger, ensurePathMenu} from './path'
+import {ActionFunc} from './action-hive'
+import {combineTrigger, ensurePathMenu, combinePath} from './path'
 import {ContextFunc, RegExpLike} from './generic-types'
-import {editMenuOnContext, replyMenuToContext} from './send-menu'
 import {MenuLike} from './menu-like'
+import {SendMenuFunc, editMenuOnContext, replyMenuToContext} from './send-menu'
+
+type Responder<Context> = MenuResponder<Context> | ActionResponder<Context>
+
+interface MenuResponder<Context> {
+	readonly type: 'menu';
+	readonly trigger: RegExpLike;
+	readonly canEnter: ContextFunc<Context, boolean>;
+	readonly menu: MenuLike<Context>;
+	readonly submenuResponders: ReadonlyArray<MenuResponder<Context>>;
+	readonly actionResponders: ReadonlyArray<ActionResponder<Context>>;
+}
+
+interface ActionResponder<Context> {
+	readonly type: 'action';
+	readonly trigger: RegExpLike;
+	readonly do: ActionFunc<Context>;
+}
+
+export interface Options<Context> {
+	readonly sendMenu?: SendMenuFunc<Context>;
+}
 
 export class MenuMiddleware<Context extends TelegrafContext> {
+	private readonly _sendMenu: SendMenuFunc<Context>
+
+	private readonly _responder: MenuResponder<Context>
+
 	constructor(
 		public readonly rootPath: string,
-		private readonly _rootMenu: MenuLike<Context>
+		readonly rootMenu: MenuLike<Context>,
+		readonly options: Options<Context> = {}
 	) {
 		ensurePathMenu(rootPath)
+
+		this._responder = createResponder(new RegExp('^' + rootPath), () => true, rootMenu)
+
+		this._sendMenu = options.sendMenu ?? editMenuOnContext
 	}
 
 	/**
@@ -21,69 +52,133 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 	 * const menuMiddleware = new MenuMiddleware('/', menuTemplate)
 	 * bot.command('start', async ctx => menuMiddleware.replyToContext(ctx))
 	 */
-	async replyToContext(context: Context): Promise<Message> {
-		return replyMenuToContext(this._rootMenu, context, this.rootPath)
+	async replyToContext(context: Context, path = this.rootPath): Promise<Message> {
+		const {match, responder} = await getLongestMatchMenuResponder(context, path, this._responder)
+		if (!match) {
+			throw new Error('There is no menu which works with your supplied path')
+		}
+
+		return replyMenuToContext(responder.menu, context, path)
 	}
 
 	middleware(): (context: Context, next: () => Promise<void>) => void {
-		return createComposerForMenu(new RegExp('^' + this.rootPath), this._rootMenu, () => true).middleware()
+		const composer = new Composer<Context>()
+
+		const trigger = new RegExp(this._responder.trigger.source, this._responder.trigger.flags)
+		composer.action(trigger, async context => {
+			const path = context.callbackQuery!.data!
+
+			let target: string | undefined = path
+
+			if (!path.endsWith('/')) {
+				const {match, responder} = await getLongestMatchActionResponder(context, path, this._responder)
+				if (match && responder.type === 'action') {
+					context.match = match
+					const afterwardsTarget = await responder.do(context, match[0])
+
+					if (typeof afterwardsTarget === 'string' && afterwardsTarget) {
+						target = combinePath(path, afterwardsTarget)
+					} else {
+						target = undefined
+					}
+				}
+			}
+
+			if (target) {
+				const {match, responder} = await getLongestMatchMenuResponder(context, target, this._responder)
+				context.match = match
+				if (!match) {
+					await this._sendMenu(this._responder.menu, context, this.rootPath)
+					return
+				}
+
+				await this._sendMenu(responder.menu, context, match[0])
+			}
+		})
+
+		return composer.middleware()
 	}
 }
 
-function createComposerForMenu<Context extends TelegrafContext>(menuTrigger: RegExpLike, menu: MenuLike<Context>, canEnterMenuCondition: ContextFunc<Context, boolean>): Composer<Context> {
-	const composer = new Composer<Context>()
+function responderMatch<Context>(responder: Responder<Context>, path: string): RegExpExecArray | null {
+	return new RegExp(responder.trigger.source, responder.trigger.flags).exec(path)
+}
 
-	// This RegExp matches the exact menu -> show the menu without handling any submenus, actions, ...
-	composer.action(
-		new RegExp(menuTrigger.source + '$', menuTrigger.flags),
-		async ctx => editMenuOnContext(menu, ctx, ctx.match![0])
-	)
-
-	for (const submenu of menu.listSubmenus()) {
-		const canEnterSubmenuCondition = async (context: Context) => {
-			if (await submenu.hide?.(context)) {
-				return false
-			}
-
-			return true
+async function getLongestMatchMenuResponder<Context extends TelegrafContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | null; responder: MenuResponder<Context>}> {
+	for (const sub of current.submenuResponders) {
+		context.match = responderMatch(sub, path)
+		if (!context.match) {
+			continue
 		}
 
-		const subComposer = createComposerForMenu(
-			combineTrigger(menuTrigger, submenu.action),
-			submenu.menu,
-			canEnterSubmenuCondition
-		)
-
-		composer.use(subComposer.middleware())
+		// eslint-disable-next-line no-await-in-loop
+		if (await sub.canEnter(context)) {
+			return getLongestMatchMenuResponder(context, path, sub)
+		}
 	}
 
-	for (const {trigger, doFunction} of menu.renderActionHandlers(menuTrigger)) {
-		composer.action(
-			new RegExp(trigger.source, trigger.flags),
-			async (context, next) => {
-				const data = context.callbackQuery!.data!
-				return doFunction(context, next, data)
+	const match = responderMatch(current, path)
+	return {match, responder: current}
+}
+
+async function getLongestMatchActionResponder<Context extends TelegrafContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | null; responder: Responder<Context>}> {
+	const currentMatch = responderMatch(current, path)
+
+	for (const sub of current.submenuResponders) {
+		context.match = responderMatch(sub, path)
+		if (!context.match) {
+			continue
+		}
+
+		// eslint-disable-next-line no-await-in-loop
+		if (await sub.canEnter(context)) {
+			return getLongestMatchActionResponder(context, path, sub)
+		}
+
+		return {match: currentMatch, responder: current}
+	}
+
+	for (const sub of current.actionResponders) {
+		const match = responderMatch(sub, path)
+		if (!match) {
+			continue
+		}
+
+		return {match, responder: sub}
+	}
+
+	return {match: currentMatch, responder: current}
+}
+
+function createResponder<Context extends TelegrafContext>(menuTrigger: RegExpLike, canEnter: ContextFunc<Context, boolean>, menu: MenuLike<Context>): MenuResponder<Context> {
+	const actionResponders = [...menu.renderActionHandlers(menuTrigger)]
+		.map(({trigger, doFunction}): ActionResponder<Context> => ({
+			type: 'action',
+			trigger,
+			do: doFunction
+		}))
+
+	const submenuResponders = [...menu.listSubmenus()]
+		.map((submenu): MenuResponder<Context> => {
+			const submenuTrigger = combineTrigger(menuTrigger, submenu.action)
+
+			const canEnterSubmenu = async (context: Context) => {
+				if (await submenu.hide?.(context)) {
+					return false
+				}
+
+				return true
 			}
-		)
+
+			return createResponder(submenuTrigger, canEnterSubmenu, submenu.menu)
+		})
+
+	return {
+		type: 'menu',
+		trigger: menuTrigger,
+		canEnter,
+		menu,
+		actionResponders,
+		submenuResponders
 	}
-
-	// When an action calls next() the menu has to be updated (when condition is still true)
-	composer.action(
-		new RegExp(menuTrigger.source, menuTrigger.flags),
-		Composer.optional<Context>(
-			async ctx => canEnterMenuCondition(ctx),
-			async ctx => editMenuOnContext(menu, ctx, ctx.match![0])
-		)
-	)
-
-	const mainComposer = new Composer<Context>()
-	mainComposer.action(
-		new RegExp(menuTrigger.source, menuTrigger.flags),
-		Composer.optional<Context>(
-			async ctx => canEnterMenuCondition(ctx),
-			composer.middleware()
-		)
-	)
-
-	return mainComposer
 }

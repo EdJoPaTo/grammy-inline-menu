@@ -1,7 +1,8 @@
 import {combineTrigger, ensureTriggerChild} from './path'
-import {ContextFunc, RegExpLike} from './generic-types'
+import {ContextFunc, RegExpLike, ConstOrPromise} from './generic-types'
 
-export type ActionFunc<Context> = (context: Context, next: () => Promise<void>, path: string) => Promise<unknown> | void
+export type MenuAfterwardsTarget = void | string
+export type ActionFunc<Context> = (context: Context, path: string) => ConstOrPromise<MenuAfterwardsTarget>
 
 export interface ButtonAction<Context> {
 	readonly trigger: RegExpLike;
@@ -16,13 +17,12 @@ export class ActionHive<Context> {
 
 		this._actions.add({
 			trigger,
-			doFunction: async (context, next, path) => {
+			doFunction: async (context, path) => {
 				if (hide && await hide(context)) {
-					await next()
-					return
+					return '.'
 				}
 
-				await doFunction(context, next, path)
+				return doFunction(context, path)
 			}
 		})
 	}

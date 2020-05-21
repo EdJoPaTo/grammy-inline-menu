@@ -137,13 +137,14 @@ menu.interact('Text', 'unique', {
 
 ## How does the menu update after running my interaction?
 
-Use `next()`
+Return the relative path to the menu you wanna show.
+This is '.' most of the times as you want to return to the current menu.
 
 ```ts
 menu.interact('Text', 'unique', {
-	do: async (ctx, next) => {
+	do: async ctx => {
 		await ctx.answerCbQuery('yaay')
-		return next()
+		return '.'
 	}
 })
 ```
@@ -206,10 +207,10 @@ menu.select('unique', ['has arms', 'has legs', 'has eyes'], {
 
 ```ts
 menu.choose('unique', ['walk', 'swim'], {
-	do: async (ctx, next, key) => {
+	do: async (ctx, key) => {
 		await ctx.answerCbQuery(`Lets ${key}`)
-		// You can also update the menu afterwards when using next
-		return next()
+		// You can also go back to the parent menu afterwards for some 'quick' interactions in submenus
+		return '..'
 	}
 })
 ```

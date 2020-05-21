@@ -13,7 +13,7 @@ import {SingleButtonOptions} from './buttons/basic'
 import {SubmenuOptions, ChooseIntoSubmenuOptions} from './buttons/submenu'
 
 export interface InteractionOptions<Context> extends SingleButtonOptions<Context> {
-	readonly do: (context: Context, next: () => Promise<void>, path: string) => void | Promise<unknown>;
+	readonly do: ActionFunc<Context>;
 }
 
 export interface ToggleOptions<Context> extends SingleButtonOptions<Context>, PrefixOptions {
@@ -168,7 +168,7 @@ export class MenuTemplate<Context> {
 	}
 
 	interact(text: ConstOrContextPathFunc<Context, string>, action: string, options: InteractionOptions<Context>): void {
-		this._actions.add(new RegExp(action + '$'), async (context, next, path) => options.do(context, next, path), options.hide)
+		this._actions.add(new RegExp(action + '$'), options.do, options.hide)
 		this._keyboard.add(Boolean(options.joinLastRow), generateCallbackButtonTemplate(text, action, options.hide))
 	}
 
@@ -176,7 +176,7 @@ export class MenuTemplate<Context> {
 		const trigger = new RegExp(actionPrefix + ':(.+)$')
 		this._actions.add(
 			trigger,
-			async (context, next, path) => options.do(context, next, getKeyFromPath(trigger, path)),
+			async (context, path) => options.do(context, getKeyFromPath(trigger, path)),
 			combineHideAndChoices(choices, options.hide)
 		)
 
@@ -192,10 +192,10 @@ export class MenuTemplate<Context> {
 		const trueTrigger = new RegExp(actionPrefix + 'T:(.+)$')
 		this._actions.add(
 			trueTrigger,
-			async (context, next, path) => {
+			async (context, path) => {
 				const key = getKeyFromPath(trueTrigger, path)
 				await options.set(context, key, true)
-				return next()
+				return '.'
 			},
 			combineHideAndChoices(choices, options.hide)
 		)
@@ -203,10 +203,10 @@ export class MenuTemplate<Context> {
 		const falseTrigger = new RegExp(actionPrefix + 'F:(.+)$')
 		this._actions.add(
 			falseTrigger,
-			async (context, next, path) => {
+			async (context, path) => {
 				const key = getKeyFromPath(falseTrigger, path)
 				await options.set(context, key, false)
-				return next()
+				return '.'
 			},
 			combineHideAndChoices(choices, options.hide)
 		)
@@ -233,10 +233,10 @@ export class MenuTemplate<Context> {
 		this.choose(actionPrefix, paginationChoices, {
 			columns: 5,
 			hide: options.hide,
-			do: async (context, next, key) => {
+			do: async (context, key) => {
 				const page = Number(key)
 				await options.setPage(context, page)
-				return next()
+				return '.'
 			}
 		})
 	}
@@ -244,18 +244,18 @@ export class MenuTemplate<Context> {
 	toggle(text: ConstOrContextPathFunc<Context, string>, actionPrefix: string, options: ToggleOptions<Context>): void {
 		this._actions.add(
 			new RegExp(actionPrefix + ':true$'),
-			async (context, next) => {
+			async context => {
 				await options.set(context, true)
-				await next()
+				return '.'
 			},
 			options.hide
 		)
 
 		this._actions.add(
 			new RegExp(actionPrefix + ':false$'),
-			async (context, next) => {
+			async context => {
 				await options.set(context, false)
-				await next()
+				return '.'
 			},
 			options.hide
 		)
@@ -293,10 +293,10 @@ function getKeyFromPath(trigger: RegExpLike, path: string): string {
 }
 
 function setPageAction<Context>(pageTrigger: RegExpLike, setPage: SetPageFunction<Context>): ActionFunc<Context> {
-	return async (context, next, path) => {
+	return async (context, path) => {
 		const key = getKeyFromPath(pageTrigger, path)
 		const page = Number(key)
 		await setPage(context, page)
-		return next()
+		return '.'
 	}
 }
