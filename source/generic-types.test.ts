@@ -1,6 +1,6 @@
 import test, {ExecutionContext} from 'ava'
 
-import {filterNonNullable, isRegExpExecArray, isObject} from './generic-types'
+import {filterNonNullable, isRegExpExecArray, isObject, hasTruthyKey} from './generic-types'
 
 function filterNonNullableTypesafeEqual(t: ExecutionContext, actual: string[], expected: string[]): void {
 	t.deepEqual(actual, expected)
@@ -42,4 +42,17 @@ test('isObject examples', t => {
 	t.false(isObject(null))
 	t.false(isObject(true))
 	t.false(isObject(undefined))
+})
+
+test('hasTruthyKey examples', t => {
+	t.false(hasTruthyKey(undefined, 'stuff'))
+	t.false(hasTruthyKey('undefined', 'stuff'))
+	t.false(hasTruthyKey([], 'stuff'))
+	t.false(hasTruthyKey({}, 'stuff'))
+	t.false(hasTruthyKey({stuffy: 'bla'}, 'stuff'))
+	t.true(hasTruthyKey({stuff: 'bla'}, 'stuff'))
+	t.true(hasTruthyKey({stuff: true}, 'stuff'))
+	t.false(hasTruthyKey({stuff: false}, 'stuff'))
+	t.false(hasTruthyKey({stuff: undefined}, 'stuff'))
+	t.false(hasTruthyKey({stuff: null}, 'stuff'))
 })
