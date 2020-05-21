@@ -1,10 +1,7 @@
-import {InlineKeyboardButton} from 'telegram-typings'
-
 import {Body} from './body'
 import {ButtonAction} from './action-hive'
 import {ContextFunc, ContextPathFunc, RegExpLike} from './generic-types'
-
-export type InlineKeyboard = ReadonlyArray<ReadonlyArray<Readonly<InlineKeyboardButton>>>
+import {InlineKeyboard} from './keyboard'
 
 export interface MenuLike<Context> {
 	readonly renderBody: ContextPathFunc<Context, Body>;

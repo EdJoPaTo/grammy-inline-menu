@@ -1,12 +1,10 @@
-import {InlineKeyboardButton} from 'telegram-typings'
-
 import {Body, jsUserBodyHints} from './body'
 import {ButtonAction, ActionHive, ActionFunc} from './action-hive'
 import {Choices, ChoicesRecord, generateChoicesButtons, combineHideAndChoices} from './choices'
 import {ChooseOptions} from './buttons/choose'
 import {ContextFunc, ContextPathFunc, ConstOrContextFunc, ConstOrContextPathFunc, RegExpLike} from './generic-types'
 import {ensureTriggerChild} from './path'
-import {Keyboard, ButtonTemplate, CallbackButtonTemplate, ButtonTemplateRow} from './keyboard'
+import {Keyboard, ButtonTemplate, CallbackButtonTemplate, ButtonTemplateRow, InlineKeyboard} from './keyboard'
 import {MenuLike, Submenu} from './menu-like'
 import {PaginationOptions, createPaginationChoices, SetPageFunction} from './buttons/pagination'
 import {prefixEmoji, PrefixOptions} from './prefix'
@@ -50,7 +48,7 @@ export class MenuTemplate<Context> {
 	 * @param context Context to be supplied to the buttons on on creation
 	 * @param path Path within the menu. Will be used for the relativePaths
 	 */
-	async renderKeyboard(context: Context, path: string): Promise<InlineKeyboardButton[][]> {
+	async renderKeyboard(context: Context, path: string): Promise<InlineKeyboard> {
 		return this._keyboard.render(context, path)
 	}
 

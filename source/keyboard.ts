@@ -10,6 +10,8 @@ export interface CallbackButtonTemplate {
 	relativePath: string;
 }
 
+export type InlineKeyboard = ReadonlyArray<ReadonlyArray<Readonly<InlineKeyboardButton>>>
+
 export type ButtonTemplate = CallbackButtonTemplate | InlineKeyboardButton
 export type ButtonTemplateRow = ButtonTemplate[]
 
@@ -44,7 +46,7 @@ export class Keyboard<Context> {
 		this._entries.push([...buttons])
 	}
 
-	async render(context: Context, path: string): Promise<InlineKeyboardButton[][]> {
+	async render(context: Context, path: string): Promise<InlineKeyboard> {
 		const arrayOfRowArrays = await Promise.all(
 			this._entries.map(async o => entryToRows(o, context, path))
 		)

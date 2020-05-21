@@ -2,7 +2,8 @@ import {Telegram, Context as TelegrafContext} from 'telegraf'
 import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessage, Message, InputMediaPhoto} from 'telegraf/typings/telegram-types'
 
 import {Body, TextBody, MediaBody, isMediaBody, getBodyText, jsUserBodyHints} from './body'
-import {MenuLike, InlineKeyboard} from './menu-like'
+import {InlineKeyboard} from './keyboard'
+import {MenuLike} from './menu-like'
 
 export async function replyMenuToContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
 	const body = await menu.renderBody(context, path)
