@@ -1,11 +1,11 @@
 import {combineTrigger, ensureTriggerChild} from './path'
 import {ContextFunc, RegExpLike} from './generic-types'
 
-export type ActionFunc<Context> = (context: Context, next: () => Promise<void>, path: string, trigger: RegExpLike) => Promise<unknown> | void
+export type ActionFunc<Context> = (context: Context, next: () => Promise<void>, path: string) => Promise<unknown> | void
 
 export interface ButtonAction<Context> {
 	readonly trigger: RegExpLike;
-	readonly doFunction: (context: Context, next: () => Promise<void>, path: string) => Promise<void> | void;
+	readonly doFunction: ActionFunc<Context>;
 }
 
 export class ActionHive<Context> {
@@ -22,7 +22,7 @@ export class ActionHive<Context> {
 					return
 				}
 
-				await doFunction(context, next, path, trigger)
+				await doFunction(context, next, path)
 			}
 		})
 	}

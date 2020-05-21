@@ -160,7 +160,8 @@ export class MenuTemplate<Context> {
 		})
 
 		if (options.setPage) {
-			this._actions.add(new RegExp(actionPrefix + 'P:(\\d+)$'), setPageAction(options.setPage), options.hide)
+			const pageTrigger = new RegExp(actionPrefix + 'P:(\\d+)$')
+			this._actions.add(pageTrigger, setPageAction(pageTrigger, options.setPage), options.hide)
 		}
 
 		this._keyboard.addCreator(generateChoicesButtons(actionPrefix, true, choices, options))
@@ -175,32 +176,35 @@ export class MenuTemplate<Context> {
 		const trigger = new RegExp(actionPrefix + ':(.+)$')
 		this._actions.add(
 			trigger,
-			async (context, next, path, trigger) => options.do(context, next, getKeyFromPath(trigger, path)),
+			async (context, next, path) => options.do(context, next, getKeyFromPath(trigger, path)),
 			combineHideAndChoices(choices, options.hide)
 		)
 
 		if (options.setPage) {
-			this._actions.add(new RegExp(actionPrefix + 'P:(\\d+)$'), setPageAction(options.setPage), options.hide)
+			const pageTrigger = new RegExp(actionPrefix + 'P:(\\d+)$')
+			this._actions.add(pageTrigger, setPageAction(pageTrigger, options.setPage), options.hide)
 		}
 
 		this._keyboard.addCreator(generateChoicesButtons(actionPrefix, false, choices, options))
 	}
 
 	select(actionPrefix: string, choices: ConstOrContextFunc<Context, Choices>, options: SelectOptions<Context>): void {
+		const trueTrigger = new RegExp(actionPrefix + 'T:(.+)$')
 		this._actions.add(
-			new RegExp(actionPrefix + 'T:(.+)$'),
-			async (context, next, path, trigger) => {
-				const key = getKeyFromPath(trigger, path)
+			trueTrigger,
+			async (context, next, path) => {
+				const key = getKeyFromPath(trueTrigger, path)
 				await options.set(context, key, true)
 				return next()
 			},
 			combineHideAndChoices(choices, options.hide)
 		)
 
+		const falseTrigger = new RegExp(actionPrefix + 'F:(.+)$')
 		this._actions.add(
-			new RegExp(actionPrefix + 'F:(.+)$'),
-			async (context, next, path, trigger) => {
-				const key = getKeyFromPath(trigger, path)
+			falseTrigger,
+			async (context, next, path) => {
+				const key = getKeyFromPath(falseTrigger, path)
 				await options.set(context, key, false)
 				return next()
 			},
@@ -208,7 +212,8 @@ export class MenuTemplate<Context> {
 		)
 
 		if (options.setPage) {
-			this._actions.add(new RegExp(actionPrefix + 'P:(\\d+)$'), setPageAction(options.setPage), options.hide)
+			const pageTrigger = new RegExp(actionPrefix + 'P:(\\d+)$')
+			this._actions.add(pageTrigger, setPageAction(pageTrigger, options.setPage), options.hide)
 		}
 
 		this._keyboard.addCreator(generateSelectButtons(actionPrefix, choices, options))
@@ -287,9 +292,9 @@ function getKeyFromPath(trigger: RegExpLike, path: string): string {
 	return match![1]
 }
 
-function setPageAction<Context>(setPage: SetPageFunction<Context>): ActionFunc<Context> {
-	return async (context, next, path, trigger) => {
-		const key = getKeyFromPath(trigger, path)
+function setPageAction<Context>(pageTrigger: RegExpLike, setPage: SetPageFunction<Context>): ActionFunc<Context> {
+	return async (context, next, path) => {
+		const key = getKeyFromPath(pageTrigger, path)
 		const page = Number(key)
 		await setPage(context, page)
 		return next()
