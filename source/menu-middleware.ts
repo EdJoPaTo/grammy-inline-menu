@@ -26,11 +26,11 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 	}
 
 	middleware(): (context: Context, next: () => Promise<void>) => void {
-		return createComposerForMenu(new RegExp('^' + this.rootPath), this._rootMenu, () => true, () => true).middleware()
+		return createComposerForMenu(new RegExp('^' + this.rootPath), this._rootMenu, () => true).middleware()
 	}
 }
 
-function createComposerForMenu<Context extends TelegrafContext>(menuTrigger: RegExpLike, menu: MenuLike<Context>, canEnterMenuCondition: ContextFunc<Context, boolean>, canShowMenuAfterwardsCondition: ContextFunc<Context, boolean>): Composer<Context> {
+function createComposerForMenu<Context extends TelegrafContext>(menuTrigger: RegExpLike, menu: MenuLike<Context>, canEnterMenuCondition: ContextFunc<Context, boolean>): Composer<Context> {
 	const composer = new Composer<Context>()
 
 	// This RegExp matches the exact menu -> show the menu without handling any submenus, actions, ...
@@ -48,19 +48,10 @@ function createComposerForMenu<Context extends TelegrafContext>(menuTrigger: Reg
 			return true
 		}
 
-		const canShowSubmenuAfterwardsCondition = async (context: Context) => {
-			if (submenu.leaveOnChildInteraction || await submenu.hide?.(context)) {
-				return false
-			}
-
-			return true
-		}
-
 		const subComposer = createComposerForMenu(
 			combineTrigger(menuTrigger, submenu.action),
 			submenu.menu,
-			canEnterSubmenuCondition,
-			canShowSubmenuAfterwardsCondition
+			canEnterSubmenuCondition
 		)
 
 		composer.use(subComposer.middleware())
@@ -80,7 +71,7 @@ function createComposerForMenu<Context extends TelegrafContext>(menuTrigger: Reg
 	composer.action(
 		new RegExp(menuTrigger.source, menuTrigger.flags),
 		Composer.optional<Context>(
-			async ctx => canShowMenuAfterwardsCondition(ctx),
+			async ctx => canEnterMenuCondition(ctx),
 			async ctx => editMenuOnContext(menu, ctx, ctx.match![0])
 		)
 	)

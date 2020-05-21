@@ -146,7 +146,6 @@ export class MenuTemplate<Context> {
 		this._submenus.add({
 			action: new RegExp(action + '/'),
 			hide: options.hide,
-			leaveOnChildInteraction: Boolean(options.leaveOnChildInteraction),
 			menu: submenu
 		})
 		this._keyboard.add(Boolean(options.joinLastRow), generateCallbackButtonTemplate(text, action + '/', options.hide))
@@ -157,7 +156,6 @@ export class MenuTemplate<Context> {
 		this._submenus.add({
 			action: new RegExp(actionPrefix + ':([^/]+)/'),
 			hide: combineHideAndChoices(choices, options.hide),
-			leaveOnChildInteraction: Boolean(options.leaveOnChildInteraction),
 			menu: submenu
 		})
 

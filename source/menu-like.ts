@@ -13,6 +13,5 @@ export interface MenuLike<Context> {
 export interface Submenu<Context> {
 	readonly action: RegExpLike;
 	readonly hide: undefined | ContextFunc<Context, boolean>;
-	readonly leaveOnChildInteraction: boolean;
 	readonly menu: MenuLike<Context>;
 }
