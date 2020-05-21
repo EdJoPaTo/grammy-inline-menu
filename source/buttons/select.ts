@@ -29,8 +29,8 @@ export function generateSelectButtons<Context>(actionPrefix: string, choices: Co
 		const buttonsOfPage = await Promise.all(keysOfPage
 			.map(async key => {
 				const text = await prefixEmoji(textFunction, options.isSet, {
-					...options,
-					hideFalseEmoji: !options.multiselect
+					hideFalseEmoji: !options.multiselect,
+					...options
 				}, context, key)
 
 				const isSet = await options.isSet(context, key)
