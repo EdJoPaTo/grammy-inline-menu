@@ -30,7 +30,8 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 			const media: InputMediaPhoto = {
 				type: body.type,
 				media: body.media,
-				caption: body.text
+				caption: body.text,
+				parse_mode: body.parse_mode
 			}
 
 			await Promise.all([
