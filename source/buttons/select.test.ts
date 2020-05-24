@@ -151,3 +151,24 @@ test('hidden does not render any buttons', async t => {
 	const buttons = await func(undefined)
 	t.deepEqual(buttons, [])
 })
+
+test('format state', async t => {
+	const func = generateSelectButtons('pre', ['a'], {
+		isSet: () => true,
+		set: () => {
+			t.fail('no need to call set on keyboard creation')
+		},
+		formatState: (_context, textResult, state, key) => {
+			t.is(textResult, 'a')
+			t.is(state, true)
+			t.is(key, 'a')
+			return 'lalala'
+		}
+	})
+
+	const buttons = await func(undefined)
+	t.deepEqual(buttons, [[{
+		text: 'lalala',
+		relativePath: 'preF:a'
+	}]])
+})
