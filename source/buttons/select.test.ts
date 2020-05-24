@@ -16,7 +16,6 @@ test('empty choices no buttons', async t => {
 
 test('is set creates false button', async t => {
 	const func = generateSelectButtons('pre', ['a'], {
-		prefixTrue: 'T',
 		isSet: () => true,
 		set: () => {
 			t.fail('no need to call set on keyboard creation')
@@ -25,7 +24,7 @@ test('is set creates false button', async t => {
 
 	const buttons = await func(undefined)
 	t.deepEqual(buttons, [[{
-		text: 'T a',
+		text: '✅ a',
 		relativePath: 'preF:a'
 	}]])
 })
@@ -45,10 +44,9 @@ test('is not set creates true button', async t => {
 	}]])
 })
 
-test('multiselect also prefixes currently false buttons', async t => {
+test('showFalseEmoji also prefixes currently false buttons', async t => {
 	const func = generateSelectButtons('pre', ['a'], {
-		multiselect: true,
-		prefixFalse: 'F',
+		showFalseEmoji: true,
 		isSet: () => false,
 		set: () => {
 			t.fail('no need to call set on keyboard creation')
@@ -57,7 +55,7 @@ test('multiselect also prefixes currently false buttons', async t => {
 
 	const buttons = await func(undefined)
 	t.deepEqual(buttons, [[{
-		text: 'F a',
+		text: '🚫 a',
 		relativePath: 'preT:a'
 	}]])
 })

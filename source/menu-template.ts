@@ -7,18 +7,13 @@ import {ensureTriggerChild} from './path'
 import {Keyboard, ButtonTemplate, CallbackButtonTemplate, ButtonTemplateRow, InlineKeyboard} from './keyboard'
 import {MenuLike, Submenu} from './menu-like'
 import {PaginationOptions, createPaginationChoices, SetPageFunction} from './buttons/pagination'
-import {prefixEmoji, PrefixOptions} from './prefix'
 import {SelectOptions, generateSelectButtons} from './buttons/select'
 import {SingleButtonOptions} from './buttons/basic'
 import {SubmenuOptions, ChooseIntoSubmenuOptions} from './buttons/submenu'
+import {ToggleOptions, generateToggleButton} from './buttons/toggle'
 
 export interface InteractionOptions<Context> extends SingleButtonOptions<Context> {
 	readonly do: ActionFunc<Context>;
-}
-
-export interface ToggleOptions<Context> extends SingleButtonOptions<Context>, PrefixOptions {
-	readonly set: (context: Context, newState: boolean) => Promise<unknown> | void;
-	readonly isSet: ContextFunc<Context, boolean>;
 }
 
 export class MenuTemplate<Context> {
@@ -244,8 +239,8 @@ export class MenuTemplate<Context> {
 	toggle(text: ConstOrContextPathFunc<Context, string>, actionPrefix: string, options: ToggleOptions<Context>): void {
 		this._actions.add(
 			new RegExp(actionPrefix + ':true$'),
-			async context => {
-				await options.set(context, true)
+			async (context, path) => {
+				await options.set(context, true, path)
 				return '.'
 			},
 			options.hide
@@ -253,25 +248,14 @@ export class MenuTemplate<Context> {
 
 		this._actions.add(
 			new RegExp(actionPrefix + ':false$'),
-			async context => {
-				await options.set(context, false)
+			async (context, path) => {
+				await options.set(context, false, path)
 				return '.'
 			},
 			options.hide
 		)
 
-		this._keyboard.add(Boolean(options.joinLastRow), async (context, path): Promise<CallbackButtonTemplate | undefined> => {
-			if (options.hide && await options.hide(context)) {
-				return undefined
-			}
-
-			const textResult = typeof text === 'function' ? await text(context, path) : text
-			const state = await options.isSet(context)
-			return {
-				text: prefixEmoji(textResult, state, options),
-				relativePath: actionPrefix + ':' + (state ? 'false' : 'true')
-			}
-		})
+		this._keyboard.add(Boolean(options.joinLastRow), generateToggleButton(text, actionPrefix, options))
 	}
 }
 
