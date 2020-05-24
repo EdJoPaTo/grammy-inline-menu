@@ -157,6 +157,7 @@ function createTextExtra(body: string | TextBody, keyboard: InlineKeyboard, base
 	return {
 		...base,
 		parse_mode: typeof body === 'string' ? undefined : body.parse_mode,
+		disable_web_page_preview: typeof body !== 'string' && body.disable_web_page_preview,
 		reply_markup: {
 			inline_keyboard: keyboard.map(o => [...o])
 		}

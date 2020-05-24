@@ -7,12 +7,16 @@ export type Body = string | TextBody | MediaBody
 export type MediaType = 'animation' | 'audio' | 'document' | 'photo' | 'video'
 export const MEDIA_TYPES: readonly MediaType[] = ['animation', 'audio', 'document', 'photo', 'video']
 
-export interface TextBody {
+interface TextPart {
 	readonly text: string;
 	readonly parse_mode?: ParseMode;
 }
 
-export interface MediaBody extends Partial<TextBody> {
+export interface TextBody extends TextPart {
+	readonly disable_web_page_preview?: boolean;
+}
+
+export interface MediaBody extends Partial<TextPart> {
 	readonly type: MediaType;
 	readonly media: InputFile;
 }
