@@ -28,14 +28,14 @@ export function generateSelectButtons<Context>(actionPrefix: string, choices: Co
 		const keysOfPage = getButtonsOfPage(choiceKeys, options.columns, options.maxRows, currentPage)
 		const buttonsOfPage = await Promise.all(keysOfPage
 			.map(async key => {
-				const text = await prefixEmoji(textFunction, options.isSet, {
+				const textResult = await textFunction(context, key)
+				const state = await options.isSet(context, key)
+				const text = prefixEmoji(textResult, state, {
 					hideFalseEmoji: !options.multiselect,
 					...options
-				}, context, key)
+				})
 
-				const isSet = await options.isSet(context, key)
-				const dropinLetter = isSet ? 'F' : 'T'
-
+				const dropinLetter = state ? 'F' : 'T'
 				const relativePath = actionPrefix + dropinLetter + ':' + key
 				return {text, relativePath}
 			})

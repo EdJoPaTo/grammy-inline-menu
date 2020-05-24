@@ -265,10 +265,11 @@ export class MenuTemplate<Context> {
 				return undefined
 			}
 
-			const isSet = await options.isSet(context)
+			const textResult = typeof text === 'function' ? await text(context, path) : text
+			const state = await options.isSet(context)
 			return {
-				text: await prefixEmoji(text, isSet, options, context, path),
-				relativePath: actionPrefix + ':' + (isSet ? 'false' : 'true')
+				text: prefixEmoji(textResult, state, options),
+				relativePath: actionPrefix + ':' + (state ? 'false' : 'true')
 			}
 		})
 	}
