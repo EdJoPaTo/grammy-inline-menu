@@ -6,14 +6,14 @@ import {prefixEmoji} from '../prefix'
 
 import {getButtonsOfPage, getButtonsAsRows} from './align'
 
-export type ChoiceIsSetFunc<Context> = (context: Context, key: string) => ConstOrPromise<boolean>
-export type ChoiceSetFunc<Context> = (context: Context, key: string, newState: boolean) => ConstOrPromise<void>
+export type IsSetFunction<Context> = (context: Context, key: string) => ConstOrPromise<boolean>
+export type SetFunction<Context> = (context: Context, key: string, newState: boolean) => ConstOrPromise<void>
 export type FormatStateFunction<Context> = (context: Context, textResult: string, state: boolean, key: string) => ConstOrPromise<string>
 
 export interface SelectOptions<Context> extends ManyChoicesOptions<Context> {
 	readonly showFalseEmoji?: boolean;
-	readonly isSet: ChoiceIsSetFunc<Context>;
-	readonly set: ChoiceSetFunc<Context>;
+	readonly isSet: IsSetFunction<Context>;
+	readonly set: SetFunction<Context>;
 	readonly formatState?: FormatStateFunction<Context>;
 }
 
