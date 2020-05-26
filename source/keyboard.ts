@@ -1,19 +1,18 @@
-/* eslint @typescript-eslint/prefer-readonly-parameter-types: off */
-
-import {InlineKeyboardButton} from 'telegram-typings'
+import {InlineKeyboardButton as TelegrafInlineKeyboardButton} from 'telegram-typings'
 
 import {ConstOrContextPathFunc, ContextPathFunc, filterNonNullable} from './generic-types'
 import {combinePath} from './path'
 
 export interface CallbackButtonTemplate {
-	text: string;
-	relativePath: string;
+	readonly text: string;
+	readonly relativePath: string;
 }
 
-export type InlineKeyboard = ReadonlyArray<ReadonlyArray<Readonly<InlineKeyboardButton>>>
+export type InlineKeyboardButton = Readonly<TelegrafInlineKeyboardButton>
+export type InlineKeyboard = ReadonlyArray<readonly InlineKeyboardButton[]>
 
 export type ButtonTemplate = CallbackButtonTemplate | InlineKeyboardButton
-export type ButtonTemplateRow = ButtonTemplate[]
+export type ButtonTemplateRow = readonly ButtonTemplate[]
 
 type UncreatedTemplate<Context> = ConstOrContextPathFunc<Context, ButtonTemplate | undefined>
 type RowOfUncreatedTemplates<Context> = Array<UncreatedTemplate<Context>>
@@ -71,7 +70,7 @@ async function entryToRows<Context>(entry: KeyboardTemplateEntry<Context>, conte
 	return entry(context, path)
 }
 
-function renderRow(templates: readonly ButtonTemplate[], path: string): InlineKeyboardButton[] {
+function renderRow(templates: readonly ButtonTemplate[], path: string): readonly InlineKeyboardButton[] {
 	return templates
 		.map(template => isCallbackButtonTemplate(template) ? renderCallbackButtonTemplate(template, path) : template)
 }
