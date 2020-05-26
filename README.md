@@ -69,12 +69,13 @@ Incomplete list of things to migrate:
 - `TelegrafInlineMenu` was splitted into multiple Classes.
   When you used `new TelegrafInlineMenu(text)` you will use `new MenuTemplate(body)` now.
 - Applying the menu to the bot via `bot.use` changed. This can now be done with the `MenuMiddleware`. Check the [Basic Example](#Basic-Example)
+- `button` and `simpleButton` are combined and renamed into `interact`. See [How can I run a simple method when pressing a button?](#how-can-i-run-a-simple-method-when-pressing-a-button)
+- `selectSubmenu` was renamed to `chooseIntoSubmenu`
+- `select` was splitted into `choose` and `select`. See [Whats the difference between choose and select?](#Whats-the-difference-between-choose-and-select)
+- `question` is moved into a seperate library. see [Didnt this menu had a question function?](#Didnt-this-menu-had-a-question-function)
 - The menu does not automatically add back and main menu buttons anymore.
   Use `menu.manualRow(createBackMainMenuButtons())` for that at each menu which should include these buttons.
 - `setCommand` and `replyMenuMiddleware` were replaced by multiple different functions. See [Can I send the menu manually?](#Can-I-send-the-menu-manually)
-- `selectSubmenu` was renamed to `chooseIntoSubmenu`
-- `select` was splitted into `choose` and `select`. See [Whats the difference between choose and select?](#Whats-the-difference-between-choose-and-select)
-- [Didnt this menu had a question function?](#Didnt-this-menu-had-a-question-function)
 
 # How does it work
 
