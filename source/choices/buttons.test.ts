@@ -68,7 +68,7 @@ test('show keys of page 2', async t => {
 
 test('choice function is run', async t => {
 	t.plan(4)
-	const choiceFunction = (context: string) => {
+	const choiceFunction = (context: string): string[] => {
 		t.pass()
 		return [context]
 	}
@@ -106,7 +106,7 @@ test('choice buttonText is used', async t => {
 })
 
 test('hidden does not render any buttons', async t => {
-	const choiceFunction = () => {
+	const choiceFunction = (): never => {
 		t.fail('hidden -> dont call choices')
 		throw new Error('hidden -> dont call choices')
 	}

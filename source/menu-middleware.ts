@@ -170,7 +170,7 @@ function createResponder<Context extends TelegrafContext>(menuTrigger: RegExpLik
 		.map((submenu): MenuResponder<Context> => {
 			const submenuTrigger = combineTrigger(menuTrigger, submenu.action)
 
-			const canEnterSubmenu = async (context: Context) => {
+			const canEnterSubmenu: ContextFunc<Context, boolean> = async context => {
 				if (await submenu.hide?.(context)) {
 					return false
 				}
