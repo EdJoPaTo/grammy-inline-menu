@@ -15,7 +15,7 @@ export interface ToggleOptions<Context> extends SingleButtonOptions<Context> {
 export function generateToggleButton<Context>(text: ConstOrContextPathFunc<Context, string>, actionPrefix: string, options: ToggleOptions<Context>): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
 	const formatFunction: FormatStateFunction<Context> = options.formatState ?? ((_, text, state) => prefixEmoji(text, state))
 	return async (context, path) => {
-		if (options.hide && await options.hide(context)) {
+		if (await options.hide?.(context)) {
 			return undefined
 		}
 

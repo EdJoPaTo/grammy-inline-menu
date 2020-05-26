@@ -261,7 +261,7 @@ export class MenuTemplate<Context> {
 
 function generateCallbackButtonTemplate<Context>(text: ConstOrContextPathFunc<Context, string>, relativePath: string, hide: undefined | ContextFunc<Context, boolean>): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
 	return async (context, path) => {
-		if (hide && await hide(context)) {
+		if (await hide?.(context)) {
 			return undefined
 		}
 
