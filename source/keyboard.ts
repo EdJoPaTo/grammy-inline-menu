@@ -51,12 +51,10 @@ export class Keyboard<Context> {
 			this._entries.map(async o => entryToRows(o, context, path))
 		)
 		const rows = arrayOfRowArrays
-			// .flat(1) requires NodeJS 11 / ES2019. This would be nice but is to far away for now.
-			.reduce((accumulator, currentValue) => accumulator.concat(currentValue), [])
-		const renderedRows = rows
+			.flat(1)
 			.map(row => renderRow(row, path))
 			.filter(o => o.length > 0)
-		return renderedRows
+		return rows
 	}
 }
 
