@@ -163,11 +163,27 @@ export class MenuTemplate<Context> {
 	}
 
 	interact(text: ConstOrContextPathFunc<Context, string>, action: string, options: InteractionOptions<Context>): void {
+		if ('doFunc' in options) {
+			throw new Error('doFunc was renamed to do')
+		}
+
+		if (typeof options.do !== 'function') {
+			throw new Error('You have to specify `do` in order to have an interaction for this button. If you only want to navigate use `navigate()` instead.')
+		}
+
 		this._actions.add(new RegExp(action + '$'), options.do, options.hide)
 		this._keyboard.add(Boolean(options.joinLastRow), generateCallbackButtonTemplate(text, action, options.hide))
 	}
 
 	choose(actionPrefix: string, choices: ConstOrContextFunc<Context, Choices>, options: ChooseOptions<Context>): void {
+		if ('doFunc' in options) {
+			throw new Error('doFunc was renamed to do')
+		}
+
+		if (typeof options.do !== 'function') {
+			throw new Error('You have to specify `do` in order to have an interaction for the buttons.')
+		}
+
 		const trigger = new RegExp(actionPrefix + ':(.+)$')
 		this._actions.add(
 			trigger,
@@ -184,6 +200,14 @@ export class MenuTemplate<Context> {
 	}
 
 	select(actionPrefix: string, choices: ConstOrContextFunc<Context, Choices>, options: SelectOptions<Context>): void {
+		if ('setFunc' in options || 'isSetFunc' in options) {
+			throw new Error('setFunc and isSetFunc were renamed to set and isSet')
+		}
+
+		if (typeof options.set !== 'function' || typeof options.isSet !== 'function') {
+			throw new Error('You have to specify `set` and `isSet` in order to work with select. If you just want to let the user choose between multiple options use `choose` instead.')
+		}
+
 		const trueTrigger = new RegExp(actionPrefix + 'T:(.+)$')
 		this._actions.add(
 			trueTrigger,
@@ -215,6 +239,10 @@ export class MenuTemplate<Context> {
 	}
 
 	pagination(actionPrefix: string, options: PaginationOptions<Context>): void {
+		if (typeof options.getCurrentPage !== 'function' || typeof options.getTotalPages !== 'function' || typeof options.setPage !== 'function') {
+			throw new Error('You have to specify `getCurrentPage`, `getTotalPages` and `setPage`.')
+		}
+
 		const paginationChoices: ContextFunc<Context, ChoicesRecord> = async context => {
 			if (await options.hide?.(context)) {
 				return {}
@@ -237,6 +265,14 @@ export class MenuTemplate<Context> {
 	}
 
 	toggle(text: ConstOrContextPathFunc<Context, string>, actionPrefix: string, options: ToggleOptions<Context>): void {
+		if ('setFunc' in options || 'isSetFunc' in options) {
+			throw new Error('setFunc and isSetFunc were renamed to set and isSet')
+		}
+
+		if (typeof options.set !== 'function' || typeof options.isSet !== 'function') {
+			throw new Error('You have to specify `set` and `isSet` in order to work with toggle. If you just want to implement something more generic use `interact`')
+		}
+
 		this._actions.add(
 			new RegExp(actionPrefix + ':true$'),
 			async (context, path) => {
