@@ -41,15 +41,15 @@ const {MenuTemplate, MenuMiddleware} = require('telegraf-inline-menu')
 import {Telegraf} from 'telegraf'
 import {MenuTemplate, MenuMiddleware} from 'telegraf-inline-menu'
 
-const menu = new MenuTemplate<MyContext>(ctx => `Hey ${ctx.from.first_name}!`)
+const menuTemplate = new MenuTemplate<MyContext>(ctx => `Hey ${ctx.from.first_name}!`)
 
-menu.interact('I am excited!', 'a', {
+menuTemplate.interact('I am excited!', 'a', {
   do: async ctx => ctx.reply('As am I!')
 })
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
-const menuMiddleware = new MenuMiddleware('/', menu)
+const menuMiddleware = new MenuMiddleware('/', menuTemplate)
 bot.command('start', ctx => menuMiddleware.replyToContext(ctx))
 bot.use(menuMiddleware)
 
@@ -74,7 +74,7 @@ Incomplete list of things to migrate:
 - `select` was splitted into `choose` and `select`. See [Whats the difference between choose and select?](#Whats-the-difference-between-choose-and-select)
 - `question` is moved into a seperate library. see [Didnt this menu had a question function?](#Didnt-this-menu-had-a-question-function)
 - The menu does not automatically add back and main menu buttons anymore.
-  Use `menu.manualRow(createBackMainMenuButtons())` for that at each menu which should include these buttons.
+  Use `menuTemplate.manualRow(createBackMainMenuButtons())` for that at each menu which should include these buttons.
 - `setCommand` and `replyMenuMiddleware` were replaced by multiple different functions. See [Can I send the menu manually?](#Can-I-send-the-menu-manually)
 
 # How does it work
@@ -137,7 +137,7 @@ Lets improve things together!
 Maybe this is also useful: [npm package telegram-format](https://github.com/EdJoPaTo/telegram-format)
 
 ```ts
-const menu = new MenuTemplate<MyContext>(ctx => {
+const menuTemplate = new MenuTemplate<MyContext>(ctx => {
 	const text = '_Hey_ *there*!'
 	return {text, parse_mode: 'Markdown'}
 })
@@ -146,7 +146,7 @@ const menu = new MenuTemplate<MyContext>(ctx => {
 ## How can I run a simple method when pressing a button?
 
 ```ts
-menu.interact('Text', 'unique', {
+menuTemplate.interact('Text', 'unique', {
 	do: async ctx => ctx.answerCbQuery('yaay')
 })
 ```
@@ -157,7 +157,7 @@ Return the relative path to the menu you wanna show.
 This is '.' most of the times as you want to return to the current menu.
 
 ```ts
-menu.interact('Text', 'unique', {
+menuTemplate.interact('Text', 'unique', {
 	do: async ctx => {
 		await ctx.answerCbQuery('yaay')
 		return '.'
@@ -167,7 +167,7 @@ menu.interact('Text', 'unique', {
 
 ## How can I show an url button?
 ```ts
-menu.url('Text', 'https://edjopato.de')
+menuTemplate.url('Text', 'https://edjopato.de')
 ```
 
 ## How can I display two buttons in the same row?
@@ -175,11 +175,11 @@ menu.url('Text', 'https://edjopato.de')
 Use `joinLastRow` in the second button
 
 ```ts
-menu.interact('Text', 'unique', {
+menuTemplate.interact('Text', 'unique', {
 	do: async ctx => ctx.answerCbQuery('yaay')
 })
 
-menu.interact('Text', 'unique', {
+menuTemplate.interact('Text', 'unique', {
 	joinLastRow: true,
 	do: async ctx => ctx.answerCbQuery('yaay')
 })
@@ -188,7 +188,7 @@ menu.interact('Text', 'unique', {
 ## How can I toggle a value easily?
 
 ```ts
-menu.toggle('Text', 'unique', {
+menuTemplate.toggle('Text', 'unique', {
 	isSet: ctx => ctx.session.isFunny,
 	set: (ctx, newState) => {
 		ctx.session.isFunny = newState
@@ -199,7 +199,7 @@ menu.toggle('Text', 'unique', {
 ## How can I select one of many values?
 
 ```ts
-menu.select('unique', ['human', 'bird'], {
+menuTemplate.select('unique', ['human', 'bird'], {
 	isSet: (ctx, key) => ctx.session.choice === key,
 	set: (ctx, key) => {
 		ctx.session.choice = key
@@ -210,11 +210,11 @@ menu.select('unique', ['human', 'bird'], {
 ## How can I toggle many values?
 
 ```ts
-menu.select('unique', ['has arms', 'has legs', 'has eyes'], {
-	multiselect: true,
-	isSet: (ctx, key) => ctx.session.choice[key],
+menuTemplate.select('unique', ['has arms', 'has legs', 'has eyes', 'has wings'], {
+	showFalseEmoji: true,
+	isSet: (ctx, key) => Boolean(ctx.session.bodyparts[key]),
 	set: (ctx, key, newState) => {
-		ctx.session.choice[key] = newState
+		ctx.session.bodyparts[key] = newState
 	}
 })
 ```
@@ -222,7 +222,7 @@ menu.select('unique', ['has arms', 'has legs', 'has eyes'], {
 ## How can I interact with many values based on the pressed button?
 
 ```ts
-menu.choose('unique', ['walk', 'swim'], {
+menuTemplate.choose('unique', ['walk', 'swim'], {
 	do: async (ctx, key) => {
 		await ctx.answerCbQuery(`Lets ${key}`)
 		// You can also go back to the parent menu afterwards for some 'quick' interactions in submenus
@@ -233,50 +233,57 @@ menu.choose('unique', ['walk', 'swim'], {
 
 ## Whats the difference between choose and select?
 
-If you want to do something based on the choice use `menu.choose`.
-If you want to change the state of something, select one out of many options for example, use `menu.select`.
+If you want to do something based on the choice use `menuTemplate.choose(…)`.
+If you want to change the state of something, select one out of many options for example, use `menuTemplate.select(…)`.
 
-`menu.select` automatically updates the menu on pressing the button and shows what it currently selected.
-`menu.choose` runs the method you want to run.
+`menuTemplate.select(…)` automatically updates the menu on pressing the button and shows what it currently selected.
+`menuTemplate.choose(…)` runs the method you want to run.
 
 ## How can I use a submenu?
 
 ```ts
 const submenu = new MenuTemplate<MyContext>('I am a submenu')
-submenu.interact('Text', 'unique', {
+submenuTemplate.interact('Text', 'unique', {
 	do: async ctx => ctx.answerCbQuery('You hit a button in a submenu')
 })
-submenu.manualRow(createBackMainMenuButtons())
+submenuTemplate.manualRow(createBackMainMenuButtons())
 
-menu.submenu('Text', 'unique', submenu)
+menuTemplate.submenu('Text', 'unique', submenuTemplate)
 ```
 
 ## How can I use a submenu with many choices?
 
 ```ts
-const submenu = new MenuTemplate<MyContext>(ctx => `You chose city ${ctx.match[1]}`)
-submenu.interact('Text', 'unique', {
+const submenuTemplate = new MenuTemplate<MyContext>(ctx => `You chose city ${ctx.match[1]}`)
+submenuTemplate.interact('Text', 'unique', {
 	do: async ctx => {
 		console.log('Take a look at ctx.match. It contains the chosen city', ctx.match)
 		return ctx.answerCbQuery('You hit a button in a submenu')
 	}
 })
-submenu.manualRow(createBackMainMenuButtons())
+submenuTemplate.manualRow(createBackMainMenuButtons())
 
-menu.chooseIntoSubmenu('unique', ['Gotham', 'Mos Eisley', 'Springfield'], submenu)
+menuTemplate.chooseIntoSubmenu('unique', ['Gotham', 'Mos Eisley', 'Springfield'], submenuTemplate)
 ```
 
 ## Can I send the menu manually?
 
-If you want to send the root menu use `menuMiddleware.replyToContext()`
+If you want to send the root menu use `ctx => menuMiddleware.replyToContext(ctx)`
 
 ```ts
-const menuMiddleware = new MenuMiddleware('/', menu)
+const menuMiddleware = new MenuMiddleware('/', menuTemplate)
 bot.command('start', ctx => menuMiddleware.replyToContext(ctx))
 ```
 
-If you want to send a submenu use `replyMenuToContext`.
+You can also specify a path to the `replyToContext` function for the specific submenu you want to open.
 See [How does it work](#how-does-it-work) to understand which path you have to supply as the last argument.
+
+```ts
+const menuMiddleware = new MenuMiddleware('/', menuTemplate)
+bot.command('start', ctx => menuMiddleware.replyToContext(ctx, path))
+```
+
+You can also use sendMenu functions like `replyMenuToContext` to send a menu manually.
 
 ```ts
 import {MenuTemplate, replyMenuToContext} from 'telegraf-inline-menu'
@@ -308,12 +315,12 @@ When you want to use it check [telegraf-stateless-question](https://github.com/E
 const myQuestion = new TelegrafStatelessQuestion<MyContext>('unique', async context => {
 	const answer = context.message.text
 	console.log('user responded with', answer)
-	await replyMenuToContext(menu, context, '/use/path/from/where/you/came/')
+	await replyMenuToContext(menuTemplate, context, '/use/path/from/where/you/came/')
 })
 
 bot.use(myQuestion.middleware())
 
-menu.interact('Question', 'unique', {
+menuTemplate.interact('Question', 'unique', {
 	do: async context => {
 		await myQuestion.replyWithMarkdown(context, 'Tell me the answer to the world and everything.')
 	}
