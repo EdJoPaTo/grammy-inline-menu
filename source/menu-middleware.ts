@@ -53,6 +53,12 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 	 * bot.command('start', async ctx => menuMiddleware.replyToContext(ctx))
 	 */
 	async replyToContext(context: Context, path = this.rootPath): Promise<Message> {
+		if (typeof path !== 'string') {
+			// Happens when a JS User does this as next is the second argument and not a string:
+			// ctx.command('start', menuMiddleware.replyToContext)
+			throw new TypeError('Do not supply this as a middleware directly. Supply it as a function `ctx => menuMiddleware.replyToContext(ctx)`')
+		}
+
 		const {match, responder} = await getLongestMatchMenuResponder(context, path, this._responder)
 		if (!match) {
 			throw new Error('There is no menu which works with your supplied path')
