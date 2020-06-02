@@ -17,6 +17,12 @@ export type SendMenuFunc<Context> = (menu: MenuLike<Context>, context: Context, 
 export type SendMenuToChatFunction<Context> = (chatId: string | number, context: Context, extra?: Readonly<ExtraReplyMessage>) => Promise<Message>
 
 /**
+ * Method which is able to edit a message in a chat into a menu.
+ * Generated via `generateEditMessageIntoMenuFunction`.
+ */
+export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, messageId: number, context: Context, extra?: Readonly<ExtraEditMessage>) => Promise<Message | boolean>
+
+/**
  * Reply a menu to a context as a new message
  * @param menu menu to be shown
  * @param context current Telegraf context to reply the menu to it
@@ -191,6 +197,37 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Teleg
 		}
 
 		throw new Error('the body of the menu template can not be replied. It has to contain at least something replyable like text')
+	}
+}
+
+/**
+ * Edit the message into the the menu.
+ * This fails when the current message is not compatible with the menu (you cant edit a media message into a text message and vice versa)
+ * @param telegram The Telegram object to do the API calls with later on
+ * @param menu menu to be shown
+ * @param path path of the menu
+ */
+export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<Telegram>, menu: MenuLike<Context>, path: string): EditMessageIntoMenuFunction<Context> {
+	return async (chatId, messageId, context, extra = {}) => {
+		const body = await menu.renderBody(context, path)
+		jsUserBodyHints(body)
+		const keyboard = await menu.renderKeyboard(context, path)
+
+		if (isMediaBody(body)) {
+			const media: MessageMedia = {
+				type: body.type,
+				media: body.media,
+				caption: body.text,
+				parse_mode: body.parse_mode
+			}
+
+			const mediaExtra = createMediaExtra(body, keyboard, extra as any)
+			// TODO: use typings when PR is merged https://github.com/telegraf/telegraf/pull/1053
+			return (telegram as any).editMessageMedia(chatId, messageId, undefined, media, mediaExtra)
+		}
+
+		const text = getBodyText(body)
+		return telegram.editMessageText(chatId, messageId, undefined, text, extra)
 	}
 }
 
