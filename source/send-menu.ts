@@ -1,5 +1,5 @@
 import {Telegram, Context as TelegrafContext} from 'telegraf'
-import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessage, Message, InputMediaPhoto} from 'telegraf/typings/telegram-types'
+import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessage, Message, MessageMedia} from 'telegraf/typings/telegram-types'
 
 import {Body, TextBody, MediaBody, isMediaBody, getBodyText, jsUserBodyHints} from './body'
 import {InlineKeyboard} from './keyboard'
@@ -50,7 +50,7 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 
 	if (isMediaBody(body)) {
 		if ('animation' in message || 'audio' in message || 'document' in message || 'photo' in message || 'video' in message) {
-			const media: InputMediaPhoto = {
+			const media: MessageMedia = {
 				type: body.type,
 				media: body.media,
 				caption: body.text,
