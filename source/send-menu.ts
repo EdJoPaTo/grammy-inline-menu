@@ -98,7 +98,7 @@ export async function deleteMenuFromContext<Context extends TelegrafContext>(con
 	try {
 		await context.deleteMessage()
 	} catch {
-		await context.editMessageReplyMarkup()
+		await context.editMessageReplyMarkup(undefined)
 	}
 }
 
