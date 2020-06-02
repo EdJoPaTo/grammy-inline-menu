@@ -11,6 +11,12 @@ import {MenuLike} from './menu-like'
 export type SendMenuFunc<Context> = (menu: MenuLike<Context>, context: Context, path: string) => Promise<unknown>
 
 /**
+ * Method which is able to send a menu to a chat.
+ * Generated via `generateSendMenuToChatFunction`.
+ */
+export type SendMenuToChatFunction<Context> = (chatId: string | number, context: Context, extra?: Readonly<ExtraReplyMessage>) => Promise<Message>
+
+/**
  * Reply a menu to a context as a new message
  * @param menu menu to be shown
  * @param context current Telegraf context to reply the menu to it
@@ -149,11 +155,12 @@ async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(
 
 /**
  * Generate a function to send the menu towards a chat from external events
+ * @param telegram The Telegram object to do the API calls with later on
  * @param menu menu to be shown
  * @param path path of the menu
  */
-export function generateSendMenuToChatFunction<Context>(menu: MenuLike<Context>, path: string): (telegram: Readonly<Telegram>, chatId: string | number, context: Context, extra?: Readonly<ExtraReplyMessage>) => Promise<Message> {
-	return async (telegram, chatId, context, extra = {}) => {
+export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Telegram>, menu: MenuLike<Context>, path: string): SendMenuToChatFunction<Context> {
+	return async (chatId, context, extra = {}) => {
 		const body = await menu.renderBody(context, path)
 		jsUserBodyHints(body)
 		const keyboard = await menu.renderKeyboard(context, path)
