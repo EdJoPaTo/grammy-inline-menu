@@ -70,39 +70,18 @@
 	"xo": {
 		"semicolon": false,
 		"rules": {
+			"@typescript-eslint/prefer-readonly-parameter-types": "error",
 			"ava/no-ignored-test-files": "off"
 		},
 		"overrides": [
 			{
 				"files": [
-					"examples/**/*.ts"
-				],
-				"rules": {
-					"@typescript-eslint/prefer-optional-chain": "off",
-					"@typescript-eslint/prefer-readonly-parameter-types": "off"
-				}
-			},
-			{
-				"files": [
-					"source/buttons/build-keyboard*.ts",
-					"source/menu-buttons.test.ts",
-					"source/middleware-helper.is-action.test.ts",
+					"examples/**/*.ts",
+					"source/**/*.test.ts",
 					"test/**/*.ts"
 				],
 				"rules": {
-					"@typescript-eslint/camelcase": "off"
-				}
-			},
-			{
-				"files": [
-					"test/**/*.ts",
-					"source/**/*.test.ts"
-				],
-				"rules": {
-					"@typescript-eslint/prefer-readonly-parameter-types": "off",
-					"@typescript-eslint/no-empty-function": "off",
-					"ava/no-incorrect-deep-equal": "off",
-					"require-atomic-updates": "warn"
+					"@typescript-eslint/prefer-readonly-parameter-types": "off"
 				}
 			}
 		]

@@ -15,7 +15,7 @@ test('hidden does not render any button', async t => {
 	})
 
 	const button = await func(undefined, 'wow/')
-	t.deepEqual(button, undefined)
+	t.is(button, undefined)
 })
 
 test('is true button', async t => {

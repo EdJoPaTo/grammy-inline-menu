@@ -53,7 +53,7 @@ const food = ['bread', 'cake', 'bananas']
 
 function personButtonText(_: TelegrafContext, key: string): string {
 	const entry = people[key] as FoodChoises | undefined
-	if (entry && entry.food) {
+	if (entry?.food) {
 		return `${key} (${entry.food})`
 	}
 

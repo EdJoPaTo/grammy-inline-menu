@@ -24,8 +24,8 @@ test('add simple doFunction', t => {
 
 	t.truthy(new RegExp(result.trigger.source, result.trigger.flags).exec('foo/bar'))
 
-	t.deepEqual(result.trigger.source, '^foo\\/bar$')
-	t.deepEqual(result.trigger.flags, '')
+	t.is(result.trigger.source, '^foo\\/bar$')
+	t.is(result.trigger.flags, '')
 })
 
 test('doFunction without hide runs doFunction', async t => {
