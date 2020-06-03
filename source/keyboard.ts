@@ -24,7 +24,7 @@ function isRow<Context>(entry: undefined | KeyboardTemplateEntry<Context>): entr
 }
 
 function isCallbackButtonTemplate(kindOfButton: ButtonTemplate): kindOfButton is CallbackButtonTemplate {
-	return kindOfButton !== undefined && 'text' in kindOfButton && 'relativePath' in kindOfButton
+	return 'text' in kindOfButton && 'relativePath' in kindOfButton
 }
 
 export class Keyboard<Context> {

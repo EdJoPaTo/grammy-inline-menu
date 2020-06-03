@@ -1,8 +1,9 @@
 import {combineTrigger, ensureTriggerChild} from './path'
 import {ContextFunc, RegExpLike, ConstOrPromise} from './generic-types'
 
-export type MenuAfterwardsTarget = void | string
-export type ActionFunc<Context> = (context: Context, path: string) => ConstOrPromise<MenuAfterwardsTarget>
+// Wrongly detected: void is a return type here
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+export type ActionFunc<Context> = (context: Context, path: string) => ConstOrPromise<string | void>
 
 export interface ButtonAction<Context> {
 	readonly trigger: RegExpLike;
