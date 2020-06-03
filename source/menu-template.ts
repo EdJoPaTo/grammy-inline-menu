@@ -23,7 +23,7 @@ export class MenuTemplate<Context> {
 	private readonly _submenus: Set<Submenu<Context>> = new Set()
 
 	constructor(
-		readonly body: ConstOrContextPathFunc<Context, Body>
+		body: ConstOrContextPathFunc<Context, Body>
 	) {
 		this._body = typeof body === 'function' ? body : () => body
 	}
