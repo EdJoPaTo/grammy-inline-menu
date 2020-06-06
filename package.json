@@ -23,7 +23,11 @@
 		"Telegraf",
 		"Telegram"
 	],
-	"author": "Edgar To",
+	"author": {
+		"name": "EdJoPaTo",
+		"email": "telegraf-inline-menu-npm-package@edjopato.de",
+		"url": "https://EdJoPaTo.de"
+	},
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/EdJoPaTo/telegraf-inline-menu/issues"
