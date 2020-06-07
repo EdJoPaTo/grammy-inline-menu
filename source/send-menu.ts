@@ -142,6 +142,7 @@ async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(
 	if (isMediaBody(body)) {
 		const mediaExtra = createMediaExtra(body, keyboard, extra as any)
 
+		// eslint-disable-next-line default-case
 		switch (body.type) {
 			case 'animation':
 				// TODO: use typings when PR is merged https://github.com/telegraf/telegraf/pull/1042
@@ -154,9 +155,6 @@ async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(
 				return context.replyWithPhoto(body.media, mediaExtra)
 			case 'video':
 				return context.replyWithVideo(body.media, mediaExtra)
-
-			default:
-				throw new Error('The media body could not be replied. Either you specified the type wrong or the type is not implemented.')
 		}
 	}
 
@@ -184,6 +182,7 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Teleg
 		if (isMediaBody(body)) {
 			const mediaExtra = createMediaExtra(body, keyboard, extra as any)
 
+			// eslint-disable-next-line default-case
 			switch (body.type) {
 				case 'animation':
 					return telegram.sendAnimation(chatId, body.media, mediaExtra)
@@ -195,9 +194,6 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Teleg
 					return telegram.sendPhoto(chatId, body.media, mediaExtra)
 				case 'video':
 					return telegram.sendVideo(chatId, body.media, mediaExtra)
-
-				default:
-					throw new Error('The media body could not be sent. Either you specified the type wrong or the type is not implemented.')
 			}
 		}
 
