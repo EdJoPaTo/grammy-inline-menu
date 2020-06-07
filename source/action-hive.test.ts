@@ -84,3 +84,17 @@ test('doFunction with hide true skips doFunction and returns update menu path .'
 	const target = await result.doFunction('bob', 'foo/bar')
 	t.is(target, '.')
 })
+
+test('adding two times the same trigger throws', t => {
+	const a = new ActionHive()
+
+	const doFunction: ActionFunc<unknown> = () => {
+		t.fail('the do Function has not to be called')
+		throw new Error('the do Function has not to be called')
+	}
+
+	a.add(/foo$/, doFunction, undefined)
+	t.throws(() => a.add(/foo$/, doFunction, undefined), {
+		message: /already added.+action/
+	})
+})

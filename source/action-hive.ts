@@ -16,6 +16,13 @@ export class ActionHive<Context> {
 	add(trigger: RegExpLike, doFunction: ActionFunc<Context>, hide: undefined | ContextFunc<Context, boolean>): void {
 		ensureTriggerChild(trigger)
 
+		const alreadyExisting = [...this._actions]
+			.map(o => o.trigger.source)
+			.includes(trigger.source)
+		if (alreadyExisting) {
+			throw new Error(`The action "${trigger.source.slice(0, -1)}" you wanna add was already added. When you hit the button only the first one will be used and not both. This one can not be accessed then. Change the action code to something different.`)
+		}
+
 		this._actions.add({
 			trigger,
 			doFunction: async (context, path) => {
