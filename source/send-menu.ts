@@ -33,7 +33,13 @@ export async function replyMenuToContext<Context extends TelegrafContext>(menu: 
 	const body = await menu.renderBody(context, path)
 	jsUserBodyHints(body)
 	const keyboard = await menu.renderKeyboard(context, path)
-	return replyRenderedMenuPartsToContext(body, keyboard, context, extra)
+	const message = await replyRenderedMenuPartsToContext(body, keyboard, context, extra)
+
+	if (context.callbackQuery) {
+		await context.answerCbQuery()
+	}
+
+	return message
 }
 
 /**
@@ -51,6 +57,11 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 	const message = context.callbackQuery?.message
 	if (!message) {
 		await replyRenderedMenuPartsToContext(body, keyboard, context, extra)
+
+		if (context.callbackQuery) {
+			await context.answerCbQuery()
+		}
+
 		return
 	}
 
@@ -85,6 +96,7 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 	// The current menu is incompatible: delete and reply new one
 	await Promise.all([
 		replyRenderedMenuPartsToContext(body, keyboard, context, extra),
+		context.answerCbQuery(),
 		deleteMenuFromContext(context)
 	])
 }
@@ -114,7 +126,6 @@ export async function resendMenuToContext<Context extends TelegrafContext>(menu:
 		replyMenuToContext(menu, context, path, extra),
 		deleteMenuFromContext(context)
 	])
-
 	return menuMessage
 }
 
