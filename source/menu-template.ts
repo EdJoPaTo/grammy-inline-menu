@@ -355,10 +355,6 @@ export class MenuTemplate<Context> {
 		}
 
 		const paginationChoices: ContextFunc<Context, ChoicesRecord> = async context => {
-			if (await options.hide?.(context)) {
-				return {}
-			}
-
 			const totalPages = await options.getTotalPages(context)
 			const currentPage = await options.getCurrentPage(context)
 			return createPaginationChoices(totalPages, currentPage)
