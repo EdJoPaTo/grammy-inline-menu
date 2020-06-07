@@ -239,6 +239,41 @@ If you want to change the state of something, select one out of many options for
 `menuTemplate.select(…)` automatically updates the menu on pressing the button and shows what it currently selected.
 `menuTemplate.choose(…)` runs the method you want to run.
 
+## I have too much content for one message. Can I use a pagination?
+
+`menuTemplate.pagination` is basically a glorified `choose`.
+You can supply the amount of pages you have and whats your current page is and it tells you which page the user whats to see.
+Splitting your content into pages is still your job to do.
+This allows you for all kinds of variations on your side.
+
+```ts
+menuTemplate.pagination('unique', {
+	getTotalPages: () => 42,
+	getCurrentPage: context => context.session.page,
+	setPage: (context, page) => {
+		context.session.page = page
+	}
+})
+```
+
+## My choose/select has too many choices. Can I use a pagination?
+
+If you dont use a pagination you might have noticed that not all of your choices are displayed.
+Per default only the first page is shown.
+You can select the amount of rows and columns via `maxRows` and `columns`.
+The pagination works similar to `menuTemplate.pagination` but you do not need to supply the amount of total pages as this is calculated from your choices.
+
+```ts
+menuTemplate.choose('eat', ['cheese', 'bread', 'salad', 'tree', …], {
+	columns: 1,
+	maxRows: 2,
+	getCurrentPage: context => context.session.page,
+	setPage: (context, page) => {
+		context.session.page = page
+	}
+})
+```
+
 ## How can I use a submenu?
 
 ```ts
@@ -264,6 +299,23 @@ submenuTemplate.interact('Text', 'unique', {
 submenuTemplate.manualRow(createBackMainMenuButtons())
 
 menuTemplate.chooseIntoSubmenu('unique', ['Gotham', 'Mos Eisley', 'Springfield'], submenuTemplate)
+```
+
+## Can I close the menu?
+
+You can delete the message like you would do with telegraf: `context.deleteMessage()`.
+Keep in mind: You can not delete messages which are older than 48 hours.
+
+`deleteMenuFromContext` tries to help you with that:
+It tries to delete the menu.
+If that does not work the keyboard is removed from the message so the user will not accidentally press something.
+
+```ts
+menuTemplate.interact('Delete the menu', 'unique', {
+	do: async context => {
+		await deleteMenuFromContext(context)
+	}
+})
 ```
 
 ## Can I send the menu manually?
