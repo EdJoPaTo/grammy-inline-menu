@@ -198,8 +198,13 @@ export class MenuTemplate<Context> {
 	 */
 	submenu(text: ConstOrContextPathFunc<Context, string>, action: string, submenu: MenuLike<Context>, options: SubmenuOptions<Context> = {}): void {
 		ensureTriggerChild(action)
+		const actionRegex = new RegExp(action + '/')
+		if ([...this._submenus].map(o => o.action.source).includes(actionRegex.source)) {
+			throw new Error(`There is already a submenu with the action "${action}". Change the action in order to access both menus.`)
+		}
+
 		this._submenus.add({
-			action: new RegExp(action + '/'),
+			action: actionRegex,
 			hide: options.hide,
 			menu: submenu
 		})
@@ -256,8 +261,13 @@ export class MenuTemplate<Context> {
 	 */
 	chooseIntoSubmenu(actionPrefix: string, choices: ConstOrContextFunc<Context, Choices>, submenu: MenuLike<Context>, options: ChooseIntoSubmenuOptions<Context> = {}): void {
 		ensureTriggerChild(actionPrefix)
+		const actionRegex = new RegExp(actionPrefix + ':([^/]+)/')
+		if ([...this._submenus].map(o => o.action.source).includes(actionRegex.source)) {
+			throw new Error(`There is already a submenu with the action "${actionPrefix}". Change the action in order to access both menus.`)
+		}
+
 		this._submenus.add({
-			action: new RegExp(actionPrefix + ':([^/]+)/'),
+			action: actionRegex,
 			hide: combineHideAndChoices(choices, options.hide),
 			menu: submenu
 		})
