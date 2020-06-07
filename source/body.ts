@@ -29,24 +29,6 @@ function isKnownMediaType(type: unknown): type is MediaType {
 	return (MEDIA_TYPES as readonly string[]).includes(type)
 }
 
-export function jsUserBodyHints(body: Body): void {
-	if (typeof body === 'string') {
-		return
-	}
-
-	if (!isObject(body)) {
-		throw new TypeError('The body has to be a string or an object. Check the telegraf-inline-menu Documentation.')
-	}
-
-	if ('media' in body) {
-		if (!isKnownMediaType(body.type)) {
-			throw new TypeError('When you have a MediaBody you need to specify its type like \'photo\' or \'video\'')
-		}
-	} else if (typeof body.text !== 'string') {
-		throw new TypeError('The body has to contain at least media or text. Check the telegraf-inline-menu Documentation.')
-	}
-}
-
 export function isTextBody(body: Body): body is string | TextBody {
 	if (typeof body === 'string') {
 		return true

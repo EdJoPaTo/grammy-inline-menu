@@ -1,6 +1,6 @@
 import test, {ExecutionContext} from 'ava'
 
-import {Body, TextBody, MediaBody, isTextBody, isMediaBody, getBodyText, jsUserBodyHints} from './body'
+import {Body, TextBody, MediaBody, isTextBody, isMediaBody, getBodyText} from './body'
 
 function mehToString(something: any): string {
 	if (typeof something === 'object' || !something) {
@@ -105,20 +105,3 @@ test('getBodyText TextBody', t => {
 	}
 	t.is(getBodyText(body), 'foo')
 })
-
-for (const body of EXAMPLE_WRONGS) {
-	test(`jsUserBodyHints fails with ${mehToString(body)}`, t => {
-		t.throws(
-			() => jsUserBodyHints(body),
-			{instanceOf: TypeError}
-		)
-	})
-}
-
-for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_MEDIA]) {
-	test(`jsUserBodyHints is fine with ${mehToString(body)}`, t => {
-		t.notThrows(
-			() => jsUserBodyHints(body)
-		)
-	})
-}

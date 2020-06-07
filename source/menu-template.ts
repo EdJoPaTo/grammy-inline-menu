@@ -1,4 +1,4 @@
-import {Body, jsUserBodyHints} from './body'
+import {Body} from './body'
 import {ButtonAction, ActionHive, ActionFunc} from './action-hive'
 import {Choices, ChoicesRecord, generateChoicesButtons, combineHideAndChoices} from './choices'
 import {ChooseOptions} from './buttons/choose'
@@ -34,7 +34,6 @@ export class MenuTemplate<Context> {
 	 */
 	async renderBody(context: Context, path: string): Promise<Body> {
 		const body = await this._body(context, path)
-		jsUserBodyHints(body)
 		return body
 	}
 

@@ -1,7 +1,7 @@
 import {Telegram, Context as TelegrafContext} from 'telegraf'
 import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessage, Message, MessageMedia} from 'telegraf/typings/telegram-types'
 
-import {Body, TextBody, MediaBody, isMediaBody, getBodyText, jsUserBodyHints} from './body'
+import {Body, TextBody, MediaBody, isMediaBody, isTextBody, getBodyText} from './body'
 import {InlineKeyboard} from './keyboard'
 import {MenuLike} from './menu-like'
 
@@ -31,7 +31,6 @@ export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, mes
  */
 export async function replyMenuToContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
 	const body = await menu.renderBody(context, path)
-	jsUserBodyHints(body)
 	const keyboard = await menu.renderKeyboard(context, path)
 	const message = await replyRenderedMenuPartsToContext(body, keyboard, context, extra)
 
@@ -51,7 +50,6 @@ export async function replyMenuToContext<Context extends TelegrafContext>(menu: 
  */
 export async function editMenuOnContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraEditMessage> = {}): Promise<void> {
 	const body = await menu.renderBody(context, path)
-	jsUserBodyHints(body)
 	const keyboard = await menu.renderKeyboard(context, path)
 
 	const message = context.callbackQuery?.message
@@ -81,7 +79,7 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 			])
 			return
 		}
-	} else {
+	} else if (isTextBody(body)) {
 		const text = getBodyText(body)
 		if (message.text) {
 			await Promise.all([
@@ -91,6 +89,8 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 			])
 			return
 		}
+	} else {
+		throw new TypeError('The body has to be a string or an object containing text or media. Check the telegraf-inline-menu Documentation.')
 	}
 
 	// The current menu is incompatible: delete and reply new one
@@ -139,8 +139,6 @@ function catchMessageNotModified(error: any): void {
 }
 
 async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(body: Body, keyboard: InlineKeyboard, context: Context, extra: Readonly<ExtraReplyMessage>): Promise<Message> {
-	jsUserBodyHints(body)
-
 	if (isMediaBody(body)) {
 		const mediaExtra = createMediaExtra(body, keyboard, extra as any)
 
@@ -162,12 +160,14 @@ async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(
 		}
 	}
 
-	const text = getBodyText(body)
-	if (text) {
-		return context.reply(text, createTextExtra(body, keyboard, extra))
+	if (isTextBody(body)) {
+		const text = getBodyText(body)
+		if (text) {
+			return context.reply(text, createTextExtra(body, keyboard, extra))
+		}
 	}
 
-	throw new Error('the body of the menu template can not be replied. It has to contain at least something replyable like text')
+	throw new Error('The body has to be a string or an object containing text or media. Check the telegraf-inline-menu Documentation.')
 }
 
 /**
@@ -179,7 +179,6 @@ async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(
 export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Telegram>, menu: MenuLike<Context>, path: string): SendMenuToChatFunction<Context> {
 	return async (chatId, context, extra = {}) => {
 		const body = await menu.renderBody(context, path)
-		jsUserBodyHints(body)
 		const keyboard = await menu.renderKeyboard(context, path)
 
 		if (isMediaBody(body)) {
@@ -202,12 +201,14 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Teleg
 			}
 		}
 
-		const text = getBodyText(body)
-		if (text) {
-			return telegram.sendMessage(chatId, text, createTextExtra(body, keyboard, extra))
+		if (isTextBody(body)) {
+			const text = getBodyText(body)
+			if (text) {
+				return telegram.sendMessage(chatId, text, createTextExtra(body, keyboard, extra))
+			}
 		}
 
-		throw new Error('the body of the menu template can not be replied. It has to contain at least something replyable like text')
+		throw new Error('The body has to be a string or an object containing text or media. Check the telegraf-inline-menu Documentation.')
 	}
 }
 
@@ -221,7 +222,6 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Teleg
 export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<Telegram>, menu: MenuLike<Context>, path: string): EditMessageIntoMenuFunction<Context> {
 	return async (chatId, messageId, context, extra = {}) => {
 		const body = await menu.renderBody(context, path)
-		jsUserBodyHints(body)
 		const keyboard = await menu.renderKeyboard(context, path)
 
 		if (isMediaBody(body)) {
@@ -237,8 +237,14 @@ export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<
 			return (telegram as any).editMessageMedia(chatId, messageId, undefined, media, mediaExtra)
 		}
 
-		const text = getBodyText(body)
-		return telegram.editMessageText(chatId, messageId, undefined, text, extra)
+		if (isTextBody(body)) {
+			const text = getBodyText(body)
+			if (text) {
+				return telegram.editMessageText(chatId, messageId, undefined, text, extra)
+			}
+		}
+
+		throw new Error('The body has to be a string or an object containing text or media. Check the telegraf-inline-menu Documentation.')
 	}
 }
 
