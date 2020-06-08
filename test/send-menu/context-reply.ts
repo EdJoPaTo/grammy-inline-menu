@@ -8,7 +8,7 @@ import {replyMenuToContext} from '../../source/send-menu'
 
 for (const mediaType of MEDIA_TYPES) {
 	test('reply media ' + mediaType, async t => {
-		t.plan(3)
+		t.plan(2)
 		const menu = new MenuTemplate<TelegrafContext>({media: 'whatever', type: mediaType})
 
 		const replyFunction = async (media: unknown, extra: unknown) => {
@@ -28,10 +28,6 @@ for (const mediaType of MEDIA_TYPES) {
 				id: '666',
 				from: undefined as any,
 				chat_instance: '666'
-			},
-			answerCbQuery: async text => {
-				t.is(text, undefined)
-				return Promise.resolve(true)
 			},
 			replyWithAudio: replyFunction,
 			replyWithDocument: replyFunction,

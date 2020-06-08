@@ -33,11 +33,6 @@ export async function replyMenuToContext<Context extends TelegrafContext>(menu: 
 	const body = await menu.renderBody(context, path)
 	const keyboard = await menu.renderKeyboard(context, path)
 	const message = await replyRenderedMenuPartsToContext(body, keyboard, context, extra)
-
-	if (context.callbackQuery) {
-		await context.answerCbQuery()
-	}
-
 	return message
 }
 
@@ -55,11 +50,6 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 	const message = context.callbackQuery?.message
 	if (!message) {
 		await replyRenderedMenuPartsToContext(body, keyboard, context, extra)
-
-		if (context.callbackQuery) {
-			await context.answerCbQuery()
-		}
-
 		return
 	}
 
@@ -72,21 +62,15 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 				parse_mode: body.parse_mode
 			}
 
-			await Promise.all([
-				context.editMessageMedia(media, createMediaExtra(body, keyboard, extra as any))
-					.catch(catchMessageNotModified),
-				context.answerCbQuery()
-			])
+			await context.editMessageMedia(media, createMediaExtra(body, keyboard, extra as any))
+				.catch(catchMessageNotModified)
 			return
 		}
 	} else if (isTextBody(body)) {
 		const text = getBodyText(body)
 		if (message.text) {
-			await Promise.all([
-				context.editMessageText(text, createTextExtra(body, keyboard, extra))
-					.catch(catchMessageNotModified),
-				context.answerCbQuery()
-			])
+			await context.editMessageText(text, createTextExtra(body, keyboard, extra))
+				.catch(catchMessageNotModified)
 			return
 		}
 	} else {
@@ -96,7 +80,6 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 	// The current menu is incompatible: delete and reply new one
 	await Promise.all([
 		replyRenderedMenuPartsToContext(body, keyboard, context, extra),
-		context.answerCbQuery(),
 		deleteMenuFromContext(context)
 	])
 }

@@ -29,7 +29,7 @@ test('text reply when not a callback query', async t => {
 })
 
 test('text reply when no message on callback query', async t => {
-	t.plan(3)
+	t.plan(2)
 	const menu = new MenuTemplate<TelegrafContext>('whatever')
 
 	const fakeContext: Partial<TelegrafContext> = {
@@ -37,10 +37,6 @@ test('text reply when no message on callback query', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666'
-		},
-		answerCbQuery: async text => {
-			t.is(text, undefined)
-			return Promise.resolve(true)
 		},
 		reply: async (text, extra) => {
 			t.is(text, 'whatever')
@@ -59,7 +55,7 @@ test('text reply when no message on callback query', async t => {
 })
 
 test('text edit when message is a text message', async t => {
-	t.plan(3)
+	t.plan(2)
 	const menu = new MenuTemplate<TelegrafContext>('whatever')
 
 	const fakeContext: Partial<TelegrafContext> = {
@@ -73,10 +69,6 @@ test('text edit when message is a text message', async t => {
 				chat: undefined as any,
 				text: 'Hi Bob'
 			}
-		},
-		answerCbQuery: async text => {
-			t.is(text, undefined)
-			return Promise.resolve(true)
 		},
 		editMessageText: async (text, extra) => {
 			t.is(text, 'whatever')
@@ -95,7 +87,7 @@ test('text edit when message is a text message', async t => {
 })
 
 test('text reply when message is a media message', async t => {
-	t.plan(4)
+	t.plan(3)
 	const menu = new MenuTemplate<TelegrafContext>('whatever')
 
 	const fakeContext: Partial<TelegrafContext> = {
@@ -109,10 +101,6 @@ test('text reply when message is a media message', async t => {
 				chat: undefined as any,
 				photo: []
 			}
-		},
-		answerCbQuery: async text => {
-			t.is(text, undefined)
-			return Promise.resolve(true)
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
@@ -135,7 +123,7 @@ test('text reply when message is a media message', async t => {
 })
 
 test('text reply when message is a media message but fails with delete', async t => {
-	t.plan(3)
+	t.plan(2)
 	const menu = new MenuTemplate<TelegrafContext>('whatever')
 
 	const fakeContext: Partial<TelegrafContext> = {
@@ -149,10 +137,6 @@ test('text reply when message is a media message but fails with delete', async t
 				chat: undefined as any,
 				photo: []
 			}
-		},
-		answerCbQuery: async text => {
-			t.is(text, undefined)
-			return Promise.resolve(true)
 		},
 		deleteMessage: async () => {
 			throw new Error('whatever went wrong')
@@ -193,7 +177,7 @@ test('media reply when not a callback query', async t => {
 })
 
 test('media reply when text message', async t => {
-	t.plan(4)
+	t.plan(3)
 	const menu = new MenuTemplate<TelegrafContext>({media: 'whatever', type: 'photo'})
 
 	const fakeContext: Partial<TelegrafContext> = {
@@ -207,10 +191,6 @@ test('media reply when text message', async t => {
 				chat: undefined as any,
 				text: 'whatever'
 			}
-		},
-		answerCbQuery: async text => {
-			t.is(text, undefined)
-			return Promise.resolve(true)
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
@@ -233,7 +213,7 @@ test('media reply when text message', async t => {
 })
 
 test('media edit when media message', async t => {
-	t.plan(3)
+	t.plan(2)
 	const menu = new MenuTemplate<TelegrafContext>({media: 'whatever', type: 'photo'})
 
 	const fakeContext: Partial<TelegrafContext> = {
@@ -247,10 +227,6 @@ test('media edit when media message', async t => {
 				chat: undefined as any,
 				photo: []
 			}
-		},
-		answerCbQuery: async text => {
-			t.is(text, undefined)
-			return Promise.resolve(true)
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
@@ -293,7 +269,6 @@ test('does not throw message is not modified', async t => {
 				text: 'Hi Bob'
 			}
 		},
-		answerCbQuery: async () => Promise.resolve(true),
 		editMessageText: async () => {
 			t.pass()
 			throw new Error('lalala message is not modified lalala')
@@ -319,7 +294,6 @@ test('does throw unrecoverable edit errors', async t => {
 				text: 'Hi Bob'
 			}
 		},
-		answerCbQuery: async () => Promise.resolve(true),
 		editMessageText: async () => {
 			t.pass()
 			throw new Error('something went wrong for testing')
@@ -347,7 +321,6 @@ test('text edit without webpage preview', async t => {
 				text: 'Hi Bob'
 			}
 		},
-		answerCbQuery: async () => Promise.resolve(true),
 		editMessageText: async (_text, extra) => {
 			t.deepEqual(extra, {
 				disable_web_page_preview: true,
@@ -378,7 +351,6 @@ test('text edit with parse mode', async t => {
 				text: 'Hi Bob'
 			}
 		},
-		answerCbQuery: async () => Promise.resolve(true),
 		editMessageText: async (_text, extra) => {
 			t.deepEqual(extra, {
 				disable_web_page_preview: undefined,
@@ -410,7 +382,6 @@ test('text edit with button', async t => {
 				text: 'Hi Bob'
 			}
 		},
-		answerCbQuery: async () => Promise.resolve(true),
 		editMessageText: async (_text, extra) => {
 			t.deepEqual(extra?.reply_markup, {
 				inline_keyboard: [[{
@@ -441,7 +412,6 @@ test('media edit with button', async t => {
 				photo: []
 			}
 		},
-		answerCbQuery: async () => Promise.resolve(true),
 		editMessageMedia: async (_media, extra) => {
 			t.deepEqual(extra?.reply_markup, {
 				inline_keyboard: [[{

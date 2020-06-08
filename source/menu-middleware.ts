@@ -101,12 +101,11 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 			if (target) {
 				const {match, responder} = await getLongestMatchMenuResponder(context, target, this._responder)
 				context.match = match
-				if (!match) {
-					await this._sendMenu(this._responder.menu, context, this.rootPath)
-					return
-				}
-
-				await this._sendMenu(responder.menu, context, match[0])
+				const targetPath = match?.[0] ?? this.rootPath
+				await Promise.all([
+					this._sendMenu(responder.menu, context, targetPath),
+					context.answerCbQuery()
+				])
 			}
 		})
 

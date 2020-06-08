@@ -6,7 +6,7 @@ import {MenuTemplate} from '../../source'
 import {resendMenuToContext} from '../../source/send-menu'
 
 test('resend on callback query', async t => {
-	t.plan(4)
+	t.plan(3)
 	const menu = new MenuTemplate<TelegrafContext>('whatever')
 
 	const fakeContext: Partial<TelegrafContext> = {
@@ -14,10 +14,6 @@ test('resend on callback query', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666'
-		},
-		answerCbQuery: async text => {
-			t.is(text, undefined)
-			return Promise.resolve(true)
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
