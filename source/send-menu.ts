@@ -231,7 +231,7 @@ export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<
 
 		if (isTextBody(body)) {
 			const text = getBodyText(body)
-			return telegram.editMessageText(chatId, messageId, undefined, text, extra)
+			return telegram.editMessageText(chatId, messageId, undefined, text, createTextExtra(body, keyboard, extra))
 		}
 
 		throw new Error('The body has to be a string or an object containing text or media. Check the telegraf-inline-menu Documentation.')
