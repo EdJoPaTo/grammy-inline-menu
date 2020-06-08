@@ -160,9 +160,7 @@ async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(
 
 	if (isTextBody(body)) {
 		const text = getBodyText(body)
-		if (text) {
-			return context.reply(text, createTextExtra(body, keyboard, extra))
-		}
+		return context.reply(text, createTextExtra(body, keyboard, extra))
 	}
 
 	throw new Error('The body has to be a string or an object containing text or media. Check the telegraf-inline-menu Documentation.')
@@ -199,9 +197,7 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Teleg
 
 		if (isTextBody(body)) {
 			const text = getBodyText(body)
-			if (text) {
-				return telegram.sendMessage(chatId, text, createTextExtra(body, keyboard, extra))
-			}
+			return telegram.sendMessage(chatId, text, createTextExtra(body, keyboard, extra))
 		}
 
 		throw new Error('The body has to be a string or an object containing text or media. Check the telegraf-inline-menu Documentation.')
@@ -235,9 +231,7 @@ export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<
 
 		if (isTextBody(body)) {
 			const text = getBodyText(body)
-			if (text) {
-				return telegram.editMessageText(chatId, messageId, undefined, text, extra)
-			}
+			return telegram.editMessageText(chatId, messageId, undefined, text, extra)
 		}
 
 		throw new Error('The body has to be a string or an object containing text or media. Check the telegraf-inline-menu Documentation.')

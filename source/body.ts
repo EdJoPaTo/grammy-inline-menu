@@ -30,6 +30,10 @@ function isKnownMediaType(type: unknown): type is MediaType {
 }
 
 export function isTextBody(body: Body): body is string | TextBody {
+	if (!body) {
+		return false
+	}
+
 	if (typeof body === 'string') {
 		return true
 	}

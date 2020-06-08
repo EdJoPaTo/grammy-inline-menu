@@ -17,6 +17,7 @@ const EXAMPLE_WRONGS_RAW: readonly unknown[] = [
 	true,
 	false,
 	{},
+	'',
 	() => 'whatever',
 	42,
 	{
