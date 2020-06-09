@@ -7,9 +7,9 @@ import {getButtonsOfPage, getButtonsAsRows, maximumButtonsPerPage} from '../butt
 import {Choices, ManyChoicesOptions, ChoiceTextFunc} from './types'
 import {getChoiceKeysFromChoices, getChoiceTextByKey} from './understand-choices'
 
-export function generateChoicesButtons<Context>(actionPrefix: string, isSubmenu: boolean, choices: ConstOrContextFunc<Context, Choices>, options: ManyChoicesOptions<Context>): (context: Context) => Promise<CallbackButtonTemplate[][]> {
-	return async context => {
-		if (await options.hide?.(context)) {
+export function generateChoicesButtons<Context>(actionPrefix: string, isSubmenu: boolean, choices: ConstOrContextFunc<Context, Choices>, options: ManyChoicesOptions<Context>): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
+	return async (context, path) => {
+		if (await options.hide?.(context, path)) {
 			return []
 		}
 

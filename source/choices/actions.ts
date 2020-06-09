@@ -1,4 +1,4 @@
-import {isObject, isRegExpExecArray, ConstOrContextFunc, ContextFunc} from '../generic-types'
+import {isObject, isRegExpExecArray, ConstOrContextFunc, ContextPathFunc} from '../generic-types'
 
 import {getChoiceKeysFromChoices} from './understand-choices'
 import {Choices} from './types'
@@ -13,9 +13,9 @@ export function getKeyFromContext(context: unknown): string | undefined {
 	return key
 }
 
-export function combineHideAndChoices<Context>(choices: ConstOrContextFunc<Context, Choices>, hide: undefined | ContextFunc<Context, boolean>): ContextFunc<Context, boolean> {
-	return async context => {
-		if (await hide?.(context)) {
+export function combineHideAndChoices<Context>(choices: ConstOrContextFunc<Context, Choices>, hide: undefined | ContextPathFunc<Context, boolean>): ContextPathFunc<Context, boolean> {
+	return async (context, path) => {
+		if (await hide?.(context, path)) {
 			return true
 		}
 

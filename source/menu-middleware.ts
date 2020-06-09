@@ -3,7 +3,7 @@ import {Message} from 'telegraf/typings/telegram-types'
 
 import {ActionFunc} from './action-hive'
 import {combineTrigger, ensurePathMenu, combinePath} from './path'
-import {ContextFunc, RegExpLike} from './generic-types'
+import {ContextPathFunc, RegExpLike} from './generic-types'
 import {MenuLike} from './menu-like'
 import {SendMenuFunc, editMenuOnContext, replyMenuToContext} from './send-menu'
 
@@ -12,7 +12,7 @@ type Responder<Context> = MenuResponder<Context> | ActionResponder<Context>
 interface MenuResponder<Context> {
 	readonly type: 'menu';
 	readonly trigger: RegExpLike;
-	readonly canEnter: ContextFunc<Context, boolean>;
+	readonly canEnter: ContextPathFunc<Context, boolean>;
 	readonly menu: MenuLike<Context>;
 	readonly submenuResponders: ReadonlyArray<MenuResponder<Context>>;
 	readonly actionResponders: ReadonlyArray<ActionResponder<Context>>;
@@ -128,7 +128,7 @@ async function getLongestMatchMenuResponder<Context extends TelegrafContext>(con
 		context.match = match
 
 		// eslint-disable-next-line no-await-in-loop
-		if (await sub.canEnter(context)) {
+		if (await sub.canEnter(context, match[0])) {
 			return getLongestMatchMenuResponder(context, path, sub)
 		}
 	}
@@ -150,7 +150,7 @@ async function getLongestMatchActionResponder<Context extends TelegrafContext>(c
 		context.match = match
 
 		// eslint-disable-next-line no-await-in-loop
-		if (await sub.canEnter(context)) {
+		if (await sub.canEnter(context, match[0])) {
 			return getLongestMatchActionResponder(context, path, sub)
 		}
 
@@ -169,7 +169,7 @@ async function getLongestMatchActionResponder<Context extends TelegrafContext>(c
 	return {match: currentMatch, responder: current}
 }
 
-function createResponder<Context extends TelegrafContext>(menuTrigger: RegExpLike, canEnter: ContextFunc<Context, boolean>, menu: MenuLike<Context>): MenuResponder<Context> {
+function createResponder<Context extends TelegrafContext>(menuTrigger: RegExpLike, canEnter: ContextPathFunc<Context, boolean>, menu: MenuLike<Context>): MenuResponder<Context> {
 	const actionResponders = [...menu.renderActionHandlers(menuTrigger)]
 		.map(({trigger, doFunction}): ActionResponder<Context> => ({
 			type: 'action',
@@ -181,8 +181,8 @@ function createResponder<Context extends TelegrafContext>(menuTrigger: RegExpLik
 		.map((submenu): MenuResponder<Context> => {
 			const submenuTrigger = combineTrigger(menuTrigger, submenu.action)
 
-			const canEnterSubmenu: ContextFunc<Context, boolean> = async context => {
-				if (await submenu.hide?.(context)) {
+			const canEnterSubmenu: ContextPathFunc<Context, boolean> = async (context, path) => {
+				if (await submenu.hide?.(context, path)) {
 					return false
 				}
 

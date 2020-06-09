@@ -1,6 +1,6 @@
 import {Body} from './body'
 import {ButtonAction} from './action-hive'
-import {ContextFunc, ContextPathFunc, RegExpLike} from './generic-types'
+import {ContextPathFunc, RegExpLike} from './generic-types'
 import {InlineKeyboard} from './keyboard'
 
 export interface MenuLike<Context> {
@@ -12,6 +12,6 @@ export interface MenuLike<Context> {
 
 export interface Submenu<Context> {
 	readonly action: RegExpLike;
-	readonly hide: undefined | ContextFunc<Context, boolean>;
+	readonly hide: undefined | ContextPathFunc<Context, boolean>;
 	readonly menu: MenuLike<Context>;
 }

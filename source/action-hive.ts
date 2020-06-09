@@ -1,5 +1,5 @@
 import {combineTrigger, ensureTriggerChild} from './path'
-import {ContextFunc, RegExpLike, ConstOrPromise} from './generic-types'
+import {ContextPathFunc, RegExpLike, ConstOrPromise} from './generic-types'
 
 // Wrongly detected: void is a return type here
 // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
@@ -13,7 +13,7 @@ export interface ButtonAction<Context> {
 export class ActionHive<Context> {
 	private readonly _actions: Set<ButtonAction<Context>> = new Set()
 
-	add(trigger: RegExpLike, doFunction: ActionFunc<Context>, hide: undefined | ContextFunc<Context, boolean>): void {
+	add(trigger: RegExpLike, doFunction: ActionFunc<Context>, hide: undefined | ContextPathFunc<Context, boolean>): void {
 		ensureTriggerChild(trigger)
 
 		const alreadyExisting = [...this._actions]
@@ -26,7 +26,7 @@ export class ActionHive<Context> {
 		this._actions.add({
 			trigger,
 			doFunction: async (context, path) => {
-				if (await hide?.(context)) {
+				if (await hide?.(context, path)) {
 					return '.'
 				}
 

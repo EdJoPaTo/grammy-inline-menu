@@ -70,7 +70,7 @@ export class MenuTemplate<Context> {
 		const {hide} = options
 		if (hide) {
 			this._keyboard.add(Boolean(options.joinLastRow), async (context, path) => {
-				if (await hide(context)) {
+				if (await hide(context, path)) {
 					return undefined
 				}
 
@@ -424,9 +424,9 @@ export class MenuTemplate<Context> {
 	}
 }
 
-function generateCallbackButtonTemplate<Context>(text: ConstOrContextPathFunc<Context, string>, relativePath: string, hide: undefined | ContextFunc<Context, boolean>): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
+function generateCallbackButtonTemplate<Context>(text: ConstOrContextPathFunc<Context, string>, relativePath: string, hide: undefined | ContextPathFunc<Context, boolean>): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
 	return async (context, path) => {
-		if (await hide?.(context)) {
+		if (await hide?.(context, path)) {
 			return undefined
 		}
 

@@ -1,10 +1,10 @@
-import {ContextFunc} from '../generic-types'
+import {ContextPathFunc} from '../generic-types'
 
 export interface BasicOptions<Context> {
 	/**
 	 * Return true when the button(s) should be hidden and not to be called
 	 */
-	readonly hide?: ContextFunc<Context, boolean>;
+	readonly hide?: ContextPathFunc<Context, boolean>;
 }
 
 export interface SingleButtonOptions<Context> extends BasicOptions<Context> {

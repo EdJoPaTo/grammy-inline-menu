@@ -17,9 +17,9 @@ export interface SelectOptions<Context> extends ManyChoicesOptions<Context> {
 	readonly formatState?: FormatStateFunction<Context>;
 }
 
-export function generateSelectButtons<Context>(actionPrefix: string, choices: ConstOrContextFunc<Context, Choices>, options: SelectOptions<Context>): (context: Context) => Promise<CallbackButtonTemplate[][]> {
-	return async context => {
-		if (await options.hide?.(context)) {
+export function generateSelectButtons<Context>(actionPrefix: string, choices: ConstOrContextFunc<Context, Choices>, options: SelectOptions<Context>): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
+	return async (context, path) => {
+		if (await options.hide?.(context, path)) {
 			return []
 		}
 

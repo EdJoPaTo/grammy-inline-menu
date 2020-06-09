@@ -10,7 +10,7 @@ test('empty choices no buttons', async t => {
 		}
 	})
 
-	const buttons = await func(undefined)
+	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [])
 })
 
@@ -22,7 +22,7 @@ test('is set creates false button', async t => {
 		}
 	})
 
-	const buttons = await func(undefined)
+	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: '✅ a',
 		relativePath: 'preF:a'
@@ -37,7 +37,7 @@ test('is not set creates true button', async t => {
 		}
 	})
 
-	const buttons = await func(undefined)
+	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: 'a',
 		relativePath: 'preT:a'
@@ -53,7 +53,7 @@ test('showFalseEmoji also prefixes currently false buttons', async t => {
 		}
 	})
 
-	const buttons = await func(undefined)
+	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: '🚫 a',
 		relativePath: 'preT:a'
@@ -72,7 +72,7 @@ test('creates pagination buttons', async t => {
 			t.fail('no need to call setPage on keyboard creation')
 		}
 	})
-	const buttons = await func(undefined)
+	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [
 		[{
 			text: 'a',
@@ -101,7 +101,7 @@ test('show keys of page 2', async t => {
 			t.fail('no need to call set on keyboard creation')
 		}
 	})
-	const buttons = await func(undefined)
+	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: 'b',
 		relativePath: 'preT:b'
@@ -122,11 +122,11 @@ test('choice function is run', async t => {
 		}
 	})
 
-	t.deepEqual(await func('a'), [[{
+	t.deepEqual(await func('a', '/'), [[{
 		text: 'a',
 		relativePath: 'preT:a'
 	}]])
-	t.deepEqual(await func('b'), [[{
+	t.deepEqual(await func('b', '/'), [[{
 		text: 'b',
 		relativePath: 'preT:b'
 	}]])
@@ -148,7 +148,7 @@ test('hidden does not render any buttons', async t => {
 			t.fail('no need to call set on keyboard creation')
 		}
 	})
-	const buttons = await func(undefined)
+	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [])
 })
 
@@ -166,7 +166,7 @@ test('format state', async t => {
 		}
 	})
 
-	const buttons = await func(undefined)
+	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: 'lalala',
 		relativePath: 'preF:a'

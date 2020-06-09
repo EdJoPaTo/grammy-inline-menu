@@ -7,14 +7,14 @@ test('choices are not called when hide is true', async t => {
 		throw new Error('dont call choices when already hidden')
 	}, () => true)
 
-	const isHidden = await func(undefined)
+	const isHidden = await func(undefined, '/')
 	t.is(isHidden, true)
 })
 
 test('does not hide when not a TelegrafContext', async t => {
 	const func = combineHideAndChoices(['a'], undefined)
 
-	const isHidden = await func(undefined)
+	const isHidden = await func(undefined, '/')
 	t.is(isHidden, false)
 })
 
@@ -28,7 +28,7 @@ test('does not hide when choice still available', async t => {
 			data
 		}
 	}
-	const isHidden = await func(context)
+	const isHidden = await func(context, data)
 	t.is(isHidden, false)
 })
 
@@ -42,7 +42,7 @@ test('does not hide when choice still available from function', async t => {
 			data
 		}
 	}
-	const isHidden = await func(context)
+	const isHidden = await func(context, data)
 	t.is(isHidden, false)
 })
 
@@ -56,6 +56,6 @@ test('hides when choice isnt available anymore', async t => {
 			data
 		}
 	}
-	const isHidden = await func(context)
+	const isHidden = await func(context, data)
 	t.is(isHidden, true)
 })
