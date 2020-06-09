@@ -229,7 +229,7 @@ export class MenuTemplate<Context> {
 		this._actions.add(
 			trigger,
 			async (context, path) => options.do(context, getKeyFromPath(trigger, path)),
-			combineHideAndChoices(choices, options.hide)
+			combineHideAndChoices(actionPrefix, choices, options.hide)
 		)
 
 		if (options.setPage) {
@@ -267,7 +267,7 @@ export class MenuTemplate<Context> {
 
 		this._submenus.add({
 			action: actionRegex,
-			hide: combineHideAndChoices(choices, options.hide),
+			hide: combineHideAndChoices(actionPrefix, choices, options.hide),
 			menu: submenu
 		})
 
@@ -319,7 +319,7 @@ export class MenuTemplate<Context> {
 				await options.set(context, key, true)
 				return '.'
 			},
-			combineHideAndChoices(choices, options.hide)
+			combineHideAndChoices(actionPrefix + 'T', choices, options.hide)
 		)
 
 		const falseTrigger = new RegExp(actionPrefix + 'F:(.+)$')
@@ -330,7 +330,7 @@ export class MenuTemplate<Context> {
 				await options.set(context, key, false)
 				return '.'
 			},
-			combineHideAndChoices(choices, options.hide)
+			combineHideAndChoices(actionPrefix + 'F', choices, options.hide)
 		)
 
 		if (options.setPage) {

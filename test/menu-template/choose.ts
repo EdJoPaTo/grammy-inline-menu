@@ -74,10 +74,7 @@ test('action existing button', async t => {
 	t.is(result, 'wow')
 })
 
-// TODO: Currently this does only work as it expects the TelegrafContext
-// It should work with the path instead
-// eslint-disable-next-line ava/no-skip-test
-test.skip('action not existing button', async t => {
+test('action not existing button', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.choose('unique', ['Button'], {
 		do: () => {

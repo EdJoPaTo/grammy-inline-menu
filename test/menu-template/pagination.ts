@@ -95,15 +95,16 @@ test('action trigger', t => {
 })
 
 test('action sets page', async t => {
+	t.plan(7)
 	const menu = new MenuTemplate<string>('whatever')
 	menu.pagination('unique', {
-		getCurrentPage: () => {
-			t.fail('do not call this function')
-			throw new Error('do not call this function')
+		getCurrentPage: context => {
+			t.is(context, 'foo')
+			return 1
 		},
-		getTotalPages: () => {
-			t.fail('do not call this function')
-			throw new Error('do not call this function')
+		getTotalPages: context => {
+			t.is(context, 'foo')
+			return 4
 		},
 		setPage: (context, page) => {
 			t.is(context, 'foo')
