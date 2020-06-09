@@ -119,10 +119,13 @@ function responderMatch<Context>(responder: Responder<Context>, path: string): R
 
 async function getLongestMatchMenuResponder<Context extends TelegrafContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | null; responder: MenuResponder<Context>}> {
 	for (const sub of current.submenuResponders) {
-		context.match = responderMatch(sub, path)
-		if (!context.match) {
+		const match = responderMatch(sub, path)
+		if (!match) {
 			continue
 		}
+
+		// Telegraf users expect context.match to contain the relevant match
+		context.match = match
 
 		// eslint-disable-next-line no-await-in-loop
 		if (await sub.canEnter(context)) {
@@ -138,10 +141,13 @@ async function getLongestMatchActionResponder<Context extends TelegrafContext>(c
 	const currentMatch = responderMatch(current, path)
 
 	for (const sub of current.submenuResponders) {
-		context.match = responderMatch(sub, path)
-		if (!context.match) {
+		const match = responderMatch(sub, path)
+		if (!match) {
 			continue
 		}
+
+		// Telegraf users expect context.match to contain the relevant match
+		context.match = match
 
 		// eslint-disable-next-line no-await-in-loop
 		if (await sub.canEnter(context)) {
