@@ -105,12 +105,22 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 				await Promise.all([
 					this._sendMenu(responder.menu, context, targetPath),
 					context.answerCbQuery()
+						.catch(catchCallbackOld)
 				])
 			}
 		})
 
 		return composer.middleware()
 	}
+}
+
+function catchCallbackOld(error: any): void {
+	if (error instanceof Error && error.message.includes('query is too old and response timeout expired')) {
+		// ignore
+		return
+	}
+
+	throw error
 }
 
 function responderMatch<Context>(responder: Responder<Context>, path: string): RegExpExecArray | null {

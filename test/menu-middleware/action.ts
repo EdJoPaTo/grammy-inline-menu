@@ -446,3 +446,109 @@ test('action in non existing submenu updates main menu', async t => {
 		}
 	})
 })
+
+test('action run took too long and updating menu afterwards tries to answerCbQuery and fails as being old but does not throw', async t => {
+	t.plan(2)
+	const action: ButtonAction<TelegrafContext> = {
+		trigger: /^\/what$/,
+		doFunction: () => {
+			return '.'
+		}
+	}
+	const menu: MenuLike<TelegrafContext> = {
+		listSubmenus: () => new Set([]),
+		renderActionHandlers: () => new Set([action]),
+		renderBody: () => 'whatever',
+		renderKeyboard: () => []
+	}
+	const mm = new MenuMiddleware('/', menu, {
+		sendMenu: async () => {
+			return Promise.resolve()
+		}
+	})
+
+	const bot = new Telegraf('')
+	bot.context.reply = () => {
+		t.fail('Use sendMenu instead')
+		throw new Error('Use sendMenu instead')
+	}
+
+	bot.context.answerCbQuery = async () => {
+		t.pass()
+		throw new Error('Bad Request: query is too old and response timeout expired or query ID is invalid')
+	}
+
+	bot.use(mm.middleware())
+
+	bot.use(() => {
+		t.fail()
+	})
+
+	await t.notThrowsAsync(async () =>
+		bot.handleUpdate({
+			update_id: 666,
+			callback_query: {
+				id: '666',
+				from: {} as any,
+				chat_instance: '666',
+				data: '/what'
+			}
+		})
+	)
+})
+
+test('updating menu still throw unknown error from answerCbQuery', async t => {
+	t.plan(2)
+	const action: ButtonAction<TelegrafContext> = {
+		trigger: /^\/what$/,
+		doFunction: () => {
+			return '.'
+		}
+	}
+	const menu: MenuLike<TelegrafContext> = {
+		listSubmenus: () => new Set([]),
+		renderActionHandlers: () => new Set([action]),
+		renderBody: () => 'whatever',
+		renderKeyboard: () => []
+	}
+	const mm = new MenuMiddleware('/', menu, {
+		sendMenu: async () => {
+			return Promise.resolve()
+		}
+	})
+
+	const bot = new Telegraf('')
+	bot.context.reply = () => {
+		t.fail('Use sendMenu instead')
+		throw new Error('Use sendMenu instead')
+	}
+
+	bot.context.answerCbQuery = async () => {
+		t.pass()
+		throw new Error('Whatever went wrong here for the test')
+	}
+
+	bot.use(mm.middleware())
+
+	bot.use(() => {
+		t.fail()
+	})
+
+	bot.catch((error: any) => {
+		if (error instanceof Error) {
+			t.is(error.message, 'Whatever went wrong here for the test')
+		} else {
+			t.fail('not an error?')
+		}
+	})
+
+	await bot.handleUpdate({
+		update_id: 666,
+		callback_query: {
+			id: '666',
+			from: {} as any,
+			chat_instance: '666',
+			data: '/what'
+		}
+	})
+})
