@@ -2,7 +2,7 @@ import {Composer, Context as TelegrafContext} from 'telegraf'
 import {Message} from 'telegraf/typings/telegram-types'
 
 import {ActionFunc} from './action-hive'
-import {combineTrigger, ensurePathMenu, combinePath} from './path'
+import {combineTrigger, ensureRootMenuTrigger, combinePath} from './path'
 import {ContextPathFunc, RegExpLike} from './generic-types'
 import {MenuLike} from './menu-like'
 import {SendMenuFunc, editMenuOnContext, replyMenuToContext} from './send-menu'
@@ -34,13 +34,13 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 	private readonly _responder: MenuResponder<Context>
 
 	constructor(
-		public readonly rootPath: string,
+		public readonly rootTrigger: string | RegExpLike,
 		readonly rootMenu: MenuLike<Context>,
 		readonly options: Options<Context> = {}
 	) {
-		ensurePathMenu(rootPath)
-
-		this._responder = createResponder(new RegExp('^' + rootPath), () => true, rootMenu)
+		const rootTriggerRegex = typeof rootTrigger === 'string' ? new RegExp('^' + rootTrigger) : rootTrigger
+		ensureRootMenuTrigger(rootTriggerRegex)
+		this._responder = createResponder(rootTriggerRegex, () => true, rootMenu)
 
 		this._sendMenu = options.sendMenu ?? editMenuOnContext
 	}
@@ -52,11 +52,16 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 	 * const menuMiddleware = new MenuMiddleware('/', menuTemplate)
 	 * bot.command('start', async ctx => menuMiddleware.replyToContext(ctx))
 	 */
-	async replyToContext(context: Context, path = this.rootPath): Promise<Message> {
-		if (typeof path !== 'string') {
+	async replyToContext(context: Context, path = this.rootTrigger): Promise<Message> {
+		if (typeof path === 'function') {
 			// Happens when a JS User does this as next is the second argument and not a string:
 			// ctx.command('start', menuMiddleware.replyToContext)
 			throw new TypeError('Do not supply this as a middleware directly. Supply it as a function `ctx => menuMiddleware.replyToContext(ctx)`')
+		}
+
+		if (typeof path !== 'string') {
+			// Happens when the rootTrigger is a RegExp
+			throw new TypeError('You have to specify an absolute path explicitly as a string in the second argument.')
 		}
 
 		const {match, responder} = await getLongestMatchMenuResponder(context, path, this._responder)

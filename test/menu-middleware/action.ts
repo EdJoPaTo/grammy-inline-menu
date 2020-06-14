@@ -110,7 +110,7 @@ test('action is run and updating menu afterwards', async t => {
 })
 
 test('action returns non existing path afterwards throws Error', async t => {
-	t.plan(2)
+	t.plan(1)
 	const action: ButtonAction<TelegrafContext> = {
 		trigger: /^custom\/what$/,
 		doFunction: () => '/foo/'
@@ -122,9 +122,9 @@ test('action returns non existing path afterwards throws Error', async t => {
 		renderKeyboard: () => []
 	}
 	const mm = new MenuMiddleware('custom/', menu, {
-		sendMenu: async (_menu, _context, path) => {
-			t.is(path, 'custom/')
-			return Promise.resolve()
+		sendMenu: async () => {
+			t.fail('dont send main menu')
+			throw new Error('dont send main menu')
 		}
 	})
 
@@ -135,7 +135,7 @@ test('action returns non existing path afterwards throws Error', async t => {
 	}
 
 	bot.context.answerCbQuery = async () => {
-		t.pass()
+		t.fail()
 		return Promise.resolve(true)
 	}
 

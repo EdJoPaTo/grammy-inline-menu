@@ -148,3 +148,23 @@ test('fails with out of scope path', async t => {
 		{message: 'There is no menu which works with your supplied path: foo/'}
 	)
 })
+
+test('fails when rootTrigger is a regex and path is not explicit', async t => {
+	const menu: MenuLike<unknown> = {
+		listSubmenus: () => new Set(),
+		renderActionHandlers: () => new Set(),
+		renderBody: () => 'whatever',
+		renderKeyboard: () => []
+	}
+
+	const mm = new MenuMiddleware(/^tree(\d+)\//, menu)
+
+	await t.throwsAsync(
+		async () => {
+			await mm.replyToContext({} as any)
+		},
+		{
+			message: /absolute path explicitly as a string/
+		}
+	)
+})
