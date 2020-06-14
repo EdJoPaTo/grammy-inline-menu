@@ -171,6 +171,7 @@ test('not existing action updates menu', async t => {
 		trigger: /^\/what$/,
 		doFunction: () => {
 			t.fail('not the correct action')
+			throw new Error('not the correct action')
 		}
 	}
 	const menu: MenuLike<TelegrafContext> = {
@@ -282,6 +283,7 @@ test('not existing action in submenu updates submenu', async t => {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
 			t.fail('not the correct action')
+			throw new Error('not the correct action')
 		}
 	}
 	const submenuMenu: MenuLike<TelegrafContext> = {
@@ -342,6 +344,7 @@ test('action in hidden submenu updates main menu', async t => {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
 			t.fail('submenu is hidden')
+			throw new Error('submenu is hidden')
 		}
 	}
 	const submenuMenu: MenuLike<TelegrafContext> = {
@@ -402,6 +405,7 @@ test('action in non existing submenu updates main menu', async t => {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
 			t.fail('submenu is hidden')
+			throw new Error('submenu is hidden')
 		}
 	}
 	const submenuMenu: MenuLike<TelegrafContext> = {

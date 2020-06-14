@@ -8,6 +8,7 @@ test('buttons hidden', async t => {
 		hide: () => true,
 		do: () => {
 			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
@@ -19,6 +20,7 @@ test('buttons', async t => {
 	menu.choose('unique', ['Button'], {
 		do: () => {
 			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
@@ -33,6 +35,7 @@ test('action triggers', t => {
 	menu.choose('unique', ['Button'], {
 		do: () => {
 			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 
@@ -49,6 +52,7 @@ test('action hidden', async t => {
 		hide: () => true,
 		do: () => {
 			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 
@@ -79,6 +83,7 @@ test('action not existing button', async t => {
 	menu.choose('unique', ['Button'], {
 		do: () => {
 			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 
@@ -98,6 +103,7 @@ test('with pagnination buttons', async t => {
 		},
 		do: () => {
 			t.fail('dont run the do function when pagination is of interest')
+			throw new Error('dont run the do function when pagination is of interest')
 		}
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
@@ -131,6 +137,7 @@ test('set page action', async t => {
 		},
 		do: () => {
 			t.fail('dont run the do function when pagination is of interest')
+			throw new Error('dont call the do function when pagination is of interest')
 		}
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]

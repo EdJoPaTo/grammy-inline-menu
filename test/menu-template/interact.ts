@@ -8,6 +8,7 @@ test('button is added to keyboard', async t => {
 	menu.interact('Button', 'unique', {
 		do: () => {
 			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 
@@ -28,6 +29,7 @@ test('button is added to keyboard with text function', async t => {
 	menu.interact(() => 'Button', 'unique', {
 		do: () => {
 			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 
@@ -49,6 +51,7 @@ test('hidden button is not shown on keyboard', async t => {
 		hide: () => true,
 		do: () => {
 			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 
@@ -62,6 +65,7 @@ test('action is added with correct trigger', t => {
 	menu.interact('Button', 'unique', {
 		do: () => {
 			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 
@@ -99,6 +103,7 @@ test('action can not be called when hidden', async t => {
 		hide: () => true,
 		do: () => {
 			t.fail('do not call this function when hidden')
+			throw new Error('do not call this function when hidden')
 		}
 	})
 
