@@ -359,15 +359,12 @@ export class MenuTemplate<Context> {
 			return createPaginationChoices(totalPages, currentPage)
 		}
 
-		this.choose(actionPrefix, paginationChoices, {
+		const trigger = new RegExp(actionPrefix + ':(\\d+)$')
+		this._actions.add(trigger, setPageAction(trigger, options.setPage), options.hide)
+		this._keyboard.addCreator(generateChoicesButtons(actionPrefix, false, paginationChoices, {
 			columns: 5,
-			hide: options.hide,
-			do: async (context, key) => {
-				const page = Number(key)
-				await options.setPage(context, page)
-				return '.'
-			}
-		})
+			hide: options.hide
+		}))
 	}
 
 	/**

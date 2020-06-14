@@ -91,20 +91,21 @@ test('action trigger', t => {
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	t.is(actions.length, 1)
 
-	t.is(actions[0].trigger.source, '^\\/unique:(.+)$')
+	t.is(actions[0].trigger.source, '^\\/unique:(\\d+)$')
 })
 
 test('action sets page', async t => {
-	t.plan(7)
+	t.plan(5)
+	const errorMessage = 'The current status is not relevant when setting the page. It is validated when its important anyway.'
 	const menu = new MenuTemplate<string>('whatever')
 	menu.pagination('unique', {
-		getCurrentPage: context => {
-			t.is(context, 'foo')
-			return 1
+		getCurrentPage: () => {
+			t.fail(errorMessage)
+			throw new Error(errorMessage)
 		},
-		getTotalPages: context => {
-			t.is(context, 'foo')
-			return 4
+		getTotalPages: () => {
+			t.fail(errorMessage)
+			throw new Error(errorMessage)
 		},
 		setPage: (context, page) => {
 			t.is(context, 'foo')
@@ -117,5 +118,5 @@ test('action sets page', async t => {
 	const result = await actions[0].doFunction('foo', '/unique:2')
 	t.is(result, '.')
 
-	t.is(actions[0].trigger.source, '^\\/unique:(.+)$')
+	t.is(actions[0].trigger.source, '^\\/unique:(\\d+)$')
 })
