@@ -145,6 +145,6 @@ test('fails with out of scope path', async t => {
 
 	await t.throwsAsync(
 		async () => mm.replyToContext({} as any, 'foo/'),
-		{message: 'There is no menu which works with your supplied path'}
+		{message: 'There is no menu which works with your supplied path: foo/'}
 	)
 })

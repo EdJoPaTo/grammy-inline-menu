@@ -109,7 +109,7 @@ test('action is run and updating menu afterwards', async t => {
 	})
 })
 
-test('action returns non existing path afterwards updates main menu', async t => {
+test('action returns non existing path afterwards throws Error', async t => {
 	t.plan(2)
 	const action: ButtonAction<TelegrafContext> = {
 		trigger: /^custom\/what$/,
@@ -143,6 +143,15 @@ test('action returns non existing path afterwards updates main menu', async t =>
 
 	bot.use(() => {
 		t.fail()
+	})
+
+	// TODO: improve typings when telegraf 3.39 is released
+	bot.catch((error: any) => {
+		if (error instanceof Error) {
+			t.is(error.message, 'There is no menu "/foo/" which can be reached in this menu')
+		} else {
+			t.fail()
+		}
 	})
 
 	await bot.handleUpdate({

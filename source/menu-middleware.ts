@@ -61,7 +61,7 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 
 		const {match, responder} = await getLongestMatchMenuResponder(context, path, this._responder)
 		if (!match) {
-			throw new Error('There is no menu which works with your supplied path')
+			throw new Error('There is no menu which works with your supplied path: ' + path)
 		}
 
 		return replyMenuToContext(responder.menu, context, path)
@@ -100,8 +100,13 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 
 			if (target) {
 				const {match, responder} = await getLongestMatchMenuResponder(context, target, this._responder)
+				if (!match) {
+					// TODO: think about using next() in this case?
+					throw new Error(`There is no menu "${target}" which can be reached in this menu`)
+				}
+
 				context.match = match
-				const targetPath = match?.[0] ?? this.rootPath
+				const targetPath = match[0]
 				await Promise.all([
 					this._sendMenu(responder.menu, context, targetPath),
 					context.answerCbQuery()
