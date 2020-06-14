@@ -112,11 +112,9 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 
 				context.match = match
 				const targetPath = match[0]
-				await Promise.all([
-					this._sendMenu(responder.menu, context, targetPath),
-					context.answerCbQuery()
-						.catch(catchCallbackOld)
-				])
+				await this._sendMenu(responder.menu, context, targetPath)
+				await context.answerCbQuery()
+					.catch(catchCallbackOld)
 			}
 		})
 

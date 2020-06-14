@@ -506,7 +506,7 @@ test('action run took too long and updating menu afterwards tries to answerCbQue
 	)
 })
 
-test('updating menu still throw unknown error from answerCbQuery', async t => {
+test('updating menu still throws unknown error from answerCbQuery', async t => {
 	t.plan(2)
 	const action: ButtonAction<TelegrafContext> = {
 		trigger: /^\/what$/,
