@@ -55,7 +55,6 @@ test('action is run and no path to update afterwards is returned', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -112,7 +111,6 @@ test('action is run and an empty path to update afterwards is returned throws', 
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 

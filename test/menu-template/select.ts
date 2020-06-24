@@ -7,11 +7,10 @@ test('buttons hidden', async t => {
 	menu.select('unique', ['Button'], {
 		hide: () => true,
 		isSet: () => {
-			t.fail('do not call this function when hidden')
 			throw new Error('do not call this function when hidden')
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
@@ -28,7 +27,7 @@ test('button true', async t => {
 			return true
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
@@ -48,7 +47,7 @@ test('button false', async t => {
 			return false
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
@@ -69,7 +68,7 @@ test('button false with emoji', async t => {
 			return false
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
@@ -83,11 +82,10 @@ test('action triggers', t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
 		isSet: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 
@@ -105,11 +103,10 @@ test('action hidden', async t => {
 	menu.select('unique', ['Button'], {
 		hide: () => true,
 		isSet: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 
@@ -127,7 +124,6 @@ test('action true', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
 		isSet: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		},
 		set: (context, key, newState) => {
@@ -148,7 +144,6 @@ test('action false', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
 		isSet: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		},
 		set: (context, key, newState) => {
@@ -170,7 +165,7 @@ test('with pagnination buttons', async t => {
 		columns: 1,
 		maxRows: 1,
 		setPage: () => {
-			t.fail('dont set the page on rendering buttons')
+			throw new Error('dont set the page on rendering buttons')
 		},
 		isSet: (context, key) => {
 			t.is(context, 'foo')
@@ -178,7 +173,7 @@ test('with pagnination buttons', async t => {
 			return false
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
@@ -211,11 +206,10 @@ test('set page action', async t => {
 			t.is(page, 2)
 		},
 		isSet: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]

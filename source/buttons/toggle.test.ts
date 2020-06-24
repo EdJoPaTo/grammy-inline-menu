@@ -6,11 +6,10 @@ test('hidden does not render any button', async t => {
 	const func = generateToggleButton('text', 'pre', {
 		hide: () => true,
 		isSet: () => {
-			t.fail('do not call as its hidden')
 			throw new Error('do not call as its hidden')
 		},
 		set: () => {
-			t.fail('do not call as its hidden')
+			throw new Error('do not call as its hidden')
 		}
 	})
 
@@ -22,7 +21,7 @@ test('is true button', async t => {
 	const func = generateToggleButton('text', 'pre', {
 		isSet: () => true,
 		set: () => {
-			t.fail('do not call as the button is not hit')
+			throw new Error('do not call as the button is not hit')
 		}
 	})
 
@@ -37,7 +36,7 @@ test('is false button', async t => {
 	const func = generateToggleButton('text', 'pre', {
 		isSet: () => false,
 		set: () => {
-			t.fail('do not call as the button is not hit')
+			throw new Error('do not call as the button is not hit')
 		}
 	})
 
@@ -52,7 +51,7 @@ test('own format', async t => {
 	const func = generateToggleButton('text', 'pre', {
 		isSet: () => true,
 		set: () => {
-			t.fail('do not call as the button is not hit')
+			throw new Error('do not call as the button is not hit')
 		},
 		formatState: (_context, text, state) => {
 			t.is(text, 'text')
@@ -72,7 +71,7 @@ test('async text', async t => {
 	const func = generateToggleButton(() => 'text', 'pre', {
 		isSet: () => true,
 		set: () => {
-			t.fail('do not call as the button is not hit')
+			throw new Error('do not call as the button is not hit')
 		}
 	})
 

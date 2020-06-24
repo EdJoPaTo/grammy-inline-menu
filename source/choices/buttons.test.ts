@@ -31,7 +31,7 @@ test('creates pagination buttons', async t => {
 		columns: 1,
 		maxRows: 1,
 		setPage: () => {
-			t.fail('no need to call setPage on keyboard creation')
+			throw new Error('no need to call setPage on keyboard creation')
 		}
 	})
 	const buttons = await func(undefined, '/')
@@ -107,7 +107,6 @@ test('choice buttonText is used', async t => {
 
 test('hidden does not render any buttons', async t => {
 	const choiceFunction = (): never => {
-		t.fail('hidden -> dont call choices')
 		throw new Error('hidden -> dont call choices')
 	}
 

@@ -50,7 +50,7 @@ test('with pagnination buttons', async t => {
 		columns: 1,
 		maxRows: 1,
 		setPage: () => {
-			t.fail('dont set the page on rendering buttons')
+			throw new Error('dont set the page on rendering buttons')
 		}
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')

@@ -24,7 +24,6 @@ test('select set', t => {
 		// @ts-expect-error
 		menu.select('unique', [], {
 			isSet: () => {
-				t.fail('dont call this function')
 				throw new Error('dont call this function')
 			}
 		})
@@ -37,7 +36,6 @@ test('select isSet', t => {
 		// @ts-expect-error
 		menu.select('unique', [], {
 			set: () => {
-				t.fail('dont call this function')
 				throw new Error('dont call this function')
 			}
 		})
@@ -50,7 +48,6 @@ test('toggle set', t => {
 		// @ts-expect-error
 		menu.toggle('Button', 'unique', {
 			isSet: () => {
-				t.fail('dont call this function')
 				throw new Error('dont call this function')
 			}
 		})
@@ -63,7 +60,6 @@ test('toggle isSet', t => {
 		// @ts-expect-error
 		menu.toggle('Button', 'unique', {
 			set: () => {
-				t.fail('dont call this function')
 				throw new Error('dont call this function')
 			}
 		})
@@ -76,11 +72,9 @@ test('pagination getCurrentPage', t => {
 		// @ts-expect-error
 		menu.pagination('unique', {
 			getTotalPages: () => {
-				t.fail('dont call this function')
 				throw new Error('dont call this function')
 			},
 			setPage: () => {
-				t.fail('dont call this function')
 				throw new Error('dont call this function')
 			}
 		})
@@ -93,11 +87,9 @@ test('pagination getTotalPages', t => {
 		// @ts-expect-error
 		menu.pagination('unique', {
 			getCurrentPage: () => {
-				t.fail('dont call this function')
 				throw new Error('dont call this function')
 			},
 			setPage: () => {
-				t.fail('dont call this function')
 				throw new Error('dont call this function')
 			}
 		})
@@ -110,11 +102,9 @@ test('pagination setPage', t => {
 		// @ts-expect-error
 		menu.pagination('unique', {
 			getCurrentPage: () => {
-				t.fail('dont call this function')
 				throw new Error('dont call this function')
 			},
 			getTotalPages: () => {
-				t.fail('dont call this function')
 				throw new Error('dont call this function')
 			}
 		})

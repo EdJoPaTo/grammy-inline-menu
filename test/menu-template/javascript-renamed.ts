@@ -8,7 +8,7 @@ test('interaction doFunc', t => {
 		menu.interact('Button', 'unique', {
 			// @ts-expect-error
 			doFunc: () => {
-				t.fail('dont call this function')
+				throw new Error('dont call this function')
 			}
 		})
 	}, {
@@ -22,7 +22,7 @@ test('select set', t => {
 		menu.select('unique', [], {
 			// @ts-expect-error
 			setFunc: () => {
-				t.fail('dont call this function')
+				throw new Error('dont call this function')
 			}
 		})
 	}, {message: /renamed to/})
@@ -34,7 +34,7 @@ test('choose do', t => {
 		menu.choose('unique', [], {
 			// @ts-expect-error
 			doFunc: () => {
-				t.fail('dont call this function')
+				throw new Error('dont call this function')
 			}
 		})
 	}, {message: /renamed to/})
@@ -46,7 +46,7 @@ test('select isSet', t => {
 		menu.select('unique', [], {
 			// @ts-expect-error
 			isSetFunc: () => {
-				t.fail('dont call this function')
+				throw new Error('dont call this function')
 			}
 		})
 	}, {message: /renamed to/})
@@ -58,7 +58,7 @@ test('toggle set', t => {
 		menu.toggle('Button', 'unique', {
 			// @ts-expect-error
 			setFunc: () => {
-				t.fail('dont call this function')
+				throw new Error('dont call this function')
 			}
 		})
 	}, {message: /renamed to/})
@@ -70,7 +70,7 @@ test('toggle isSet', t => {
 		menu.toggle('Button', 'unique', {
 			// @ts-expect-error
 			isSetFunc: () => {
-				t.fail('dont call this function')
+				throw new Error('dont call this function')
 			}
 		})
 	}, {message: /renamed to/})

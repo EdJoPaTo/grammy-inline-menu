@@ -34,7 +34,6 @@ test('root path responds main menu', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -89,7 +88,6 @@ test('submenu path responds submenu when not hidden', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -144,7 +142,6 @@ test('submenu path responds submenu when no hide function', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -199,7 +196,6 @@ test('submenu path responds main menu when hidden', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 

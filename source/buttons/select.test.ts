@@ -6,7 +6,7 @@ test('empty choices no buttons', async t => {
 	const func = generateSelectButtons('pre', [], {
 		isSet: () => false,
 		set: () => {
-			t.fail('no need to call set on keyboard creation')
+			throw new Error('no need to call set on keyboard creation')
 		}
 	})
 
@@ -18,7 +18,7 @@ test('is set creates false button', async t => {
 	const func = generateSelectButtons('pre', ['a'], {
 		isSet: () => true,
 		set: () => {
-			t.fail('no need to call set on keyboard creation')
+			throw new Error('no need to call set on keyboard creation')
 		}
 	})
 
@@ -33,7 +33,7 @@ test('is not set creates true button', async t => {
 	const func = generateSelectButtons('pre', ['a'], {
 		isSet: () => false,
 		set: () => {
-			t.fail('no need to call set on keyboard creation')
+			throw new Error('no need to call set on keyboard creation')
 		}
 	})
 
@@ -49,7 +49,7 @@ test('showFalseEmoji also prefixes currently false buttons', async t => {
 		showFalseEmoji: true,
 		isSet: () => false,
 		set: () => {
-			t.fail('no need to call set on keyboard creation')
+			throw new Error('no need to call set on keyboard creation')
 		}
 	})
 
@@ -66,10 +66,10 @@ test('creates pagination buttons', async t => {
 		maxRows: 1,
 		isSet: () => false,
 		set: () => {
-			t.fail('no need to call set on keyboard creation')
+			throw new Error('no need to call set on keyboard creation')
 		},
 		setPage: () => {
-			t.fail('no need to call setPage on keyboard creation')
+			throw new Error('no need to call setPage on keyboard creation')
 		}
 	})
 	const buttons = await func(undefined, '/')
@@ -98,7 +98,7 @@ test('show keys of page 2', async t => {
 		getCurrentPage: () => 2,
 		isSet: () => false,
 		set: () => {
-			t.fail('no need to call set on keyboard creation')
+			throw new Error('no need to call set on keyboard creation')
 		}
 	})
 	const buttons = await func(undefined, '/')
@@ -118,7 +118,7 @@ test('choice function is run', async t => {
 	const func = generateSelectButtons('pre', choiceFunction, {
 		isSet: () => false,
 		set: () => {
-			t.fail('no need to call set on keyboard creation')
+			throw new Error('no need to call set on keyboard creation')
 		}
 	})
 
@@ -134,18 +134,16 @@ test('choice function is run', async t => {
 
 test('hidden does not render any buttons', async t => {
 	const choiceFunction = (): never => {
-		t.fail('hidden -> dont call choices')
 		throw new Error('hidden -> dont call choices')
 	}
 
 	const func = generateSelectButtons('pre', choiceFunction, {
 		hide: () => true,
 		isSet: () => {
-			t.fail('dont call as its hidden')
 			throw new Error('dont call as its hidden')
 		},
 		set: () => {
-			t.fail('no need to call set on keyboard creation')
+			throw new Error('no need to call set on keyboard creation')
 		}
 	})
 	const buttons = await func(undefined, '/')
@@ -156,7 +154,7 @@ test('format state', async t => {
 	const func = generateSelectButtons('pre', ['a'], {
 		isSet: () => true,
 		set: () => {
-			t.fail('no need to call set on keyboard creation')
+			throw new Error('no need to call set on keyboard creation')
 		},
 		formatState: (_context, textResult, state, key) => {
 			t.is(textResult, 'a')

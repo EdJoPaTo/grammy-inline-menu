@@ -25,14 +25,12 @@ test('action is run without updating menu afterwards', async t => {
 	}
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async () => {
-			t.fail('dont open the menu')
 			throw new Error('dont open the menu')
 		}
 	})
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -84,7 +82,6 @@ test('action is run and updating menu afterwards with path', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -136,7 +133,6 @@ test('action is run and updating menu afterwards with true', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -176,14 +172,12 @@ test('action returns non existing path afterwards throws Error', async t => {
 	}
 	const mm = new MenuMiddleware('custom/', menu, {
 		sendMenu: async () => {
-			t.fail('dont send main menu')
 			throw new Error('dont send main menu')
 		}
 	})
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -223,7 +217,6 @@ test('not existing action updates menu', async t => {
 	const action: ButtonAction<TelegrafContext> = {
 		trigger: /^\/what$/,
 		doFunction: () => {
-			t.fail('not the correct action')
 			throw new Error('not the correct action')
 		}
 	}
@@ -242,7 +235,6 @@ test('not existing action updates menu', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -298,14 +290,12 @@ test('action in submenu is run', async t => {
 	}
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async () => {
-			t.fail('dont open the menu')
 			throw new Error('dont open the menu')
 		}
 	})
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -336,7 +326,6 @@ test('not existing action in submenu updates submenu', async t => {
 	const action: ButtonAction<TelegrafContext> = {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
-			t.fail('not the correct action')
 			throw new Error('not the correct action')
 		}
 	}
@@ -366,7 +355,6 @@ test('not existing action in submenu updates submenu', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -397,7 +385,6 @@ test('action in hidden submenu updates main menu', async t => {
 	const action: ButtonAction<TelegrafContext> = {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
-			t.fail('submenu is hidden')
 			throw new Error('submenu is hidden')
 		}
 	}
@@ -427,7 +414,6 @@ test('action in hidden submenu updates main menu', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -458,7 +444,6 @@ test('action in non existing submenu updates main menu', async t => {
 	const action: ButtonAction<TelegrafContext> = {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
-			t.fail('submenu is hidden')
 			throw new Error('submenu is hidden')
 		}
 	}
@@ -488,7 +473,6 @@ test('action in non existing submenu updates main menu', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -536,7 +520,6 @@ test('action run took too long and updating menu afterwards tries to answerCbQue
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -586,7 +569,6 @@ test('updating menu still throws unknown error from answerCbQuery', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 

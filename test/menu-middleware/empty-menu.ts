@@ -77,7 +77,6 @@ test('default root path is responded', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -121,7 +120,6 @@ test('custom root path is responded', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -165,7 +163,6 @@ test('custom regex root path is responded', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 
@@ -237,7 +234,6 @@ test('not existing path below is responded with root menu', async t => {
 
 	const bot = new Telegraf('')
 	bot.context.reply = () => {
-		t.fail('Use sendMenu instead')
 		throw new Error('Use sendMenu instead')
 	}
 

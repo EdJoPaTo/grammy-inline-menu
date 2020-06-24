@@ -89,7 +89,6 @@ test('adding two times the same trigger throws', t => {
 	const a = new ActionHive()
 
 	const doFunction: ActionFunc<unknown> = () => {
-		t.fail('the do Function has not to be called')
 		throw new Error('the do Function has not to be called')
 	}
 

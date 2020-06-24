@@ -7,11 +7,10 @@ test('button hidden', async t => {
 	menu.toggle('Button', 'unique', {
 		hide: () => true,
 		isSet: () => {
-			t.fail('do not call this function when hidden')
 			throw new Error('do not call this function when hidden')
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
@@ -27,7 +26,7 @@ test('button true', async t => {
 			return true
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
@@ -46,7 +45,7 @@ test('button false', async t => {
 			return false
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
@@ -61,11 +60,10 @@ test('action triggers', t => {
 	menu.toggle('Button', 'unique', {
 		hide: () => true,
 		isSet: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 
@@ -83,11 +81,10 @@ test('action hidden', async t => {
 	menu.toggle('Button', 'unique', {
 		hide: () => true,
 		isSet: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		},
 		set: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 
@@ -104,7 +101,6 @@ test('action true', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
 		isSet: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		},
 		set: (context, newState, path) => {
@@ -124,7 +120,6 @@ test('action false', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
 		isSet: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		},
 		set: (context, newState, path) => {

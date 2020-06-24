@@ -7,15 +7,13 @@ test('buttons hidden', async t => {
 	menu.pagination('unique', {
 		hide: () => true,
 		getCurrentPage: () => {
-			t.fail('do not call this function when hidden')
 			throw new Error('do not call this function when hidden')
 		},
 		getTotalPages: () => {
-			t.fail('do not call this function when hidden')
 			throw new Error('do not call this function when hidden')
 		},
 		setPage: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
@@ -27,15 +25,13 @@ test('action hidden', async t => {
 	menu.pagination('unique', {
 		hide: () => true,
 		getCurrentPage: () => {
-			t.fail('do not call this function when hidden')
 			throw new Error('do not call this function when hidden')
 		},
 		getTotalPages: () => {
-			t.fail('do not call this function when hidden')
 			throw new Error('do not call this function when hidden')
 		},
 		setPage: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -57,7 +53,7 @@ test('buttons 2 pages', async t => {
 			return 2
 		},
 		setPage: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
@@ -77,15 +73,13 @@ test('action trigger', t => {
 	const menu = new MenuTemplate('whatever')
 	menu.pagination('unique', {
 		getCurrentPage: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		},
 		getTotalPages: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		},
 		setPage: () => {
-			t.fail('do not call this function')
+			throw new Error('do not call this function')
 		}
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]

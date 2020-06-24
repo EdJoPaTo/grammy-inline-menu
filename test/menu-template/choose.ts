@@ -7,7 +7,6 @@ test('buttons hidden', async t => {
 	menu.choose('unique', ['Button'], {
 		hide: () => true,
 		do: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		}
 	})
@@ -19,7 +18,6 @@ test('buttons', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.choose('unique', ['Button'], {
 		do: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		}
 	})
@@ -34,7 +32,6 @@ test('action triggers', t => {
 	const menu = new MenuTemplate('whatever')
 	menu.choose('unique', ['Button'], {
 		do: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		}
 	})
@@ -51,7 +48,6 @@ test('action hidden', async t => {
 	menu.choose('unique', ['Button'], {
 		hide: () => true,
 		do: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		}
 	})
@@ -82,7 +78,6 @@ test('action not existing button', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.choose('unique', ['Button'], {
 		do: () => {
-			t.fail('do not call this function')
 			throw new Error('do not call this function')
 		}
 	})
@@ -99,10 +94,9 @@ test('with pagnination buttons', async t => {
 		columns: 1,
 		maxRows: 1,
 		setPage: () => {
-			t.fail('dont set the page on rendering buttons')
+			throw new Error('dont set the page on rendering buttons')
 		},
 		do: () => {
-			t.fail('dont run the do function when pagination is of interest')
 			throw new Error('dont run the do function when pagination is of interest')
 		}
 	})
@@ -136,7 +130,6 @@ test('set page action', async t => {
 			t.is(page, 2)
 		},
 		do: () => {
-			t.fail('dont run the do function when pagination is of interest')
 			throw new Error('dont call the do function when pagination is of interest')
 		}
 	})
