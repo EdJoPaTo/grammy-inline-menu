@@ -31,6 +31,10 @@ test('combinePath fails on relative ./', t => {
 	t.throws(() => combinePath('/whatever/', './'), {message: /\.\//})
 })
 
+test('combinePath fails on empty relative', t => {
+	t.throws(() => combinePath('/whatever/', ''), {message: /empty string is not a relative path/})
+})
+
 test('ensureRootMenuTrigger does not throw on good trigger', t => {
 	t.notThrows(() => ensureRootMenuTrigger(/^blubb\//))
 })

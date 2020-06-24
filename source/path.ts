@@ -55,6 +55,10 @@ export function ensureRootMenuTrigger(trigger: RegExpLike): void {
 }
 
 export function combinePath(parent: string, relativePath: string): string {
+	if (relativePath === '') {
+		throw new Error('an empty string is not a relative path')
+	}
+
 	if (relativePath.startsWith('./')) {
 		throw new Error('the path can start without prefixing it with ./ When navigating to the current menu use an empty string or . (dot)')
 	}
@@ -72,6 +76,10 @@ export function combinePath(parent: string, relativePath: string): string {
 		}
 
 		const newParent = parentSegments.slice(0, -2).join('/') + '/'
+		if (restOfRelative === '') {
+			return newParent
+		}
+
 		return combinePath(newParent, restOfRelative)
 	}
 
