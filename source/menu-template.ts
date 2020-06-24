@@ -33,8 +33,7 @@ export class MenuTemplate<Context> {
 	 * @param context Context to be supplied to the buttons on on creation
 	 */
 	async renderBody(context: Context, path: string): Promise<Body> {
-		const body = await this._body(context, path)
-		return body
+		return this._body(context, path)
 	}
 
 	/**

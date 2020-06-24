@@ -32,8 +32,7 @@ export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, mes
 export async function replyMenuToContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
 	const body = await menu.renderBody(context, path)
 	const keyboard = await menu.renderKeyboard(context, path)
-	const message = await replyRenderedMenuPartsToContext(body, keyboard, context, extra)
-	return message
+	return replyRenderedMenuPartsToContext(body, keyboard, context, extra)
 }
 
 /**
