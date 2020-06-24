@@ -14,6 +14,7 @@ test('action is run without updating menu afterwards', async t => {
 			t.is(context.match![0], '/what')
 			t.is(context.match![1], undefined)
 			t.is(path, '/what')
+			return false
 		}
 	}
 	const menu: MenuLike<TelegrafContext> = {
@@ -57,7 +58,7 @@ test('action is run without updating menu afterwards', async t => {
 	})
 })
 
-test('action is run and updating menu afterwards', async t => {
+test('action is run and updating menu afterwards with path', async t => {
 	t.plan(5)
 	const action: ButtonAction<TelegrafContext> = {
 		trigger: /^\/what$/,
@@ -66,6 +67,58 @@ test('action is run and updating menu afterwards', async t => {
 			t.is(context.match![1], undefined)
 			t.is(path, '/what')
 			return '.'
+		}
+	}
+	const menu: MenuLike<TelegrafContext> = {
+		listSubmenus: () => new Set([]),
+		renderActionHandlers: () => new Set([action]),
+		renderBody: () => 'whatever',
+		renderKeyboard: () => []
+	}
+	const mm = new MenuMiddleware('/', menu, {
+		sendMenu: async (_menu, _context, path) => {
+			t.is(path, '/')
+			return Promise.resolve()
+		}
+	})
+
+	const bot = new Telegraf('')
+	bot.context.reply = () => {
+		t.fail('Use sendMenu instead')
+		throw new Error('Use sendMenu instead')
+	}
+
+	bot.context.answerCbQuery = async () => {
+		t.pass()
+		return Promise.resolve(true)
+	}
+
+	bot.use(mm.middleware())
+
+	bot.use(() => {
+		t.fail()
+	})
+
+	await bot.handleUpdate({
+		update_id: 666,
+		callback_query: {
+			id: '666',
+			from: {} as any,
+			chat_instance: '666',
+			data: '/what'
+		}
+	})
+})
+
+test('action is run and updating menu afterwards with true', async t => {
+	t.plan(5)
+	const action: ButtonAction<TelegrafContext> = {
+		trigger: /^\/what$/,
+		doFunction: (context, path) => {
+			t.is(context.match![0], '/what')
+			t.is(context.match![1], undefined)
+			t.is(path, '/what')
+			return true
 		}
 	}
 	const menu: MenuLike<TelegrafContext> = {
@@ -223,6 +276,7 @@ test('action in submenu is run', async t => {
 			t.is(context.match![0], '/submenu/what')
 			t.is(context.match![1], undefined)
 			t.is(path, '/submenu/what')
+			return false
 		}
 	}
 	const submenuMenu: MenuLike<TelegrafContext> = {

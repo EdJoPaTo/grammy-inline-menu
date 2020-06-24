@@ -97,8 +97,12 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 
 					if (typeof afterwardsTarget === 'string' && afterwardsTarget) {
 						target = combinePath(path, afterwardsTarget)
-					} else {
+					} else if (afterwardsTarget === true) {
+						target = combinePath(path, '.')
+					} else if (afterwardsTarget === false) {
 						target = undefined
+					} else {
+						throw new Error('You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.')
 					}
 				}
 			}

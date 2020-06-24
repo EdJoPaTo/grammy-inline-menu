@@ -20,6 +20,8 @@ menu.interact('interaction', 'interact', {
 	hide: () => mainMenuToggle,
 	do: async ctx => {
 		await ctx.answerCbQuery('you clicked me!')
+		// Do not update the menu afterwards
+		return false
 	}
 })
 
@@ -28,7 +30,12 @@ menu.interact('update after action', 'update afterwards', {
 	hide: () => mainMenuToggle,
 	do: async ctx => {
 		await ctx.answerCbQuery('I will update the menu now…')
-		return '.'
+
+		return true
+
+		// You can return true to update the same menu or use a relative path
+		// For example '.' for the same menu or '..' for the parent menu
+		// return '.'
 	}
 })
 
@@ -168,6 +175,7 @@ const mediaMenu = new MenuTemplate<TelegrafContext>(() => {
 mediaMenu.interact('Just a button', 'randomButton', {
 	do: async ctx => {
 		await ctx.answerCbQuery('Just a callback query answer')
+		return false
 	}
 })
 mediaMenu.select('type', ['animation', 'document', 'photo1', 'photo2', 'video', 'just text'], {
