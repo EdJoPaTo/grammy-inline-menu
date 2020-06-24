@@ -107,13 +107,14 @@ test('action true', async t => {
 			t.is(context, 'foo')
 			t.is(newState, true)
 			t.is(path, '/unique:true')
+			return 'wow'
 		}
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	const action = actions.find(o => o.trigger.source.includes('true'))!
 	const result = await action.doFunction('foo', '/unique:true')
-	t.is(result, '.')
+	t.is(result, 'wow')
 })
 
 test('action false', async t => {
@@ -126,11 +127,12 @@ test('action false', async t => {
 			t.is(context, 'foo')
 			t.is(newState, false)
 			t.is(path, '/unique:false')
+			return 'wow'
 		}
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	const action = actions.find(o => o.trigger.source.includes('false'))!
 	const result = await action.doFunction('foo', '/unique:false')
-	t.is(result, '.')
+	t.is(result, 'wow')
 })

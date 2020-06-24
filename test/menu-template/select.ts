@@ -130,13 +130,14 @@ test('action true', async t => {
 			t.is(context, 'foo')
 			t.is(key, 'Button')
 			t.is(newState, true)
+			return 'wow'
 		}
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	const action = actions.find(o => o.trigger.source.includes('uniqueT'))!
 	const result = await action.doFunction('foo', '/uniqueT:Button')
-	t.is(result, '.')
+	t.is(result, 'wow')
 })
 
 test('action false', async t => {
@@ -150,13 +151,14 @@ test('action false', async t => {
 			t.is(context, 'foo')
 			t.is(key, 'Button')
 			t.is(newState, false)
+			return 'wow'
 		}
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	const action = actions.find(o => o.trigger.source.includes('uniqueF'))!
 	const result = await action.doFunction('foo', '/uniqueF:Button')
-	t.is(result, '.')
+	t.is(result, 'wow')
 })
 
 test('with pagnination buttons', async t => {

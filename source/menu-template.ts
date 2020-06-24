@@ -157,6 +157,7 @@ export class MenuTemplate<Context> {
 	 * menuTemplate.interact('Knock Knock', 'unique', {
 	 *   do: async context => {
 	 *     await context.answerCbQuery('Who is there?')
+	 *     return false // Do not update the menu afterwards
 	 *   }
 	 * })
 	 * @example
@@ -252,6 +253,7 @@ export class MenuTemplate<Context> {
 	 *   do: async ctx => {
 	 *     console.log('Take a look at ctx.match. It contains the chosen city', ctx.match)
 	 *     await ctx.answerCbQuery('You hit a button in a submenu')
+	 *     return false
 	 *   }
 	 * })
 	 * submenu.manualRow(createBackMainMenuButtons())
@@ -290,6 +292,7 @@ export class MenuTemplate<Context> {
 	 *   isSet: (context, key) => context.session.currentLocation === key,
 	 *   set: (context, key) => {
 	 *     context.session.currentLocation = key
+	 *     return true
 	 *   }
 	 * })
 	 * @example
@@ -299,6 +302,7 @@ export class MenuTemplate<Context> {
 	 *   isSet: (context, key) => Boolean(context.session.bodyparts[key]),
 	 *   set: (context, key, newState) => {
 	 *     context.session.bodyparts[key] = newState
+	 *     return true
 	 *   }
 	 * })
 	 */
@@ -316,8 +320,7 @@ export class MenuTemplate<Context> {
 			trueTrigger,
 			async (context, path) => {
 				const key = getKeyFromPath(trueTrigger, path)
-				await options.set(context, key, true)
-				return '.'
+				return options.set(context, key, true)
 			},
 			combineHideAndChoices(actionPrefix + 'T', choices, options.hide)
 		)
@@ -327,8 +330,7 @@ export class MenuTemplate<Context> {
 			falseTrigger,
 			async (context, path) => {
 				const key = getKeyFromPath(falseTrigger, path)
-				await options.set(context, key, false)
-				return '.'
+				return options.set(context, key, false)
 			},
 			combineHideAndChoices(actionPrefix + 'F', choices, options.hide)
 		)
@@ -378,6 +380,7 @@ export class MenuTemplate<Context> {
 	 *   isSet: context => Boolean(context.session.isFunny),
 	 *   set: (context, newState) => {
 	 *     context.session.isFunny = newState
+	 *     return true
 	 *   }
 	 * })
 	 * @example
@@ -387,6 +390,7 @@ export class MenuTemplate<Context> {
 	 *   isSet: context => Boolean(context.session.lamp),
 	 *   set: (context, newState) => {
 	 *     context.session.lamp = newState
+	 *     return true
 	 *   }
 	 * })
 	 */
@@ -401,19 +405,13 @@ export class MenuTemplate<Context> {
 
 		this._actions.add(
 			new RegExp(actionPrefix + ':true$'),
-			async (context, path) => {
-				await options.set(context, true, path)
-				return '.'
-			},
+			async (context, path) => options.set(context, true, path),
 			options.hide
 		)
 
 		this._actions.add(
 			new RegExp(actionPrefix + ':false$'),
-			async (context, path) => {
-				await options.set(context, false, path)
-				return '.'
-			},
+			async (context, path) => options.set(context, false, path),
 			options.hide
 		)
 

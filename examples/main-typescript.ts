@@ -12,6 +12,8 @@ let mainMenuToggle = false
 menu.toggle('toggle me', 'toggle me', {
 	set: (_, newState) => {
 		mainMenuToggle = newState
+		// Update the menu afterwards
+		return true
 	},
 	isSet: () => mainMenuToggle
 })
@@ -44,6 +46,7 @@ menu.select('select', ['A', 'B', 'C'], {
 	set: async (ctx, key) => {
 		selectedKey = key
 		await ctx.answerCbQuery(`you selected ${key}`)
+		return true
 	},
 	isSet: (_, key) => key === selectedKey
 })
@@ -82,6 +85,7 @@ foodSelectSubmenu.toggle('Prefer tea', 'tea', {
 	set: (ctx, choice) => {
 		const person = ctx.match![1]
 		people[person].tee = choice
+		return true
 	},
 	isSet: ctx => {
 		const person = ctx.match![1]
@@ -92,6 +96,7 @@ foodSelectSubmenu.select('food', food, {
 	set: (ctx, key) => {
 		const person = ctx.match![1]
 		people[person].food = key
+		return true
 	},
 	isSet: (ctx, key) => {
 		const person = ctx.match![1]
@@ -183,6 +188,7 @@ mediaMenu.select('type', ['animation', 'document', 'photo1', 'photo2', 'video', 
 	isSet: (_, key) => mediaOption === key,
 	set: (_, key) => {
 		mediaOption = key
+		return true
 	}
 })
 mediaMenu.manualRow(createBackMainMenuButtons())

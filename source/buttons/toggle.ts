@@ -7,7 +7,7 @@ import {SingleButtonOptions} from './basic'
 export type FormatStateFunction<Context> = (context: Context, text: string, state: boolean, path: string) => ConstOrPromise<string>
 
 export interface ToggleOptions<Context> extends SingleButtonOptions<Context> {
-	readonly set: (context: Context, newState: boolean, path: string) => ConstOrPromise<void>;
+	readonly set: (context: Context, newState: boolean, path: string) => ConstOrPromise<string | boolean>;
 	readonly isSet: ContextPathFunc<Context, boolean>;
 	readonly formatState?: FormatStateFunction<Context>;
 }
