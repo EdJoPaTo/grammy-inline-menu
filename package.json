@@ -75,12 +75,13 @@
 		"semicolon": false,
 		"rules": {
 			"@typescript-eslint/prefer-readonly-parameter-types": "error",
-			"ava/no-ignored-test-files": "off"
+			"ava/no-ignored-test-files": "off",
+			"camelcase": "off"
 		},
 		"overrides": [
 			{
 				"files": [
-					"examples/**/*.ts",
+					"examples/**/*.*",
 					"source/**/*.test.ts",
 					"test/**/*.ts"
 				],
