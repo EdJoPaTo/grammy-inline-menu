@@ -120,10 +120,7 @@ const mediaMenu = new MenuTemplate<TelegrafContext>(() => {
 	if (mediaOption === 'video') {
 		return {
 			type: 'video',
-			media: {
-				filename: 'android.mp4',
-				url: 'https://telegram.org/img/t_main_Android_demo.mp4'
-			},
+			media: 'https://telegram.org/img/t_main_Android_demo.mp4',
 			text: 'Just a caption for a video'
 		}
 	}
@@ -131,10 +128,7 @@ const mediaMenu = new MenuTemplate<TelegrafContext>(() => {
 	if (mediaOption === 'animation') {
 		return {
 			type: 'animation',
-			media: {
-				filename: 'android.mp4',
-				url: 'https://telegram.org/img/t_main_Android_demo.mp4'
-			},
+			media: 'https://telegram.org/img/t_main_Android_demo.mp4',
 			text: 'Just a caption for an animation'
 		}
 	}
@@ -142,10 +136,7 @@ const mediaMenu = new MenuTemplate<TelegrafContext>(() => {
 	if (mediaOption === 'photo2') {
 		return {
 			type: 'photo',
-			media: {
-				filename: 'android.jpg',
-				url: 'https://telegram.org/img/SiteAndroid.jpg'
-			},
+			media: 'https://telegram.org/img/SiteAndroid.jpg',
 			text: 'Just a caption for a *photo*',
 			parse_mode: 'Markdown'
 		}
@@ -154,10 +145,7 @@ const mediaMenu = new MenuTemplate<TelegrafContext>(() => {
 	if (mediaOption === 'document') {
 		return {
 			type: 'document',
-			media: {
-				filename: 'logos.zip',
-				url: 'https://telegram.org/file/464001088/1/bI7AJLo7oX4.287931.zip/374fe3b0a59dc60005'
-			},
+			media: 'https://telegram.org/file/464001088/1/bI7AJLo7oX4.287931.zip/374fe3b0a59dc60005',
 			text: 'Just a caption for a <b>document</b>',
 			parse_mode: 'HTML'
 		}
@@ -171,10 +159,7 @@ const mediaMenu = new MenuTemplate<TelegrafContext>(() => {
 
 	return {
 		type: 'photo',
-		media: {
-			filename: 'ios.jpg',
-			url: 'https://telegram.org/img/SiteiOs.jpg'
-		}
+		media: 'https://telegram.org/img/SiteiOs.jpg'
 	}
 })
 mediaMenu.interact('Just a button', 'randomButton', {
