@@ -3,6 +3,3 @@ node_js:
   - 'node'
   - '14'
   - '12'
-jobs:
-  allow_failures:
-  - node_js: '12'
