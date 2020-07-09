@@ -13,6 +13,9 @@ import {SubmenuOptions, ChooseIntoSubmenuOptions} from './buttons/submenu'
 import {ToggleOptions, generateToggleButton} from './buttons/toggle'
 
 export interface InteractionOptions<Context> extends SingleButtonOptions<Context> {
+	/**
+	 * Function which is called when the button is pressed
+	 */
 	readonly do: ActionFunc<Context>;
 }
 

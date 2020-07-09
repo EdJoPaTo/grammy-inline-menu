@@ -25,6 +25,11 @@ interface ActionResponder<Context> {
 }
 
 export interface Options<Context> {
+	/**
+	 * Function which is used to send and update the menu.
+	 *
+	 * Defaults to `editMenuOnContext`
+	 */
 	readonly sendMenu?: SendMenuFunc<Context>;
 }
 

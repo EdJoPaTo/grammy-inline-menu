@@ -12,8 +12,19 @@ export type Choices = ChoicesArray | ChoicesRecord | ChoicesMap
 export type ChoiceTextFunc<Context> = (context: Context, key: string) => ConstOrPromise<string>
 
 export interface ManyChoicesOptions<Context> extends BasicOptions<Context>, Partial<GenericPaginationOptions<Context>> {
+	/**
+	 * Amount of buttons shown per row (side by side).
+	 *
+	 * Defaults to 6
+	 */
 	readonly columns?: number;
 
+	/**
+	 * Maximum rows to be shown.
+	 * Consider pagination when you have many buttons rather than increasing the amount of buttons as its more user friendly.
+	 *
+	 * Defaults to 10
+	 */
 	readonly maxRows?: number;
 
 	/**
@@ -25,5 +36,8 @@ export interface ManyChoicesOptions<Context> extends BasicOptions<Context>, Part
 	 */
 	readonly disableChoiceExistsCheck?: boolean;
 
+	/**
+	 * Function which has to return the text the user will see on the button of a given choice
+	 */
 	readonly buttonText?: ChoiceTextFunc<Context>;
 }
