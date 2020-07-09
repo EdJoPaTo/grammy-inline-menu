@@ -1,6 +1,6 @@
 {
 	"name": "telegraf-inline-menu",
-	"version": "5.0.0-rc.1",
+	"version": "5.0.0",
 	"description": "Inline Menus for Telegraf made simple.",
 	"main": "dist/source",
 	"types": "dist/source",
