@@ -49,7 +49,7 @@ export function createPaginationChoices(totalPages: number, currentPage: number 
 	// Numbers have to be within
 	// currentPage in [1..totalPages]
 	const totalPagesFixed = Math.ceil(totalPages)
-	const currentPageFinite = (currentPage !== undefined && Number.isFinite(currentPage)) ? currentPage : 1
+	const currentPageFinite = (typeof currentPage === 'number' && Number.isFinite(currentPage)) ? currentPage : 1
 	const currentPageFixed = Math.max(1, Math.min(totalPagesFixed, Math.floor(currentPageFinite)))
 
 	const buttons: Record<number, string> = {}
