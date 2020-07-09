@@ -42,7 +42,7 @@ export function isTextBody(body: Body): body is string | TextBody {
 		return false
 	}
 
-	if (body.type !== undefined && body.type !== 'text') {
+	if (body.type !== undefined) {
 		return false
 	}
 
