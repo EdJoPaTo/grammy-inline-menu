@@ -11,6 +11,26 @@ test('submenu is listed', t => {
 	t.is(submenus[0].action.source, 'unique:([^/]+)\\/')
 })
 
+test('submenu hidden', async t => {
+	const menu = new MenuTemplate('foo')
+	const submenu = new MenuTemplate('bar')
+	menu.chooseIntoSubmenu('unique', ['Button'], submenu, {
+		hide: () => true
+	})
+	const submenus = [...menu.listSubmenus()]
+	const isHidden = await submenus[0].hide?.(undefined, '/unique:Button/')
+	t.true(isHidden)
+})
+
+test('submenu not existing hides', async t => {
+	const menu = new MenuTemplate('foo')
+	const submenu = new MenuTemplate('bar')
+	menu.chooseIntoSubmenu('unique', ['Button'], submenu)
+	const submenus = [...menu.listSubmenus()]
+	const isHidden = await submenus[0].hide?.(undefined, '/unique:Tree/')
+	t.true(isHidden)
+})
+
 test('button hidden', async t => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
