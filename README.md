@@ -9,14 +9,7 @@
 
 This menu library is made to easily create an inline menu for your Telegram bot.
 
-TODO: Gif
-
-
-# This is the documentation of the upcoming version 5. [If you are interested in version 4 see its documentation](https://github.com/EdJoPaTo/telegraf-inline-menu/blob/v4.0.1/README.md)
-
-Version 5 is not yet stable.
-Some things are still missing and the documentation is not fully there yet.
-If you want to test it out I appreciate the feedback!
+![Example shown as a gif](media/example-food.gif)
 
 # Installation
 
@@ -29,6 +22,10 @@ or using `yarn`:
 ```
 $ yarn add telegraf-inline-menu
 ```
+
+Consider using TypeScript with this library as it helps with finding some common mistakes faster.
+
+A good starting point for TypeScript and Telegraf bots might be this repo: [EdJoPaTo/telegram-typescript-bot-template](https://github.com/EdJoPaTo/telegram-typescript-bot-template)
 
 # Examples
 
@@ -58,15 +55,17 @@ bot.launch()
 
 ## More interesting one
 
-TODO: Gif
+![Example shown as a gif](media/example-food.gif)
 
-Look at the code here : [TypeScript](examples/main-typescript.ts) / [JavaScript (not yet available)](examples/main-javascript.js)
+Look at the code here: [TypeScript](examples/main-typescript.ts) / [JavaScript (consider using TypeScript)](examples/main-javascript.js)
 
 # Migrate from version 4 to version 5
 
-Incomplete list of things to migrate:
+If your project still uses version 4 of this library see [v4 documentation](https://github.com/EdJoPaTo/telegraf-inline-menu/blob/v4.0.1/README.md) and consider refactoring to version 5.
 
-- `TelegrafInlineMenu` was splitted into multiple Classes.
+List of things to migrate:
+
+- `TelegrafInlineMenu` was splitted into multiple classes.
   When you used `new TelegrafInlineMenu(text)` you will use `new MenuTemplate(body)` now.
 - Applying the menu to the bot via `bot.use` changed. This can now be done with the `MenuMiddleware`. Check the [Basic Example](#Basic-Example)
 - `button` and `simpleButton` are combined and renamed into `interact`. See [How can I run a simple method when pressing a button?](#how-can-i-run-a-simple-method-when-pressing-a-button)
@@ -126,7 +125,7 @@ If you have any questions on how the library works head out to the issues and as
 You can also join the [Telegraf community chat](https://t.me/TelegrafJSChat) in order to talk about the questions on your mind.
 
 When you think there is something to improve on this explanation, feel free to open a Pull Request!
-I already get stuck in my bubble on how this is working.
+I am already stuck in my bubble on how this is working.
 You are the expert on getting the knowledge about this library.
 Lets improve things together!
 
@@ -383,6 +382,6 @@ menuTemplate.interact('Question', 'unique', {
 
 The methods should have explaining documentation by itself.
 Also there should be multiple @example entries in the docs to see different ways of using the method.
-(At least soon…)
 
-You can help and create a Pull Request if you think the documentation can be improved.
+If you think the jsdoc / readme can be improved just go ahead and create a Pull Request.
+Lets improve things together!
