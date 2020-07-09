@@ -119,6 +119,26 @@ test('action hidden', async t => {
 	t.is(result1, '.')
 })
 
+test('action skipped when not existing', async t => {
+	const menu = new MenuTemplate<string>('whatever')
+	menu.select('unique', ['Button'], {
+		isSet: () => {
+			throw new Error('do not call this function')
+		},
+		set: () => {
+			throw new Error('do not call this function')
+		}
+	})
+
+	const actions = [...menu.renderActionHandlers(/^\//)]
+
+	const result0 = await actions[0].doFunction('foo', '/uniqueT:Tree')
+	t.is(result0, '.')
+
+	const result1 = await actions[1].doFunction('foo', '/uniqueF:Tree')
+	t.is(result1, '.')
+})
+
 test('action true', async t => {
 	t.plan(4)
 	const menu = new MenuTemplate<string>('whatever')
@@ -158,6 +178,28 @@ test('action false', async t => {
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	const action = actions.find(o => o.trigger.source.includes('uniqueF'))!
 	const result = await action.doFunction('foo', '/uniqueF:Button')
+	t.is(result, 'wow')
+})
+
+test('action true not existing check disabled', async t => {
+	t.plan(4)
+	const menu = new MenuTemplate<string>('whatever')
+	menu.select('unique', ['Button'], {
+		disableChoiceExistsCheck: true,
+		isSet: () => {
+			throw new Error('do not call this function')
+		},
+		set: (context, key, newState) => {
+			t.is(context, 'foo')
+			t.is(key, 'Tree')
+			t.is(newState, true)
+			return 'wow'
+		}
+	})
+
+	const actions = [...menu.renderActionHandlers(/^\//)]
+	const action = actions.find(o => o.trigger.source.includes('uniqueT'))!
+	const result = await action.doFunction('foo', '/uniqueT:Tree')
 	t.is(result, 'wow')
 })
 

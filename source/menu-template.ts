@@ -229,7 +229,7 @@ export class MenuTemplate<Context> {
 		this._actions.add(
 			trigger,
 			async (context, path) => options.do(context, getKeyFromPath(trigger, path)),
-			combineHideAndChoices(actionPrefix, choices, options.hide)
+			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix, choices, options.hide)
 		)
 
 		if (options.setPage) {
@@ -268,7 +268,7 @@ export class MenuTemplate<Context> {
 
 		this._submenus.add({
 			action: actionRegex,
-			hide: combineHideAndChoices(actionPrefix, choices, options.hide),
+			hide: options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix, choices, options.hide),
 			menu: submenu
 		})
 
@@ -321,7 +321,7 @@ export class MenuTemplate<Context> {
 				const key = getKeyFromPath(trueTrigger, path)
 				return options.set(context, key, true)
 			},
-			combineHideAndChoices(actionPrefix + 'T', choices, options.hide)
+			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix + 'T', choices, options.hide)
 		)
 
 		const falseTrigger = new RegExp(actionPrefix + 'F:(.+)$')
@@ -331,7 +331,7 @@ export class MenuTemplate<Context> {
 				const key = getKeyFromPath(falseTrigger, path)
 				return options.set(context, key, false)
 			},
-			combineHideAndChoices(actionPrefix + 'F', choices, options.hide)
+			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix + 'F', choices, options.hide)
 		)
 
 		if (options.setPage) {

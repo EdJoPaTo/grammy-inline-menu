@@ -31,6 +31,17 @@ test('submenu not existing hides', async t => {
 	t.true(isHidden)
 })
 
+test('submenu not existing check disabled does not hide', async t => {
+	const menu = new MenuTemplate('foo')
+	const submenu = new MenuTemplate('bar')
+	menu.chooseIntoSubmenu('unique', ['Button'], submenu, {
+		disableChoiceExistsCheck: true
+	})
+	const submenus = [...menu.listSubmenus()]
+	const isHidden = await submenus[0].hide?.(undefined, '/unique:Button/')
+	t.falsy(isHidden)
+})
+
 test('button hidden', async t => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')

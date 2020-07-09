@@ -88,6 +88,23 @@ test('action not existing button', async t => {
 	t.is(result, '.')
 })
 
+test('action not existing button check disabled', async t => {
+	const menu = new MenuTemplate<string>('whatever')
+	menu.choose('unique', ['Button'], {
+		disableChoiceExistsCheck: true,
+		do: (context, key) => {
+			t.is(context, 'bla')
+			t.is(key, 'Tree')
+			return 'wow'
+		}
+	})
+
+	const actions = [...menu.renderActionHandlers(/^\//)]
+
+	const result = await actions[0].doFunction('bla', '/unique:Tree')
+	t.is(result, 'wow')
+})
+
 test('with pagnination buttons', async t => {
 	const menu = new MenuTemplate('foo')
 	menu.choose('unique', ['Button', 'Tree'], {
