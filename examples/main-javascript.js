@@ -8,7 +8,7 @@ const {readFileSync} = require('fs')
 
 const {Telegraf} = require('telegraf')
 
-const {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} = require('../dist/source')
+const {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} = require('telegraf-inline-menu')
 
 const menu = new MenuTemplate(() => 'Main Menu\n' + new Date().toISOString())
 
