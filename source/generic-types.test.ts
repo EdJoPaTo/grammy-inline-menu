@@ -8,7 +8,6 @@ function filterNonNullableTypesafeEqual(t: ExecutionContext, actual: string[], e
 
 test('filterNonNullable', t => {
 	const input = ['bla', undefined, 'blubb', null]
-	// eslint-disable-next-line unicorn/no-fn-reference-in-iterator
 	const output = input.filter(filterNonNullable())
 	filterNonNullableTypesafeEqual(t, output, ['bla', 'blubb'])
 })

@@ -62,7 +62,6 @@ async function entryToRows<Context>(entry: KeyboardTemplateEntry<Context>, conte
 		const buttonsInRow = await Promise.all(entry.map(async button =>
 			typeof button === 'function' ? button(context, path) : button
 		))
-		// eslint-disable-next-line unicorn/no-fn-reference-in-iterator
 		const filtered = buttonsInRow.filter(filterNonNullable())
 		return [filtered]
 	}
