@@ -1,6 +1,6 @@
 import {CallbackButtonTemplate} from '../keyboard'
 import {ConstOrPromise, ConstOrContextFunc} from '../generic-types'
-import {getChoiceKeysFromChoices} from '../choices/understand-choices'
+import {getChoiceKeysFromChoices, ensureCorrectChoiceKeys} from '../choices/understand-choices'
 import {ManyChoicesOptions, Choices, createChoiceTextFunction, generateChoicesPaginationButtons} from '../choices'
 import {prefixEmoji} from '../prefix'
 
@@ -42,6 +42,7 @@ export function generateSelectButtons<Context>(actionPrefix: string, choices: Co
 
 		const choicesConstant = typeof choices === 'function' ? await choices(context) : choices
 		const choiceKeys = getChoiceKeysFromChoices(choicesConstant)
+		ensureCorrectChoiceKeys(actionPrefix, path, choiceKeys)
 		const textFunction = createChoiceTextFunction(choicesConstant, options.buttonText)
 		const formatFunction: FormatStateFunction<Context> = options.formatState ?? ((_, textResult, state) => prefixEmoji(textResult, state, {hideFalseEmoji: !options.showFalseEmoji}))
 		const currentPage = await options.getCurrentPage?.(context)

@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {getChoiceKeysFromChoices, getChoiceTextByKey} from './understand-choices'
+import {getChoiceKeysFromChoices, getChoiceTextByKey, ensureCorrectChoiceKeys} from './understand-choices'
 
 test('getChoiceKeysFromChoices from array', t => {
 	const choices = ['A', 'B']
@@ -54,4 +54,17 @@ test('getChoiceTextByKey from map but undefined', t => {
 	choices.set('B', 'Bbb')
 	const text = getChoiceTextByKey(choices, 'C')
 	t.is(text, 'C')
+})
+
+test('ensureCorrectChoiceKeys correct keys are not a problem', t => {
+	const choiceKeys = ['a', 'A', 'a:A', 'aaaaaaaaaaa']
+	t.notThrows(() => ensureCorrectChoiceKeys('', '/', choiceKeys))
+})
+
+test('ensureCorrectChoiceKeys slash throws', t => {
+	const choiceKeys = ['a/a']
+	t.throws(
+		() => ensureCorrectChoiceKeys('prefix', '/path/', choiceKeys),
+		{message: /can not contain '\/'.+prefix.+\/path\//}
+	)
 })
