@@ -2,6 +2,7 @@ import {Telegram, Context as TelegrafContext} from 'telegraf'
 import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessage, Message, MessageMedia} from 'telegraf/typings/telegram-types'
 
 import {Body, TextBody, MediaBody, isMediaBody, isTextBody, getBodyText} from './body'
+import {ensurePathMenu} from './path'
 import {InlineKeyboard} from './keyboard'
 import {MenuLike} from './menu-like'
 
@@ -30,6 +31,7 @@ export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, mes
  * @param extra optional additional Telegraf Extra options
  */
 export async function replyMenuToContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
+	ensurePathMenu(path)
 	const body = await menu.renderBody(context, path)
 	const keyboard = await menu.renderKeyboard(context, path)
 	return replyRenderedMenuPartsToContext(body, keyboard, context, extra)
@@ -43,6 +45,7 @@ export async function replyMenuToContext<Context extends TelegrafContext>(menu: 
  * @param extra optional additional Telegraf Extra options
  */
 export async function editMenuOnContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraEditMessage> = {}): Promise<void> {
+	ensurePathMenu(path)
 	const body = await menu.renderBody(context, path)
 	const keyboard = await menu.renderKeyboard(context, path)
 

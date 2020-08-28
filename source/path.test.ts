@@ -2,7 +2,7 @@ import test, {ExecutionContext} from 'ava'
 
 import {RegExpLike} from './generic-types'
 
-import {combinePath, combineTrigger, ensureTriggerChild, ensureRootMenuTrigger, ensureTriggerLastChild} from './path'
+import {combinePath, combineTrigger, ensureTriggerChild, ensureRootMenuTrigger, ensureTriggerLastChild, ensurePathMenu} from './path'
 
 function combinePathMacro(t: ExecutionContext, parent: string, relativePath: string, expected: string): void {
 	t.is(combinePath(parent, relativePath), expected)
@@ -93,4 +93,16 @@ test('ensureTriggerChild throws when being somewhat relative', t => {
 	t.throws(() => ensureTriggerChild('more than/one deep$'))
 	t.throws(() => ensureTriggerChild(/\/relative to root$/))
 	t.throws(() => ensureTriggerChild('/relative to root$'))
+})
+
+test('ensurePathMenu accepts correct paths', t => {
+	t.notThrows(() => ensurePathMenu('path/'))
+})
+
+test('ensurePathMenu throws when empty', t => {
+	t.throws(() => ensurePathMenu(''), {message: /empty string/})
+})
+
+test('ensurePathMenu throws when not ending with slash', t => {
+	t.throws(() => ensurePathMenu('path'), {message: /end with \//})
 })

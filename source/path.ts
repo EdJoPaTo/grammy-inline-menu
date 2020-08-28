@@ -54,6 +54,16 @@ export function ensureRootMenuTrigger(trigger: RegExpLike): void {
 	}
 }
 
+export function ensurePathMenu(path: string): void {
+	if (path === '') {
+		throw new Error('an empty string is not a path')
+	}
+
+	if (!path.endsWith('/')) {
+		throw new Error('the path of a menu has to be supplied. Menu paths end with /')
+	}
+}
+
 export function combinePath(parent: string, relativePath: string): string {
 	if (relativePath === '') {
 		throw new Error('an empty string is not a relative path')
