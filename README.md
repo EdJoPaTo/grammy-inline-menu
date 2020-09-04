@@ -174,6 +174,21 @@ menuTemplate.interact('Text', 'unique', {
 })
 ```
 
+## How to use a dynamic text of a button?
+
+This is often required when translating ([telegraf-i18n](https://github.com/telegraf/telegraf-i18n)) your bot.
+
+Also check out other buttons like [toggle](#how-can-i-toggle-a-value-easily) as they do some formatting of the button text for you.
+
+```ts
+menuTemplate.interact(ctx => ctx.i18n.t('button'), 'unique', {
+	do: async ctx => {
+		await ctx.answerCbQuery(ctx.i18n.t('reponse'))
+		return '.'
+	}
+})
+```
+
 ## How can I show an url button?
 
 ```ts
@@ -248,6 +263,31 @@ If you want to change the state of something, select one out of many options for
 
 `menuTemplate.select(…)` automatically updates the menu on pressing the button and shows what it currently selected.
 `menuTemplate.choose(…)` runs the method you want to run.
+
+## How can I use dynamic text for many values with choose or select?
+
+One way of doing so is via `Record<string, string>` as input for the choices:
+
+```ts
+const choices: Record<string, string> = {
+	a: 'Alphabet',
+	b: 'Beta',
+	c: 'Canada'
+}
+
+menuTemplate.choose('unique', choices, …)
+```
+
+You can also use the `buttonText` function for `.choose(…)` or `formatState` for `.select(…)` (and `.toggle(…)`)
+
+```ts
+menuTemplate.choose('unique', ['a', 'b'], {
+	do: …,
+	buttonText: (context, text) => {
+		return text.toUpperCase()
+	}
+})
+```
 
 ## I have too much content for one message. Can I use a pagination?
 
