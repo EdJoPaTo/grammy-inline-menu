@@ -414,17 +414,21 @@ Yes. It was moved into a seperate library with version 5 as it made the source c
 When you want to use it check [telegraf-stateless-question](https://github.com/EdJoPaTo/telegraf-stateless-question).
 
 ```ts
-const myQuestion = new TelegrafStatelessQuestion<MyContext>('unique', async context => {
+import {getMenuOfPath} from 'telegraf-inline-menu'
+
+const myQuestion = new TelegrafStatelessQuestion<MyContext>('unique', async (context, additionalState) => {
 	const answer = context.message.text
 	console.log('user responded with', answer)
-	await replyMenuToContext(menuTemplate, context, '/use/path/from/where/you/came/')
+	await replyMenuToContext(menuTemplate, context, additionalState)
 })
 
 bot.use(myQuestion.middleware())
 
 menuTemplate.interact('Question', 'unique', {
-	do: async context => {
-		await myQuestion.replyWithMarkdown(context, 'Tell me the answer to the world and everything.')
+	do: async (context, path) => {
+		const text = 'Tell me the answer to the world and everything.'
+		const additionalState = getMenuOfPath(path)
+		await myQuestion.replyWithMarkdown(context, text, additionalState)
 	}
 })
 ```
