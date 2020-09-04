@@ -101,3 +101,11 @@ export function combinePath(parent: string, relativePath: string): string {
 
 	return newParent + relativePath
 }
+
+export function getMenuOfPath(path: string): string {
+	if (!path.includes('/')) {
+		throw new Error('This does not seem like a path. Paths contain slashes to seperate the submenus.')
+	}
+
+	return combinePath(path, '.')
+}

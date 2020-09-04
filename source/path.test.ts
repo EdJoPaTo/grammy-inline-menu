@@ -2,7 +2,7 @@ import test, {ExecutionContext} from 'ava'
 
 import {RegExpLike} from './generic-types'
 
-import {combinePath, combineTrigger, ensureTriggerChild, ensureRootMenuTrigger, ensureTriggerLastChild, ensurePathMenu} from './path'
+import {combinePath, combineTrigger, ensureTriggerChild, ensureRootMenuTrigger, ensureTriggerLastChild, ensurePathMenu, getMenuOfPath} from './path'
 
 function combinePathMacro(t: ExecutionContext, parent: string, relativePath: string, expected: string): void {
 	t.is(combinePath(parent, relativePath), expected)
@@ -33,6 +33,21 @@ test('combinePath fails on relative ./', t => {
 
 test('combinePath fails on empty relative', t => {
 	t.throws(() => combinePath('/whatever/', ''), {message: /empty string is not a relative path/})
+})
+
+test('getMenuOfPath with already menu', t => {
+	t.is(getMenuOfPath('/'), '/')
+	t.is(getMenuOfPath('/foo/'), '/foo/')
+	t.is(getMenuOfPath('/foo/bar/'), '/foo/bar/')
+})
+
+test('getMenuOfPath with child', t => {
+	t.is(getMenuOfPath('/foo'), '/')
+	t.is(getMenuOfPath('/foo/bar'), '/foo/')
+})
+
+test('getMenuOfPath throws when not a path', t => {
+	t.throws(() => getMenuOfPath('foo'), {message: /not .+ a path/})
 })
 
 test('ensureRootMenuTrigger does not throw on good trigger', t => {
