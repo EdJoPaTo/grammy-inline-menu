@@ -146,25 +146,36 @@ const menuTemplate = new MenuTemplate<MyContext>(ctx => {
 
 ```ts
 menuTemplate.interact('Text', 'unique', {
-	do: async ctx => ctx.answerCbQuery('yaay')
+	do: async ctx => {
+		await ctx.answerCbQuery('yaay')
+		return false
+	}
 })
 ```
 
-## How does the menu update after running my interaction?
+## Why do I have to return a boolean or string for the do/set function?
 
-Return the relative path to the menu you wanna show.
-This is '.' most of the times as you want to return to the current menu.
+You can control if you want to update the menu afterwards or not.
+When the user presses a button which changes something in the menu text you want the user to see the updated content.
+You can return a relative path to go to afterwards or a simple boolean (yes = `true`, no = `false`).
+
+Using paths can become super handy.
+For example when you want to return to the parent menu you can use the path `..`.
+Or to a sibling menu with `../sibling`.
+
+If you just want to navigate without doing logic you should prefer `.navigate(…)`.
 
 ```ts
 menuTemplate.interact('Text', 'unique', {
 	do: async ctx => {
-		await ctx.answerCbQuery('yaay')
-		return '.'
+		await ctx.answerCbQuery('go to parent menu after doing some logic')
+		return '..'
 	}
 })
 ```
 
 ## How can I show an url button?
+
 ```ts
 menuTemplate.url('Text', 'https://edjopato.de')
 ```
