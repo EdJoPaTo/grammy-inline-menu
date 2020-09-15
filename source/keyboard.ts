@@ -1,4 +1,4 @@
-import {InlineKeyboardButton as TelegrafInlineKeyboardButton} from 'telegram-typings'
+import {InlineKeyboardButton as TelegramInlineKeyboardButton} from 'typegram'
 
 import {ConstOrContextPathFunc, ContextPathFunc, filterNonNullable} from './generic-types'
 import {combinePath} from './path'
@@ -8,7 +8,7 @@ export interface CallbackButtonTemplate {
 	readonly relativePath: string;
 }
 
-export type InlineKeyboardButton = Readonly<TelegrafInlineKeyboardButton>
+export type InlineKeyboardButton = Readonly<TelegramInlineKeyboardButton>
 export type InlineKeyboard = ReadonlyArray<readonly InlineKeyboardButton[]>
 
 export type ButtonTemplate = CallbackButtonTemplate | InlineKeyboardButton

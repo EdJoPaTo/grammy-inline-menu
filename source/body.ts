@@ -1,4 +1,4 @@
-import {InputFile, ParseMode} from 'telegraf/typings/telegram-types'
+import {InputFile, ParseMode} from 'typegram'
 
 import {hasTruthyKey, isObject} from './generic-types'
 
