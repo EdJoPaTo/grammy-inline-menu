@@ -1,7 +1,7 @@
 import {Telegram, Context as TelegrafContext} from 'telegraf'
-import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessage, Message, MessageMedia} from 'telegraf/typings/telegram-types'
+import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessage, Message, MessageMedia, ExtraLocation} from 'telegraf/typings/telegram-types'
 
-import {Body, TextBody, MediaBody, isMediaBody, isTextBody, getBodyText} from './body'
+import {Body, TextBody, MediaBody, LocationBody, isMediaBody, isLocationBody, isTextBody, getBodyText, isVenueBody, VenueBody} from './body'
 import {ensurePathMenu} from './path'
 import {InlineKeyboard} from './keyboard'
 import {MenuLike} from './menu-like'
@@ -68,6 +68,8 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 				.catch(catchMessageNotModified)
 			return
 		}
+	} else if (isLocationBody(body) || isVenueBody(body)) {
+		// Dont edit the message, just recreate it.
 	} else if (isTextBody(body)) {
 		const text = getBodyText(body)
 		if (message.text) {
@@ -143,6 +145,15 @@ async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(
 		}
 	}
 
+	if (isLocationBody(body)) {
+		return context.replyWithLocation(body.location.latitude, body.location.longitude, createLocationExtra(body, keyboard, extra as any))
+	}
+
+	if (isVenueBody(body)) {
+		const {location, title, address} = body.venue
+		return (context as any).replyWithVenue(location.latitude, location.longitude, title, address, createVenueExtra(body, keyboard, extra))
+	}
+
 	if (isTextBody(body)) {
 		const text = getBodyText(body)
 		return context.reply(text, createTextExtra(body, keyboard, extra))
@@ -180,6 +191,15 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Teleg
 			}
 		}
 
+		if (isLocationBody(body)) {
+			return telegram.sendLocation(chatId, body.location.latitude, body.location.longitude, createLocationExtra(body, keyboard, extra as any))
+		}
+
+		if (isVenueBody(body)) {
+			const {location, title, address} = body.venue
+			return (telegram as any).sendVenue(chatId, location.latitude, location.longitude, title, address, createVenueExtra(body, keyboard, extra))
+		}
+
 		if (isTextBody(body)) {
 			const text = getBodyText(body)
 			return telegram.sendMessage(chatId, text, createTextExtra(body, keyboard, extra))
@@ -214,6 +234,14 @@ export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<
 			return (telegram as any).editMessageMedia(chatId, messageId, undefined, media, mediaExtra)
 		}
 
+		if (isLocationBody(body)) {
+			throw new Error('You can not edit into a location body. You have to send the menu as a new message.')
+		}
+
+		if (isVenueBody(body)) {
+			throw new Error('You can not edit into a venue body. You have to send the menu as a new message.')
+		}
+
 		if (isTextBody(body)) {
 			const text = getBodyText(body)
 			return telegram.editMessageText(chatId, messageId, undefined, text, createTextExtra(body, keyboard, extra))
@@ -239,6 +267,28 @@ function createMediaExtra(body: MediaBody, keyboard: InlineKeyboard, base: Reado
 		...base,
 		parse_mode: body.parse_mode,
 		caption: body.text,
+		reply_markup: {
+			inline_keyboard: keyboard.map(o => [...o])
+		}
+	}
+}
+
+function createLocationExtra(body: LocationBody, keyboard: InlineKeyboard, base: Readonly<ExtraLocation>): ExtraLocation {
+	return {
+		...base,
+		live_period: body.live_period,
+		reply_markup: {
+			inline_keyboard: keyboard.map(o => [...o])
+		}
+	}
+}
+
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+function createVenueExtra(body: VenueBody, keyboard: InlineKeyboard, base: Readonly<ExtraReplyMessage>): any {
+	return {
+		...base,
+		foursquare_id: body.venue.foursquare_id,
+		foursquare_type: body.venue.foursquare_type,
 		reply_markup: {
 			inline_keyboard: keyboard.map(o => [...o])
 		}

@@ -152,6 +152,30 @@ const mediaMenu = new MenuTemplate(() => {
 		}
 	}
 
+	if (mediaOption === 'location') {
+		return {
+			// Some point with simple coordinates in Hamburg, Germany
+			location: {
+				latitude: 53.5,
+				longitude: 10
+			},
+			live_period: 60
+		}
+	}
+
+	if (mediaOption === 'venue') {
+		return {
+			venue: {
+				location: {
+					latitude: 53.5,
+					longitude: 10
+				},
+				title: 'simple coordinates point',
+				address: 'Hamburg, Germany'
+			}
+		}
+	}
+
 	if (mediaOption === 'just text') {
 		return {
 			text: 'Just some text'
@@ -169,7 +193,7 @@ mediaMenu.interact('Just a button', 'randomButton', {
 		return false
 	}
 })
-mediaMenu.select('type', ['animation', 'document', 'photo1', 'photo2', 'video', 'just text'], {
+mediaMenu.select('type', ['animation', 'document', 'photo1', 'photo2', 'video', 'location', 'venue', 'just text'], {
 	columns: 2,
 	isSet: (_, key) => mediaOption === key,
 	set: (_, key) => {

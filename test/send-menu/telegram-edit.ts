@@ -80,3 +80,43 @@ for (const mediaType of MEDIA_TYPES) {
 		await editIntoFunction(13, 37, fakeContext as any)
 	})
 }
+
+test('location', async t => {
+	const menu = new MenuTemplate<TelegrafContext>({location: {latitude: 53.5, longitude: 10}, live_period: 666})
+
+	const editIntoFunction = generateEditMessageIntoMenuFunction({} as any, menu, '/')
+
+	const fakeContext: Partial<TelegrafContext> = {
+		callbackQuery: {
+			id: '666',
+			from: undefined as any,
+			chat_instance: '666'
+		}
+	}
+
+	await t.throwsAsync(async () => {
+		await editIntoFunction(13, 37, fakeContext as any)
+	}, {
+		message: /can not edit into a location body/
+	})
+})
+
+test('venue', async t => {
+	const menu = new MenuTemplate<TelegrafContext>({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}})
+
+	const editIntoFunction = generateEditMessageIntoMenuFunction({} as any, menu, '/')
+
+	const fakeContext: Partial<TelegrafContext> = {
+		callbackQuery: {
+			id: '666',
+			from: undefined as any,
+			chat_instance: '666'
+		}
+	}
+
+	await t.throwsAsync(async () => {
+		await editIntoFunction(13, 37, fakeContext as any)
+	}, {
+		message: /can not edit into a venue body/
+	})
+})

@@ -1,8 +1,8 @@
-import {InputFile, ParseMode} from 'typegram'
+import {InputFile, Location, ParseMode, Venue} from 'typegram'
 
 import {hasTruthyKey, isObject} from './generic-types'
 
-export type Body = string | TextBody | MediaBody
+export type Body = string | TextBody | MediaBody | LocationBody | VenueBody
 
 export type MediaType = 'animation' | 'audio' | 'document' | 'photo' | 'video'
 export const MEDIA_TYPES: readonly MediaType[] = ['animation', 'audio', 'document', 'photo', 'video']
@@ -19,6 +19,15 @@ export interface TextBody extends TextPart {
 export interface MediaBody extends Partial<TextPart> {
 	readonly type: MediaType;
 	readonly media: InputFile;
+}
+
+export interface LocationBody {
+	readonly location: Readonly<Location>;
+	readonly live_period?: number;
+}
+
+export interface VenueBody {
+	readonly venue: Readonly<Venue>;
 }
 
 function isKnownMediaType(type: unknown): type is MediaType {
@@ -46,6 +55,14 @@ export function isTextBody(body: Body): body is string | TextBody {
 		return false
 	}
 
+	if (body.location !== undefined) {
+		return false
+	}
+
+	if (body.venue !== undefined) {
+		return false
+	}
+
 	return hasTruthyKey(body, 'text')
 }
 
@@ -59,6 +76,42 @@ export function isMediaBody(body: Body): body is MediaBody {
 	}
 
 	return hasTruthyKey(body, 'media')
+}
+
+function isValidLocation(location: Readonly<Location>): boolean {
+	return typeof location.latitude === 'number' && typeof location.longitude === 'number'
+}
+
+export function isLocationBody(body: Body): body is LocationBody {
+	if (!hasTruthyKey(body, 'location')) {
+		return false
+	}
+
+	// Locations can't have text
+	if (hasTruthyKey(body, 'text')) {
+		return false
+	}
+
+	const {location} = body as LocationBody
+	return isValidLocation(location)
+}
+
+export function isVenueBody(body: Body): body is VenueBody {
+	if (!hasTruthyKey(body, 'venue')) {
+		return false
+	}
+
+	// Locations can't have text
+	if (hasTruthyKey(body, 'text')) {
+		return false
+	}
+
+	const {venue} = body as VenueBody
+	if (!isValidLocation(venue.location)) {
+		return false
+	}
+
+	return typeof venue.title === 'string' && typeof venue.address === 'string'
 }
 
 export function getBodyText(body: TextBody | string): string {

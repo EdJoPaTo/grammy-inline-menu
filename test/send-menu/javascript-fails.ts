@@ -11,7 +11,13 @@ const FAULTY_MENU_TEMPLATES: Readonly<Record<string, MenuTemplate<unknown>>> = {
 	'empty body object': new MenuTemplate({}),
 	'empty string body': new MenuTemplate(''),
 	// @ts-expect-error
-	'wrong media type': new MenuTemplate({media: 'bla', type: 'banana'})
+	'wrong media type': new MenuTemplate({media: 'bla', type: 'banana'}),
+	'text in location body': new MenuTemplate({location: {latitude: 53.5, longitude: 10}, text: '42'}),
+	'text in venue body': new MenuTemplate({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}, text: '42'}),
+	// @ts-expect-error
+	'missing address in venue body': new MenuTemplate({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A'}}),
+	// @ts-expect-error
+	'missing title in venue body': new MenuTemplate({venue: {location: {latitude: 53.5, longitude: 10}, address: 'B'}})
 }
 
 for (const fault of Object.keys(FAULTY_MENU_TEMPLATES)) {

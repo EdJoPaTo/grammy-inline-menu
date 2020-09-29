@@ -1,6 +1,6 @@
 import test, {ExecutionContext} from 'ava'
 
-import {Body, TextBody, MediaBody, isTextBody, isMediaBody, getBodyText} from './body'
+import {Body, TextBody, MediaBody, LocationBody, VenueBody, isTextBody, isMediaBody, isLocationBody, isVenueBody, getBodyText} from './body'
 
 function mehToString(something: any): string {
 	if (typeof something === 'object' || !something) {
@@ -26,6 +26,56 @@ const EXAMPLE_WRONGS_RAW: readonly unknown[] = [
 	{
 		media: 'whatever',
 		type: 'whatever'
+	},
+	{
+		location: {
+			latitude: 50
+		}
+	},
+	{
+		location: {
+			latitude: 50,
+			longitude: 10
+		},
+		text: 'Locations cant have text'
+	},
+	{
+		venue: {
+			location: {
+				latitude: 50,
+				longitude: 10
+			},
+			title: 'A',
+			address: 'B'
+		},
+		text: 'Venue cant have text'
+	},
+	{
+		venue: {
+			location: {
+				latitude: 50,
+				longitude: 10
+			},
+			title: 'Venue needs address'
+		}
+	},
+	{
+		venue: {
+			location: {
+				latitude: 50,
+				longitude: 10
+			},
+			address: 'Venue needs title'
+		}
+	},
+	{
+		venue: {
+			location: {
+				latitude: 50
+			},
+			title: 'Venue needs valid location',
+			address: 'B'
+		}
 	}
 ]
 const EXAMPLE_WRONGS: readonly Body[] = EXAMPLE_WRONGS_RAW as any
@@ -63,6 +113,33 @@ const EXAMPLE_MEDIA: readonly MediaBody[] = [
 	}
 ]
 
+const EXAMPLE_LOCATION: readonly LocationBody[] = [
+	{
+		location: {
+			latitude: 50,
+			longitude: 10
+		}
+	},
+	{
+		location: {
+			latitude: 50,
+			longitude: 10
+		},
+		live_period: 600
+	}
+]
+
+const EXAMPLE_VENUE: VenueBody = {
+	venue: {
+		location: {
+			latitude: 50,
+			longitude: 10
+		},
+		title: 'A',
+		address: 'B'
+	}
+}
+
 function isTextBodyMacro(t: ExecutionContext, expected: boolean, body: Body): void {
 	t.is(isTextBody(body), expected)
 }
@@ -75,7 +152,7 @@ for (const body of EXAMPLE_TEXTS) {
 	test(isTextBodyMacro, true, body)
 }
 
-for (const body of [...EXAMPLE_MEDIA, ...EXAMPLE_WRONGS]) {
+for (const body of [...EXAMPLE_MEDIA, ...EXAMPLE_LOCATION, EXAMPLE_VENUE, ...EXAMPLE_WRONGS]) {
 	test(isTextBodyMacro, false, body)
 }
 
@@ -91,8 +168,40 @@ for (const body of EXAMPLE_MEDIA) {
 	test(isMediaBodyMacro, true, body)
 }
 
-for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_WRONGS]) {
+for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_LOCATION, EXAMPLE_VENUE, ...EXAMPLE_WRONGS]) {
 	test(isMediaBodyMacro, false, body)
+}
+
+function isLocationBodyMacro(t: ExecutionContext, expected: boolean, body: Body): void {
+	t.is(isLocationBody(body), expected)
+}
+
+isLocationBodyMacro.title = (_title: string, expected: boolean, body: Body) => {
+	return `isLocationBody ${String(expected)} ${mehToString(body)}`
+}
+
+for (const body of EXAMPLE_LOCATION) {
+	test(isLocationBodyMacro, true, body)
+}
+
+for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_MEDIA, EXAMPLE_VENUE, ...EXAMPLE_WRONGS]) {
+	test(isLocationBodyMacro, false, body)
+}
+
+function isVenueBodyMacro(t: ExecutionContext, expected: boolean, body: Body): void {
+	t.is(isVenueBody(body), expected)
+}
+
+isVenueBodyMacro.title = (_title: string, expected: boolean, body: Body) => {
+	return `isVenueBody ${String(expected)} ${mehToString(body)}`
+}
+
+for (const body of [EXAMPLE_VENUE]) {
+	test(isVenueBodyMacro, true, body)
+}
+
+for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_MEDIA, ...EXAMPLE_LOCATION, ...EXAMPLE_WRONGS]) {
+	test(isVenueBodyMacro, false, body)
 }
 
 test('getBodyText string', t => {

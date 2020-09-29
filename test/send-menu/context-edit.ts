@@ -425,3 +425,80 @@ test('media edit with button', async t => {
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
 })
+
+test('location reply', async t => {
+	t.plan(4)
+	const menu = new MenuTemplate<TelegrafContext>({location: {latitude: 53.5, longitude: 10}, live_period: 666})
+	menu.manual({text: 'Button', callback_data: '/'})
+
+	const fakeContext: Partial<TelegrafContext> = {
+		callbackQuery: {
+			id: '666',
+			from: undefined as any,
+			chat_instance: '666',
+			message: {
+				message_id: 666,
+				date: 666,
+				chat: undefined as any,
+				text: 'Hi Bob'
+			}
+		},
+		deleteMessage: async messageId => {
+			t.is(messageId, undefined)
+			return Promise.resolve(true)
+		},
+		replyWithLocation: async (latitude, longitude, extra) => {
+			t.is(latitude, 53.5)
+			t.is(longitude, 10)
+			t.deepEqual(extra, {
+				live_period: 666,
+				reply_markup: {
+					inline_keyboard: [[{text: 'Button', callback_data: '/'}]]
+				}
+			})
+			return Promise.resolve(undefined as any)
+		}
+	}
+
+	await editMenuOnContext(menu, fakeContext as any, '/')
+})
+
+test('venue reply', async t => {
+	t.plan(6)
+	const menu = new MenuTemplate<TelegrafContext>({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}})
+	menu.manual({text: 'Button', callback_data: '/'})
+
+	const fakeContext: any = {
+		callbackQuery: {
+			id: '666',
+			from: undefined as any,
+			chat_instance: '666',
+			message: {
+				message_id: 666,
+				date: 666,
+				chat: undefined as any,
+				text: 'Hi Bob'
+			}
+		},
+		deleteMessage: async (messageId: any) => {
+			t.is(messageId, undefined)
+			return Promise.resolve(true)
+		},
+		replyWithVenue: async (latitude: number, longitude: number, title: string, address: string, extra: any) => {
+			t.is(latitude, 53.5)
+			t.is(longitude, 10)
+			t.is(title, 'A')
+			t.is(address, 'B')
+			t.deepEqual(extra, {
+				foursquare_id: undefined,
+				foursquare_type: undefined,
+				reply_markup: {
+					inline_keyboard: [[{text: 'Button', callback_data: '/'}]]
+				}
+			})
+			return Promise.resolve(undefined as any)
+		}
+	}
+
+	await editMenuOnContext(menu, fakeContext, '/')
+})

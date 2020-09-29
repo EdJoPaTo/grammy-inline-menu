@@ -76,3 +76,68 @@ for (const mediaType of MEDIA_TYPES) {
 		await sendMenu(666, fakeContext as any)
 	})
 }
+
+test('location', async t => {
+	const menu = new MenuTemplate<TelegrafContext>({location: {latitude: 53.5, longitude: 10}, live_period: 666})
+
+	const fakeTelegram: Partial<Telegram> = {
+		sendLocation: async (chatId, latitude, longitude, extra) => {
+			t.is(chatId, 666)
+			t.is(latitude, 53.5)
+			t.is(longitude, 10)
+			t.deepEqual(extra, {
+				live_period: 666,
+				reply_markup: {
+					inline_keyboard: []
+				}
+			})
+			return Promise.resolve({} as any)
+		}
+	}
+
+	const sendMenu = generateSendMenuToChatFunction(fakeTelegram as any, menu, '/')
+
+	const fakeContext: Partial<TelegrafContext> = {
+		callbackQuery: {
+			id: '666',
+			from: undefined as any,
+			chat_instance: '666'
+		}
+	}
+
+	await sendMenu(666, fakeContext as any)
+})
+
+test('venue', async t => {
+	const menu = new MenuTemplate<TelegrafContext>({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}})
+
+	const fakeTelegram: any = {
+		sendVenue: async (chatId: number, latitude: number, longitude: number, title: string, address: string, extra: any) => {
+			t.is(chatId, 666)
+			t.is(latitude, 53.5)
+			t.is(longitude, 10)
+			t.is(title, 'A')
+			t.is(address, 'B')
+			t.deepEqual(extra, {
+				foursquare_id: undefined,
+				foursquare_type: undefined,
+				reply_markup: {
+					inline_keyboard: []
+				}
+			})
+			return Promise.resolve({} as any)
+		}
+	}
+
+	const sendMenu = generateSendMenuToChatFunction(fakeTelegram, menu, '/')
+
+	const fakeContext: Partial<TelegrafContext> = {
+		callbackQuery: {
+			id: '666',
+			from: undefined as any,
+			chat_instance: '666'
+		}
+	}
+
+	await sendMenu(666, fakeContext as any)
+})
