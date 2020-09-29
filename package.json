@@ -86,7 +86,8 @@
 					"test/**/*.ts"
 				],
 				"rules": {
-					"@typescript-eslint/prefer-readonly-parameter-types": "off"
+					"@typescript-eslint/prefer-readonly-parameter-types": "off",
+					"max-params": "off"
 				}
 			}
 		]
