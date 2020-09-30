@@ -33,7 +33,9 @@
 		"url": "https://github.com/EdJoPaTo/telegraf-inline-menu/issues"
 	},
 	"homepage": "https://github.com/EdJoPaTo/telegraf-inline-menu#readme",
-	"dependencies": {},
+	"dependencies": {
+		"typegram": "^2.2.2"
+	},
 	"peerDependencies": {
 		"telegraf": "^3.38.0"
 	},
@@ -45,7 +47,6 @@
 		"nyc": "^15.0.0",
 		"telegraf": "^3.38.0",
 		"ts-node": "^9.0.0",
-		"typegram": "^2.2.2",
 		"typescript": "^4.0.2",
 		"xo": "^0.33.0"
 	},
