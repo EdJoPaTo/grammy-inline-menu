@@ -142,6 +142,33 @@ const menuTemplate = new MenuTemplate<MyContext>(ctx => {
 })
 ```
 
+## Can the menu body be some media?
+
+The menu body can be an object containing `media` and `type` for media.
+The `media` and `type` is the same as [Telegrams InputMedia](https://core.telegram.org/bots/api#inputmedia).
+The media is just passed to telegraf so check its documentation on [how to work with files](https://telegraf.js.org/#/?id=working-with-files).
+
+The [example](examples/main-typescript.ts) features a media submenu with all currently supported media types.
+
+```ts
+const menuTemplate = new MenuTemplate<MyContext>((ctx, path) => {
+	// Do something
+
+	return {
+		type: 'photo',
+		media: {
+			source: `./${ctx.from.id}.jpg`
+		},
+		text: 'Some *caption*',
+		parse_mode: 'Markdown'
+	}
+})
+```
+
+The argument of the `MenuTemplate` can be passed a body or a function returning a body.
+A body can be a string or an object with options like seen above.
+When using as a function the arguments are the context and the path of the menu when called.
+
 ## How can I run a simple method when pressing a button?
 
 ```ts
