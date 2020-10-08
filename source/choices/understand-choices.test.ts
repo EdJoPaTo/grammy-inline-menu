@@ -3,23 +3,25 @@ import test from 'ava'
 import {getChoiceKeysFromChoices, getChoiceTextByKey, ensureCorrectChoiceKeys} from './understand-choices'
 
 test('getChoiceKeysFromChoices from array', t => {
-	const choices = ['A', 'B']
+	const choices = ['A', 'B', 1]
 	const keys = getChoiceKeysFromChoices(choices)
-	t.deepEqual(keys, ['A', 'B'])
+	t.deepEqual(keys, ['A', 'B', '1'])
 })
 
 test('getChoiceKeysFromChoices from record', t => {
-	const choices = {A: 'Aaa', B: 'Bbb'}
+	const choices = {A: 'Aaa', B: 'Bbb', 1: '111'}
 	const keys = getChoiceKeysFromChoices(choices)
-	t.deepEqual(keys, ['A', 'B'])
+	// A Record is not ordered. Numbers are always before text keys
+	t.deepEqual(keys, ['1', 'A', 'B'])
 })
 
 test('getChoiceKeysFromChoices from map', t => {
-	const choices: Map<string, string> = new Map()
+	const choices: Map<string | number, string> = new Map()
 	choices.set('A', 'Aaa')
 	choices.set('B', 'Bbb')
+	choices.set(1, '111')
 	const keys = getChoiceKeysFromChoices(choices)
-	t.deepEqual(keys, ['A', 'B'])
+	t.deepEqual(keys, ['A', 'B', '1'])
 })
 
 test('getChoiceTextByKey from array', t => {

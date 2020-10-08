@@ -14,7 +14,7 @@ export function getChoiceKeysFromChoices(choices: Choices): string[] {
 	}
 
 	if (choicesIsMap(choices)) {
-		return [...choices.keys()]
+		return [...choices.keys()].map(o => String(o))
 	}
 
 	return Object.keys(choices)
