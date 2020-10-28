@@ -427,10 +427,10 @@ When sending from external events you still have to supply the context to the me
 See [How does it work](#how-does-it-work) to understand which path you have to supply as the last argument of `generateSendMenuToChatFunction`.
 
 ```ts
-const sendMenuFunction = generateSendMenuToChatFunction(menu, '/settings/')
+const sendMenuFunction = generateSendMenuToChatFunction(bot.telegram, menu, '/settings/')
 
 async function externalEventOccured() {
-	await sendMenuFunction(bot.telegram, userId, context)
+	await sendMenuFunction(userId, context)
 }
 ```
 
