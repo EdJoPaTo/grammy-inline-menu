@@ -8,7 +8,7 @@ test('submenu is listed', t => {
 	menu.chooseIntoSubmenu('unique', [], submenu)
 	const submenus = [...menu.listSubmenus()]
 	t.is(submenus.length, 1)
-	t.is(submenus[0].action.source, 'unique:([^/]+)\\/')
+	t.is(submenus[0]!.action.source, 'unique:([^/]+)\\/')
 })
 
 test('submenu hidden', async t => {
@@ -18,7 +18,7 @@ test('submenu hidden', async t => {
 		hide: () => true
 	})
 	const submenus = [...menu.listSubmenus()]
-	const isHidden = await submenus[0].hide?.(undefined, '/unique:Button/')
+	const isHidden = await submenus[0]?.hide?.(undefined, '/unique:Button/')
 	t.true(isHidden)
 })
 
@@ -27,7 +27,7 @@ test('submenu not existing hides', async t => {
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', ['Button'], submenu)
 	const submenus = [...menu.listSubmenus()]
-	const isHidden = await submenus[0].hide?.(undefined, '/unique:Tree/')
+	const isHidden = await submenus[0]?.hide?.(undefined, '/unique:Tree/')
 	t.true(isHidden)
 })
 
@@ -38,7 +38,7 @@ test('submenu not existing check disabled does not hide', async t => {
 		disableChoiceExistsCheck: true
 	})
 	const submenus = [...menu.listSubmenus()]
-	const isHidden = await submenus[0].hide?.(undefined, '/unique:Button/')
+	const isHidden = await submenus[0]?.hide?.(undefined, '/unique:Button/')
 	t.falsy(isHidden)
 })
 
@@ -117,7 +117,7 @@ test('set page action', async t => {
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	t.is(actions.length, 1)
-	const pageAction = actions[0]
+	const pageAction = actions[0]!
 	const result = await pageAction.doFunction('bla', '/uniqueP:2')
 	t.is(result, '.')
 })

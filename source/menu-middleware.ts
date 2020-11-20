@@ -98,7 +98,7 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 				const {match, responder} = await getLongestMatchActionResponder(context, path, this._responder)
 				if (match && responder.type === 'action') {
 					context.match = match
-					const afterwardsTarget = await responder.do(context, match[0])
+					const afterwardsTarget = await responder.do(context, match[0]!)
 
 					if (typeof afterwardsTarget === 'string' && afterwardsTarget) {
 						target = combinePath(path, afterwardsTarget)
@@ -120,7 +120,7 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 				}
 
 				context.match = match
-				const targetPath = match[0]
+				const targetPath = match[0]!
 				await this._sendMenu(responder.menu, context, targetPath)
 				await context.answerCbQuery()
 					.catch(catchCallbackOld)
@@ -155,7 +155,7 @@ async function getLongestMatchMenuResponder<Context extends TelegrafContext>(con
 		context.match = match
 
 		// eslint-disable-next-line no-await-in-loop
-		if (await sub.canEnter(context, match[0])) {
+		if (await sub.canEnter(context, match[0]!)) {
 			return getLongestMatchMenuResponder(context, path, sub)
 		}
 	}
@@ -177,7 +177,7 @@ async function getLongestMatchActionResponder<Context extends TelegrafContext>(c
 		context.match = match
 
 		// eslint-disable-next-line no-await-in-loop
-		if (await sub.canEnter(context, match[0])) {
+		if (await sub.canEnter(context, match[0]!)) {
 			return getLongestMatchActionResponder(context, path, sub)
 		}
 

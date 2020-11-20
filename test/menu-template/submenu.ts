@@ -8,7 +8,7 @@ test('submenu is listed', t => {
 	menu.submenu('Button', 'unique', submenu)
 	const submenus = [...menu.listSubmenus()]
 	t.is(submenus.length, 1)
-	t.is(submenus[0].action.source, 'unique\\/')
+	t.is(submenus[0]!.action.source, 'unique\\/')
 })
 
 test('button hidden', async t => {

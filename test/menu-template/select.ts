@@ -112,10 +112,10 @@ test('action hidden', async t => {
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 
-	const result0 = await actions[0].doFunction('foo', '/uniqueT:Button')
+	const result0 = await actions[0]?.doFunction('foo', '/uniqueT:Button')
 	t.is(result0, '.')
 
-	const result1 = await actions[1].doFunction('foo', '/uniqueF:Button')
+	const result1 = await actions[1]?.doFunction('foo', '/uniqueF:Button')
 	t.is(result1, '.')
 })
 
@@ -132,10 +132,10 @@ test('action skipped when not existing', async t => {
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 
-	const result0 = await actions[0].doFunction('foo', '/uniqueT:Tree')
+	const result0 = await actions[0]?.doFunction('foo', '/uniqueT:Tree')
 	t.is(result0, '.')
 
-	const result1 = await actions[1].doFunction('foo', '/uniqueF:Tree')
+	const result1 = await actions[1]?.doFunction('foo', '/uniqueF:Tree')
 	t.is(result1, '.')
 })
 

@@ -20,7 +20,7 @@ test('add simple doFunction', t => {
 
 	const resultSet = a.list(/^foo\//)
 	t.is(resultSet.size, 1)
-	const result = [...resultSet][0]
+	const result = [...resultSet][0]!
 
 	t.truthy(new RegExp(result.trigger.source, result.trigger.flags).exec('foo/bar'))
 
@@ -43,7 +43,7 @@ test('doFunction without hide runs doFunction', async t => {
 	const resultSet = a.list(/^foo\//)
 	const result = [...resultSet][0]
 
-	const target = await result.doFunction('bob', 'foo/bar')
+	const target = await result?.doFunction('bob', 'foo/bar')
 	t.is(target, 'wow')
 })
 
@@ -62,7 +62,7 @@ test('doFunction with hide false runs doFunction', async t => {
 	const resultSet = a.list(/^foo\//)
 	const result = [...resultSet][0]
 
-	const target = await result.doFunction('bob', 'foo/bar')
+	const target = await result?.doFunction('bob', 'foo/bar')
 	t.is(target, 'wow')
 })
 
@@ -81,7 +81,7 @@ test('doFunction with hide true skips doFunction and returns update menu path .'
 	const resultSet = a.list(/^foo\//)
 	const result = [...resultSet][0]
 
-	const target = await result.doFunction('bob', 'foo/bar')
+	const target = await result?.doFunction('bob', 'foo/bar')
 	t.is(target, '.')
 })
 

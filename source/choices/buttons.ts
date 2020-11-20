@@ -44,7 +44,7 @@ export function generateChoicesPaginationButtons<Context>(actionPrefix: string, 
 	const pageButtons = pageKeys
 		.map((page): CallbackButtonTemplate => ({
 			relativePath: `${actionPrefix}P:${page}`,
-			text: pageRecord[page]
+			text: pageRecord[page]!
 		}))
 
 	return pageButtons

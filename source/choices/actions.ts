@@ -14,7 +14,7 @@ export function combineHideAndChoices<Context>(actionPrefix: string, choices: Co
 			throw new TypeError('could not read choice from path')
 		}
 
-		const toBeFound = match[1]
+		const toBeFound = match[1]!
 		const choicesConstant = typeof choices === 'function' ? await choices(context) : choices
 		const choiceKeys = getChoiceKeysFromChoices(choicesConstant)
 		const keyExists = choiceKeys.includes(toBeFound)

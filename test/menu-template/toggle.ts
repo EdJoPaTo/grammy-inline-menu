@@ -90,10 +90,10 @@ test('action hidden', async t => {
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 
-	const result0 = await actions[0].doFunction('foo', '/unique:true')
+	const result0 = await actions[0]?.doFunction('foo', '/unique:true')
 	t.is(result0, '.')
 
-	const result1 = await actions[1].doFunction('foo', '/unique:true')
+	const result1 = await actions[1]?.doFunction('foo', '/unique:true')
 	t.is(result1, '.')
 })
 

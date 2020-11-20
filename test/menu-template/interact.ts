@@ -68,7 +68,7 @@ test('action is added with correct trigger', t => {
 	const actions = menu.renderActionHandlers(/^\//)
 	t.is(actions.size, 1)
 
-	const action = [...actions][0]
+	const action = [...actions][0]!
 	t.is(action.trigger.source, '^\\/unique$')
 })
 
@@ -87,7 +87,7 @@ test('action can be called', async t => {
 	const actions = menu.renderActionHandlers(/^\//)
 	t.is(actions.size, 1)
 
-	const action = [...actions][0]
+	const action = [...actions][0]!
 	const result = await action.doFunction(undefined, '/unique')
 	t.is(result, 'wow')
 })
@@ -105,7 +105,7 @@ test('action can not be called when hidden', async t => {
 	const actions = menu.renderActionHandlers(/^\//)
 	t.is(actions.size, 1)
 
-	const action = [...actions][0]
+	const action = [...actions][0]!
 	const result = await action.doFunction(undefined, '/unique')
 	t.is(result, '.')
 })

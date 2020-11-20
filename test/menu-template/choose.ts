@@ -40,7 +40,7 @@ test('action triggers', t => {
 	t.log(actions)
 	t.is(actions.length, 1)
 
-	t.is(actions[0].trigger.source, '^\\/unique:(.+)$')
+	t.is(actions[0]!.trigger.source, '^\\/unique:(.+)$')
 })
 
 test('action hidden', async t => {
@@ -54,7 +54,7 @@ test('action hidden', async t => {
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 
-	const result = await actions[0].doFunction(undefined, '/unique:Button')
+	const result = await actions[0]?.doFunction(undefined, '/unique:Button')
 	t.is(result, '.')
 })
 
@@ -70,7 +70,7 @@ test('action existing button', async t => {
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 
-	const result = await actions[0].doFunction('bla', '/unique:Button')
+	const result = await actions[0]?.doFunction('bla', '/unique:Button')
 	t.is(result, 'wow')
 })
 
@@ -84,7 +84,7 @@ test('action not existing button', async t => {
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 
-	const result = await actions[0].doFunction(undefined, '/unique:Tree')
+	const result = await actions[0]?.doFunction(undefined, '/unique:Tree')
 	t.is(result, '.')
 })
 
@@ -101,7 +101,7 @@ test('action not existing button check disabled', async t => {
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 
-	const result = await actions[0].doFunction('bla', '/unique:Tree')
+	const result = await actions[0]?.doFunction('bla', '/unique:Tree')
 	t.is(result, 'wow')
 })
 

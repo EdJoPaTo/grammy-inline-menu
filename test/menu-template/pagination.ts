@@ -37,7 +37,7 @@ test('action hidden', async t => {
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	t.is(actions.length, 1)
 
-	const result = await actions[0].doFunction('foo', '/unique:1')
+	const result = await actions[0]!.doFunction('foo', '/unique:1')
 	t.is(result, '.')
 })
 
@@ -85,7 +85,7 @@ test('action trigger', t => {
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	t.is(actions.length, 1)
 
-	t.is(actions[0].trigger.source, '^\\/unique:(\\d+)$')
+	t.is(actions[0]!.trigger.source, '^\\/unique:(\\d+)$')
 })
 
 test('action sets page', async t => {
@@ -109,8 +109,8 @@ test('action sets page', async t => {
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	t.is(actions.length, 1)
 
-	const result = await actions[0].doFunction('foo', '/unique:2')
+	const result = await actions[0]!.doFunction('foo', '/unique:2')
 	t.is(result, '.')
 
-	t.is(actions[0].trigger.source, '^\\/unique:(\\d+)$')
+	t.is(actions[0]!.trigger.source, '^\\/unique:(\\d+)$')
 })
