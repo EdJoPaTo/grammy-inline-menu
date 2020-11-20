@@ -20,9 +20,8 @@ const FAULTY_MENU_TEMPLATES: Readonly<Record<string, MenuTemplate<unknown>>> = {
 	'missing title in venue body': new MenuTemplate({venue: {location: {latitude: 53.5, longitude: 10}, address: 'B'}})
 }
 
-for (const fault of Object.keys(FAULTY_MENU_TEMPLATES)) {
+for (const [fault, menu] of Object.entries(FAULTY_MENU_TEMPLATES)) {
 	test('context edit ' + fault, async t => {
-		const menu = FAULTY_MENU_TEMPLATES[fault]
 		const fakeContext: Partial<TelegrafContext> = {
 			callbackQuery: {
 				id: '666',
@@ -42,9 +41,8 @@ for (const fault of Object.keys(FAULTY_MENU_TEMPLATES)) {
 	})
 }
 
-for (const fault of Object.keys(FAULTY_MENU_TEMPLATES)) {
+for (const [fault, menu] of Object.entries(FAULTY_MENU_TEMPLATES)) {
 	test('context reply ' + fault, async t => {
-		const menu = FAULTY_MENU_TEMPLATES[fault]
 		await t.throwsAsync(
 			async () => replyMenuToContext(menu, {} as any, '/'),
 			EXPECTED_ERROR
@@ -52,9 +50,8 @@ for (const fault of Object.keys(FAULTY_MENU_TEMPLATES)) {
 	})
 }
 
-for (const fault of Object.keys(FAULTY_MENU_TEMPLATES)) {
+for (const [fault, menu] of Object.entries(FAULTY_MENU_TEMPLATES)) {
 	test('telegram send ' + fault, async t => {
-		const menu = FAULTY_MENU_TEMPLATES[fault]
 		const sendMenu = generateSendMenuToChatFunction({} as any, menu, '/')
 		await t.throwsAsync(
 			async () => sendMenu(666, {} as any),
@@ -63,9 +60,8 @@ for (const fault of Object.keys(FAULTY_MENU_TEMPLATES)) {
 	})
 }
 
-for (const fault of Object.keys(FAULTY_MENU_TEMPLATES)) {
+for (const [fault, menu] of Object.entries(FAULTY_MENU_TEMPLATES)) {
 	test('telegram edit ' + fault, async t => {
-		const menu = FAULTY_MENU_TEMPLATES[fault]
 		const editIntoMenu = generateEditMessageIntoMenuFunction({} as any, menu, '/')
 		await t.throwsAsync(
 			async () => editIntoMenu(666, 666, {} as any),
