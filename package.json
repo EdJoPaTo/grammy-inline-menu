@@ -34,7 +34,7 @@
 	},
 	"homepage": "https://github.com/EdJoPaTo/telegraf-inline-menu#readme",
 	"dependencies": {
-		"typegram": "^2.2.2"
+		"typegram": "^3.0.2"
 	},
 	"peerDependencies": {
 		"telegraf": "^3.38.0"

@@ -283,7 +283,6 @@ function createLocationExtra(body: LocationBody, keyboard: InlineKeyboard, base:
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 function createVenueExtra(body: VenueBody, keyboard: InlineKeyboard, base: Readonly<ExtraReplyMessage>): any {
 	return {
 		...base,
