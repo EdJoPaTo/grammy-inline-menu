@@ -8,7 +8,7 @@
 		"node": ">=12"
 	},
 	"scripts": {
-		"build": "del dist && tsc",
+		"build": "del-cli dist && tsc",
 		"prepack": "npm run build",
 		"preexample-js": "npm run build",
 		"example-js": "node examples/main-javascript.js",
