@@ -93,7 +93,9 @@ test('adding two times the same trigger throws', t => {
 	}
 
 	a.add(/foo$/, doFunction, undefined)
-	t.throws(() => a.add(/foo$/, doFunction, undefined), {
+	t.throws(() => {
+		a.add(/foo$/, doFunction, undefined)
+	}, {
 		message: /already added.+action/
 	})
 })

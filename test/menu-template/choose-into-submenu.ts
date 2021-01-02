@@ -68,8 +68,12 @@ test('two same action codes throws', t => {
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', [], submenu)
 
-	t.notThrows(() => menu.chooseIntoSubmenu('different', [], submenu))
-	t.throws(() => menu.chooseIntoSubmenu('unique', [], submenu), {
+	t.notThrows(() => {
+		menu.chooseIntoSubmenu('different', [], submenu)
+	})
+	t.throws(() => {
+		menu.chooseIntoSubmenu('unique', [], submenu)
+	}, {
 		message: /already a submenu with the action/
 	})
 })

@@ -60,13 +60,17 @@ test('getChoiceTextByKey from map but undefined', t => {
 
 test('ensureCorrectChoiceKeys correct keys are not a problem', t => {
 	const choiceKeys = ['a', 'A', 'a:A', 'aaaaaaaaaaa']
-	t.notThrows(() => ensureCorrectChoiceKeys('', '/', choiceKeys))
+	t.notThrows(() => {
+		ensureCorrectChoiceKeys('', '/', choiceKeys)
+	})
 })
 
 test('ensureCorrectChoiceKeys slash throws', t => {
 	const choiceKeys = ['a/a']
 	t.throws(
-		() => ensureCorrectChoiceKeys('prefix', '/path/', choiceKeys),
+		() => {
+			ensureCorrectChoiceKeys('prefix', '/path/', choiceKeys)
+		},
 		{message: /can not contain '\/'.+prefix.+\/path\//}
 	)
 })

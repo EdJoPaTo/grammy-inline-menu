@@ -51,19 +51,27 @@ test('getMenuOfPath throws when not a path', t => {
 })
 
 test('ensureRootMenuTrigger does not throw on good trigger', t => {
-	t.notThrows(() => ensureRootMenuTrigger(/^blubb\//))
+	t.notThrows(() => {
+		ensureRootMenuTrigger(/^blubb\//)
+	})
 })
 
 test('ensureRootMenuTrigger throws when not ending with /', t => {
-	t.throws(() => ensureRootMenuTrigger(/^blubb/), {message: /root menu trigger.+\//})
+	t.throws(() => {
+		ensureRootMenuTrigger(/^blubb/)
+	}, {message: /root menu trigger.+\//})
 })
 
 test('ensureRootMenuTrigger throws when not starting with ^/', t => {
-	t.throws(() => ensureRootMenuTrigger(/blubb\//), {message: /root menu trigger.+\^/})
+	t.throws(() => {
+		ensureRootMenuTrigger(/blubb\//)
+	}, {message: /root menu trigger.+\^/})
 })
 
 test('ensureRootMenuTrigger throws when it matches multiple slashes /', t => {
-	t.throws(() => ensureRootMenuTrigger(/^.+\//), {message: /root menu trigger.+exactly one slash/})
+	t.throws(() => {
+		ensureRootMenuTrigger(/^.+\//)
+	}, {message: /root menu trigger.+exactly one slash/})
 })
 
 function combineTriggerMacro(t: ExecutionContext, parent: RegExp, child: string | RegExpLike, expected: RegExp): void {
@@ -95,29 +103,55 @@ test('combineTrigger fails when child has flags/', t => {
 })
 
 test('ensureTriggerLastChild throws when not ending with $', t => {
-	t.throws(() => ensureTriggerLastChild(/blubb/))
-	t.throws(() => ensureTriggerLastChild('blubb'))
-	t.notThrows(() => ensureTriggerLastChild(/blubb$/))
-	t.notThrows(() => ensureTriggerLastChild('blubb$'))
+	t.throws(() => {
+		ensureTriggerLastChild(/blubb/)
+	})
+	t.throws(() => {
+		ensureTriggerLastChild('blubb')
+	})
+	t.notThrows(() => {
+		ensureTriggerLastChild(/blubb$/)
+	})
+	t.notThrows(() => {
+		ensureTriggerLastChild('blubb$')
+	})
 })
 
 test('ensureTriggerChild throws when being somewhat relative', t => {
-	t.throws(() => ensureTriggerChild(/..$/))
-	t.throws(() => ensureTriggerChild('..$'))
-	t.throws(() => ensureTriggerChild(/more than\/one deep$/))
-	t.throws(() => ensureTriggerChild('more than/one deep$'))
-	t.throws(() => ensureTriggerChild(/\/relative to root$/))
-	t.throws(() => ensureTriggerChild('/relative to root$'))
+	t.throws(() => {
+		ensureTriggerChild(/..$/)
+	})
+	t.throws(() => {
+		ensureTriggerChild('..$')
+	})
+	t.throws(() => {
+		ensureTriggerChild(/more than\/one deep$/)
+	})
+	t.throws(() => {
+		ensureTriggerChild('more than/one deep$')
+	})
+	t.throws(() => {
+		ensureTriggerChild(/\/relative to root$/)
+	})
+	t.throws(() => {
+		ensureTriggerChild('/relative to root$')
+	})
 })
 
 test('ensurePathMenu accepts correct paths', t => {
-	t.notThrows(() => ensurePathMenu('path/'))
+	t.notThrows(() => {
+		ensurePathMenu('path/')
+	})
 })
 
 test('ensurePathMenu throws when empty', t => {
-	t.throws(() => ensurePathMenu(''), {message: /empty string/})
+	t.throws(() => {
+		ensurePathMenu('')
+	}, {message: /empty string/})
 })
 
 test('ensurePathMenu throws when not ending with slash', t => {
-	t.throws(() => ensurePathMenu('path'), {message: /end with \//})
+	t.throws(() => {
+		ensurePathMenu('path')
+	}, {message: /end with \//})
 })
