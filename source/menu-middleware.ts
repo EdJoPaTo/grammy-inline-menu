@@ -89,12 +89,13 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 		const composer = new Composer<Context>()
 
 		const trigger = new RegExp(this._responder.trigger.source, this._responder.trigger.flags)
+		// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 		composer.action(trigger, async (context, next) => {
-			if (!context.callbackQuery || !('data' in context.callbackQuery)) {
+			if (!('data' in context.callbackQuery)) {
 				return next()
 			}
 
-			const path = context.callbackQuery.data!
+			const path = context.callbackQuery.data
 
 			let target: string | undefined = path
 
@@ -125,7 +126,7 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 
 				context.match = match
 				const targetPath = match[0]!
-				await this._sendMenu(responder.menu, context, targetPath)
+				await this._sendMenu(responder.menu as any, context, targetPath)
 				await context.answerCbQuery()
 					.catch(catchCallbackOld)
 			}
@@ -156,7 +157,7 @@ async function getLongestMatchMenuResponder<Context extends TelegrafContext>(con
 		}
 
 		// Telegraf users expect context.match to contain the relevant match
-		context.match = match
+		(context as any).match = match
 
 		// eslint-disable-next-line no-await-in-loop
 		if (await sub.canEnter(context, match[0]!)) {
@@ -178,7 +179,7 @@ async function getLongestMatchActionResponder<Context extends TelegrafContext>(c
 		}
 
 		// Telegraf users expect context.match to contain the relevant match
-		context.match = match
+		(context as any).match = match
 
 		// eslint-disable-next-line no-await-in-loop
 		if (await sub.canEnter(context, match[0]!)) {

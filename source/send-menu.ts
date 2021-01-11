@@ -1,5 +1,7 @@
-import {Telegram, Context as TelegrafContext} from 'telegraf'
-import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessage, Message, MessageMedia, ExtraLocation} from 'telegraf/typings/telegram-types'
+import {Context as TelegrafContext} from 'telegraf'
+import Telegram from 'telegraf/typings/telegram'
+import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessageText, ExtraEditMessageMedia, InputMedia, ExtraLocation} from 'telegraf/typings/telegram-types'
+import {Message} from 'typegram'
 
 import {Body, TextBody, MediaBody, LocationBody, isMediaBody, isLocationBody, isTextBody, getBodyText, isVenueBody, VenueBody} from './body'
 import {ensurePathMenu} from './path'
@@ -21,7 +23,7 @@ export type SendMenuToChatFunction<Context> = (chatId: string | number, context:
  * Method which is able to edit a message in a chat into a menu.
  * Generated via `generateEditMessageIntoMenuFunction`.
  */
-export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, messageId: number, context: Context, extra?: Readonly<ExtraEditMessage>) => Promise<Message | boolean>
+export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, messageId: number, context: Context, extra?: Readonly<ExtraEditMessageText | ExtraEditMessageMedia>) => Promise<Message | boolean>
 
 /**
  * Reply a menu to a context as a new message
@@ -44,7 +46,7 @@ export async function replyMenuToContext<Context extends TelegrafContext>(menu: 
  * @param path path of the menu
  * @param extra optional additional Telegraf Extra options
  */
-export async function editMenuOnContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraEditMessage> = {}): Promise<void> {
+export async function editMenuOnContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraEditMessageText | ExtraEditMessageMedia> = {}): Promise<void> {
 	ensurePathMenu(path)
 	const body = await menu.renderBody(context, path)
 	const keyboard = await menu.renderKeyboard(context, path)
@@ -57,14 +59,14 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 
 	if (isMediaBody(body)) {
 		if ('animation' in message || 'audio' in message || 'document' in message || 'photo' in message || 'video' in message) {
-			const media: MessageMedia = {
+			const media: InputMedia = {
 				type: body.type,
 				media: body.media,
 				caption: body.text,
 				parse_mode: body.parse_mode
 			}
 
-			await context.editMessageMedia(media, createMediaExtra(body, keyboard, extra as any))
+			await context.editMessageMedia(media, createEditMediaExtra(keyboard, extra))
 				.catch(catchMessageNotModified)
 			return
 		}
@@ -127,13 +129,13 @@ function catchMessageNotModified(error: any): void {
 
 async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(body: Body, keyboard: InlineKeyboard, context: Context, extra: Readonly<ExtraReplyMessage>): Promise<Message> {
 	if (isMediaBody(body)) {
-		const mediaExtra = createMediaExtra(body, keyboard, extra as any)
+		const mediaExtra = createSendMediaExtra(body, keyboard, extra)
 
 		// eslint-disable-next-line default-case
 		switch (body.type) {
 			case 'animation':
 				// TODO: use typings when PR is merged https://github.com/telegraf/telegraf/pull/1042
-				return (context as any).replyWithAnimation(body.media, mediaExtra)
+				return context.replyWithAnimation(body.media, mediaExtra)
 			case 'audio':
 				return context.replyWithAudio(body.media, mediaExtra)
 			case 'document':
@@ -168,13 +170,14 @@ async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(
  * @param menu menu to be shown
  * @param path path of the menu
  */
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Telegram>, menu: MenuLike<Context>, path: string): SendMenuToChatFunction<Context> {
 	return async (chatId, context, extra = {}) => {
 		const body = await menu.renderBody(context, path)
 		const keyboard = await menu.renderKeyboard(context, path)
 
 		if (isMediaBody(body)) {
-			const mediaExtra = createMediaExtra(body, keyboard, extra as any)
+			const mediaExtra = createSendMediaExtra(body, keyboard, extra as any)
 
 			// eslint-disable-next-line default-case
 			switch (body.type) {
@@ -216,22 +219,22 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Teleg
  * @param menu menu to be shown
  * @param path path of the menu
  */
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<Telegram>, menu: MenuLike<Context>, path: string): EditMessageIntoMenuFunction<Context> {
 	return async (chatId, messageId, context, extra = {}) => {
 		const body = await menu.renderBody(context, path)
 		const keyboard = await menu.renderKeyboard(context, path)
 
 		if (isMediaBody(body)) {
-			const media: MessageMedia = {
+			const media: InputMedia = {
 				type: body.type,
 				media: body.media,
 				caption: body.text,
 				parse_mode: body.parse_mode
 			}
 
-			const mediaExtra = createMediaExtra(body, keyboard, extra as any)
-			// TODO: use typings when PR is merged https://github.com/telegraf/telegraf/pull/1053
-			return (telegram as any).editMessageMedia(chatId, messageId, undefined, media, mediaExtra)
+			const mediaExtra = createEditMediaExtra(keyboard, extra)
+			return telegram.editMessageMedia(chatId, messageId, undefined, media, mediaExtra)
 		}
 
 		if (isLocationBody(body)) {
@@ -251,7 +254,7 @@ export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<
 	}
 }
 
-function createTextExtra(body: string | TextBody, keyboard: InlineKeyboard, base: Readonly<ExtraReplyMessage>): ExtraReplyMessage {
+function createTextExtra(body: string | TextBody, keyboard: InlineKeyboard, base: Readonly<ExtraReplyMessage>): ExtraReplyMessage & ExtraEditMessageText {
 	return {
 		...base,
 		parse_mode: typeof body === 'string' ? undefined : body.parse_mode,
@@ -262,11 +265,20 @@ function createTextExtra(body: string | TextBody, keyboard: InlineKeyboard, base
 	}
 }
 
-function createMediaExtra(body: MediaBody, keyboard: InlineKeyboard, base: Readonly<ExtraPhoto>): ExtraPhoto {
+function createSendMediaExtra(body: MediaBody, keyboard: InlineKeyboard, base: Readonly<ExtraPhoto>): ExtraPhoto {
 	return {
 		...base,
 		parse_mode: body.parse_mode,
 		caption: body.text,
+		reply_markup: {
+			inline_keyboard: keyboard.map(o => [...o])
+		}
+	}
+}
+
+function createEditMediaExtra(keyboard: InlineKeyboard, base: Readonly<ExtraEditMessageMedia>): ExtraEditMessageMedia {
+	return {
+		...base,
 		reply_markup: {
 			inline_keyboard: keyboard.map(o => [...o])
 		}

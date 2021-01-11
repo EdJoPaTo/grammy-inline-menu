@@ -228,7 +228,7 @@ bot.catch(error => {
 
 async function startup() {
 	await bot.launch()
-	console.log(new Date(), 'Bot started as', bot.options.username)
+	console.log(new Date(), 'Bot started as', bot.botInfo.username)
 }
 
 startup()

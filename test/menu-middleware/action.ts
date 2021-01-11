@@ -6,7 +6,8 @@ import {MenuLike, Submenu} from '../../source/menu-like'
 import {MenuMiddleware} from '../../source/menu-middleware'
 import {ButtonAction} from '../../source/action-hive'
 
-type MyContext = TelegrafContext
+// TODO: Ugly workaround. This library should know better...
+type MyContext = TelegrafContext & {match: RegExpExecArray | null | undefined}
 
 test('action is run without updating menu afterwards', async t => {
 	t.plan(3)
@@ -194,8 +195,7 @@ test('action returns non existing path afterwards throws Error', async t => {
 		t.fail()
 	})
 
-	// TODO: improve typings when telegraf 3.39 is released
-	bot.catch((error: any) => {
+	bot.catch(error => {
 		if (error instanceof Error) {
 			t.is(error.message, 'There is no menu "/foo/" which can be reached in this menu')
 		} else {

@@ -1,4 +1,5 @@
-import {Telegram, Context as TelegrafContext} from 'telegraf'
+import {Context as TelegrafContext} from 'telegraf'
+import Telegram from 'telegraf/typings/telegram'
 import test from 'ava'
 
 import {MenuTemplate} from '../../source'
@@ -44,8 +45,7 @@ for (const mediaType of MEDIA_TYPES) {
 	test('media ' + mediaType, async t => {
 		const menu = new MenuTemplate<TelegrafContext>({media: 'whatever', type: mediaType})
 
-		// TODO: use typings when PR is merged https://github.com/telegraf/telegraf/pull/1053
-		const fakeTelegram /* : Partial<Telegram> */ = {
+		const fakeTelegram: Partial<Telegram> = {
 			editMessageMedia: async (chatId: unknown, messageId: unknown, inlineMessageId: unknown, media: unknown, extra: unknown) => {
 				t.is(chatId, 13)
 				t.is(messageId, 37)

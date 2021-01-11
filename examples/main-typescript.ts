@@ -4,7 +4,8 @@ import {Telegraf, Context as TelegrafContext} from 'telegraf'
 
 import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../source'
 
-type MyContext = TelegrafContext
+// TODO: Ugly workaround. This library should know better...
+type MyContext = TelegrafContext & {match: RegExpExecArray | undefined}
 
 const menu = new MenuTemplate<MyContext>(() => 'Main Menu\n' + new Date().toISOString())
 
@@ -213,7 +214,7 @@ const token = readFileSync('token.txt', 'utf8').trim()
 const bot = new Telegraf<MyContext>(token)
 
 bot.use(async (ctx, next) => {
-	if (ctx.callbackQuery?.data) {
+	if (ctx.callbackQuery && 'data' in ctx.callbackQuery) {
 		console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
 	}
 
@@ -229,7 +230,7 @@ bot.catch((error: any) => {
 
 async function startup(): Promise<void> {
 	await bot.launch()
-	console.log(new Date(), 'Bot started as', bot.options.username)
+	console.log(new Date(), 'Bot started as', bot.botInfo?.username)
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

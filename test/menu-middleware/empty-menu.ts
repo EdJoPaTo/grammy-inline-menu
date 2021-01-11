@@ -57,7 +57,8 @@ test('irrelevant callback queries are passing through', async t => {
 		callback_query: {
 			id: '666',
 			from: {} as any,
-			chat_instance: '666'
+			chat_instance: '666',
+			data: '666'
 		}
 	})
 })

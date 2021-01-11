@@ -5,7 +5,8 @@ import {MenuLike, Submenu} from '../../source/menu-like'
 
 import {MenuMiddleware} from '../../source/menu-middleware'
 
-type MyContext = TelegrafContext
+// TODO: Ugly workaround. This library should know better...
+type MyContext = TelegrafContext & {match: RegExpExecArray | null | undefined}
 
 test('root path responds main menu', async t => {
 	const submenuMenu: MenuLike<unknown> = {

@@ -30,15 +30,12 @@ for (const mediaType of MEDIA_TYPES) {
 				chat_instance: '666',
 				data: '666'
 			},
+			replyWithAnimation: replyFunction,
 			replyWithAudio: replyFunction,
 			replyWithDocument: replyFunction,
 			replyWithPhoto: replyFunction,
 			replyWithVideo: replyFunction
 		}
-
-		// TODO: use typings when PR is merged https://github.com/telegraf/telegraf/pull/1042
-		const fakeContextAny = fakeContext as any
-		fakeContextAny.replyWithAnimation = replyFunction
 
 		await replyMenuToContext(menu, fakeContext as any, '/')
 	})
