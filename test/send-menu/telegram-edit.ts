@@ -57,8 +57,6 @@ for (const mediaType of MEDIA_TYPES) {
 					parse_mode: undefined
 				})
 				t.deepEqual(extra, {
-					caption: undefined,
-					parse_mode: undefined,
 					reply_markup: {
 						inline_keyboard: []
 					}

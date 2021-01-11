@@ -246,8 +246,6 @@ test('media edit when media message', async t => {
 				parse_mode: undefined
 			})
 			t.deepEqual(extra, {
-				caption: undefined,
-				parse_mode: undefined,
 				reply_markup: {
 					inline_keyboard: []
 				}
