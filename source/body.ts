@@ -19,7 +19,7 @@ export interface TextBody extends TextPart {
 
 export interface MediaBody extends Partial<TextPart> {
 	readonly type: MediaType;
-	readonly media: InputFile;
+	readonly media: string | InputFile;
 }
 
 export interface LocationBody {

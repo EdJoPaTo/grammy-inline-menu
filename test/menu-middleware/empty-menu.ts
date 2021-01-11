@@ -1,9 +1,11 @@
-import {Telegraf} from 'telegraf'
+import {Telegraf, Context as TelegrafContext} from 'telegraf'
 import test from 'ava'
 
 import {MenuLike} from '../../source/menu-like'
 
 import {MenuMiddleware} from '../../source/menu-middleware'
+
+type MyContext = TelegrafContext
 
 test('non callback queries are passing through', async t => {
 	const menu: MenuLike<unknown> = {
@@ -15,7 +17,7 @@ test('non callback queries are passing through', async t => {
 
 	const mm = new MenuMiddleware('/', menu)
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.use(mm.middleware())
 
 	bot.use(() => {
@@ -26,6 +28,7 @@ test('non callback queries are passing through', async t => {
 		update_id: 666,
 		message: {
 			chat: {} as any,
+			from: {} as any,
 			message_id: 666,
 			date: 666
 		}
@@ -42,7 +45,7 @@ test('irrelevant callback queries are passing through', async t => {
 
 	const mm = new MenuMiddleware('/', menu)
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.use(mm.middleware())
 
 	bot.use(() => {
@@ -75,7 +78,7 @@ test('default root path is responded', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -118,7 +121,7 @@ test('custom root path is responded', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -161,7 +164,7 @@ test('custom regex root path is responded', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -198,7 +201,7 @@ test('default root path does not trigger custom root path', async t => {
 
 	const mm = new MenuMiddleware('custom/', menu)
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.use(mm.middleware())
 
 	bot.use(() => {
@@ -232,7 +235,7 @@ test('not existing path below is responded with root menu', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}

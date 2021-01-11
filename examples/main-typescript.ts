@@ -4,7 +4,9 @@ import {Telegraf, Context as TelegrafContext} from 'telegraf'
 
 import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../source'
 
-const menu = new MenuTemplate<TelegrafContext>(() => 'Main Menu\n' + new Date().toISOString())
+type MyContext = TelegrafContext
+
+const menu = new MenuTemplate<MyContext>(() => 'Main Menu\n' + new Date().toISOString())
 
 menu.url('EdJoPaTo.de', 'https://edjopato.de')
 
@@ -51,7 +53,7 @@ menu.select('select', ['A', 'B', 'C'], {
 	isSet: (_, key) => key === selectedKey
 })
 
-const foodMenu = new MenuTemplate<TelegrafContext>('People like food. What do they like?')
+const foodMenu = new MenuTemplate<MyContext>('People like food. What do they like?')
 
 interface FoodChoises {
 	food?: string;
@@ -61,7 +63,7 @@ interface FoodChoises {
 const people: Record<string, FoodChoises> = {Mark: {}, Paul: {}}
 const food = ['bread', 'cake', 'bananas']
 
-function personButtonText(_: TelegrafContext, key: string): string {
+function personButtonText(_: MyContext, key: string): string {
 	const entry = people[key]
 	if (entry?.food) {
 		return `${key} (${entry.food})`
@@ -70,7 +72,7 @@ function personButtonText(_: TelegrafContext, key: string): string {
 	return key
 }
 
-function foodSelectText(ctx: TelegrafContext): string {
+function foodSelectText(ctx: MyContext): string {
 	const person = ctx.match![1]!
 	const hisChoice = people[person]!.food
 	if (!hisChoice) {
@@ -80,7 +82,7 @@ function foodSelectText(ctx: TelegrafContext): string {
 	return `${person} likes ${hisChoice} currently.`
 }
 
-const foodSelectSubmenu = new MenuTemplate<TelegrafContext>(foodSelectText)
+const foodSelectSubmenu = new MenuTemplate<MyContext>(foodSelectText)
 foodSelectSubmenu.toggle('Prefer tea', 'tea', {
 	set: (ctx, choice) => {
 		const person = ctx.match![1]!
@@ -116,7 +118,7 @@ menu.submenu('Food menu', 'food', foodMenu, {
 })
 
 let mediaOption = 'photo1'
-const mediaMenu = new MenuTemplate<TelegrafContext>(() => {
+const mediaMenu = new MenuTemplate<MyContext>(() => {
 	if (mediaOption === 'video') {
 		return {
 			type: 'video',
@@ -204,11 +206,11 @@ mediaMenu.manualRow(createBackMainMenuButtons())
 
 menu.submenu('Media Menu', 'media', mediaMenu)
 
-const menuMiddleware = new MenuMiddleware<TelegrafContext>('/', menu)
+const menuMiddleware = new MenuMiddleware<MyContext>('/', menu)
 console.log(menuMiddleware.tree())
 
 const token = readFileSync('token.txt', 'utf8').trim()
-const bot = new Telegraf(token)
+const bot = new Telegraf<MyContext>(token)
 
 bot.use(async (ctx, next) => {
 	if (ctx.callbackQuery?.data) {

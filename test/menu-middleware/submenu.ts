@@ -1,9 +1,11 @@
-import {Telegraf} from 'telegraf'
+import {Telegraf, Context as TelegrafContext} from 'telegraf'
 import test from 'ava'
 
 import {MenuLike, Submenu} from '../../source/menu-like'
 
 import {MenuMiddleware} from '../../source/menu-middleware'
+
+type MyContext = TelegrafContext
 
 test('root path responds main menu', async t => {
 	const submenuMenu: MenuLike<unknown> = {
@@ -32,7 +34,7 @@ test('root path responds main menu', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -86,7 +88,7 @@ test('submenu path responds submenu when not hidden', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -140,7 +142,7 @@ test('submenu path responds submenu when no hide function', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -194,7 +196,7 @@ test('submenu path responds main menu when hidden', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}

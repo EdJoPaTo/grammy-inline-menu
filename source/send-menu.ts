@@ -72,7 +72,7 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 		// Dont edit the message, just recreate it.
 	} else if (isTextBody(body)) {
 		const text = getBodyText(body)
-		if (message.text) {
+		if ('text' in message) {
 			await context.editMessageText(text, createTextExtra(body, keyboard, extra))
 				.catch(catchMessageNotModified)
 			return

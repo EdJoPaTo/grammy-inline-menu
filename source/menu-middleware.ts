@@ -89,8 +89,12 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 		const composer = new Composer<Context>()
 
 		const trigger = new RegExp(this._responder.trigger.source, this._responder.trigger.flags)
-		composer.action(trigger, async context => {
-			const path = context.callbackQuery!.data!
+		composer.action(trigger, async (context, next) => {
+			if (!context.callbackQuery || !('data' in context.callbackQuery)) {
+				return next()
+			}
+
+			const path = context.callbackQuery.data!
 
 			let target: string | undefined = path
 

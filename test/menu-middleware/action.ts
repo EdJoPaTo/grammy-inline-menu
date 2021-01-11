@@ -6,9 +6,11 @@ import {MenuLike, Submenu} from '../../source/menu-like'
 import {MenuMiddleware} from '../../source/menu-middleware'
 import {ButtonAction} from '../../source/action-hive'
 
+type MyContext = TelegrafContext
+
 test('action is run without updating menu afterwards', async t => {
 	t.plan(3)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
 		doFunction: (context, path) => {
 			t.is(context.match![0], '/what')
@@ -17,7 +19,7 @@ test('action is run without updating menu afterwards', async t => {
 			return false
 		}
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
@@ -29,7 +31,7 @@ test('action is run without updating menu afterwards', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -58,7 +60,7 @@ test('action is run without updating menu afterwards', async t => {
 
 test('action is run and updating menu afterwards with path', async t => {
 	t.plan(5)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
 		doFunction: (context, path) => {
 			t.is(context.match![0], '/what')
@@ -67,7 +69,7 @@ test('action is run and updating menu afterwards with path', async t => {
 			return '.'
 		}
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
@@ -80,7 +82,7 @@ test('action is run and updating menu afterwards with path', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -109,7 +111,7 @@ test('action is run and updating menu afterwards with path', async t => {
 
 test('action is run and updating menu afterwards with true', async t => {
 	t.plan(5)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
 		doFunction: (context, path) => {
 			t.is(context.match![0], '/what')
@@ -118,7 +120,7 @@ test('action is run and updating menu afterwards with true', async t => {
 			return true
 		}
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
@@ -131,7 +133,7 @@ test('action is run and updating menu afterwards with true', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -160,11 +162,11 @@ test('action is run and updating menu afterwards with true', async t => {
 
 test('action returns non existing path afterwards throws Error', async t => {
 	t.plan(1)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<MyContext> = {
 		trigger: /^custom\/what$/,
 		doFunction: () => '/foo/'
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
@@ -176,7 +178,7 @@ test('action returns non existing path afterwards throws Error', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -214,13 +216,13 @@ test('action returns non existing path afterwards throws Error', async t => {
 
 test('not existing action updates menu', async t => {
 	t.plan(2)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
 		doFunction: () => {
 			throw new Error('not the correct action')
 		}
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
@@ -233,7 +235,7 @@ test('not existing action updates menu', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -262,7 +264,7 @@ test('not existing action updates menu', async t => {
 
 test('action in submenu is run', async t => {
 	t.plan(3)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<MyContext> = {
 		trigger: /^\/submenu\/what$/,
 		doFunction: (context, path) => {
 			t.is(context.match![0], '/submenu/what')
@@ -271,18 +273,18 @@ test('action in submenu is run', async t => {
 			return false
 		}
 	}
-	const submenuMenu: MenuLike<TelegrafContext> = {
+	const submenuMenu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'submenu',
 		renderKeyboard: () => []
 	}
-	const submenu: Submenu<TelegrafContext> = {
+	const submenu: Submenu<MyContext> = {
 		action: /submenu\//,
 		hide: () => false,
 		menu: submenuMenu
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
@@ -294,7 +296,7 @@ test('action in submenu is run', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -323,24 +325,24 @@ test('action in submenu is run', async t => {
 
 test('not existing action in submenu updates submenu', async t => {
 	t.plan(2)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<MyContext> = {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
 			throw new Error('not the correct action')
 		}
 	}
-	const submenuMenu: MenuLike<TelegrafContext> = {
+	const submenuMenu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'submenu',
 		renderKeyboard: () => []
 	}
-	const submenu: Submenu<TelegrafContext> = {
+	const submenu: Submenu<MyContext> = {
 		action: /submenu\//,
 		hide: () => false,
 		menu: submenuMenu
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
@@ -353,7 +355,7 @@ test('not existing action in submenu updates submenu', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -382,24 +384,24 @@ test('not existing action in submenu updates submenu', async t => {
 
 test('action in hidden submenu updates main menu', async t => {
 	t.plan(2)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<MyContext> = {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
 			throw new Error('submenu is hidden')
 		}
 	}
-	const submenuMenu: MenuLike<TelegrafContext> = {
+	const submenuMenu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'submenu',
 		renderKeyboard: () => []
 	}
-	const submenu: Submenu<TelegrafContext> = {
+	const submenu: Submenu<MyContext> = {
 		action: /submenu\//,
 		hide: () => true,
 		menu: submenuMenu
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
@@ -412,7 +414,7 @@ test('action in hidden submenu updates main menu', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -441,24 +443,24 @@ test('action in hidden submenu updates main menu', async t => {
 
 test('action in non existing submenu updates main menu', async t => {
 	t.plan(2)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<MyContext> = {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
 			throw new Error('submenu is hidden')
 		}
 	}
-	const submenuMenu: MenuLike<TelegrafContext> = {
+	const submenuMenu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'submenu',
 		renderKeyboard: () => []
 	}
-	const submenu: Submenu<TelegrafContext> = {
+	const submenu: Submenu<MyContext> = {
 		action: /submenu\//,
 		hide: () => true,
 		menu: submenuMenu
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
@@ -471,7 +473,7 @@ test('action in non existing submenu updates main menu', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -500,13 +502,13 @@ test('action in non existing submenu updates main menu', async t => {
 
 test('action run took too long and updating menu afterwards tries to answerCbQuery and fails as being old but does not throw', async t => {
 	t.plan(2)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
 		doFunction: () => {
 			return '.'
 		}
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
@@ -518,7 +520,7 @@ test('action run took too long and updating menu afterwards tries to answerCbQue
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -549,13 +551,13 @@ test('action run took too long and updating menu afterwards tries to answerCbQue
 
 test('updating menu still throws unknown error from answerCbQuery', async t => {
 	t.plan(2)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
 		doFunction: () => {
 			return '.'
 		}
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
@@ -567,7 +569,7 @@ test('updating menu still throws unknown error from answerCbQuery', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
+	const bot = new Telegraf<MyContext>('')
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
