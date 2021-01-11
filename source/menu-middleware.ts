@@ -1,5 +1,5 @@
 import {Composer, Context as TelegrafContext} from 'telegraf'
-import {Message} from 'telegraf/typings/telegram-types'
+import {Message} from 'typegram'
 
 import {ActionFunc} from './action-hive'
 import {combineTrigger, ensureRootMenuTrigger, combinePath} from './path'
