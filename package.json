@@ -37,7 +37,7 @@
 		"typegram": "^3.0.2"
 	},
 	"peerDependencies": {
-		"telegraf": "^3.38.0"
+		"telegraf": "^4.0.0"
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^0.8.0",
