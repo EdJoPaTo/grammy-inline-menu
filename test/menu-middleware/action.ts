@@ -33,6 +33,7 @@ test('action is run without updating menu afterwards', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -84,6 +85,7 @@ test('action is run and updating menu afterwards with path', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -135,6 +137,7 @@ test('action is run and updating menu afterwards with true', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -180,6 +183,7 @@ test('action returns non existing path afterwards throws Error', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -236,6 +240,7 @@ test('not existing action updates menu', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -297,6 +302,7 @@ test('action in submenu is run', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -356,6 +362,7 @@ test('not existing action in submenu updates submenu', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -415,6 +422,7 @@ test('action in hidden submenu updates main menu', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -474,6 +482,7 @@ test('action in non existing submenu updates main menu', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -521,6 +530,7 @@ test('action run took too long and updating menu afterwards tries to answerCbQue
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -570,6 +580,7 @@ test('updating menu still throws unknown error from answerCbQuery', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}

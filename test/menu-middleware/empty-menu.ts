@@ -18,6 +18,7 @@ test('non callback queries are passing through', async t => {
 	const mm = new MenuMiddleware('/', menu)
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.use(mm.middleware())
 
 	bot.use(() => {
@@ -46,6 +47,7 @@ test('irrelevant callback queries are passing through', async t => {
 	const mm = new MenuMiddleware('/', menu)
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.use(mm.middleware())
 
 	bot.use(() => {
@@ -80,6 +82,7 @@ test('default root path is responded', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -123,6 +126,7 @@ test('custom root path is responded', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -166,6 +170,7 @@ test('custom regex root path is responded', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
@@ -203,6 +208,7 @@ test('default root path does not trigger custom root path', async t => {
 	const mm = new MenuMiddleware('custom/', menu)
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.use(mm.middleware())
 
 	bot.use(() => {
@@ -237,6 +243,7 @@ test('not existing path below is responded with root menu', async t => {
 	})
 
 	const bot = new Telegraf<MyContext>('')
+	bot.telegram.getMe = async () => ({} as any)
 	bot.context.reply = () => {
 		throw new Error('Use sendMenu instead')
 	}
