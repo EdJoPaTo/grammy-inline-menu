@@ -1,5 +1,5 @@
 import test from 'ava'
-import {TelegrafContext} from 'telegraf/typings/context'
+import {Context as TelegrafContext} from 'telegraf'
 
 import {MenuTemplate} from '../../source'
 import {MEDIA_TYPES} from '../../source/body'

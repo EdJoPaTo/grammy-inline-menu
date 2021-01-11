@@ -1,5 +1,5 @@
 import test from 'ava'
-import {TelegrafContext} from 'telegraf/typings/context'
+import {Context as TelegrafContext} from 'telegraf'
 
 import {editMenuOnContext, replyMenuToContext, generateSendMenuToChatFunction, generateEditMessageIntoMenuFunction} from '../../source/send-menu'
 import {MenuTemplate} from '../../source'
