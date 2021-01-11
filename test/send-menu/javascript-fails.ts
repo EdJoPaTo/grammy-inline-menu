@@ -27,6 +27,7 @@ for (const [fault, menu] of Object.entries(FAULTY_MENU_TEMPLATES)) {
 				id: '666',
 				chat_instance: '666',
 				from: {} as any,
+				data: '666',
 				message: {
 					date: 666,
 					message_id: 666,

@@ -13,7 +13,8 @@ test('resend on callback query', async t => {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
-			chat_instance: '666'
+			chat_instance: '666',
+			data: '666'
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)

@@ -32,7 +32,8 @@ test('text', async t => {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
-			chat_instance: '666'
+			chat_instance: '666',
+			data: '666'
 		}
 	}
 
@@ -72,7 +73,8 @@ for (const mediaType of MEDIA_TYPES) {
 			callbackQuery: {
 				id: '666',
 				from: undefined as any,
-				chat_instance: '666'
+				chat_instance: '666',
+				data: '666'
 			}
 		}
 
@@ -89,7 +91,8 @@ test('location', async t => {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
-			chat_instance: '666'
+			chat_instance: '666',
+			data: '666'
 		}
 	}
 
@@ -109,7 +112,8 @@ test('venue', async t => {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
-			chat_instance: '666'
+			chat_instance: '666',
+			data: '666'
 		}
 	}
 

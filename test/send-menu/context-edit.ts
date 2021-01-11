@@ -36,7 +36,8 @@ test('text reply when no message on callback query', async t => {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
-			chat_instance: '666'
+			chat_instance: '666',
+			data: '666'
 		},
 		reply: async (text, extra) => {
 			t.is(text, 'whatever')
@@ -63,6 +64,7 @@ test('text edit when message is a text message', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
@@ -95,6 +97,7 @@ test('text reply when message is a media message', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
@@ -131,6 +134,7 @@ test('text reply when message is a media message but fails with delete', async t
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
@@ -185,6 +189,7 @@ test('media reply when text message', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
@@ -221,6 +226,7 @@ test('media edit when media message', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
@@ -262,6 +268,7 @@ test('does not throw message is not modified', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
@@ -287,6 +294,7 @@ test('does throw unrecoverable edit errors', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
@@ -314,6 +322,7 @@ test('text edit without webpage preview', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
@@ -344,6 +353,7 @@ test('text edit with parse mode', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
@@ -375,6 +385,7 @@ test('text edit with button', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
@@ -405,6 +416,7 @@ test('media edit with button', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
@@ -436,6 +448,7 @@ test('location reply', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
