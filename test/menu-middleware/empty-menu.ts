@@ -28,6 +28,7 @@ test('non callback queries are passing through', async t => {
 	await bot.handleUpdate({
 		update_id: 666,
 		message: {
+			text: '42',
 			chat: {} as any,
 			from: {} as any,
 			message_id: 666,
