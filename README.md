@@ -77,6 +77,24 @@ List of things to migrate:
   Use `menuTemplate.manualRow(createBackMainMenuButtons())` for that at each menu which should include these buttons.
 - `setCommand` and `replyMenuMiddleware` were replaced by multiple different functions. See [Can I send the menu manually?](#Can-I-send-the-menu-manually)
 
+# Migrate from version 5 to version 6
+
+Version 6 switched from telegraf 3.38 to 4.0. See the [telegraf migration guide for this set of changes](https://github.com/telegraf/telegraf/releases/tag/v4.0.0).
+
+telegraf-inline-menu is relativly unaffected by this.
+The only change required besides the telegraf changes is the change of `ctx.match`.
+Simply add `match` to your `MyContext` type:
+```ts
+export interface MyContext extends TelegrafContext {
+	readonly match: RegExpExecArray | undefined;
+	…
+}
+```
+
+telegraf knows when match is available or not.
+The default Context does not have match anymore.
+telegraf-inline-menu should also know this in a future release.
+
 # How does it work
 
 Telegrams inline keyboards have buttons.
