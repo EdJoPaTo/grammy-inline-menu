@@ -134,7 +134,6 @@ async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(
 		// eslint-disable-next-line default-case
 		switch (body.type) {
 			case 'animation':
-				// TODO: use typings when PR is merged https://github.com/telegraf/telegraf/pull/1042
 				return context.replyWithAnimation(body.media, mediaExtra)
 			case 'audio':
 				return context.replyWithAudio(body.media, mediaExtra)
