@@ -39,7 +39,7 @@ function isKnownMediaType(type: unknown): type is MediaType {
 	return (MEDIA_TYPES as readonly string[]).includes(type)
 }
 
-export function isTextBody(body: Body): body is string | TextBody {
+export function isTextBody(body: unknown): body is string | TextBody {
 	if (!body) {
 		return false
 	}
@@ -67,7 +67,7 @@ export function isTextBody(body: Body): body is string | TextBody {
 	return hasTruthyKey(body, 'text')
 }
 
-export function isMediaBody(body: Body): body is MediaBody {
+export function isMediaBody(body: unknown): body is MediaBody {
 	if (!isObject(body)) {
 		return false
 	}
@@ -83,7 +83,7 @@ function isValidLocation(location: Readonly<Location>): boolean {
 	return typeof location.latitude === 'number' && typeof location.longitude === 'number'
 }
 
-export function isLocationBody(body: Body): body is LocationBody {
+export function isLocationBody(body: unknown): body is LocationBody {
 	if (!hasTruthyKey(body, 'location')) {
 		return false
 	}
@@ -97,7 +97,7 @@ export function isLocationBody(body: Body): body is LocationBody {
 	return isValidLocation(location)
 }
 
-export function isVenueBody(body: Body): body is VenueBody {
+export function isVenueBody(body: unknown): body is VenueBody {
 	if (!hasTruthyKey(body, 'venue')) {
 		return false
 	}
