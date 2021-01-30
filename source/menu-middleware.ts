@@ -136,7 +136,7 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 	}
 }
 
-function catchCallbackOld(error: any): void {
+function catchCallbackOld(error: unknown): void {
 	if (error instanceof Error && error.message.includes('query is too old and response timeout expired')) {
 		// ignore
 		return

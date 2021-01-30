@@ -596,7 +596,7 @@ test('updating menu still throws unknown error from answerCbQuery', async t => {
 		t.fail()
 	})
 
-	bot.catch((error: any) => {
+	bot.catch(error => {
 		if (error instanceof Error) {
 			t.is(error.message, 'Whatever went wrong here for the test')
 		} else {

@@ -249,7 +249,7 @@ test('media edit when media message', async t => {
 				reply_markup: {
 					inline_keyboard: []
 				}
-			} as any)
+			})
 			return Promise.resolve(undefined as any)
 		}
 	}
@@ -479,11 +479,12 @@ test('venue reply', async t => {
 	const menu = new MenuTemplate<TelegrafContext>({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}})
 	menu.manual({text: 'Button', callback_data: '/'})
 
-	const fakeContext: any = {
+	const fakeContext: Partial<TelegrafContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
+			data: '666',
 			message: {
 				message_id: 666,
 				date: 666,
@@ -491,11 +492,11 @@ test('venue reply', async t => {
 				text: 'Hi Bob'
 			}
 		},
-		deleteMessage: async (messageId: any) => {
+		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
 			return Promise.resolve(true)
 		},
-		replyWithVenue: async (latitude: number, longitude: number, title: string, address: string, extra: any) => {
+		replyWithVenue: async (latitude, longitude, title, address, extra) => {
 			t.is(latitude, 53.5)
 			t.is(longitude, 10)
 			t.is(title, 'A')
@@ -511,5 +512,5 @@ test('venue reply', async t => {
 		}
 	}
 
-	await editMenuOnContext(menu, fakeContext, '/')
+	await editMenuOnContext(menu, fakeContext as any, '/')
 })

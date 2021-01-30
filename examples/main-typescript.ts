@@ -224,8 +224,8 @@ bot.use(async (ctx, next) => {
 bot.command('start', async ctx => menuMiddleware.replyToContext(ctx))
 bot.use(menuMiddleware.middleware())
 
-bot.catch((error: any) => {
-	console.log('telegraf error', error.response, error.parameters, error.on || error)
+bot.catch(error => {
+	console.log('telegraf error', error)
 })
 
 async function startup(): Promise<void> {

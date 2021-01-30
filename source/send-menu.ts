@@ -1,6 +1,6 @@
 import {Context as TelegrafContext} from 'telegraf'
 import Telegram from 'telegraf/typings/telegram'
-import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessageText, ExtraEditMessageMedia, InputMedia, ExtraLocation} from 'telegraf/typings/telegram-types'
+import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessageText, ExtraEditMessageMedia, InputMedia, ExtraLocation, ExtraVenue} from 'telegraf/typings/telegram-types'
 import {Message} from 'typegram'
 
 import {Body, TextBody, MediaBody, LocationBody, isMediaBody, isLocationBody, isTextBody, getBodyText, isVenueBody, VenueBody} from './body'
@@ -118,7 +118,7 @@ export async function resendMenuToContext<Context extends TelegrafContext>(menu:
 	return menuMessage
 }
 
-function catchMessageNotModified(error: any): void {
+function catchMessageNotModified(error: unknown): void {
 	if (error instanceof Error && error.message.includes('message is not modified')) {
 		// ignore
 		return
@@ -147,12 +147,12 @@ async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(
 	}
 
 	if (isLocationBody(body)) {
-		return context.replyWithLocation(body.location.latitude, body.location.longitude, createLocationExtra(body, keyboard, extra as any))
+		return context.replyWithLocation(body.location.latitude, body.location.longitude, createLocationExtra(body, keyboard, extra))
 	}
 
 	if (isVenueBody(body)) {
 		const {location, title, address} = body.venue
-		return (context as any).replyWithVenue(location.latitude, location.longitude, title, address, createVenueExtra(body, keyboard, extra))
+		return context.replyWithVenue(location.latitude, location.longitude, title, address, createVenueExtra(body, keyboard, extra))
 	}
 
 	if (isTextBody(body)) {
@@ -176,7 +176,7 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Teleg
 		const keyboard = await menu.renderKeyboard(context, path)
 
 		if (isMediaBody(body)) {
-			const mediaExtra = createSendMediaExtra(body, keyboard, extra as any)
+			const mediaExtra = createSendMediaExtra(body, keyboard, extra)
 
 			// eslint-disable-next-line default-case
 			switch (body.type) {
@@ -194,12 +194,12 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Teleg
 		}
 
 		if (isLocationBody(body)) {
-			return telegram.sendLocation(chatId, body.location.latitude, body.location.longitude, createLocationExtra(body, keyboard, extra as any))
+			return telegram.sendLocation(chatId, body.location.latitude, body.location.longitude, createLocationExtra(body, keyboard, extra))
 		}
 
 		if (isVenueBody(body)) {
 			const {location, title, address} = body.venue
-			return (telegram as any).sendVenue(chatId, location.latitude, location.longitude, title, address, createVenueExtra(body, keyboard, extra))
+			return telegram.sendVenue(chatId, location.latitude, location.longitude, title, address, createVenueExtra(body, keyboard, extra))
 		}
 
 		if (isTextBody(body)) {
@@ -294,7 +294,7 @@ function createLocationExtra(body: LocationBody, keyboard: InlineKeyboard, base:
 	}
 }
 
-function createVenueExtra(body: VenueBody, keyboard: InlineKeyboard, base: Readonly<ExtraReplyMessage>): any {
+function createVenueExtra(body: VenueBody, keyboard: InlineKeyboard, base: Readonly<ExtraReplyMessage>): ExtraVenue {
 	return {
 		...base,
 		foursquare_id: body.venue.foursquare_id,

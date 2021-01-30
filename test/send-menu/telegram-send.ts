@@ -114,8 +114,8 @@ test('location', async t => {
 test('venue', async t => {
 	const menu = new MenuTemplate<TelegrafContext>({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}})
 
-	const fakeTelegram: any = {
-		sendVenue: async (chatId: number, latitude: number, longitude: number, title: string, address: string, extra: any) => {
+	const fakeTelegram: Partial<Telegram> = {
+		sendVenue: async (chatId, latitude, longitude, title, address, extra) => {
 			t.is(chatId, 666)
 			t.is(latitude, 53.5)
 			t.is(longitude, 10)
@@ -132,7 +132,7 @@ test('venue', async t => {
 		}
 	}
 
-	const sendMenu = generateSendMenuToChatFunction(fakeTelegram, menu, '/')
+	const sendMenu = generateSendMenuToChatFunction(fakeTelegram as any, menu, '/')
 
 	const fakeContext: Partial<TelegrafContext> = {
 		callbackQuery: {
