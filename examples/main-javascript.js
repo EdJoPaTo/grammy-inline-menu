@@ -212,7 +212,7 @@ const token = readFileSync('token.txt', 'utf8').trim()
 const bot = new Telegraf(token)
 
 bot.use(async (ctx, next) => {
-	if (ctx.callbackQuery?.data) {
+	if (ctx.callbackQuery && 'data' in ctx.callbackQuery) {
 		console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
 	}
 
@@ -223,7 +223,7 @@ bot.command('start', async ctx => menuMiddleware.replyToContext(ctx))
 bot.use(menuMiddleware.middleware())
 
 bot.catch(error => {
-	console.log('telegraf error', error.response, error.parameters, error.on || error)
+	console.log('telegraf error', error)
 })
 
 async function startup() {
