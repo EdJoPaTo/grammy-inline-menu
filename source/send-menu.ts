@@ -23,7 +23,7 @@ export type SendMenuToChatFunction<Context> = (chatId: string | number, context:
  * Method which is able to edit a message in a chat into a menu.
  * Generated via `generateEditMessageIntoMenuFunction`.
  */
-export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, messageId: number, context: Context, extra?: Readonly<ExtraEditMessageText | ExtraEditMessageMedia>) => Promise<Message | boolean>
+export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, messageId: number, context: Context, extra?: Readonly<ExtraEditMessageText | ExtraEditMessageMedia>) => Promise<Message | true>
 
 /**
  * Reply a menu to a context as a new message
@@ -46,15 +46,14 @@ export async function replyMenuToContext<Context extends TelegrafContext>(menu: 
  * @param path path of the menu
  * @param extra optional additional Telegraf Extra options
  */
-export async function editMenuOnContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraEditMessageText | ExtraEditMessageMedia> = {}): Promise<void> {
+export async function editMenuOnContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraEditMessageText | ExtraEditMessageMedia> = {}): Promise<Message | boolean> {
 	ensurePathMenu(path)
 	const body = await menu.renderBody(context, path)
 	const keyboard = await menu.renderKeyboard(context, path)
 
 	const message = context.callbackQuery?.message
 	if (!message) {
-		await replyRenderedMenuPartsToContext(body, keyboard, context, extra)
-		return
+		return replyRenderedMenuPartsToContext(body, keyboard, context, extra)
 	}
 
 	if (isMediaBody(body)) {
@@ -66,28 +65,27 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 				parse_mode: body.parse_mode
 			}
 
-			await context.editMessageMedia(media, createEditMediaExtra(keyboard, extra))
+			return context.editMessageMedia(media, createEditMediaExtra(keyboard, extra))
 				.catch(catchMessageNotModified)
-			return
 		}
 	} else if (isLocationBody(body) || isVenueBody(body)) {
 		// Dont edit the message, just recreate it.
 	} else if (isTextBody(body)) {
 		const text = getBodyText(body)
 		if ('text' in message) {
-			await context.editMessageText(text, createTextExtra(body, keyboard, extra))
+			return context.editMessageText(text, createTextExtra(body, keyboard, extra))
 				.catch(catchMessageNotModified)
-			return
 		}
 	} else {
 		throw new TypeError('The body has to be a string or an object containing text or media. Check the telegraf-inline-menu Documentation.')
 	}
 
 	// The current menu is incompatible: delete and reply new one
-	await Promise.all([
+	const [repliedMessage] = await Promise.all([
 		replyRenderedMenuPartsToContext(body, keyboard, context, extra),
 		deleteMenuFromContext(context)
 	])
+	return repliedMessage
 }
 
 /**
@@ -118,10 +116,10 @@ export async function resendMenuToContext<Context extends TelegrafContext>(menu:
 	return menuMessage
 }
 
-function catchMessageNotModified(error: unknown): void {
+function catchMessageNotModified(error: unknown): false {
 	if (error instanceof Error && error.message.includes('message is not modified')) {
 		// ignore
-		return
+		return false
 	}
 
 	throw error
