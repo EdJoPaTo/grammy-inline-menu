@@ -92,6 +92,22 @@ export class MenuTemplate<Context> {
 	}
 
 	/**
+	 * Allows for manual creation of actions. Less user friendly but very customizable.
+	 * Is probably used together with manualRow.
+	 * @param trigger regular expression which is appended to the menu path.
+	 * @param action function which is called when the trigger is matched.
+	 * @example
+	 * menuTemplate.manualRow((context, path) => [[{text: 'Page 2', relativePath: 'custom-pagination:2'}, {text: 'Page 3', relativePath: 'custom-pagination:3'}]])
+	 * menuTemplate.manualAction(/custom-pagination:(\d+)$/, (context, path) => {
+	 *   console.log('manualAction', path, context.match![1])
+	 *   return '.'
+	 * })
+	 */
+	manualAction(trigger: RegExpLike, action: ActionFunc<Context>): void {
+		this._actions.add(trigger, action, undefined)
+	}
+
+	/**
 	 * Add an url button to the keyboard
 	 * @param text text to be displayed on the button
 	 * @param url url where this button should be heading

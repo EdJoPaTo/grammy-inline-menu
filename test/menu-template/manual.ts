@@ -84,3 +84,29 @@ test('manualRow buttons end up in keyboard', async t => {
 		{text: 'Button2', callback_data: '/foo'}
 	]])
 })
+
+test('manualAction trigger', t => {
+	const menu = new MenuTemplate('whatever')
+	menu.manualAction(/unique:(\d+)$/, () => {
+		throw new Error('do not call this function')
+	})
+	const actions = [...menu.renderActionHandlers(/^\//)]
+	t.is(actions.length, 1)
+
+	t.is(actions[0]!.trigger.source, '^\\/unique:(\\d+)$')
+})
+
+test('manualAction is triggered', async t => {
+	t.plan(4)
+	const menu = new MenuTemplate<string>('whatever')
+	menu.manualAction(/unique:(\d+)$/, (context, path) => {
+		t.is(context, 'foo')
+		t.is(path, '/unique:2')
+		return '.'
+	})
+	const actions = [...menu.renderActionHandlers(/^\//)]
+	t.is(actions.length, 1)
+
+	const result = await actions[0]!.doFunction('foo', '/unique:2')
+	t.is(result, '.')
+})
