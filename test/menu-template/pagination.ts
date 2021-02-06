@@ -89,7 +89,7 @@ test('action trigger', t => {
 })
 
 test('action sets page', async t => {
-	t.plan(5)
+	t.plan(4)
 	const errorMessage = 'The current status is not relevant when setting the page. It is validated when its important anyway.'
 	const menu = new MenuTemplate<string>('whatever')
 	menu.pagination('unique', {
@@ -111,6 +111,4 @@ test('action sets page', async t => {
 
 	const result = await actions[0]!.doFunction('foo', '/unique:2')
 	t.is(result, '.')
-
-	t.is(actions[0]!.trigger.source, '^\\/unique:(\\d+)$')
 })
