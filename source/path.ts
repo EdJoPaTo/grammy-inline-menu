@@ -37,21 +37,32 @@ export function combineTrigger(parent: RegExpLike, child: string | RegExpLike): 
 	return new RegExp(parent.source + (typeof child === 'string' ? child : child.source), parent.flags)
 }
 
-export function ensureRootMenuTrigger(trigger: RegExpLike): void {
-	if (!trigger.source.endsWith('/')) {
+export function createRootMenuTrigger(rootTrigger: string | RegExpLike): RegExpLike {
+	if (typeof rootTrigger === 'string') {
+		const count = rootTrigger.match(/\//g)?.length
+		if (count !== 1) {
+			throw new Error('The root menu trigger can only trigger exactly one slash as each slash represents a submenu /')
+		}
+	}
+
+	const result = typeof rootTrigger === 'string' ? new RegExp('^' + rootTrigger) : rootTrigger
+
+	if (!result.source.endsWith('/')) {
 		throw new Error('the root menu trigger always has to end with a slash: /')
 	}
 
-	if (!trigger.source.startsWith('^')) {
+	if (!result.source.startsWith('^')) {
 		throw new Error('The root menu trigger always has to start with a ^')
 	}
 
 	// TODO: this is not ideal yet
 	// Counting / in the source doesnt work as /^[^/]+\// would be wrong and /^.+\// would still be correct
-	const regex = new RegExp(trigger.source + '$', trigger.flags)
+	const regex = new RegExp(result.source + '$', result.flags)
 	if (regex.test('lala/lala/') || regex.test('//')) {
 		throw new Error('The root menu trigger can only trigger exactly one slash as each slash represents a submenu /')
 	}
+
+	return result
 }
 
 export function ensurePathMenu(path: string): void {

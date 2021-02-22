@@ -2,7 +2,7 @@ import {Composer, Context as TelegrafContext} from 'telegraf'
 import {Message} from 'typegram'
 
 import {ActionFunc} from './action-hive'
-import {combineTrigger, ensureRootMenuTrigger, combinePath} from './path'
+import {combineTrigger, createRootMenuTrigger, combinePath} from './path'
 import {ContextPathFunc, RegExpLike} from './generic-types'
 import {MenuLike} from './menu-like'
 import {SendMenuFunc, editMenuOnContext, replyMenuToContext} from './send-menu'
@@ -43,8 +43,7 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 		readonly rootMenu: MenuLike<Context>,
 		readonly options: Options<Context> = {}
 	) {
-		const rootTriggerRegex = typeof rootTrigger === 'string' ? new RegExp('^' + rootTrigger) : rootTrigger
-		ensureRootMenuTrigger(rootTriggerRegex)
+		const rootTriggerRegex = createRootMenuTrigger(rootTrigger)
 		this._responder = createResponder(rootTriggerRegex, () => true, rootMenu)
 
 		this._sendMenu = options.sendMenu ?? editMenuOnContext

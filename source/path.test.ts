@@ -2,7 +2,7 @@ import test, {ExecutionContext} from 'ava'
 
 import {RegExpLike} from './generic-types'
 
-import {combinePath, combineTrigger, ensureTriggerChild, ensureRootMenuTrigger, ensureTriggerLastChild, ensurePathMenu, getMenuOfPath} from './path'
+import {combinePath, combineTrigger, ensureTriggerChild, createRootMenuTrigger, ensureTriggerLastChild, ensurePathMenu, getMenuOfPath} from './path'
 
 function combinePathMacro(t: ExecutionContext, parent: string, relativePath: string, expected: string): void {
 	t.is(combinePath(parent, relativePath), expected)
@@ -50,27 +50,33 @@ test('getMenuOfPath throws when not a path', t => {
 	t.throws(() => getMenuOfPath('foo'), {message: /not .+ a path/})
 })
 
-test('ensureRootMenuTrigger does not throw on good trigger', t => {
+test('createRootMenuTrigger does not throw on good trigger', t => {
 	t.notThrows(() => {
-		ensureRootMenuTrigger(/^blubb\//)
+		createRootMenuTrigger(/^blubb\//)
 	})
 })
 
-test('ensureRootMenuTrigger throws when not ending with /', t => {
+test('createRootMenuTrigger throws when not ending with /', t => {
 	t.throws(() => {
-		ensureRootMenuTrigger(/^blubb/)
+		createRootMenuTrigger(/^blubb/)
 	}, {message: /root menu trigger.+\//})
 })
 
-test('ensureRootMenuTrigger throws when not starting with ^/', t => {
+test('createRootMenuTrigger throws when not starting with ^', t => {
 	t.throws(() => {
-		ensureRootMenuTrigger(/blubb\//)
+		createRootMenuTrigger(/blubb\//)
 	}, {message: /root menu trigger.+\^/})
 })
 
-test('ensureRootMenuTrigger throws when it matches multiple slashes /', t => {
+test('createRootMenuTrigger throws when raw string contains multiple slashes /', t => {
 	t.throws(() => {
-		ensureRootMenuTrigger(/^.+\//)
+		createRootMenuTrigger('some/stuff/')
+	}, {message: /root menu trigger.+exactly one slash/})
+})
+
+test('createRootMenuTrigger throws when it matches multiple slashes /', t => {
+	t.throws(() => {
+		createRootMenuTrigger(/^.+\//)
 	}, {message: /root menu trigger.+exactly one slash/})
 })
 
