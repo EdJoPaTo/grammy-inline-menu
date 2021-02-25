@@ -52,15 +52,15 @@ export function isTextBody(body: unknown): body is string | TextBody {
 		return false
 	}
 
-	if (body.type !== undefined) {
+	if (body['type'] !== undefined) {
 		return false
 	}
 
-	if (body.location !== undefined) {
+	if (body['location'] !== undefined) {
 		return false
 	}
 
-	if (body.venue !== undefined) {
+	if (body['venue'] !== undefined) {
 		return false
 	}
 
@@ -72,7 +72,7 @@ export function isMediaBody(body: unknown): body is MediaBody {
 		return false
 	}
 
-	if (!isKnownMediaType(body.type)) {
+	if (!isKnownMediaType(body['type'])) {
 		return false
 	}
 
