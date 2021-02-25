@@ -21,7 +21,12 @@
 	},
 	"keywords": [
 		"Telegraf",
-		"Telegram"
+		"Telegram",
+		"keyboard",
+		"button",
+		"menu",
+		"stateless",
+		"middleware"
 	],
 	"author": {
 		"name": "EdJoPaTo",
