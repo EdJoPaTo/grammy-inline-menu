@@ -99,10 +99,10 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 			let target: string | undefined = path
 
 			if (!path.endsWith('/')) {
-				const {match, responder} = await getLongestMatchActionResponder(context, path, this._responder)
+				const {match, responder} = await getLongestMatchActionResponder(context as any, path, this._responder)
 				if (match && responder.type === 'action') {
-					context.match = match
-					const afterwardsTarget = await responder.do(context, match[0]!)
+					(context as any).match = match
+					const afterwardsTarget = await responder.do(context as any, match[0]!)
 
 					if (typeof afterwardsTarget === 'string' && afterwardsTarget) {
 						target = combinePath(path, afterwardsTarget)
@@ -117,15 +117,15 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 			}
 
 			if (target) {
-				const {match, responder} = await getLongestMatchMenuResponder(context, target, this._responder)
+				const {match, responder} = await getLongestMatchMenuResponder(context as any, target, this._responder)
 				if (!match) {
 					// TODO: think about using next() in this case?
 					throw new Error(`There is no menu "${target}" which can be reached in this menu`)
 				}
 
-				context.match = match
+				(context as any).match = match
 				const targetPath = match[0]!
-				await this._sendMenu(responder.menu as any, context, targetPath)
+				await this._sendMenu(responder.menu as any, context as any, targetPath)
 				await context.answerCbQuery()
 					.catch(catchCallbackOld)
 			}

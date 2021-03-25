@@ -1,5 +1,4 @@
-import {Context as TelegrafContext} from 'telegraf'
-import Telegram from 'telegraf/typings/telegram'
+import {Context as TelegrafContext, Telegram} from 'telegraf'
 import test from 'ava'
 
 import {MenuTemplate} from '../../source'

@@ -1,6 +1,6 @@
-import {Context as TelegrafContext} from 'telegraf'
-import Telegram from 'telegraf/typings/telegram'
-import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessageText, ExtraEditMessageMedia, InputMedia, ExtraLocation, ExtraVenue} from 'telegraf/typings/telegram-types'
+import {Context as TelegrafContext, Telegram} from 'telegraf'
+import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessageText, ExtraEditMessageMedia, ExtraLocation, ExtraVenue} from 'telegraf/typings/telegram-types'
+import {InputMedia} from 'telegraf/typings/core/types/typegram'
 import {Message} from 'typegram'
 
 import {Body, TextBody, MediaBody, LocationBody, isMediaBody, isLocationBody, isTextBody, getBodyText, isVenueBody, VenueBody} from './body'

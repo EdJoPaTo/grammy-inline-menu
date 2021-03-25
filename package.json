@@ -42,7 +42,7 @@
 		"typegram": "^3.0.2"
 	},
 	"peerDependencies": {
-		"telegraf": "^4.0.1"
+		"telegraf": "^4.3.0"
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^0.9.0",
@@ -50,7 +50,7 @@
 		"ava": "^3.6.0",
 		"del-cli": "^3.0.0",
 		"nyc": "^15.0.0",
-		"telegraf": "^4.0.1",
+		"telegraf": "^4.3.0",
 		"ts-node": "^9.0.0",
 		"typescript": "^4.2.0",
 		"xo": "^0.38.1"
