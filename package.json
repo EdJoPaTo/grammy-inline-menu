@@ -2,6 +2,7 @@
 	"name": "telegraf-inline-menu",
 	"version": "6.2.1",
 	"description": "Inline Menus for Telegraf made simple.",
+	"type": "module",
 	"main": "dist/source",
 	"types": "dist/source",
 	"engines": {
@@ -45,7 +46,7 @@
 		"telegraf": "^4.3.0"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^0.9.0",
+		"@sindresorhus/tsconfig": "^1.0.0",
 		"@types/node": "^14.0.4",
 		"ava": "^3.6.0",
 		"del-cli": "^3.0.0",
