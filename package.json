@@ -2,7 +2,7 @@
 	"name": "telegraf-inline-menu",
 	"version": "6.2.1",
 	"description": "Inline Menus for Telegraf made simple.",
-	"type": "module",
+	"type": "commonjs",
 	"main": "dist/source",
 	"types": "dist/source",
 	"engines": {
