@@ -66,6 +66,7 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 			}
 
 			return context.editMessageMedia(media, createEditMediaExtra(keyboard, extra))
+				// eslint-disable-next-line promise/prefer-await-to-then
 				.catch(catchMessageNotModified)
 		}
 	} else if (isLocationBody(body) || isVenueBody(body)) {
@@ -74,6 +75,7 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
 		const text = getBodyText(body)
 		if ('text' in message) {
 			return context.editMessageText(text, createTextExtra(body, keyboard, extra))
+				// eslint-disable-next-line promise/prefer-await-to-then
 				.catch(catchMessageNotModified)
 		}
 	} else {

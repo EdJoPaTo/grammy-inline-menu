@@ -452,7 +452,12 @@ function generateCallbackButtonTemplate<Context>(text: ConstOrContextPathFunc<Co
 
 function getKeyFromPath(trigger: RegExpLike, path: string): string {
 	const match = new RegExp(trigger.source, trigger.flags).exec(path)
-	return match![1]!
+	const key = match?.[1]
+	if (!key) {
+		throw new Error(`Could not read key from path '${path}' for trigger '${trigger.source}'`)
+	}
+
+	return key
 }
 
 function setPageAction<Context>(pageTrigger: RegExpLike, setPage: SetPageFunction<Context>): ActionFunc<Context> {

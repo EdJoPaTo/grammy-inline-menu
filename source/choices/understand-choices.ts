@@ -38,8 +38,8 @@ export function getChoiceTextByKey(choices: Choices, key: string): string {
 }
 
 export function ensureCorrectChoiceKeys(actionPrefix: string, path: string, choiceKeys: readonly string[]): void {
-	const containSlash = choiceKeys.filter(o => o.includes('/'))
-	if (containSlash.length > 0) {
-		throw new Error(`Choices can not contain '/'. Found '${containSlash[0]!}' in action '${actionPrefix}' at path '${path}'.`)
+	const containSlashExample = choiceKeys.find(o => o.includes('/'))
+	if (containSlashExample) {
+		throw new Error(`Choices can not contain '/'. Found '${containSlashExample}' in action '${actionPrefix}' at path '${path}'.`)
 	}
 }

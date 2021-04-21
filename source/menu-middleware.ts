@@ -99,10 +99,12 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 			let target: string | undefined = path
 
 			if (!path.endsWith('/')) {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				const {match, responder} = await getLongestMatchActionResponder(context as any, path, this._responder)
-				if (match && responder.type === 'action') {
+				if (match?.[0] && responder.type === 'action') {
 					(context as any).match = match
-					const afterwardsTarget = await responder.do(context as any, match[0]!)
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+					const afterwardsTarget = await responder.do(context as any, match[0])
 
 					if (typeof afterwardsTarget === 'string' && afterwardsTarget) {
 						target = combinePath(path, afterwardsTarget)
@@ -117,14 +119,16 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 			}
 
 			if (target) {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				const {match, responder} = await getLongestMatchMenuResponder(context as any, target, this._responder)
-				if (!match) {
+				if (!match?.[0]) {
 					// TODO: think about using next() in this case?
 					throw new Error(`There is no menu "${target}" which can be reached in this menu`)
 				}
 
 				(context as any).match = match
-				const targetPath = match[0]!
+				const targetPath = match[0]
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				await this._sendMenu(responder.menu as any, context as any, targetPath)
 				await context.answerCbQuery()
 					.catch(catchCallbackOld)
@@ -151,7 +155,7 @@ function responderMatch<Context>(responder: Responder<Context>, path: string): R
 async function getLongestMatchMenuResponder<Context extends TelegrafContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | null; responder: MenuResponder<Context>}> {
 	for (const sub of current.submenuResponders) {
 		const match = responderMatch(sub, path)
-		if (!match) {
+		if (!match?.[0]) {
 			continue
 		}
 
@@ -159,7 +163,7 @@ async function getLongestMatchMenuResponder<Context extends TelegrafContext>(con
 		(context as any).match = match
 
 		// eslint-disable-next-line no-await-in-loop
-		if (await sub.canEnter(context, match[0]!)) {
+		if (await sub.canEnter(context, match[0])) {
 			return getLongestMatchMenuResponder(context, path, sub)
 		}
 	}
@@ -173,7 +177,7 @@ async function getLongestMatchActionResponder<Context extends TelegrafContext>(c
 
 	for (const sub of current.submenuResponders) {
 		const match = responderMatch(sub, path)
-		if (!match) {
+		if (!match?.[0]) {
 			continue
 		}
 
@@ -181,7 +185,7 @@ async function getLongestMatchActionResponder<Context extends TelegrafContext>(c
 		(context as any).match = match
 
 		// eslint-disable-next-line no-await-in-loop
-		if (await sub.canEnter(context, match[0]!)) {
+		if (await sub.canEnter(context, match[0])) {
 			return getLongestMatchActionResponder(context, path, sub)
 		}
 

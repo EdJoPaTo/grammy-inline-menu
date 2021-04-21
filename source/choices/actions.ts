@@ -10,11 +10,11 @@ export function combineHideAndChoices<Context>(actionPrefix: string, choices: Co
 		}
 
 		const match = new RegExp('/' + actionPrefix + ':([^/]+)/?$').exec(path)
-		if (!match) {
+		const toBeFound = match?.[1]
+		if (!toBeFound) {
 			throw new TypeError('could not read choice from path')
 		}
 
-		const toBeFound = match[1]!
 		const choicesConstant = typeof choices === 'function' ? await choices(context) : choices
 		const choiceKeys = getChoiceKeysFromChoices(choicesConstant)
 		const keyExists = choiceKeys.includes(toBeFound)
