@@ -44,7 +44,10 @@ const menuTemplate = new MenuTemplate<MyContext>(
 );
 
 menuTemplate.interact("I am excited!", "a", {
-	do: async (ctx) => ctx.reply("As am I!"),
+	do: async (ctx) => {
+		ctx.reply("As am I!");
+		return false;
+	},
 });
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
