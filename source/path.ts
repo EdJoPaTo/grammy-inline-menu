@@ -115,7 +115,7 @@ export function combinePath(parent: string, relativePath: string): string {
 
 export function getMenuOfPath(path: string): string {
 	if (!path.includes('/')) {
-		throw new Error('This does not seem like a path. Paths contain slashes to seperate the submenus.')
+		throw new Error('This does not seem like a path. Paths contain slashes to separate the submenus.')
 	}
 
 	return combinePath(path, '.')
