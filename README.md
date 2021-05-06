@@ -42,7 +42,10 @@ import {MenuTemplate, MenuMiddleware} from 'telegraf-inline-menu'
 const menuTemplate = new MenuTemplate<MyContext>(ctx => `Hey ${ctx.from.first_name}!`)
 
 menuTemplate.interact('I am excited!', 'a', {
-  do: async ctx => ctx.reply('As am I!')
+	do: async ctx => {
+		await ctx.reply('As am I!')
+		return false
+	}
 })
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
@@ -247,12 +250,18 @@ Use `joinLastRow` in the second button
 
 ```ts
 menuTemplate.interact('Text', 'unique', {
-	do: async ctx => ctx.answerCbQuery('yaay')
+	do: async ctx => {
+		await ctx.answerCbQuery('yaay')
+		return false
+	}
 })
 
 menuTemplate.interact('Text', 'unique', {
 	joinLastRow: true,
-	do: async ctx => ctx.answerCbQuery('yaay')
+	do: async ctx => {
+		await ctx.answerCbQuery('yaay')
+		return false
+	}
 })
 ```
 
@@ -263,6 +272,7 @@ menuTemplate.toggle('Text', 'unique', {
 	isSet: ctx => ctx.session.isFunny,
 	set: (ctx, newState) => {
 		ctx.session.isFunny = newState
+		return true
 	}
 })
 ```
@@ -274,6 +284,7 @@ menuTemplate.select('unique', ['human', 'bird'], {
 	isSet: (ctx, key) => ctx.session.choice === key,
 	set: (ctx, key) => {
 		ctx.session.choice = key
+		return true
 	}
 })
 ```
@@ -286,6 +297,7 @@ menuTemplate.select('unique', ['has arms', 'has legs', 'has eyes', 'has wings'],
 	isSet: (ctx, key) => Boolean(ctx.session.bodyparts[key]),
 	set: (ctx, key, newState) => {
 		ctx.session.bodyparts[key] = newState
+		return true
 	}
 })
 ```
@@ -389,7 +401,8 @@ const submenuTemplate = new MenuTemplate<MyContext>(ctx => `You chose city ${ctx
 submenuTemplate.interact('Text', 'unique', {
 	do: async ctx => {
 		console.log('Take a look at ctx.match. It contains the chosen city', ctx.match)
-		return ctx.answerCbQuery('You hit a button in a submenu')
+		await ctx.answerCbQuery('You hit a button in a submenu')
+		return false
 	}
 })
 submenuTemplate.manualRow(createBackMainMenuButtons())
@@ -410,6 +423,8 @@ If that does not work the keyboard is removed from the message so the user will 
 menuTemplate.interact('Delete the menu', 'unique', {
 	do: async context => {
 		await deleteMenuFromContext(context)
+		// Make sure not to try to update the menu afterwards. You just deleted it and it would just fail to update a missing message.
+		return false
 	}
 })
 ```
@@ -475,6 +490,7 @@ menuTemplate.interact('Question', 'unique', {
 		const text = 'Tell me the answer to the world and everything.'
 		const additionalState = getMenuOfPath(path)
 		await myQuestion.replyWithMarkdown(context, text, additionalState)
+		return false
 	}
 })
 ```
