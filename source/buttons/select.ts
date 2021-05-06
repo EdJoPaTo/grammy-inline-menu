@@ -1,81 +1,69 @@
-import {ContextMessageUpdate} from 'telegraf'
+import {CallbackButtonTemplate} from '../keyboard'
+import {ConstOrPromise, ConstOrContextFunc} from '../generic-types'
+import {getChoiceKeysFromChoices, ensureCorrectChoiceKeys} from '../choices/understand-choices'
+import {ManyChoicesOptions, Choices, createChoiceTextFunction, generateChoicesPaginationButtons} from '../choices'
+import {prefixEmoji} from '../prefix'
 
-import {ButtonInfo} from '../build-keyboard'
-import {getRowsOfButtons} from '../align-buttons'
-import {prefixEmoji, PrefixOptions} from '../prefix'
+import {getButtonsOfPage, getButtonsAsRows} from './align'
 
-type ContextFunc<T> = (ctx: ContextMessageUpdate) => Promise<T> | T
-type ContextKeyFunc<T> = (ctx: ContextMessageUpdate, key: string) => Promise<T> | T
-type ContextKeyIndexArrFunc<T> = (ctx: ContextMessageUpdate, key: string, index: number, array: string[]) => Promise<T> | T
+export type IsSetFunction<Context> = (context: Context, key: string) => ConstOrPromise<boolean>
+export type SetFunction<Context> = (context: Context, key: string, newState: boolean) => ConstOrPromise<string | boolean>
+export type FormatStateFunction<Context> = (context: Context, textResult: string, state: boolean, key: string) => ConstOrPromise<string>
 
-type OptionsFunc = ContextFunc<string[] | {[key: string]: string}>
+export interface SelectOptions<Context> extends ManyChoicesOptions<Context> {
+	/**
+	 * Show an emoji for the choices currently false.
+	 * This is helpful to show the user there can be selected multiple choices at the same time.
+	 */
+	readonly showFalseEmoji?: boolean;
 
-interface SelectButtonOptions {
-  columns?: number;
-  maxRows?: number;
-  currentPage?: number;
-  textFunc: ContextKeyIndexArrFunc<string>;
-  hide?: ContextKeyFunc<boolean>;
+	/**
+	 * Function returning the current state of a given choice.
+	 */
+	readonly isSet: IsSetFunction<Context>;
+
+	/**
+	 * Function which is called when a user selects a choice.
+	 * Arguments include the choice (`key`) and the new `state` which is helpful for multiple toggles.
+	 */
+	readonly set: SetFunction<Context>;
+
+	/**
+	 * Format the button text which is visible to the user.
+	 */
+	readonly formatState?: FormatStateFunction<Context>;
 }
 
-export function generateSelectButtons(actionBase: string, options: string[], selectOptions: SelectButtonOptions): ButtonInfo[][] {
-  const {textFunc, hide, columns, maxRows, currentPage} = selectOptions
-  const buttons = options.map((key, i, arr) => {
-    const action = `${actionBase}-${key}`
-    const textKey = async (ctx: any): Promise<string> => textFunc(ctx, key, i, arr)
-    const hideKey = async (ctx: any): Promise<boolean> => hide ? hide(ctx, key) : false
-    return {
-      text: textKey,
-      action,
-      hide: hideKey
-    }
-  })
+export function generateSelectButtons<Context>(actionPrefix: string, choices: ConstOrContextFunc<Context, Choices>, options: SelectOptions<Context>): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
+	return async (context, path) => {
+		if (await options.hide?.(context, path)) {
+			return []
+		}
 
-  return getRowsOfButtons(buttons, columns, maxRows, currentPage)
-}
+		const choicesConstant = typeof choices === 'function' ? await choices(context) : choices
+		const choiceKeys = getChoiceKeysFromChoices(choicesConstant)
+		ensureCorrectChoiceKeys(actionPrefix, path, choiceKeys)
+		const textFunction = createChoiceTextFunction(choicesConstant, options.buttonText)
+		const formatFunction: FormatStateFunction<Context> = options.formatState ?? ((_, textResult, state) => prefixEmoji(textResult, state, {hideFalseEmoji: !options.showFalseEmoji}))
+		const currentPage = await options.getCurrentPage?.(context)
+		const keysOfPage = getButtonsOfPage(choiceKeys, options.columns, options.maxRows, currentPage)
+		const buttonsOfPage = await Promise.all(keysOfPage
+			.map(async key => {
+				const textResult = await textFunction(context, key)
+				const state = await options.isSet(context, key)
+				const text = await formatFunction(context, textResult, state, key)
 
-export interface SelectButtonCreatorOptions extends PrefixOptions {
-  getCurrentPage?: ContextFunc<number>;
-  textFunc?: ContextKeyIndexArrFunc<string>;
-  prefixFunc?: ContextKeyIndexArrFunc<string>;
-  isSetFunc?: ContextKeyFunc<boolean>;
-  multiselect?: boolean;
-  hide?: ContextKeyFunc<boolean>;
-}
+				const dropinLetter = state ? 'F' : 'T'
+				const relativePath = actionPrefix + dropinLetter + ':' + key
+				return {text, relativePath}
+			})
+		)
+		const rows = getButtonsAsRows(buttonsOfPage, options.columns)
 
-export function selectButtonCreator(action: string, optionsFunc: OptionsFunc, additionalArgs: SelectButtonCreatorOptions): (ctx: any) => Promise<ButtonInfo[][]> {
-  const {getCurrentPage, textFunc, prefixFunc, isSetFunc, multiselect} = additionalArgs
-  return async (ctx: any) => {
-    const optionsResult = await optionsFunc(ctx)
-    const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
-    const currentPage = (getCurrentPage && await getCurrentPage(ctx)) || 1
-    const fallbackKeyTextFunc = Array.isArray(optionsResult) ? ((_ctx: any, key: string) => key) : ((_ctx: any, key: string) => optionsResult[key])
-    const textOnlyFunc = textFunc || fallbackKeyTextFunc
-    const keyTextFunc = async (...args: any[]): Promise<string> => prefixEmoji(textOnlyFunc, prefixFunc || isSetFunc, {
-      hideFalseEmoji: !multiselect,
-      ...additionalArgs
-    }, ...args)
-    return generateSelectButtons(action, keys, {
-      ...additionalArgs,
-      textFunc: keyTextFunc,
-      currentPage
-    })
-  }
-}
+		if (options.setPage) {
+			rows.push(generateChoicesPaginationButtons(actionPrefix, choiceKeys.length, currentPage, options))
+		}
 
-export function selectHideFunc(keyFromCtx: (ctx: any) => string, optionsFunc: OptionsFunc, userHideFunc?: ContextKeyFunc<boolean>): ((ctx: any) => Promise<boolean>) {
-  return async (ctx: any) => {
-    const key = keyFromCtx(ctx)
-    const optionsResult = await optionsFunc(ctx)
-    const keys = Array.isArray(optionsResult) ? optionsResult : Object.keys(optionsResult)
-    if (!keys.includes(key)) {
-      return true
-    }
-
-    if (userHideFunc && await userHideFunc(ctx, key)) {
-      return true
-    }
-
-    return false
-  }
+		return rows
+	}
 }

@@ -1,34 +1,15 @@
 import test from 'ava'
 
 import {
-  prefixText
+	prefixText
 } from './prefix'
 
-test('no prefix', async t => {
-  const result = await prefixText('42', undefined)
-  t.is(result, '42')
+test('no prefix', t => {
+	const result = prefixText('42', undefined)
+	t.is(result, '42')
 })
 
-test('value text & prefix', async t => {
-  const result = await prefixText('42', '6')
-  t.is(result, '6 42')
-})
-
-test('async text', async t => {
-  const text = async (): Promise<string> => '42'
-  const result = await prefixText(text, undefined)
-  t.is(result, '42')
-})
-
-test('async prefix', async t => {
-  const prefix = async (): Promise<string> => '6'
-  const result = await prefixText('42', prefix)
-  t.is(result, '6 42')
-})
-
-test('async text and prefix', async t => {
-  const text = async (): Promise<string> => '42'
-  const prefix = async (): Promise<string> => '6'
-  const result = await prefixText(text, prefix)
-  t.is(result, '6 42')
+test('value text & prefix', t => {
+	const result = prefixText('42', '6')
+	t.is(result, '6 42')
 })
