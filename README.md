@@ -69,23 +69,23 @@ If your project still uses version 4 of this library see [v4 documentation](http
 
 List of things to migrate:
 
-- `TelegrafInlineMenu` was splitted into multiple classes.
-  When you used `new TelegrafInlineMenu(text)` you will use `new MenuTemplate(body)` now.
+- `TelegrafInlineMenu` was split into multiple classes.
+  When you used `new TelegrafInlineMenu(text)`, you will use `new MenuTemplate(body)` now.
 - Applying the menu to the bot via `bot.use` changed. This can now be done with the `MenuMiddleware`. Check the [Basic Example](#Basic-Example)
 - `button` and `simpleButton` are combined and renamed into `interact`. See [How can I run a simple method when pressing a button?](#how-can-i-run-a-simple-method-when-pressing-a-button)
 - `selectSubmenu` was renamed to `chooseIntoSubmenu`
-- `select` was splitted into `choose` and `select`. See [Whats the difference between choose and select?](#Whats-the-difference-between-choose-and-select)
-- `question` is moved into a seperate library. see [Didnt this menu had a question function?](#Didnt-this-menu-had-a-question-function)
+- `select` was split into `choose` and `select`. See [Whats the difference between choose and select?](#Whats-the-difference-between-choose-and-select)
+- `question` is moved into a separate library. See [Didnt this menu had a question function?](#Didnt-this-menu-had-a-question-function)
 - The menu does not automatically add back and main menu buttons anymore.
   Use `menuTemplate.manualRow(createBackMainMenuButtons())` for that at each menu which should include these buttons.
 - `setCommand` and `replyMenuMiddleware` were replaced by multiple different functions. See [Can I send the menu manually?](#Can-I-send-the-menu-manually)
 
 # Migrate from version 5 to version 6
 
-Version 6 switched from telegraf 3.38 to 4.0. See the [telegraf migration guide for this set of changes](https://github.com/telegraf/telegraf/releases/tag/v4.0.0).
+Version 6 switched from Telegraf 3.38 to 4.0. See the [Telegraf migration guide for this set of changes](https://github.com/telegraf/telegraf/releases/tag/v4.0.0).
 
-telegraf-inline-menu is relativly unaffected by this.
-The only change required besides the telegraf changes is the change of `ctx.match`.
+telegraf-inline-menu is relatively unaffected by this.
+The only change required besides the Telegraf changes is the change of `ctx.match`.
 Simply add `match` to your `MyContext` type:
 ```ts
 export interface MyContext extends TelegrafContext {
@@ -94,7 +94,7 @@ export interface MyContext extends TelegrafContext {
 }
 ```
 
-telegraf knows when match is available or not.
+Telegraf knows when match is available or not.
 The default Context does not have match anymore.
 telegraf-inline-menu should also know this in a future release.
 
@@ -103,7 +103,7 @@ telegraf-inline-menu should also know this in a future release.
 Telegrams inline keyboards have buttons.
 These buttons have a text and callback data.
 
-When a button is hit the callback data is sent to the bot.
+When a button is hit, the callback data is sent to the bot.
 You know this from Telegraf from `bot.action`.
 
 This library both creates the buttons and listens for callback data events.
@@ -135,8 +135,8 @@ bot.use(menuMiddleware)
 ```
 
 You can also take a look on all the regular expressions the menu middleware is using to notice a button click with `console.log(menuMiddleware.tree())`.
-Dont be scared by the output and try to find where you can find the structure in the sourcecode.
-When you hit a button the specific callback data will be matched by one of the regular expressions.
+Don't be scared by the output and try to find where you can find the structure in the source code.
+When you hit a button, the specific callback data will be matched by one of the regular expressions.
 Also try to create a new button and find it within the tree.
 
 If you want to manually send your submenu `/my-submenu/` you have to supply the same path that is used when you press the button in the menu.
@@ -149,7 +149,7 @@ You can also join the [Telegraf community chat](https://t.me/TelegrafJSChat) in 
 When you think there is something to improve on this explanation, feel free to open a Pull Request!
 I am already stuck in my bubble on how this is working.
 You are the expert on getting the knowledge about this library.
-Lets improve things together!
+Let's improve things together!
 
 # FAQ
 
@@ -205,14 +205,14 @@ menuTemplate.interact('Text', 'unique', {
 ## Why do I have to return a boolean or string for the do/set function?
 
 You can control if you want to update the menu afterwards or not.
-When the user presses a button which changes something in the menu text you want the user to see the updated content.
+When the user presses a button which changes something in the menu text, you want the user to see the updated content.
 You can return a relative path to go to afterwards or a simple boolean (yes = `true`, no = `false`).
 
 Using paths can become super handy.
 For example when you want to return to the parent menu you can use the path `..`.
 Or to a sibling menu with `../sibling`.
 
-If you just want to navigate without doing logic you should prefer `.navigate(…)`.
+If you just want to navigate without doing logic, you should prefer `.navigate(…)`.
 
 ```ts
 menuTemplate.interact('Text', 'unique', {
@@ -316,7 +316,7 @@ menuTemplate.choose('unique', ['walk', 'swim'], {
 
 ## Whats the difference between choose and select?
 
-If you want to do something based on the choice use `menuTemplate.choose(…)`.
+If you want to do something based on the choice, use `menuTemplate.choose(…)`.
 If you want to change the state of something, select one out of many options for example, use `menuTemplate.select(…)`.
 
 `menuTemplate.select(…)` automatically updates the menu on pressing the button and shows what it currently selected.
@@ -350,7 +350,7 @@ menuTemplate.choose('unique', ['a', 'b'], {
 ## I have too much content for one message. Can I use a pagination?
 
 `menuTemplate.pagination` is basically a glorified `choose`.
-You can supply the amount of pages you have and whats your current page is and it tells you which page the user whats to see.
+You can supply the amount of pages you have and what's your current page is, and it tells you which page the user what's to see.
 Splitting your content into pages is still your job to do.
 This allows you for all kinds of variations on your side.
 
@@ -366,7 +366,7 @@ menuTemplate.pagination('unique', {
 
 ## My choose/select has too many choices. Can I use a pagination?
 
-If you dont use a pagination you might have noticed that not all of your choices are displayed.
+When you don't use a pagination, you might have noticed that not all of your choices are displayed.
 Per default only the first page is shown.
 You can select the amount of rows and columns via `maxRows` and `columns`.
 The pagination works similar to `menuTemplate.pagination` but you do not need to supply the amount of total pages as this is calculated from your choices.
@@ -412,7 +412,7 @@ menuTemplate.chooseIntoSubmenu('unique', ['Gotham', 'Mos Eisley', 'Springfield']
 
 ## Can I close the menu?
 
-You can delete the message like you would do with telegraf: `context.deleteMessage()`.
+You can delete the message like you would do with Telegraf: `context.deleteMessage()`.
 Keep in mind: You can not delete messages which are older than 48 hours.
 
 `deleteMenuFromContext` tries to help you with that:
@@ -470,7 +470,7 @@ async function externalEventOccured() {
 
 ## Didnt this menu had a question function?
 
-Yes. It was moved into a seperate library with version 5 as it made the source code overly complicated.
+Yes. It was moved into a separate library with version 5 as it made the source code overly complicated.
 
 When you want to use it check [telegraf-stateless-question](https://github.com/EdJoPaTo/telegraf-stateless-question).
 
@@ -498,7 +498,7 @@ menuTemplate.interact('Question', 'unique', {
 # Documentation
 
 The methods should have explaining documentation by itself.
-Also there should be multiple @example entries in the docs to see different ways of using the method.
+Also, there should be multiple @example entries in the docs to see different ways of using the method.
 
-If you think the jsdoc / readme can be improved just go ahead and create a Pull Request.
-Lets improve things together!
+If you think the jsdoc / README can be improved just go ahead and create a Pull Request.
+Let's improve things together!
