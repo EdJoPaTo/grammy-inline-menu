@@ -1,64 +1,87 @@
+export interface PrefixOptions {
+	/**
+	 * Emoji which is used as prefix when true.
+	 *
+	 * Defaults to ✅
+	 */
+	readonly prefixTrue?: string;
+
+	/**
+	 * Emoji which is used as prefix when false.
+	 *
+	 * Defaults to 🚫
+	 */
+	readonly prefixFalse?: string;
+
+	/**
+	 * Do not show the prefix when true.
+	 */
+	readonly hideTrueEmoji?: boolean;
+
+	/**
+	 * Do not show the prefix when false.
+	 */
+	readonly hideFalseEmoji?: boolean;
+}
+
 export const emojiTrue = '✅'
 export const emojiFalse = '🚫'
 
-type ConstOrFunc<T> = T | ((...args: any[]) => Promise<T> | T)
+/**
+ * Prefixes the text with a true / false emoji.
+ * Can also be used with custom prefixes.
+ * @param text text which should receive the prefix.
+ * @param prefix true / false or a custom (string) prefix.
+ * @param options optional options to customize emojis
+ */
+export function prefixEmoji(text: string, prefix: string | boolean | undefined, options: PrefixOptions = {}): string {
+	const internalOptions = {
+		...options,
+		prefixTrue: options.prefixTrue ?? emojiTrue,
+		prefixFalse: options.prefixFalse ?? emojiFalse
+	}
 
-export interface PrefixOptions {
-  prefixTrue?: string;
-  prefixFalse?: string;
-  hideTrueEmoji?: boolean;
-  hideFalseEmoji?: boolean;
-}
-
-export async function prefixEmoji(text: ConstOrFunc<string>, prefix: ConstOrFunc<string | boolean | undefined>, options: PrefixOptions = {}, ...args: any[]): Promise<string> {
-  if (!options.prefixTrue) {
-    options.prefixTrue = emojiTrue
-  }
-
-  if (!options.prefixFalse) {
-    options.prefixFalse = emojiFalse
-  }
-
-  const prefixResult = typeof prefix === 'function' ? await prefix(...args) : prefix
-  const prefixContent = applyOptionsToPrefix(prefixResult, options)
-
-  return prefixText(text, prefixContent, ...args)
+	const prefixContent = applyOptionsToPrefix(prefix, internalOptions)
+	return prefixText(text, prefixContent)
 }
 
 function applyOptionsToPrefix(prefix: string | boolean | undefined, options: PrefixOptions): string | undefined {
-  const {
-    prefixFalse,
-    prefixTrue,
-    hideFalseEmoji,
-    hideTrueEmoji
-  } = options
+	const {
+		prefixFalse,
+		prefixTrue,
+		hideFalseEmoji,
+		hideTrueEmoji
+	} = options
 
-  if (prefix === true) {
-    if (hideTrueEmoji) {
-      return undefined
-    }
+	if (prefix === true) {
+		if (hideTrueEmoji) {
+			return undefined
+		}
 
-    return prefixTrue
-  }
+		return prefixTrue
+	}
 
-  if (prefix === false) {
-    if (hideFalseEmoji) {
-      return undefined
-    }
+	if (prefix === false) {
+		if (hideFalseEmoji) {
+			return undefined
+		}
 
-    return prefixFalse
-  }
+		return prefixFalse
+	}
 
-  return prefix
+	return prefix
 }
 
-export async function prefixText(text: ConstOrFunc<string>, prefix: ConstOrFunc<string | undefined>, ...args: any[]): Promise<string> {
-  const textResult = typeof text === 'function' ? await text(...args) : text
-  const prefixResult = typeof prefix === 'function' ? await prefix(...args) : prefix
+/**
+ * Prefixes the text with the prefix.
+ * If the prefix is undefined or '' the raw text is returned.
+ * @param text text which should receive the prefix.
+ * @param prefix prefix to end up in front of the text.
+ */
+export function prefixText(text: string, prefix: string | undefined): string {
+	if (!prefix) {
+		return text
+	}
 
-  if (!prefixResult) {
-    return textResult
-  }
-
-  return `${prefixResult} ${textResult}`
+	return `${prefix} ${text}`
 }
