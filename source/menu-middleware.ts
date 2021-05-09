@@ -102,6 +102,7 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				const {match, responder} = await getLongestMatchActionResponder(context as any, path, this._responder)
 				if (match?.[0] && responder.type === 'action') {
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 					(context as any).match = match
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 					const afterwardsTarget = await responder.do(context as any, match[0])
@@ -126,6 +127,7 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 					throw new Error(`There is no menu "${target}" which can be reached in this menu`)
 				}
 
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				(context as any).match = match
 				const targetPath = match[0]
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -160,6 +162,7 @@ async function getLongestMatchMenuResponder<Context extends TelegrafContext>(con
 		}
 
 		// Telegraf users expect context.match to contain the relevant match
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		(context as any).match = match
 
 		// eslint-disable-next-line no-await-in-loop
@@ -182,6 +185,7 @@ async function getLongestMatchActionResponder<Context extends TelegrafContext>(c
 		}
 
 		// Telegraf users expect context.match to contain the relevant match
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		(context as any).match = match
 
 		// eslint-disable-next-line no-await-in-loop
