@@ -6,7 +6,7 @@
 		"test"
 	],
 	"compilerOptions": {
-		"module": "commonjs",
+		"module": "CommonJS",
 		"outDir": "dist",
 		"sourceMap": true
 	}

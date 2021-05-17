@@ -1,10 +1,8 @@
 .nyc_output
+/*-*.*.*.tgz
 coverage
 dist
 node_modules
 yarn.lock
-
-# exclude npm pack packages
-*.tgz
 
 token.txt

@@ -2,24 +2,6 @@
 	"name": "telegraf-inline-menu",
 	"version": "6.2.1",
 	"description": "Inline Menus for Telegraf made simple.",
-	"type": "commonjs",
-	"main": "dist/source",
-	"types": "dist/source",
-	"engines": {
-		"node": ">=12"
-	},
-	"scripts": {
-		"build": "del-cli dist && tsc",
-		"prepack": "npm run build",
-		"preexample-js": "npm run build",
-		"example-js": "node examples/main-javascript.js",
-		"start": "ts-node examples/main-typescript.ts",
-		"test": "tsc && xo && nyc ava"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/EdJoPaTo/telegraf-inline-menu.git"
-	},
 	"keywords": [
 		"Telegraf",
 		"Telegram",
@@ -29,16 +11,29 @@
 		"stateless",
 		"middleware"
 	],
+	"license": "MIT",
+	"repository": "EdJoPaTo/telegraf-inline-menu",
+	"bugs": {
+		"url": "https://github.com/EdJoPaTo/telegraf-inline-menu/issues"
+	},
+	"homepage": "https://github.com/EdJoPaTo/telegraf-inline-menu#readme",
 	"author": {
 		"name": "EdJoPaTo",
 		"email": "telegraf-inline-menu-npm-package@edjopato.de",
 		"url": "https://EdJoPaTo.de"
 	},
-	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/EdJoPaTo/telegraf-inline-menu/issues"
+	"scripts": {
+		"build": "del-cli dist && tsc",
+		"prepack": "npm run build",
+		"preexample-js": "npm run build",
+		"example-js": "node examples/main-javascript.js",
+		"start": "ts-node examples/main-typescript.ts",
+		"test": "tsc --sourceMap && xo && nyc ava"
 	},
-	"homepage": "https://github.com/EdJoPaTo/telegraf-inline-menu#readme",
+	"type": "commonjs",
+	"engines": {
+		"node": ">=12"
+	},
 	"dependencies": {
 		"typegram": "^3.0.2"
 	},
@@ -60,6 +55,8 @@
 		"dist/source",
 		"!*.test.*"
 	],
+	"main": "dist/source",
+	"types": "dist/source",
 	"nyc": {
 		"all": true,
 		"include": [
@@ -91,8 +88,8 @@
 			{
 				"files": [
 					"examples/**/*.*",
-					"source/**/*.test.ts",
-					"test/**/*.ts"
+					"**/*.test.*",
+					"test/**/*.*"
 				],
 				"rules": {
 					"@typescript-eslint/no-non-null-assertion": "off",
