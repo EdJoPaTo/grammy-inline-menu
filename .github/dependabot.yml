@@ -11,10 +11,3 @@ updates:
       time: "03:37" # UTC
     commit-message:
       prefix: "chore(npm):"
-
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    commit-message:
-      prefix: "chore(actions):"
