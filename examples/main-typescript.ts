@@ -1,5 +1,3 @@
-import {readFileSync} from 'fs'
-
 import {Telegraf, Context as TelegrafContext} from 'telegraf'
 
 import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../source'
@@ -210,8 +208,7 @@ menu.submenu('Media Menu', 'media', mediaMenu)
 const menuMiddleware = new MenuMiddleware<MyContext>('/', menu)
 console.log(menuMiddleware.tree())
 
-const token = readFileSync('token.txt', 'utf8').trim()
-const bot = new Telegraf<MyContext>(token)
+const bot = new Telegraf<MyContext>(process.env['BOT_TOKEN']!)
 
 bot.use(async (ctx, next) => {
 	if (ctx.callbackQuery && 'data' in ctx.callbackQuery) {

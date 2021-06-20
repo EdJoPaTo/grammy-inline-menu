@@ -4,8 +4,6 @@
 //
 // If you just want to use JavaScript, go ahead :)
 
-const {readFileSync} = require('fs')
-
 const {Telegraf} = require('telegraf')
 
 const {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} = require('../dist/source')
@@ -208,8 +206,7 @@ menu.submenu('Media Menu', 'media', mediaMenu)
 const menuMiddleware = new MenuMiddleware('/', menu)
 console.log(menuMiddleware.tree())
 
-const token = readFileSync('token.txt', 'utf8').trim()
-const bot = new Telegraf(token)
+const bot = new Telegraf(process.env.BOT_TOKEN)
 
 bot.use(async (ctx, next) => {
 	if (ctx.callbackQuery && 'data' in ctx.callbackQuery) {
