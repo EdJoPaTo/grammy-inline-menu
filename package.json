@@ -44,7 +44,7 @@
 		"@sindresorhus/tsconfig": "^1.0.0",
 		"@types/node": "^15.0.1",
 		"ava": "^3.6.0",
-		"del-cli": "^3.0.0",
+		"del-cli": "^4.0.0",
 		"nyc": "^15.0.0",
 		"telegraf": "^4.3.0",
 		"ts-node": "^10.0.0",
