@@ -44,7 +44,6 @@ export function generateChoicesPaginationButtons<Context>(actionPrefix: string, 
 	const pageButtons = pageKeys
 		.map((page): CallbackButtonTemplate => ({
 			relativePath: `${actionPrefix}P:${page}`,
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			text: pageRecord[page]!
 		}))
 

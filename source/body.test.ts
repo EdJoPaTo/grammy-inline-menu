@@ -143,9 +143,7 @@ function isTextBodyMacro(t: ExecutionContext, expected: boolean, maybeBody: unkn
 	t.is(isTextBody(maybeBody), expected)
 }
 
-isTextBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => {
-	return `isTextBody ${String(expected)} ${mehToString(maybeBody)}`
-}
+isTextBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => `isTextBody ${String(expected)} ${mehToString(maybeBody)}`
 
 for (const body of EXAMPLE_TEXTS) {
 	test(isTextBodyMacro, true, body)
@@ -159,9 +157,7 @@ function isMediaBodyMacro(t: ExecutionContext, expected: boolean, maybeBody: unk
 	t.is(isMediaBody(maybeBody), expected)
 }
 
-isMediaBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => {
-	return `isMediaBody ${String(expected)} ${mehToString(maybeBody)}`
-}
+isMediaBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => `isMediaBody ${String(expected)} ${mehToString(maybeBody)}`
 
 for (const body of EXAMPLE_MEDIA) {
 	test(isMediaBodyMacro, true, body)
@@ -175,9 +171,7 @@ function isLocationBodyMacro(t: ExecutionContext, expected: boolean, maybeBody: 
 	t.is(isLocationBody(maybeBody), expected)
 }
 
-isLocationBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => {
-	return `isLocationBody ${String(expected)} ${mehToString(maybeBody)}`
-}
+isLocationBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => `isLocationBody ${String(expected)} ${mehToString(maybeBody)}`
 
 for (const body of EXAMPLE_LOCATION) {
 	test(isLocationBodyMacro, true, body)
@@ -191,9 +185,7 @@ function isVenueBodyMacro(t: ExecutionContext, expected: boolean, maybeBody: unk
 	t.is(isVenueBody(maybeBody), expected)
 }
 
-isVenueBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => {
-	return `isVenueBody ${String(expected)} ${mehToString(maybeBody)}`
-}
+isVenueBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => `isVenueBody ${String(expected)} ${mehToString(maybeBody)}`
 
 for (const body of [EXAMPLE_VENUE]) {
 	test(isVenueBodyMacro, true, body)

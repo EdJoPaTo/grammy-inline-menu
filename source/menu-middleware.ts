@@ -99,12 +99,10 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 			let target: string | undefined = path
 
 			if (!path.endsWith('/')) {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				const {match, responder} = await getLongestMatchActionResponder(context as any, path, this._responder)
 				if (match?.[0] && responder.type === 'action') {
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 					(context as any).match = match
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 					const afterwardsTarget = await responder.do(context as any, match[0])
 
 					if (typeof afterwardsTarget === 'string' && afterwardsTarget) {
@@ -120,7 +118,6 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 			}
 
 			if (target) {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				const {match, responder} = await getLongestMatchMenuResponder(context as any, target, this._responder)
 				if (!match?.[0]) {
 					// TODO: think about using next() in this case?
@@ -130,7 +127,6 @@ export class MenuMiddleware<Context extends TelegrafContext> {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				(context as any).match = match
 				const targetPath = match[0]
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				await this._sendMenu(responder.menu as any, context as any, targetPath)
 				await context.answerCbQuery()
 					.catch(catchCallbackOld)

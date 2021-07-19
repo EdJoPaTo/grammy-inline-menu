@@ -515,9 +515,7 @@ test('action run took too long and updating menu afterwards tries to answerCbQue
 	t.plan(2)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
-		doFunction: () => {
-			return '.'
-		}
+		doFunction: () => '.'
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
@@ -526,9 +524,7 @@ test('action run took too long and updating menu afterwards tries to answerCbQue
 		renderKeyboard: () => []
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async () => {
-			return Promise.resolve()
-		}
+		sendMenu: async () => Promise.resolve()
 	})
 
 	const bot = new Telegraf<MyContext>('')
@@ -565,9 +561,7 @@ test('updating menu still throws unknown error from answerCbQuery', async t => {
 	t.plan(2)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
-		doFunction: () => {
-			return '.'
-		}
+		doFunction: () => '.'
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
@@ -576,9 +570,7 @@ test('updating menu still throws unknown error from answerCbQuery', async t => {
 		renderKeyboard: () => []
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async () => {
-			return Promise.resolve()
-		}
+		sendMenu: async () => Promise.resolve()
 	})
 
 	const bot = new Telegraf<MyContext>('')
