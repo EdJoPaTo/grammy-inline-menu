@@ -15,7 +15,7 @@ test('submenu hidden', async t => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', ['Button'], submenu, {
-		hide: () => true
+		hide: () => true,
 	})
 	const submenus = [...menu.listSubmenus()]
 	const isHidden = await submenus[0]?.hide?.(undefined, '/unique:Button/')
@@ -35,7 +35,7 @@ test('submenu not existing check disabled does not hide', async t => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', ['Button'], submenu, {
-		disableChoiceExistsCheck: true
+		disableChoiceExistsCheck: true,
 	})
 	const submenus = [...menu.listSubmenus()]
 	const isHidden = await submenus[0]?.hide?.(undefined, '/unique:Button/')
@@ -46,7 +46,7 @@ test('button hidden', async t => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', ['Button'], submenu, {
-		hide: () => true
+		hide: () => true,
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [])
@@ -59,7 +59,7 @@ test('button', async t => {
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [[{
 		text: 'Button',
-		callback_data: '/unique:Button/'
+		callback_data: '/unique:Button/',
 	}]])
 })
 
@@ -74,7 +74,7 @@ test('two same action codes throws', t => {
 	t.throws(() => {
 		menu.chooseIntoSubmenu('unique', [], submenu)
 	}, {
-		message: /already a submenu with the action/
+		message: /already a submenu with the action/,
 	})
 })
 
@@ -86,24 +86,24 @@ test('with pagnination buttons', async t => {
 		maxRows: 1,
 		setPage: () => {
 			throw new Error('dont set the page on rendering buttons')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [
 		[{
 			text: 'Button',
-			callback_data: '/unique:Button/'
+			callback_data: '/unique:Button/',
 		}],
 		[
 			{
 				text: '1',
-				callback_data: '/uniqueP:1'
+				callback_data: '/uniqueP:1',
 			},
 			{
 				text: '▶️ 2',
-				callback_data: '/uniqueP:2'
-			}
-		]
+				callback_data: '/uniqueP:2',
+			},
+		],
 	])
 })
 
@@ -117,7 +117,7 @@ test('set page action', async t => {
 		setPage: (context, page) => {
 			t.is(context, 'bla')
 			t.is(page, 2)
-		}
+		},
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	t.is(actions.length, 1)

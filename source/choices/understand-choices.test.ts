@@ -71,6 +71,6 @@ test('ensureCorrectChoiceKeys slash throws', t => {
 		() => {
 			ensureCorrectChoiceKeys('prefix', '/path/', choiceKeys)
 		},
-		{message: /can not contain '\/'.+prefix.+\/path\//}
+		{message: /can not contain '\/'.+prefix.+\/path\//},
 	)
 })

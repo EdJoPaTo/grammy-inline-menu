@@ -19,11 +19,11 @@ test('text', async t => {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(true)
-		}
+		},
 	}
 
 	const editIntoFunction = generateEditMessageIntoMenuFunction(fakeTelegram as any, menu, '/')
@@ -33,8 +33,8 @@ test('text', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
-			data: '666'
-		}
+			data: '666',
+		},
 	}
 
 	await editIntoFunction(13, 37, fakeContext as any)
@@ -53,15 +53,15 @@ for (const mediaType of MEDIA_TYPES) {
 					media: 'whatever',
 					type: mediaType,
 					caption: undefined,
-					parse_mode: undefined
+					parse_mode: undefined,
 				})
 				t.deepEqual(extra, {
 					reply_markup: {
-						inline_keyboard: []
-					}
+						inline_keyboard: [],
+					},
 				})
 				return Promise.resolve(true)
-			}
+			},
 		}
 
 		const editIntoFunction = generateEditMessageIntoMenuFunction(fakeTelegram as any, menu, '/')
@@ -71,8 +71,8 @@ for (const mediaType of MEDIA_TYPES) {
 				id: '666',
 				from: undefined as any,
 				chat_instance: '666',
-				data: '666'
-			}
+				data: '666',
+			},
 		}
 
 		await editIntoFunction(13, 37, fakeContext as any)
@@ -89,14 +89,14 @@ test('location', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
-			data: '666'
-		}
+			data: '666',
+		},
 	}
 
 	await t.throwsAsync(async () => {
 		await editIntoFunction(13, 37, fakeContext as any)
 	}, {
-		message: /can not edit into a location body/
+		message: /can not edit into a location body/,
 	})
 })
 
@@ -110,13 +110,13 @@ test('venue', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
-			data: '666'
-		}
+			data: '666',
+		},
 	}
 
 	await t.throwsAsync(async () => {
 		await editIntoFunction(13, 37, fakeContext as any)
 	}, {
-		message: /can not edit into a venue body/
+		message: /can not edit into a venue body/,
 	})
 })

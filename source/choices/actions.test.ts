@@ -47,6 +47,6 @@ test('unrelated path throws', async t => {
 	const func = combineHideAndChoices('bla', () => ['a'], undefined)
 
 	await t.throwsAsync(async () => func(undefined, 'hi there'), {
-		message: 'could not read choice from path'
+		message: 'could not read choice from path',
 	})
 })

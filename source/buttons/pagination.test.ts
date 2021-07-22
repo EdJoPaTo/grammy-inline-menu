@@ -30,7 +30,7 @@ test('five pages all buttons', t => {
 		2: '2 ◀️',
 		3: '3',
 		4: '▶️ 4',
-		5: '⏩ 5'
+		5: '⏩ 5',
 	})
 })
 
@@ -39,6 +39,6 @@ test('three pages are with +/-1 buttons and not first/last buttons', t => {
 	t.deepEqual(result, {
 		1: '1 ◀️',
 		2: '2',
-		3: '▶️ 3'
+		3: '▶️ 3',
 	})
 })

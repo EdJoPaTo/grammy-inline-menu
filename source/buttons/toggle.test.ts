@@ -10,7 +10,7 @@ test('hidden does not render any button', async t => {
 		},
 		set: () => {
 			throw new Error('do not call as its hidden')
-		}
+		},
 	})
 
 	const button = await func(undefined, 'wow/')
@@ -22,13 +22,13 @@ test('is true button', async t => {
 		isSet: () => true,
 		set: () => {
 			throw new Error('do not call as the button is not hit')
-		}
+		},
 	})
 
 	const button = await func(undefined, 'wow/')
 	t.deepEqual(button, {
 		text: '✅ text',
-		relativePath: 'pre:false'
+		relativePath: 'pre:false',
 	})
 })
 
@@ -37,13 +37,13 @@ test('is false button', async t => {
 		isSet: () => false,
 		set: () => {
 			throw new Error('do not call as the button is not hit')
-		}
+		},
 	})
 
 	const button = await func(undefined, 'wow/')
 	t.deepEqual(button, {
 		text: '🚫 text',
-		relativePath: 'pre:true'
+		relativePath: 'pre:true',
 	})
 })
 
@@ -57,13 +57,13 @@ test('own format', async t => {
 			t.is(text, 'text')
 			t.is(state, true)
 			return 'lalala'
-		}
+		},
 	})
 
 	const button = await func(undefined, 'wow/')
 	t.deepEqual(button, {
 		text: 'lalala',
-		relativePath: 'pre:false'
+		relativePath: 'pre:false',
 	})
 })
 
@@ -72,12 +72,12 @@ test('async text', async t => {
 		isSet: () => true,
 		set: () => {
 			throw new Error('do not call as the button is not hit')
-		}
+		},
 	})
 
 	const button = await func(undefined, 'wow/')
 	t.deepEqual(button, {
 		text: '✅ text',
-		relativePath: 'pre:false'
+		relativePath: 'pre:false',
 	})
 })

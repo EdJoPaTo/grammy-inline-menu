@@ -10,7 +10,7 @@ test('non callback queries are passing through', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu)
@@ -30,8 +30,8 @@ test('non callback queries are passing through', async t => {
 			chat: {} as any,
 			from: {} as any,
 			message_id: 666,
-			date: 666
-		}
+			date: 666,
+		},
 	})
 })
 
@@ -40,7 +40,7 @@ test('irrelevant callback queries are passing through', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu)
@@ -59,8 +59,8 @@ test('irrelevant callback queries are passing through', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '666'
-		}
+			data: '666',
+		},
 	})
 })
 
@@ -70,14 +70,14 @@ test('default root path is responded', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<BaseContext>('123:ABC');
@@ -107,8 +107,8 @@ test('default root path is responded', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/'
-		}
+			data: '/',
+		},
 	})
 })
 
@@ -118,14 +118,14 @@ test('custom root path is responded', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('custom/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, 'custom/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<BaseContext>('123:ABC');
@@ -155,8 +155,8 @@ test('custom root path is responded', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: 'custom/'
-		}
+			data: 'custom/',
+		},
 	})
 })
 
@@ -166,14 +166,14 @@ test('custom regex root path is responded', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware(/^tree(\d+)\//, menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, 'tree42/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<BaseContext>('123:ABC');
@@ -203,8 +203,8 @@ test('custom regex root path is responded', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: 'tree42/'
-		}
+			data: 'tree42/',
+		},
 	})
 })
 
@@ -213,7 +213,7 @@ test('default root path does not trigger custom root path', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('custom/', menu)
@@ -232,8 +232,8 @@ test('default root path does not trigger custom root path', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/'
-		}
+			data: '/',
+		},
 	})
 })
 
@@ -243,14 +243,14 @@ test('not existing path below is responded with root menu', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<BaseContext>('123:ABC');
@@ -280,7 +280,7 @@ test('not existing path below is responded with root menu', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/what'
-		}
+			data: '/what',
+		},
 	})
 })

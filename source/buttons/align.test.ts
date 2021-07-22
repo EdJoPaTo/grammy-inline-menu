@@ -18,28 +18,28 @@ test('getRowsOfButtons example', t => {
 	const result = getRowsOfButtons(
 		generateCharArray('A', 'Z'),
 		2, 3,
-		2
+		2,
 	)
 	t.deepEqual(result, [
 		['G', 'H'],
 		['I', 'J'],
-		['K', 'L']
+		['K', 'L'],
 	])
 })
 
 test('getRowsOfButtons example with defaults', t => {
 	const result = getRowsOfButtons(
-		generateCharArray('A', 'E')
+		generateCharArray('A', 'E'),
 	)
 	t.deepEqual(result, [
-		['A', 'B', 'C', 'D', 'E']
+		['A', 'B', 'C', 'D', 'E'],
 	])
 })
 
 test('getButtonsAsRows less buttons than columns', t => {
 	const result = getButtonsAsRows(generateCharArray('A', 'E'), 6)
 	t.deepEqual(result, [
-		['A', 'B', 'C', 'D', 'E']
+		['A', 'B', 'C', 'D', 'E'],
 	])
 })
 
@@ -48,7 +48,7 @@ test('getButtonsAsRows buttons for three colums', t => {
 	t.deepEqual(result, [
 		['A', 'B'],
 		['C', 'D'],
-		['E', 'F']
+		['E', 'F'],
 	])
 })
 
@@ -57,7 +57,7 @@ test('getButtonsAsRows buttons for three colums but last not full', t => {
 	t.deepEqual(result, [
 		['A', 'B'],
 		['C', 'D'],
-		['E']
+		['E'],
 	])
 })
 
@@ -65,7 +65,7 @@ test('getButtonsAsRows default columns', t => {
 	const result = getButtonsAsRows(generateCharArray('A', 'H'))
 	t.deepEqual(result, [
 		['A', 'B', 'C', 'D', 'E', 'F'],
-		['G', 'H']
+		['G', 'H'],
 	])
 })
 
@@ -77,7 +77,7 @@ test('getButtonsAsRows without buttons', t => {
 test('getButtonsOfPage default args', t => {
 	const result = getButtonsOfPage(generateCharArray('A', 'E'))
 	t.deepEqual(result, [
-		'A', 'B', 'C', 'D', 'E'
+		'A', 'B', 'C', 'D', 'E',
 	])
 })
 
@@ -89,28 +89,28 @@ test('getButtonsOfPage without buttons', t => {
 test('getButtonsOfPage trim by maxRows', t => {
 	const result = getButtonsOfPage(generateCharArray('A', 'Z'), 1, 5)
 	t.deepEqual(result, [
-		'A', 'B', 'C', 'D', 'E'
+		'A', 'B', 'C', 'D', 'E',
 	])
 })
 
 test('getButtonsOfPage second page', t => {
 	const result = getButtonsOfPage(generateCharArray('A', 'Z'), 1, 3, 2)
 	t.deepEqual(result, [
-		'D', 'E', 'F'
+		'D', 'E', 'F',
 	])
 })
 
 test('getButtonsOfPage partial last page', t => {
 	const result = getButtonsOfPage(generateCharArray('A', 'E'), 1, 3, 2)
 	t.deepEqual(result, [
-		'D', 'E'
+		'D', 'E',
 	])
 })
 
 test('getButtonsOfPage last possible page instead of wanted', t => {
 	const result = getButtonsOfPage(generateCharArray('A', 'F'), 1, 3, 3)
 	t.deepEqual(result, [
-		'D', 'E', 'F'
+		'D', 'E', 'F',
 	])
 })
 

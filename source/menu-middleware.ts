@@ -41,7 +41,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 	constructor(
 		public readonly rootTrigger: string | RegExpLike,
 		readonly rootMenu: MenuLike<Context>,
-		readonly options: Options<Context> = {}
+		readonly options: Options<Context> = {},
 	) {
 		const rootTriggerRegex = createRootMenuTrigger(rootTrigger)
 		this._responder = createResponder(rootTriggerRegex, () => true, rootMenu)
@@ -209,7 +209,7 @@ function createResponder<Context extends BaseContext>(menuTrigger: RegExpLike, c
 		.map(({trigger, doFunction}): ActionResponder<Context> => ({
 			type: 'action',
 			trigger,
-			do: doFunction
+			do: doFunction,
 		}))
 
 	const submenuResponders = [...menu.listSubmenus()]
@@ -233,7 +233,7 @@ function createResponder<Context extends BaseContext>(menuTrigger: RegExpLike, c
 		canEnter,
 		menu,
 		actionResponders,
-		submenuResponders
+		submenuResponders,
 	}
 }
 

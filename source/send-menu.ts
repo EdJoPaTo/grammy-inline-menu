@@ -62,7 +62,7 @@ export async function editMenuOnContext<Context extends BaseContext>(menu: MenuL
 				type: body.type,
 				media: body.media,
 				caption: body.text,
-				parse_mode: body.parse_mode
+				parse_mode: body.parse_mode,
 			}
 
 			return context.editMessageMedia(media, createEditMediaExtra(keyboard, extra))
@@ -85,7 +85,7 @@ export async function editMenuOnContext<Context extends BaseContext>(menu: MenuL
 	// The current menu is incompatible: delete and reply new one
 	const [repliedMessage] = await Promise.all([
 		replyRenderedMenuPartsToContext(body, keyboard, context, extra),
-		deleteMenuFromContext(context)
+		deleteMenuFromContext(context),
 	])
 	return repliedMessage
 }
@@ -113,7 +113,7 @@ export async function deleteMenuFromContext<Context extends BaseContext>(context
 export async function resendMenuToContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
 	const [menuMessage] = await Promise.all([
 		replyMenuToContext(menu, context, path, extra),
-		deleteMenuFromContext(context)
+		deleteMenuFromContext(context),
 	])
 	return menuMessage
 }
@@ -229,7 +229,7 @@ export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<
 				type: body.type,
 				media: body.media,
 				caption: body.text,
-				parse_mode: body.parse_mode
+				parse_mode: body.parse_mode,
 			}
 
 			const mediaExtra = createEditMediaExtra(keyboard, extra)
@@ -259,8 +259,8 @@ function createTextExtra(body: string | TextBody, keyboard: InlineKeyboard, base
 		parse_mode: typeof body === 'string' ? undefined : body.parse_mode,
 		disable_web_page_preview: typeof body !== 'string' && body.disable_web_page_preview,
 		reply_markup: {
-			inline_keyboard: keyboard.map(o => [...o])
-		}
+			inline_keyboard: keyboard.map(o => [...o]),
+		},
 	}
 }
 
@@ -270,8 +270,8 @@ function createSendMediaExtra(body: MediaBody, keyboard: InlineKeyboard, base: R
 		parse_mode: body.parse_mode,
 		caption: body.text,
 		reply_markup: {
-			inline_keyboard: keyboard.map(o => [...o])
-		}
+			inline_keyboard: keyboard.map(o => [...o]),
+		},
 	}
 }
 
@@ -279,8 +279,8 @@ function createEditMediaExtra(keyboard: InlineKeyboard, base: Readonly<ExtraEdit
 	return {
 		...base,
 		reply_markup: {
-			inline_keyboard: keyboard.map(o => [...o])
-		}
+			inline_keyboard: keyboard.map(o => [...o]),
+		},
 	}
 }
 
@@ -289,8 +289,8 @@ function createLocationExtra(body: LocationBody, keyboard: InlineKeyboard, base:
 		...base,
 		live_period: body.live_period,
 		reply_markup: {
-			inline_keyboard: keyboard.map(o => [...o])
-		}
+			inline_keyboard: keyboard.map(o => [...o]),
+		},
 	}
 }
 
@@ -300,7 +300,7 @@ function createVenueExtra(body: VenueBody, keyboard: InlineKeyboard, base: Reado
 		foursquare_id: body.venue.foursquare_id,
 		foursquare_type: body.venue.foursquare_type,
 		reply_markup: {
-			inline_keyboard: keyboard.map(o => [...o])
-		}
+			inline_keyboard: keyboard.map(o => [...o]),
+		},
 	}
 }

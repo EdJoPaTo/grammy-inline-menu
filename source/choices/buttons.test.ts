@@ -13,7 +13,7 @@ test('single choice one button', async t => {
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: 'a',
-		relativePath: 'pre:a'
+		relativePath: 'pre:a',
 	}]])
 })
 
@@ -22,7 +22,7 @@ test('single choice into submenu', async t => {
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: 'a',
-		relativePath: 'pre:a/'
+		relativePath: 'pre:a/',
 	}]])
 })
 
@@ -32,24 +32,24 @@ test('creates pagination buttons', async t => {
 		maxRows: 1,
 		setPage: () => {
 			throw new Error('no need to call setPage on keyboard creation')
-		}
+		},
 	})
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [
 		[{
 			text: 'a',
-			relativePath: 'pre:a'
+			relativePath: 'pre:a',
 		}],
 		[{
 			text: '1',
-			relativePath: 'preP:1'
+			relativePath: 'preP:1',
 		}, {
 			text: '▶️ 2',
-			relativePath: 'preP:2'
+			relativePath: 'preP:2',
 		}, {
 			text: '⏩ 3',
-			relativePath: 'preP:3'
-		}]
+			relativePath: 'preP:3',
+		}],
 	])
 })
 
@@ -57,12 +57,12 @@ test('show keys of page 2', async t => {
 	const func = generateChoicesButtons('pre', false, ['a', 'b', 'c'], {
 		columns: 1,
 		maxRows: 1,
-		getCurrentPage: () => 2
+		getCurrentPage: () => 2,
 	})
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: 'b',
-		relativePath: 'pre:b'
+		relativePath: 'pre:b',
 	}]])
 })
 
@@ -77,11 +77,11 @@ test('choice function is run', async t => {
 
 	t.deepEqual(await func('a', '/'), [[{
 		text: 'a',
-		relativePath: 'pre:a'
+		relativePath: 'pre:a',
 	}]])
 	t.deepEqual(await func('b', '/'), [[{
 		text: 'b',
-		relativePath: 'pre:b'
+		relativePath: 'pre:b',
 	}]])
 })
 
@@ -90,18 +90,18 @@ test('choice can have text by itself', async t => {
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: 'Aaa',
-		relativePath: 'pre:a'
+		relativePath: 'pre:a',
 	}]])
 })
 
 test('choice buttonText is used', async t => {
 	const func = generateChoicesButtons('pre', false, ['a'], {
-		buttonText: () => 'Aaa'
+		buttonText: () => 'Aaa',
 	})
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: 'Aaa',
-		relativePath: 'pre:a'
+		relativePath: 'pre:a',
 	}]])
 })
 
@@ -115,7 +115,7 @@ test('hidden does not render any buttons', async t => {
 			t.is(context, undefined)
 			t.is(path, '/')
 			return true
-		}
+		},
 	})
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [])

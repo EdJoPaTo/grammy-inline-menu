@@ -1,7 +1,7 @@
 import test from 'ava'
 
 import {
-	prefixText
+	prefixText,
 } from './prefix'
 
 test('no prefix', t => {

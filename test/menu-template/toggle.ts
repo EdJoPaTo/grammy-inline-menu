@@ -11,7 +11,7 @@ test('button hidden', async t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [])
@@ -27,12 +27,12 @@ test('button true', async t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
 	t.deepEqual(keyboard, [[{
 		text: '✅ Button',
-		callback_data: '/unique:false'
+		callback_data: '/unique:false',
 	}]])
 })
 
@@ -46,12 +46,12 @@ test('button false', async t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
 	t.deepEqual(keyboard, [[{
 		text: '🚫 Button',
-		callback_data: '/unique:true'
+		callback_data: '/unique:true',
 	}]])
 })
 
@@ -64,7 +64,7 @@ test('action triggers', t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -85,7 +85,7 @@ test('action hidden', async t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -108,7 +108,7 @@ test('action true', async t => {
 			t.is(newState, true)
 			t.is(path, '/unique:true')
 			return 'wow'
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -128,7 +128,7 @@ test('action false', async t => {
 			t.is(newState, false)
 			t.is(path, '/unique:false')
 			return 'wow'
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]

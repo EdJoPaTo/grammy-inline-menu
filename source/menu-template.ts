@@ -26,7 +26,7 @@ export class MenuTemplate<Context> {
 	private readonly _submenus: Set<Submenu<Context>> = new Set()
 
 	constructor(
-		body: ConstOrContextPathFunc<Context, Body>
+		body: ConstOrContextPathFunc<Context, Body>,
 	) {
 		this._body = typeof body === 'function' ? body : () => body
 	}
@@ -116,7 +116,7 @@ export class MenuTemplate<Context> {
 	url(text: ConstOrContextPathFunc<Context, string>, url: ConstOrContextPathFunc<Context, string>, options: SingleButtonOptions<Context> = {}): void {
 		this.manual(async (context, path) => ({
 			text: typeof text === 'function' ? await text(context, path) : text,
-			url: typeof url === 'function' ? await url(context, path) : url
+			url: typeof url === 'function' ? await url(context, path) : url,
 		}), options)
 	}
 
@@ -129,7 +129,7 @@ export class MenuTemplate<Context> {
 	switchToChat(text: ConstOrContextPathFunc<Context, string>, query: ConstOrContextPathFunc<Context, string>, options: SingleButtonOptions<Context> = {}): void {
 		this.manual(async (context, path) => ({
 			text: typeof text === 'function' ? await text(context, path) : text,
-			switch_inline_query: typeof query === 'function' ? await query(context, path) : query
+			switch_inline_query: typeof query === 'function' ? await query(context, path) : query,
 		}), options)
 	}
 
@@ -142,7 +142,7 @@ export class MenuTemplate<Context> {
 	switchToCurrentChat(text: ConstOrContextPathFunc<Context, string>, query: ConstOrContextPathFunc<Context, string>, options: SingleButtonOptions<Context> = {}): void {
 		this.manual(async (context, path) => ({
 			text: typeof text === 'function' ? await text(context, path) : text,
-			switch_inline_query_current_chat: typeof query === 'function' ? await query(context, path) : query
+			switch_inline_query_current_chat: typeof query === 'function' ? await query(context, path) : query,
 		}), options)
 	}
 
@@ -224,7 +224,7 @@ export class MenuTemplate<Context> {
 		this._submenus.add({
 			action: actionRegex,
 			hide: options.hide,
-			menu: submenu
+			menu: submenu,
 		})
 		this._keyboard.add(Boolean(options.joinLastRow), generateCallbackButtonTemplate(text, action + '/', options.hide))
 	}
@@ -248,7 +248,7 @@ export class MenuTemplate<Context> {
 		this._actions.add(
 			trigger,
 			async (context, path) => options.do(context, getKeyFromPath(trigger, path)),
-			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix, choices, options.hide)
+			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix, choices, options.hide),
 		)
 
 		if (options.setPage) {
@@ -288,7 +288,7 @@ export class MenuTemplate<Context> {
 		this._submenus.add({
 			action: actionRegex,
 			hide: options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix, choices, options.hide),
-			menu: submenu
+			menu: submenu,
 		})
 
 		if (options.setPage) {
@@ -340,7 +340,7 @@ export class MenuTemplate<Context> {
 				const key = getKeyFromPath(trueTrigger, path)
 				return options.set(context, key, true)
 			},
-			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix + 'T', choices, options.hide)
+			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix + 'T', choices, options.hide),
 		)
 
 		const falseTrigger = new RegExp(actionPrefix + 'F:(.+)$')
@@ -350,7 +350,7 @@ export class MenuTemplate<Context> {
 				const key = getKeyFromPath(falseTrigger, path)
 				return options.set(context, key, false)
 			},
-			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix + 'F', choices, options.hide)
+			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix + 'F', choices, options.hide),
 		)
 
 		if (options.setPage) {
@@ -383,7 +383,7 @@ export class MenuTemplate<Context> {
 		this._actions.add(trigger, setPageAction(trigger, options.setPage), options.hide)
 		this._keyboard.addCreator(generateChoicesButtons(actionPrefix, false, paginationChoices, {
 			columns: 5,
-			hide: options.hide
+			hide: options.hide,
 		}))
 	}
 
@@ -424,13 +424,13 @@ export class MenuTemplate<Context> {
 		this._actions.add(
 			new RegExp(actionPrefix + ':true$'),
 			async (context, path) => options.set(context, true, path),
-			options.hide
+			options.hide,
 		)
 
 		this._actions.add(
 			new RegExp(actionPrefix + ':false$'),
 			async (context, path) => options.set(context, false, path),
-			options.hide
+			options.hide,
 		)
 
 		this._keyboard.add(Boolean(options.joinLastRow), generateToggleButton(text, actionPrefix, options))
@@ -445,7 +445,7 @@ function generateCallbackButtonTemplate<Context>(text: ConstOrContextPathFunc<Co
 
 		return {
 			relativePath,
-			text: typeof text === 'function' ? await text(context, path) : text
+			text: typeof text === 'function' ? await text(context, path) : text,
 		}
 	}
 }

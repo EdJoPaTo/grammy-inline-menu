@@ -17,8 +17,8 @@ for (const mediaType of MEDIA_TYPES) {
 				caption: undefined,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(undefined as any)
 		}
@@ -28,13 +28,13 @@ for (const mediaType of MEDIA_TYPES) {
 				id: '666',
 				from: undefined as any,
 				chat_instance: '666',
-				data: '666'
+				data: '666',
 			},
 			replyWithAnimation: replyFunction,
 			replyWithAudio: replyFunction,
 			replyWithDocument: replyFunction,
 			replyWithPhoto: replyFunction,
-			replyWithVideo: replyFunction
+			replyWithVideo: replyFunction,
 		}
 
 		await replyMenuToContext(menu, fakeContext as any, '/')

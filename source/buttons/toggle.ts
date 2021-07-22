@@ -34,7 +34,7 @@ export function generateToggleButton<Context>(text: ConstOrContextPathFunc<Conte
 		const state = await options.isSet(context, path)
 		return {
 			text: await formatFunction(context, textResult, state, path),
-			relativePath: actionPrefix + ':' + (state ? 'false' : 'true')
+			relativePath: actionPrefix + ':' + (state ? 'false' : 'true'),
 		}
 	}
 }

@@ -18,18 +18,18 @@ test('action is run without updating menu afterwards', async t => {
 			t.is(context.match![1], undefined)
 			t.is(path, '/what')
 			return false
-		}
+		},
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async () => {
 			throw new Error('dont open the menu')
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -59,8 +59,8 @@ test('action is run without updating menu afterwards', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/what'
-		}
+			data: '/what',
+		},
 	})
 })
 
@@ -73,19 +73,19 @@ test('action is run and updating menu afterwards with path', async t => {
 			t.is(context.match![1], undefined)
 			t.is(path, '/what')
 			return '.'
-		}
+		},
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -115,8 +115,8 @@ test('action is run and updating menu afterwards with path', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/what'
-		}
+			data: '/what',
+		},
 	})
 })
 
@@ -129,19 +129,19 @@ test('action is run and updating menu afterwards with true', async t => {
 			t.is(context.match![1], undefined)
 			t.is(path, '/what')
 			return true
-		}
+		},
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -171,8 +171,8 @@ test('action is run and updating menu afterwards with true', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/what'
-		}
+			data: '/what',
+		},
 	})
 })
 
@@ -180,18 +180,18 @@ test('action returns non existing path afterwards throws Error', async t => {
 	t.plan(1)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^custom\/what$/,
-		doFunction: () => '/foo/'
+		doFunction: () => '/foo/',
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('custom/', menu, {
 		sendMenu: async () => {
 			throw new Error('dont send main menu')
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -231,8 +231,8 @@ test('action returns non existing path afterwards throws Error', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: 'custom/what'
-		}
+			data: 'custom/what',
+		},
 	})
 })
 
@@ -242,19 +242,19 @@ test('not existing action updates menu', async t => {
 		trigger: /^\/what$/,
 		doFunction: () => {
 			throw new Error('not the correct action')
-		}
+		},
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -284,8 +284,8 @@ test('not existing action updates menu', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/where'
-		}
+			data: '/where',
+		},
 	})
 })
 
@@ -298,29 +298,29 @@ test('action in submenu is run', async t => {
 			t.is(context.match![1], undefined)
 			t.is(path, '/submenu/what')
 			return false
-		}
+		},
 	}
 	const submenuMenu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<MyContext> = {
 		action: /submenu\//,
 		hide: () => false,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async () => {
 			throw new Error('dont open the menu')
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -350,8 +350,8 @@ test('action in submenu is run', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/submenu/what'
-		}
+			data: '/submenu/what',
+		},
 	})
 })
 
@@ -361,30 +361,30 @@ test('not existing action in submenu updates submenu', async t => {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
 			throw new Error('not the correct action')
-		}
+		},
 	}
 	const submenuMenu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<MyContext> = {
 		action: /submenu\//,
 		hide: () => false,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/submenu/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -414,8 +414,8 @@ test('not existing action in submenu updates submenu', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/submenu/where'
-		}
+			data: '/submenu/where',
+		},
 	})
 })
 
@@ -425,30 +425,30 @@ test('action in hidden submenu updates main menu', async t => {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
 			throw new Error('submenu is hidden')
-		}
+		},
 	}
 	const submenuMenu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<MyContext> = {
 		action: /submenu\//,
 		hide: () => true,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -478,8 +478,8 @@ test('action in hidden submenu updates main menu', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/submenu/what'
-		}
+			data: '/submenu/what',
+		},
 	})
 })
 
@@ -489,30 +489,30 @@ test('action in non existing submenu updates main menu', async t => {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
 			throw new Error('submenu is hidden')
-		}
+		},
 	}
 	const submenuMenu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<MyContext> = {
 		action: /submenu\//,
 		hide: () => true,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -542,8 +542,8 @@ test('action in non existing submenu updates main menu', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/foo/bar'
-		}
+			data: '/foo/bar',
+		},
 	})
 })
 
@@ -551,16 +551,16 @@ test('action run took too long and updating menu afterwards tries to answerCbQue
 	t.plan(2)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
-		doFunction: () => '.'
+		doFunction: () => '.',
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async () => Promise.resolve()
+		sendMenu: async () => Promise.resolve(),
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -591,9 +591,9 @@ test('action run took too long and updating menu afterwards tries to answerCbQue
 				id: '666',
 				from: {} as any,
 				chat_instance: '666',
-				data: '/what'
-			}
-		})
+				data: '/what',
+			},
+		}),
 	)
 })
 
@@ -601,16 +601,16 @@ test('updating menu still throws unknown error from answerCbQuery', async t => {
 	t.plan(2)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
-		doFunction: () => '.'
+		doFunction: () => '.',
 	}
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async () => Promise.resolve()
+		sendMenu: async () => Promise.resolve(),
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -650,7 +650,7 @@ test('updating menu still throws unknown error from answerCbQuery', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/what'
-		}
+			data: '/what',
+		},
 	})
 })

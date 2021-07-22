@@ -24,7 +24,7 @@ export function generateChoicesButtons<Context>(actionPrefix: string, isSubmenu:
 				const text = await textFunction(context, key)
 				const relativePath = actionPrefix + ':' + key + (isSubmenu ? '/' : '')
 				return {text, relativePath}
-			})
+			}),
 		)
 		const rows = getButtonsAsRows(buttonsOfPage, options.columns)
 
@@ -44,7 +44,7 @@ export function generateChoicesPaginationButtons<Context>(actionPrefix: string, 
 	const pageButtons = pageKeys
 		.map((page): CallbackButtonTemplate => ({
 			relativePath: `${actionPrefix}P:${page}`,
-			text: pageRecord[page]!
+			text: pageRecord[page]!,
 		}))
 
 	return pageButtons

@@ -47,7 +47,7 @@ export class Keyboard<Context> {
 
 	async render(context: Context, path: string): Promise<InlineKeyboard> {
 		const arrayOfRowArrays = await Promise.all(
-			this._entries.map(async o => entryToRows(o, context, path))
+			this._entries.map(async o => entryToRows(o, context, path)),
 		)
 		const rows = arrayOfRowArrays
 			.flat(1)
@@ -60,7 +60,7 @@ export class Keyboard<Context> {
 async function entryToRows<Context>(entry: KeyboardTemplateEntry<Context>, context: Context, path: string): Promise<ButtonTemplateRow[]> {
 	if (isRow(entry)) {
 		const buttonsInRow = await Promise.all(entry.map(async button =>
-			typeof button === 'function' ? button(context, path) : button
+			typeof button === 'function' ? button(context, path) : button,
 		))
 		const filtered = buttonsInRow.filter(filterNonNullable())
 		return [filtered]
@@ -82,6 +82,6 @@ function renderCallbackButtonTemplate(template: CallbackButtonTemplate, path: st
 
 	return {
 		text: template.text,
-		callback_data: absolutePath
+		callback_data: absolutePath,
 	}
 }

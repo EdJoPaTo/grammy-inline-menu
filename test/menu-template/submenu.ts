@@ -15,7 +15,7 @@ test('button hidden', async t => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.submenu('Button', 'unique', submenu, {
-		hide: () => true
+		hide: () => true,
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [])
@@ -28,7 +28,7 @@ test('button', async t => {
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [[{
 		text: 'Button',
-		callback_data: '/unique/'
+		callback_data: '/unique/',
 	}]])
 })
 
@@ -43,6 +43,6 @@ test('two same action codes throws', t => {
 	t.throws(() => {
 		menu.submenu('Button', 'unique', submenu)
 	}, {
-		message: /already a submenu with the action/
+		message: /already a submenu with the action/,
 	})
 })

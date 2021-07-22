@@ -9,10 +9,10 @@ test('interaction doFunc', t => {
 			// @ts-expect-error
 			doFunc: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {
-		message: /renamed to do/
+		message: /renamed to do/,
 	})
 })
 
@@ -23,7 +23,7 @@ test('select set', t => {
 			// @ts-expect-error
 			setFunc: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {message: /renamed to/})
 })
@@ -35,7 +35,7 @@ test('choose do', t => {
 			// @ts-expect-error
 			doFunc: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {message: /renamed to/})
 })
@@ -47,7 +47,7 @@ test('select isSet', t => {
 			// @ts-expect-error
 			isSetFunc: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {message: /renamed to/})
 })
@@ -59,7 +59,7 @@ test('toggle set', t => {
 			// @ts-expect-error
 			setFunc: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {message: /renamed to/})
 })
@@ -71,7 +71,7 @@ test('toggle isSet', t => {
 			// @ts-expect-error
 			isSetFunc: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {message: /renamed to/})
 })

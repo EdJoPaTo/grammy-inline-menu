@@ -8,7 +8,7 @@ test('buttons hidden', async t => {
 		hide: () => true,
 		do: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [])
@@ -19,12 +19,12 @@ test('buttons', async t => {
 	menu.choose('unique', ['Button'], {
 		do: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [[{
 		text: 'Button',
-		callback_data: '/unique:Button'
+		callback_data: '/unique:Button',
 	}]])
 })
 
@@ -33,7 +33,7 @@ test('action triggers', t => {
 	menu.choose('unique', ['Button'], {
 		do: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -49,7 +49,7 @@ test('action hidden', async t => {
 		hide: () => true,
 		do: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -65,7 +65,7 @@ test('action existing button', async t => {
 			t.is(context, 'bla')
 			t.is(key, 'Button')
 			return 'wow'
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -79,7 +79,7 @@ test('action not existing button', async t => {
 	menu.choose('unique', ['Button'], {
 		do: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -96,7 +96,7 @@ test('action not existing button check disabled', async t => {
 			t.is(context, 'bla')
 			t.is(key, 'Tree')
 			return 'wow'
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -115,24 +115,24 @@ test('with pagnination buttons', async t => {
 		},
 		do: () => {
 			throw new Error('dont run the do function when pagination is of interest')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [
 		[{
 			text: 'Button',
-			callback_data: '/unique:Button'
+			callback_data: '/unique:Button',
 		}],
 		[
 			{
 				text: '1',
-				callback_data: '/uniqueP:1'
+				callback_data: '/uniqueP:1',
 			},
 			{
 				text: '▶️ 2',
-				callback_data: '/uniqueP:2'
-			}
-		]
+				callback_data: '/uniqueP:2',
+			},
+		],
 	])
 })
 
@@ -148,7 +148,7 @@ test('set page action', async t => {
 		},
 		do: () => {
 			throw new Error('dont call the do function when pagination is of interest')
-		}
+		},
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	t.is(actions.length, 2)

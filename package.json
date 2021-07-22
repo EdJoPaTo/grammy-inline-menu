@@ -71,11 +71,9 @@
 	"xo": {
 		"semicolon": false,
 		"rules": {
-			"@typescript-eslint/comma-dangle": "off",
 			"@typescript-eslint/prefer-readonly-parameter-types": "error",
 			"ava/no-ignored-test-files": "off",
 			"camelcase": "off",
-			"comma-dangle": "off",
 			"import/extensions": "off"
 		},
 		"overrides": [
@@ -94,11 +92,8 @@
 					"test/**/*.*"
 				],
 				"rules": {
-					"@typescript-eslint/no-non-null-assertion": "off",
-					"@typescript-eslint/no-unsafe-argument": "off",
 					"@typescript-eslint/no-unsafe-assignment": "off",
 					"@typescript-eslint/no-unsafe-member-access": "off",
-					"@typescript-eslint/no-unsafe-return": "off",
 					"@typescript-eslint/prefer-readonly-parameter-types": "off",
 					"unicorn/prefer-node-protocol": "off",
 					"max-params": "off"

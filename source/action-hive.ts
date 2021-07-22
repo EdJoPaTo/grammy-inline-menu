@@ -29,7 +29,7 @@ export class ActionHive<Context> {
 				}
 
 				return doFunction(context, path)
-			}
+			},
 		})
 	}
 
@@ -38,7 +38,7 @@ export class ActionHive<Context> {
 		for (const {trigger, doFunction} of this._actions) {
 			result.add({
 				trigger: combineTrigger(path, trigger),
-				doFunction
+				doFunction,
 			})
 		}
 

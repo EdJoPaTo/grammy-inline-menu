@@ -14,7 +14,7 @@ test('resend on callback query', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
-			data: '666'
+			data: '666',
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
@@ -26,11 +26,11 @@ test('resend on callback query', async t => {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await resendMenuToContext(menu, fakeContext as any, '/')
@@ -51,11 +51,11 @@ test('resend on whatever', async t => {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await resendMenuToContext(menu, fakeContext as any, '/')

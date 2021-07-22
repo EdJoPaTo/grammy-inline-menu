@@ -9,7 +9,7 @@ const EMPTY_MENU: MenuLike<unknown> = {
 	listSubmenus: () => new Set(),
 	renderActionHandlers: () => new Set(),
 	renderBody: () => 'whatever',
-	renderKeyboard: () => []
+	renderKeyboard: () => [],
 }
 
 test('empty tree', t => {
@@ -24,13 +24,13 @@ test('action', t => {
 		trigger: /^\/what$/,
 		doFunction: () => {
 			throw new Error('dont call me')
-		}
+		},
 	}
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const tree = new MenuMiddleware('/', menu).tree()
 	t.is(tree, `Menu Tree
@@ -43,13 +43,13 @@ test('submenu', t => {
 	const submenu: Submenu<unknown> = {
 		action: /submenu\//,
 		hide: () => false,
-		menu: EMPTY_MENU
+		menu: EMPTY_MENU,
 	}
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const tree = new MenuMiddleware('/', menu).tree()
 	t.is(tree, `Menu Tree
@@ -62,24 +62,24 @@ test('subsubmenu', t => {
 	const subsubmenu: Submenu<unknown> = {
 		action: /deep\//,
 		hide: () => false,
-		menu: EMPTY_MENU
+		menu: EMPTY_MENU,
 	}
 	const submenuMenu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([subsubmenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<unknown> = {
 		action: /submenu\//,
 		hide: () => false,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const tree = new MenuMiddleware('/', menu).tree()
 	t.is(tree, `Menu Tree
@@ -94,24 +94,24 @@ test('action in submenu', t => {
 		trigger: /^\/submenu\/what$/,
 		doFunction: () => {
 			throw new Error('dont call me')
-		}
+		},
 	}
 	const submenuMenu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<unknown> = {
 		action: /submenu\//,
 		hide: () => false,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const tree = new MenuMiddleware('/', menu).tree()
 	t.is(tree, `Menu Tree

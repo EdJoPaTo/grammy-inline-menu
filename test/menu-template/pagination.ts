@@ -14,7 +14,7 @@ test('buttons hidden', async t => {
 		},
 		setPage: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [])
@@ -32,7 +32,7 @@ test('action hidden', async t => {
 		},
 		setPage: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	t.is(actions.length, 1)
@@ -54,18 +54,18 @@ test('buttons 2 pages', async t => {
 		},
 		setPage: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
 	t.deepEqual(keyboard, [[
 		{
 			text: '1',
-			callback_data: '/unique:1'
+			callback_data: '/unique:1',
 		},
 		{
 			text: '▶️ 2',
-			callback_data: '/unique:2'
-		}
+			callback_data: '/unique:2',
+		},
 	]])
 })
 
@@ -80,7 +80,7 @@ test('action trigger', t => {
 		},
 		setPage: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	t.is(actions.length, 1)
@@ -104,7 +104,7 @@ test('action sets page', async t => {
 		setPage: (context, page) => {
 			t.is(context, 'foo')
 			t.is(page, 2)
-		}
+		},
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	t.is(actions.length, 1)

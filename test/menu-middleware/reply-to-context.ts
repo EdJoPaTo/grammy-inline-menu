@@ -11,18 +11,18 @@ test('replies main menu', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<unknown> = {
 		action: /submenu\//,
 		hide: () => false,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu)
@@ -34,11 +34,11 @@ test('replies main menu', async t => {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve({} as any)
-		}
+		},
 	}
 
 	await mm.replyToContext(fakeContext as any)
@@ -50,18 +50,18 @@ test('replies main menu explicitly', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<unknown> = {
 		action: /submenu\//,
 		hide: () => false,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu)
@@ -73,11 +73,11 @@ test('replies main menu explicitly', async t => {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve({} as any)
-		}
+		},
 	}
 
 	await mm.replyToContext(fakeContext as any, '/')
@@ -89,18 +89,18 @@ test('replies submenu', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<unknown> = {
 		action: /submenu\//,
 		hide: () => false,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu)
@@ -112,11 +112,11 @@ test('replies submenu', async t => {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve({} as any)
-		}
+		},
 	}
 
 	await mm.replyToContext(fakeContext as any, '/submenu/')
@@ -127,25 +127,25 @@ test('fails with out of scope path', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<unknown> = {
 		action: /submenu\//,
 		hide: () => false,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu)
 
 	await t.throwsAsync(
 		async () => mm.replyToContext({} as any, 'foo/'),
-		{message: 'There is no menu which works with your supplied path: foo/'}
+		{message: 'There is no menu which works with your supplied path: foo/'},
 	)
 })
 
@@ -154,7 +154,7 @@ test('fails when rootTrigger is a regex and path is not explicit', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware(/^tree(\d+)\//, menu)
@@ -164,7 +164,7 @@ test('fails when rootTrigger is a regex and path is not explicit', async t => {
 			await mm.replyToContext({} as any)
 		},
 		{
-			message: /absolute path explicitly as a string/
-		}
+			message: /absolute path explicitly as a string/,
+		},
 	)
 })

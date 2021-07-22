@@ -18,11 +18,11 @@ test('text reply when not a callback query', async t => {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -37,7 +37,7 @@ test('text reply when no message on callback query', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
-			data: '666'
+			data: '666',
 		},
 		reply: async (text, extra) => {
 			t.is(text, 'whatever')
@@ -45,11 +45,11 @@ test('text reply when no message on callback query', async t => {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -69,8 +69,8 @@ test('text edit when message is a text message', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				text: 'Hi Bob'
-			}
+				text: 'Hi Bob',
+			},
 		},
 		editMessageText: async (text, extra) => {
 			t.is(text, 'whatever')
@@ -78,11 +78,11 @@ test('text edit when message is a text message', async t => {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -102,8 +102,8 @@ test('text reply when message is a media message', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				photo: []
-			}
+				photo: [],
+			},
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
@@ -115,11 +115,11 @@ test('text reply when message is a media message', async t => {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -139,8 +139,8 @@ test('text reply when message is a media message but fails with delete', async t
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				photo: []
-			}
+				photo: [],
+			},
 		},
 		deleteMessage: async () => {
 			throw new Error('whatever went wrong')
@@ -152,7 +152,7 @@ test('text reply when message is a media message but fails with delete', async t
 		reply: async () => {
 			t.pass()
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -170,11 +170,11 @@ test('media reply when not a callback query', async t => {
 				caption: undefined,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -194,8 +194,8 @@ test('media reply when text message', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				text: 'whatever'
-			}
+				text: 'whatever',
+			},
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
@@ -207,11 +207,11 @@ test('media reply when text message', async t => {
 				caption: undefined,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -231,8 +231,8 @@ test('media edit when media message', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				photo: []
-			}
+				photo: [],
+			},
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
@@ -243,15 +243,15 @@ test('media edit when media message', async t => {
 				media: 'whatever',
 				type: 'photo',
 				caption: undefined,
-				parse_mode: undefined
+				parse_mode: undefined,
 			})
 			t.deepEqual(extra, {
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -271,13 +271,13 @@ test('does not throw message is not modified', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				text: 'Hi Bob'
-			}
+				text: 'Hi Bob',
+			},
 		},
 		editMessageText: async () => {
 			t.pass()
 			throw new Error('lalala message is not modified lalala')
-		}
+		},
 	}
 
 	await t.notThrowsAsync(async () => editMenuOnContext(menu, fakeContext as any, '/'))
@@ -297,18 +297,18 @@ test('does throw unrecoverable edit errors', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				text: 'Hi Bob'
-			}
+				text: 'Hi Bob',
+			},
 		},
 		editMessageText: async () => {
 			t.pass()
 			throw new Error('something went wrong for testing')
-		}
+		},
 	}
 
 	await t.throwsAsync(
 		async () => editMenuOnContext(menu, fakeContext as any, '/'),
-		{message: 'something went wrong for testing'}
+		{message: 'something went wrong for testing'},
 	)
 })
 
@@ -325,19 +325,19 @@ test('text edit without webpage preview', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				text: 'Hi Bob'
-			}
+				text: 'Hi Bob',
+			},
 		},
 		editMessageText: async (_text, extra) => {
 			t.deepEqual(extra, {
 				disable_web_page_preview: true,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -356,19 +356,19 @@ test('text edit with parse mode', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				text: 'Hi Bob'
-			}
+				text: 'Hi Bob',
+			},
 		},
 		editMessageText: async (_text, extra) => {
 			t.deepEqual(extra, {
 				disable_web_page_preview: undefined,
 				parse_mode: 'Markdown',
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -388,18 +388,18 @@ test('text edit with button', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				text: 'Hi Bob'
-			}
+				text: 'Hi Bob',
+			},
 		},
 		editMessageText: async (_text, extra) => {
 			t.deepEqual(extra?.reply_markup, {
 				inline_keyboard: [[{
 					text: 'Button',
-					callback_data: '/'
-				}]]
+					callback_data: '/',
+				}]],
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -419,18 +419,18 @@ test('media edit with button', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				photo: []
-			}
+				photo: [],
+			},
 		},
 		editMessageMedia: async (_media, extra) => {
 			t.deepEqual(extra?.reply_markup, {
 				inline_keyboard: [[{
 					text: 'Button',
-					callback_data: '/'
-				}]]
+					callback_data: '/',
+				}]],
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -451,8 +451,8 @@ test('location reply', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				text: 'Hi Bob'
-			}
+				text: 'Hi Bob',
+			},
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
@@ -464,11 +464,11 @@ test('location reply', async t => {
 			t.deepEqual(extra, {
 				live_period: 666,
 				reply_markup: {
-					inline_keyboard: [[{text: 'Button', callback_data: '/'}]]
-				}
+					inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
@@ -489,8 +489,8 @@ test('venue reply', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				text: 'Hi Bob'
-			}
+				text: 'Hi Bob',
+			},
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
@@ -505,11 +505,11 @@ test('venue reply', async t => {
 				foursquare_id: undefined,
 				foursquare_type: undefined,
 				reply_markup: {
-					inline_keyboard: [[{text: 'Button', callback_data: '/'}]]
-				}
+					inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
+				},
 			})
 			return Promise.resolve(undefined as any)
-		}
+		},
 	}
 
 	await editMenuOnContext(menu, fakeContext as any, '/')

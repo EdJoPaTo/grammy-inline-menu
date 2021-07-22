@@ -38,7 +38,7 @@ export function prefixEmoji(text: string, prefix: string | boolean | undefined, 
 	const internalOptions = {
 		...options,
 		prefixTrue: options.prefixTrue ?? emojiTrue,
-		prefixFalse: options.prefixFalse ?? emojiFalse
+		prefixFalse: options.prefixFalse ?? emojiFalse,
 	}
 
 	const prefixContent = applyOptionsToPrefix(prefix, internalOptions)
@@ -50,7 +50,7 @@ function applyOptionsToPrefix(prefix: string | boolean | undefined, options: Pre
 		prefixFalse,
 		prefixTrue,
 		hideFalseEmoji,
-		hideTrueEmoji
+		hideTrueEmoji,
 	} = options
 
 	if (prefix === true) {

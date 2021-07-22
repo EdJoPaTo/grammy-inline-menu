@@ -17,11 +17,11 @@ test('text', async t => {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve({} as any)
-		}
+		},
 	}
 
 	const sendMenu = generateSendMenuToChatFunction(fakeTelegram as any, menu, '/')
@@ -31,8 +31,8 @@ test('text', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
-			data: '666'
-		}
+			data: '666',
+		},
 	}
 
 	await sendMenu(666, fakeContext as any)
@@ -49,8 +49,8 @@ for (const mediaType of MEDIA_TYPES) {
 				caption: undefined,
 				parse_mode: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve({} as any)
 		}
@@ -60,7 +60,7 @@ for (const mediaType of MEDIA_TYPES) {
 			sendAudio: sendFunction,
 			sendDocument: sendFunction,
 			sendPhoto: sendFunction,
-			sendVideo: sendFunction
+			sendVideo: sendFunction,
 		}
 
 		const sendMenu = generateSendMenuToChatFunction(fakeTelegram as any, menu, '/')
@@ -70,8 +70,8 @@ for (const mediaType of MEDIA_TYPES) {
 				id: '666',
 				from: undefined as any,
 				chat_instance: '666',
-				data: '666'
-			}
+				data: '666',
+			},
 		}
 
 		await sendMenu(666, fakeContext as any)
@@ -89,11 +89,11 @@ test('location', async t => {
 			t.deepEqual(extra, {
 				live_period: 666,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve({} as any)
-		}
+		},
 	}
 
 	const sendMenu = generateSendMenuToChatFunction(fakeTelegram as any, menu, '/')
@@ -103,8 +103,8 @@ test('location', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
-			data: '666'
-		}
+			data: '666',
+		},
 	}
 
 	await sendMenu(666, fakeContext as any)
@@ -124,11 +124,11 @@ test('venue', async t => {
 				foursquare_id: undefined,
 				foursquare_type: undefined,
 				reply_markup: {
-					inline_keyboard: []
-				}
+					inline_keyboard: [],
+				},
 			})
 			return Promise.resolve({} as any)
-		}
+		},
 	}
 
 	const sendMenu = generateSendMenuToChatFunction(fakeTelegram as any, menu, '/')
@@ -138,8 +138,8 @@ test('venue', async t => {
 			id: '666',
 			from: undefined as any,
 			chat_instance: '666',
-			data: '666'
-		}
+			data: '666',
+		},
 	}
 
 	await sendMenu(666, fakeContext as any)

@@ -21,122 +21,122 @@ const EXAMPLE_WRONGS: readonly unknown[] = [
 	() => 'whatever',
 	42,
 	{
-		media: 'whatever'
+		media: 'whatever',
 	},
 	{
 		media: 'whatever',
-		type: 'whatever'
-	},
-	{
-		location: {
-			latitude: 50
-		}
+		type: 'whatever',
 	},
 	{
 		location: {
 			latitude: 50,
-			longitude: 10
 		},
-		text: 'Locations cant have text'
+	},
+	{
+		location: {
+			latitude: 50,
+			longitude: 10,
+		},
+		text: 'Locations cant have text',
 	},
 	{
 		venue: {
 			location: {
 				latitude: 50,
-				longitude: 10
+				longitude: 10,
 			},
 			title: 'A',
-			address: 'B'
+			address: 'B',
 		},
-		text: 'Venue cant have text'
+		text: 'Venue cant have text',
 	},
 	{
 		venue: {
 			location: {
 				latitude: 50,
-				longitude: 10
+				longitude: 10,
 			},
-			title: 'Venue needs address'
-		}
+			title: 'Venue needs address',
+		},
 	},
 	{
 		venue: {
 			location: {
 				latitude: 50,
-				longitude: 10
+				longitude: 10,
 			},
-			address: 'Venue needs title'
-		}
+			address: 'Venue needs title',
+		},
 	},
 	{
 		venue: {
 			location: {
-				latitude: 50
+				latitude: 50,
 			},
 			title: 'Venue needs valid location',
-			address: 'B'
-		}
-	}
+			address: 'B',
+		},
+	},
 ]
 
 const EXAMPLE_TEXTS: ReadonlyArray<string | TextBody> = [
 	'Hello World',
 	{
-		text: 'Hello World'
+		text: 'Hello World',
 	},
 	{
 		text: 'Hello World',
-		parse_mode: 'Markdown'
+		parse_mode: 'Markdown',
 	},
 	{
 		text: 'Hello World',
-		disable_web_page_preview: true
-	}
+		disable_web_page_preview: true,
+	},
 ]
 
 const EXAMPLE_MEDIA: readonly MediaBody[] = [
 	{
 		media: 'whatever',
-		type: 'photo'
-	},
-	{
-		media: 'whatever',
 		type: 'photo',
-		text: 'whatever'
 	},
 	{
 		media: 'whatever',
 		type: 'photo',
 		text: 'whatever',
-		parse_mode: 'Markdown'
-	}
+	},
+	{
+		media: 'whatever',
+		type: 'photo',
+		text: 'whatever',
+		parse_mode: 'Markdown',
+	},
 ]
 
 const EXAMPLE_LOCATION: readonly LocationBody[] = [
 	{
 		location: {
 			latitude: 50,
-			longitude: 10
-		}
+			longitude: 10,
+		},
 	},
 	{
 		location: {
 			latitude: 50,
-			longitude: 10
+			longitude: 10,
 		},
-		live_period: 600
-	}
+		live_period: 600,
+	},
 ]
 
 const EXAMPLE_VENUE: VenueBody = {
 	venue: {
 		location: {
 			latitude: 50,
-			longitude: 10
+			longitude: 10,
 		},
 		title: 'A',
-		address: 'B'
-	}
+		address: 'B',
+	},
 }
 
 function isTextBodyMacro(t: ExecutionContext, expected: boolean, maybeBody: unknown): void {
@@ -202,7 +202,7 @@ test('getBodyText string', t => {
 
 test('getBodyText TextBody', t => {
 	const body: Body = {
-		text: 'foo'
+		text: 'foo',
 	}
 	t.is(getBodyText(body), 'foo')
 })

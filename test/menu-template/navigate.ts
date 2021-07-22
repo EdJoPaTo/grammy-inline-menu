@@ -5,7 +5,7 @@ import {MenuTemplate} from '../../source/menu-template'
 test('hidden', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.navigate('Button', '..', {
-		hide: () => true
+		hide: () => true,
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/foo/bar/')
 	t.deepEqual(keyboard, [])
@@ -17,7 +17,7 @@ test('parent menu', async t => {
 	const keyboard = await menu.renderKeyboard(undefined, '/foo/bar/')
 	t.deepEqual(keyboard, [[{
 		text: 'Button',
-		callback_data: '/foo/'
+		callback_data: '/foo/',
 	}]])
 })
 
@@ -27,6 +27,6 @@ test('root menu', async t => {
 	const keyboard = await menu.renderKeyboard(undefined, '/foo/bar/')
 	t.deepEqual(keyboard, [[{
 		text: 'Button',
-		callback_data: '/'
+		callback_data: '/',
 	}]])
 })

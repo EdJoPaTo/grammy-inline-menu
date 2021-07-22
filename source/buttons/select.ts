@@ -56,7 +56,7 @@ export function generateSelectButtons<Context>(actionPrefix: string, choices: Co
 				const dropinLetter = state ? 'F' : 'T'
 				const relativePath = actionPrefix + dropinLetter + ':' + key
 				return {text, relativePath}
-			})
+			}),
 		)
 		const rows = getButtonsAsRows(buttonsOfPage, options.columns)
 

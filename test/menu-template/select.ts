@@ -11,7 +11,7 @@ test('buttons hidden', async t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [])
@@ -28,12 +28,12 @@ test('button true', async t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
 	t.deepEqual(keyboard, [[{
 		text: '✅ Button',
-		callback_data: '/uniqueF:Button'
+		callback_data: '/uniqueF:Button',
 	}]])
 })
 
@@ -48,12 +48,12 @@ test('button false', async t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
 	t.deepEqual(keyboard, [[{
 		text: 'Button',
-		callback_data: '/uniqueT:Button'
+		callback_data: '/uniqueT:Button',
 	}]])
 })
 
@@ -69,12 +69,12 @@ test('button false with emoji', async t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
 	t.deepEqual(keyboard, [[{
 		text: '🚫 Button',
-		callback_data: '/uniqueT:Button'
+		callback_data: '/uniqueT:Button',
 	}]])
 })
 
@@ -86,7 +86,7 @@ test('action triggers', t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -107,7 +107,7 @@ test('action hidden', async t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -127,7 +127,7 @@ test('action skipped when not existing', async t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -151,7 +151,7 @@ test('action true', async t => {
 			t.is(key, 'Button')
 			t.is(newState, true)
 			return 'wow'
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -172,7 +172,7 @@ test('action false', async t => {
 			t.is(key, 'Button')
 			t.is(newState, false)
 			return 'wow'
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -194,7 +194,7 @@ test('action true not existing check disabled', async t => {
 			t.is(key, 'Tree')
 			t.is(newState, true)
 			return 'wow'
-		}
+		},
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
@@ -218,24 +218,24 @@ test('with pagnination buttons', async t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
 	t.deepEqual(keyboard, [
 		[{
 			text: 'Button',
-			callback_data: '/uniqueT:Button'
+			callback_data: '/uniqueT:Button',
 		}],
 		[
 			{
 				text: '1',
-				callback_data: '/uniqueP:1'
+				callback_data: '/uniqueP:1',
 			},
 			{
 				text: '▶️ 2',
-				callback_data: '/uniqueP:2'
-			}
-		]
+				callback_data: '/uniqueP:2',
+			},
+		],
 	])
 })
 
@@ -254,7 +254,7 @@ test('set page action', async t => {
 		},
 		set: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	t.is(actions.length, 3)

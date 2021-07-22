@@ -16,7 +16,7 @@ menu.toggle('toggle me', 'toggle me', {
 		// Update the menu afterwards
 		return true
 	},
-	isSet: () => mainMenuToggle
+	isSet: () => mainMenuToggle,
 })
 
 menu.interact('interaction', 'interact', {
@@ -25,7 +25,7 @@ menu.interact('interaction', 'interact', {
 		await ctx.answerCbQuery('you clicked me!')
 		// Do not update the menu afterwards
 		return false
-	}
+	},
 })
 
 menu.interact('update after action', 'update afterwards', {
@@ -39,7 +39,7 @@ menu.interact('update after action', 'update afterwards', {
 		// You can return true to update the same menu or use a relative path
 		// For example '.' for the same menu or '..' for the parent menu
 		// return '.'
-	}
+	},
 })
 
 let selectedKey = 'b'
@@ -49,7 +49,7 @@ menu.select('select', ['A', 'B', 'C'], {
 		await ctx.answerCbQuery(`you selected ${key}`)
 		return true
 	},
-	isSet: (_, key) => key === selectedKey
+	isSet: (_, key) => key === selectedKey,
 })
 
 const foodMenu = new MenuTemplate<MyContext>('People like food. What do they like?')
@@ -91,7 +91,7 @@ foodSelectSubmenu.toggle('Prefer tea', 'tea', {
 	isSet: ctx => {
 		const person = ctx.match![1]!
 		return people[person]!.tee === true
-	}
+	},
 })
 foodSelectSubmenu.select('food', food, {
 	set: (ctx, key) => {
@@ -102,18 +102,18 @@ foodSelectSubmenu.select('food', food, {
 	isSet: (ctx, key) => {
 		const person = ctx.match![1]!
 		return people[person]!.food === key
-	}
+	},
 })
 foodSelectSubmenu.manualRow(createBackMainMenuButtons())
 
 foodMenu.chooseIntoSubmenu('person', () => Object.keys(people), foodSelectSubmenu, {
 	buttonText: personButtonText,
-	columns: 2
+	columns: 2,
 })
 foodMenu.manualRow(createBackMainMenuButtons())
 
 menu.submenu('Food menu', 'food', foodMenu, {
-	hide: () => mainMenuToggle
+	hide: () => mainMenuToggle,
 })
 
 let mediaOption = 'photo1'
@@ -122,7 +122,7 @@ const mediaMenu = new MenuTemplate<MyContext>(() => {
 		return {
 			type: 'video',
 			media: 'https://telegram.org/img/t_main_Android_demo.mp4',
-			text: 'Just a caption for a video'
+			text: 'Just a caption for a video',
 		}
 	}
 
@@ -130,7 +130,7 @@ const mediaMenu = new MenuTemplate<MyContext>(() => {
 		return {
 			type: 'animation',
 			media: 'https://telegram.org/img/t_main_Android_demo.mp4',
-			text: 'Just a caption for an animation'
+			text: 'Just a caption for an animation',
 		}
 	}
 
@@ -139,7 +139,7 @@ const mediaMenu = new MenuTemplate<MyContext>(() => {
 			type: 'photo',
 			media: 'https://telegram.org/img/SiteAndroid.jpg',
 			text: 'Just a caption for a *photo*',
-			parse_mode: 'Markdown'
+			parse_mode: 'Markdown',
 		}
 	}
 
@@ -148,7 +148,7 @@ const mediaMenu = new MenuTemplate<MyContext>(() => {
 			type: 'document',
 			media: 'https://telegram.org/file/464001088/1/bI7AJLo7oX4.287931.zip/374fe3b0a59dc60005',
 			text: 'Just a caption for a <b>document</b>',
-			parse_mode: 'HTML'
+			parse_mode: 'HTML',
 		}
 	}
 
@@ -157,9 +157,9 @@ const mediaMenu = new MenuTemplate<MyContext>(() => {
 			// Some point with simple coordinates in Hamburg, Germany
 			location: {
 				latitude: 53.5,
-				longitude: 10
+				longitude: 10,
 			},
-			live_period: 60
+			live_period: 60,
 		}
 	}
 
@@ -168,30 +168,30 @@ const mediaMenu = new MenuTemplate<MyContext>(() => {
 			venue: {
 				location: {
 					latitude: 53.5,
-					longitude: 10
+					longitude: 10,
 				},
 				title: 'simple coordinates point',
-				address: 'Hamburg, Germany'
-			}
+				address: 'Hamburg, Germany',
+			},
 		}
 	}
 
 	if (mediaOption === 'just text') {
 		return {
-			text: 'Just some text'
+			text: 'Just some text',
 		}
 	}
 
 	return {
 		type: 'photo',
-		media: 'https://telegram.org/img/SiteiOs.jpg'
+		media: 'https://telegram.org/img/SiteiOs.jpg',
 	}
 })
 mediaMenu.interact('Just a button', 'randomButton', {
 	do: async ctx => {
 		await ctx.answerCbQuery('Just a callback query answer')
 		return false
-	}
+	},
 })
 mediaMenu.select('type', ['animation', 'document', 'photo1', 'photo2', 'video', 'location', 'venue', 'just text'], {
 	columns: 2,
@@ -199,7 +199,7 @@ mediaMenu.select('type', ['animation', 'document', 'photo1', 'photo2', 'video', 
 	set: (_, key) => {
 		mediaOption = key
 		return true
-	}
+	},
 })
 mediaMenu.manualRow(createBackMainMenuButtons())
 

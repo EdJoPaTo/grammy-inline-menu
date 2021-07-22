@@ -3,7 +3,7 @@ import test from 'ava'
 import {
 	prefixEmoji,
 	emojiFalse,
-	emojiTrue
+	emojiTrue,
 } from './prefix'
 
 test('no prefix', t => {
@@ -38,14 +38,14 @@ test('value text & prefix false hidden', t => {
 
 test('own true prefix', t => {
 	const result = prefixEmoji('42', true, {
-		prefixTrue: 'foo'
+		prefixTrue: 'foo',
 	})
 	t.is(result, 'foo 42')
 })
 
 test('own false prefix', t => {
 	const result = prefixEmoji('42', false, {
-		prefixFalse: 'bar'
+		prefixFalse: 'bar',
 	})
 	t.is(result, 'bar 42')
 })

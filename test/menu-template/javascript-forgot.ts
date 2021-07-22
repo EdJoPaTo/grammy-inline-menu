@@ -25,7 +25,7 @@ test('select set', t => {
 		menu.select('unique', [], {
 			isSet: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {message: /You have to specify/})
 })
@@ -37,7 +37,7 @@ test('select isSet', t => {
 		menu.select('unique', [], {
 			set: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {message: /You have to specify/})
 })
@@ -49,7 +49,7 @@ test('toggle set', t => {
 		menu.toggle('Button', 'unique', {
 			isSet: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {message: /You have to specify/})
 })
@@ -61,7 +61,7 @@ test('toggle isSet', t => {
 		menu.toggle('Button', 'unique', {
 			set: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {message: /You have to specify/})
 })
@@ -76,7 +76,7 @@ test('pagination getCurrentPage', t => {
 			},
 			setPage: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {message: /You have to specify/})
 })
@@ -91,7 +91,7 @@ test('pagination getTotalPages', t => {
 			},
 			setPage: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {message: /You have to specify/})
 })
@@ -106,7 +106,7 @@ test('pagination setPage', t => {
 			},
 			getTotalPages: () => {
 				throw new Error('dont call this function')
-			}
+			},
 		})
 	}, {message: /You have to specify/})
 })

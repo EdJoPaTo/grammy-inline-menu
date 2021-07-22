@@ -13,18 +13,18 @@ test('root path responds main menu', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<unknown> = {
 		action: /submenu\//,
 		hide: () => false,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu, {
@@ -32,7 +32,7 @@ test('root path responds main menu', async t => {
 			t.is(menu.listSubmenus().size, 1)
 			t.is(path, '/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -62,8 +62,8 @@ test('root path responds main menu', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/'
-		}
+			data: '/',
+		},
 	})
 })
 
@@ -72,18 +72,18 @@ test('submenu path responds submenu when not hidden', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<unknown> = {
 		action: /submenu\//,
 		hide: () => false,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu, {
@@ -91,7 +91,7 @@ test('submenu path responds submenu when not hidden', async t => {
 			t.is(menu.listSubmenus().size, 0)
 			t.is(path, '/submenu/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -121,8 +121,8 @@ test('submenu path responds submenu when not hidden', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/submenu/'
-		}
+			data: '/submenu/',
+		},
 	})
 })
 
@@ -131,18 +131,18 @@ test('submenu path responds submenu when no hide function', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<unknown> = {
 		action: /submenu\//,
 		hide: undefined,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu, {
@@ -150,7 +150,7 @@ test('submenu path responds submenu when no hide function', async t => {
 			t.is(menu.listSubmenus().size, 0)
 			t.is(path, '/submenu/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -180,8 +180,8 @@ test('submenu path responds submenu when no hide function', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/submenu/'
-		}
+			data: '/submenu/',
+		},
 	})
 })
 
@@ -190,18 +190,18 @@ test('submenu path responds main menu when hidden', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'submenu',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const submenu: Submenu<unknown> = {
 		action: /submenu\//,
 		hide: () => true,
-		menu: submenuMenu
+		menu: submenuMenu,
 	}
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set([submenu]),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu, {
@@ -209,7 +209,7 @@ test('submenu path responds main menu when hidden', async t => {
 			t.is(menu.listSubmenus().size, 1)
 			t.is(path, '/')
 			return Promise.resolve()
-		}
+		},
 	})
 
 	const bot = new Telegraf<MyContext>('123:ABC');
@@ -239,7 +239,7 @@ test('submenu path responds main menu when hidden', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/submenu/'
-		}
+			data: '/submenu/',
+		},
 	})
 })

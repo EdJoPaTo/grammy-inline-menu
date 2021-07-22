@@ -17,7 +17,7 @@ const FAULTY_MENU_TEMPLATES: Readonly<Record<string, MenuTemplate<unknown>>> = {
 	// @ts-expect-error
 	'missing address in venue body': new MenuTemplate({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A'}}),
 	// @ts-expect-error
-	'missing title in venue body': new MenuTemplate({venue: {location: {latitude: 53.5, longitude: 10}, address: 'B'}})
+	'missing title in venue body': new MenuTemplate({venue: {location: {latitude: 53.5, longitude: 10}, address: 'B'}}),
 }
 
 for (const [fault, menu] of Object.entries(FAULTY_MENU_TEMPLATES)) {
@@ -32,13 +32,13 @@ for (const [fault, menu] of Object.entries(FAULTY_MENU_TEMPLATES)) {
 					text: '42',
 					date: 666,
 					message_id: 666,
-					chat: {} as any
-				}
-			}
+					chat: {} as any,
+				},
+			},
 		}
 		await t.throwsAsync(
 			async () => editMenuOnContext(menu, fakeContext as any, '/'),
-			EXPECTED_ERROR
+			EXPECTED_ERROR,
 		)
 	})
 }
@@ -47,7 +47,7 @@ for (const [fault, menu] of Object.entries(FAULTY_MENU_TEMPLATES)) {
 	test('context reply ' + fault, async t => {
 		await t.throwsAsync(
 			async () => replyMenuToContext(menu, {} as any, '/'),
-			EXPECTED_ERROR
+			EXPECTED_ERROR,
 		)
 	})
 }
@@ -57,7 +57,7 @@ for (const [fault, menu] of Object.entries(FAULTY_MENU_TEMPLATES)) {
 		const sendMenu = generateSendMenuToChatFunction({} as any, menu, '/')
 		await t.throwsAsync(
 			async () => sendMenu(666, {} as any),
-			EXPECTED_ERROR
+			EXPECTED_ERROR,
 		)
 	})
 }
@@ -67,7 +67,7 @@ for (const [fault, menu] of Object.entries(FAULTY_MENU_TEMPLATES)) {
 		const editIntoMenu = generateEditMessageIntoMenuFunction({} as any, menu, '/')
 		await t.throwsAsync(
 			async () => editIntoMenu(666, 666, {} as any),
-			EXPECTED_ERROR
+			EXPECTED_ERROR,
 		)
 	})
 }

@@ -7,7 +7,7 @@ test('empty choices no buttons', async t => {
 		isSet: () => false,
 		set: () => {
 			throw new Error('no need to call set on keyboard creation')
-		}
+		},
 	})
 
 	const buttons = await func(undefined, '/')
@@ -19,13 +19,13 @@ test('is set creates false button', async t => {
 		isSet: () => true,
 		set: () => {
 			throw new Error('no need to call set on keyboard creation')
-		}
+		},
 	})
 
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: '✅ a',
-		relativePath: 'preF:a'
+		relativePath: 'preF:a',
 	}]])
 })
 
@@ -34,13 +34,13 @@ test('is not set creates true button', async t => {
 		isSet: () => false,
 		set: () => {
 			throw new Error('no need to call set on keyboard creation')
-		}
+		},
 	})
 
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: 'a',
-		relativePath: 'preT:a'
+		relativePath: 'preT:a',
 	}]])
 })
 
@@ -50,13 +50,13 @@ test('showFalseEmoji also prefixes currently false buttons', async t => {
 		isSet: () => false,
 		set: () => {
 			throw new Error('no need to call set on keyboard creation')
-		}
+		},
 	})
 
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: '🚫 a',
-		relativePath: 'preT:a'
+		relativePath: 'preT:a',
 	}]])
 })
 
@@ -70,24 +70,24 @@ test('creates pagination buttons', async t => {
 		},
 		setPage: () => {
 			throw new Error('no need to call setPage on keyboard creation')
-		}
+		},
 	})
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [
 		[{
 			text: 'a',
-			relativePath: 'preT:a'
+			relativePath: 'preT:a',
 		}],
 		[{
 			text: '1',
-			relativePath: 'preP:1'
+			relativePath: 'preP:1',
 		}, {
 			text: '▶️ 2',
-			relativePath: 'preP:2'
+			relativePath: 'preP:2',
 		}, {
 			text: '⏩ 3',
-			relativePath: 'preP:3'
-		}]
+			relativePath: 'preP:3',
+		}],
 	])
 })
 
@@ -99,12 +99,12 @@ test('show keys of page 2', async t => {
 		isSet: () => false,
 		set: () => {
 			throw new Error('no need to call set on keyboard creation')
-		}
+		},
 	})
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: 'b',
-		relativePath: 'preT:b'
+		relativePath: 'preT:b',
 	}]])
 })
 
@@ -119,16 +119,16 @@ test('choice function is run', async t => {
 		isSet: () => false,
 		set: () => {
 			throw new Error('no need to call set on keyboard creation')
-		}
+		},
 	})
 
 	t.deepEqual(await func('a', '/'), [[{
 		text: 'a',
-		relativePath: 'preT:a'
+		relativePath: 'preT:a',
 	}]])
 	t.deepEqual(await func('b', '/'), [[{
 		text: 'b',
-		relativePath: 'preT:b'
+		relativePath: 'preT:b',
 	}]])
 })
 
@@ -144,7 +144,7 @@ test('hidden does not render any buttons', async t => {
 		},
 		set: () => {
 			throw new Error('no need to call set on keyboard creation')
-		}
+		},
 	})
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [])
@@ -161,12 +161,12 @@ test('format state', async t => {
 			t.is(state, true)
 			t.is(key, 'a')
 			return 'lalala'
-		}
+		},
 	})
 
 	const buttons = await func(undefined, '/')
 	t.deepEqual(buttons, [[{
 		text: 'lalala',
-		relativePath: 'preF:a'
+		relativePath: 'preF:a',
 	}]])
 })

@@ -8,7 +8,7 @@ test('button is added to keyboard', async t => {
 	menu.interact('Button', 'unique', {
 		do: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 
 	const keyboard = await menu.renderKeyboard(undefined, '/')
@@ -16,9 +16,9 @@ test('button is added to keyboard', async t => {
 		[
 			{
 				text: 'Button',
-				callback_data: '/unique'
-			}
-		]
+				callback_data: '/unique',
+			},
+		],
 	])
 })
 
@@ -28,7 +28,7 @@ test('button is added to keyboard with text function', async t => {
 	menu.interact(() => 'Button', 'unique', {
 		do: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 
 	const keyboard = await menu.renderKeyboard(undefined, '/')
@@ -36,9 +36,9 @@ test('button is added to keyboard with text function', async t => {
 		[
 			{
 				text: 'Button',
-				callback_data: '/unique'
-			}
-		]
+				callback_data: '/unique',
+			},
+		],
 	])
 })
 
@@ -49,7 +49,7 @@ test('hidden button is not shown on keyboard', async t => {
 		hide: () => true,
 		do: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 
 	const keyboard = await menu.renderKeyboard(undefined, '/')
@@ -62,7 +62,7 @@ test('action is added with correct trigger', t => {
 	menu.interact('Button', 'unique', {
 		do: () => {
 			throw new Error('do not call this function')
-		}
+		},
 	})
 
 	const actions = menu.renderActionHandlers(/^\//)
@@ -81,7 +81,7 @@ test('action can be called', async t => {
 			t.is(context, undefined)
 			t.is(path, '/unique')
 			return 'wow'
-		}
+		},
 	})
 
 	const actions = menu.renderActionHandlers(/^\//)
@@ -99,7 +99,7 @@ test('action can not be called when hidden', async t => {
 		hide: () => true,
 		do: () => {
 			throw new Error('do not call this function when hidden')
-		}
+		},
 	})
 
 	const actions = menu.renderActionHandlers(/^\//)

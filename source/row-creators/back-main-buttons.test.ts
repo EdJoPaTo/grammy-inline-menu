@@ -19,7 +19,7 @@ test('creates only main menu button when one deep', async t => {
 	const buttons = await func(undefined, '/foo/')
 	t.deepEqual(buttons, [[{
 		text: 'main',
-		relativePath: '/'
+		relativePath: '/',
 	}]])
 })
 
@@ -28,7 +28,7 @@ test('creates back button when when one deep but without main menu', async t => 
 	const buttons = await func(undefined, 'foo/bar/')
 	t.deepEqual(buttons, [[{
 		text: 'back',
-		relativePath: '..'
+		relativePath: '..',
 	}]])
 })
 
@@ -37,10 +37,10 @@ test('creates back and main button when when two deep', async t => {
 	const buttons = await func(undefined, '/foo/bar/')
 	t.deepEqual(buttons, [[{
 		text: 'back',
-		relativePath: '..'
+		relativePath: '..',
 	}, {
 		text: 'main',
-		relativePath: '/'
+		relativePath: '/',
 	}]])
 })
 
@@ -49,7 +49,7 @@ test('creates only back button when when two deep but without main menu', async 
 	const buttons = await func(undefined, 'foo/bar/deep/')
 	t.deepEqual(buttons, [[{
 		text: 'back',
-		relativePath: '..'
+		relativePath: '..',
 	}]])
 })
 
@@ -58,9 +58,9 @@ test('creates button texts in function', async t => {
 	const buttons = await func(undefined, '/foo/bar/')
 	t.deepEqual(buttons, [[{
 		text: 'back',
-		relativePath: '..'
+		relativePath: '..',
 	}, {
 		text: 'main',
-		relativePath: '/'
+		relativePath: '/',
 	}]])
 })

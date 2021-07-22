@@ -18,7 +18,7 @@ test('pass through url button', async t => {
 
 	t.deepEqual(result, [[{
 		text: 'foo',
-		url: 'https://edjopato.de'
+		url: 'https://edjopato.de',
 	}]])
 })
 
@@ -30,7 +30,7 @@ test('pass through url button creator', async t => {
 
 	t.deepEqual(result, [[{
 		text: 'foo',
-		url: 'https://edjopato.de'
+		url: 'https://edjopato.de',
 	}]])
 })
 
@@ -42,7 +42,7 @@ test('callback button template', async t => {
 
 	t.deepEqual(result, [[{
 		text: 'foo',
-		callback_data: '/bar'
+		callback_data: '/bar',
 	}]])
 })
 
@@ -54,7 +54,7 @@ test('callback button template below path', async t => {
 
 	t.deepEqual(result, [[{
 		text: 'foo',
-		callback_data: '/somewhere/in/menus/bar'
+		callback_data: '/somewhere/in/menus/bar',
 	}]])
 })
 
@@ -69,15 +69,15 @@ test('two buttons', async t => {
 		[
 			{
 				text: 'foo',
-				url: 'https://edjopato.de'
-			}
+				url: 'https://edjopato.de',
+			},
 		],
 		[
 			{
 				text: 'bar',
-				url: 'https://edjopato.de'
-			}
-		]
+				url: 'https://edjopato.de',
+			},
+		],
 	])
 })
 
@@ -92,13 +92,13 @@ test('two buttons same row', async t => {
 		[
 			{
 				text: 'foo',
-				url: 'https://edjopato.de'
+				url: 'https://edjopato.de',
 			},
 			{
 				text: 'bar',
-				url: 'https://edjopato.de'
-			}
-		]
+				url: 'https://edjopato.de',
+			},
+		],
 	])
 })
 
@@ -115,14 +115,14 @@ test('creator creating url button', async t => {
 	const k = new Keyboard<unknown>()
 	k.addCreator(() => [[{
 		text: 'foo',
-		url: 'https://edjopato.de'
+		url: 'https://edjopato.de',
 	}]])
 
 	const result = await k.render(undefined, '/')
 
 	t.deepEqual(result, [[{
 		text: 'foo',
-		url: 'https://edjopato.de'
+		url: 'https://edjopato.de',
 	}]])
 })
 
@@ -136,6 +136,6 @@ test('hints too long callback data', async t => {
 		async () => {
 			await k.render(undefined, `/${ten}${ten}/${ten}${ten}${ten}/`)
 		},
-		{message: /callback_data only supports 1-64 bytes/}
+		{message: /callback_data only supports 1-64 bytes/},
 	)
 })

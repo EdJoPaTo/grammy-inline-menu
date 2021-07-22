@@ -11,7 +11,7 @@ test('not supply reply as a middleware directly', async t => {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 
 	const mm = new MenuMiddleware('/', menu)
@@ -26,8 +26,8 @@ test('not supply reply as a middleware directly', async t => {
 			// @ts-expect-error
 			await mm.replyToContext({} as any, next)
 		}, {
-			message: /not supply this as a middleware directly/
-		}
+			message: /not supply this as a middleware directly/,
+		},
 	)
 })
 
@@ -39,18 +39,18 @@ test('action is run and no path to update afterwards is returned', async t => {
 		doFunction: () => {
 			t.pass()
 			// Not returning something is the issue here
-		}
+		},
 	}
 	const menu: MenuLike<BaseContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async () => {
 			throw new Error('dont update menu as error is expected')
-		}
+		},
 	})
 
 	const bot = new Telegraf('123:ABC');
@@ -90,8 +90,8 @@ test('action is run and no path to update afterwards is returned', async t => {
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/what'
-		}
+			data: '/what',
+		},
 	})
 })
 
@@ -102,18 +102,18 @@ test('action is run and an empty path to update afterwards is returned throws', 
 		doFunction: () => {
 			t.pass()
 			return ''
-		}
+		},
 	}
 	const menu: MenuLike<BaseContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
-		renderKeyboard: () => []
+		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async () => {
 			throw new Error('dont update menu as error is expected')
-		}
+		},
 	})
 
 	const bot = new Telegraf('123:ABC');
@@ -153,7 +153,7 @@ test('action is run and an empty path to update afterwards is returned throws', 
 			id: '666',
 			from: {} as any,
 			chat_instance: '666',
-			data: '/what'
-		}
+			data: '/what',
+		},
 	})
 })

@@ -8,7 +8,7 @@ test('manual', async t => {
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [[{
 		text: 'Button',
-		url: 'https://edjopato.de'
+		url: 'https://edjopato.de',
 	}]])
 })
 
@@ -22,14 +22,14 @@ test('manual function', async t => {
 	const keyboard = await menu.renderKeyboard('foo', '/')
 	t.deepEqual(keyboard, [[{
 		text: 'Button',
-		url: 'https://edjopato.de'
+		url: 'https://edjopato.de',
 	}]])
 })
 
 test('manual hidden', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.manual({text: 'Button', url: 'https://edjopato.de'}, {
-		hide: () => true
+		hide: () => true,
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [])
@@ -39,12 +39,12 @@ test('manual hidden false', async t => {
 	// This is the default but somehow it is not understood correctly by the coverage analyse
 	const menu = new MenuTemplate('whatever')
 	menu.manual({text: 'Button', url: 'https://edjopato.de'}, {
-		hide: () => false
+		hide: () => false,
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [[{
 		text: 'Button',
-		url: 'https://edjopato.de'
+		url: 'https://edjopato.de',
 	}]])
 })
 
@@ -56,12 +56,12 @@ test('manual hidden false function', async t => {
 		t.is(path, '/')
 		return {text: 'Button', url: 'https://edjopato.de'}
 	}, {
-		hide: () => false
+		hide: () => false,
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
 	t.deepEqual(keyboard, [[{
 		text: 'Button',
-		url: 'https://edjopato.de'
+		url: 'https://edjopato.de',
 	}]])
 })
 
@@ -76,12 +76,12 @@ test('manualRow buttons end up in keyboard', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.manualRow(() => [[
 		{text: 'Button1', url: 'https://edjopato.de'},
-		{text: 'Button2', relativePath: 'foo'}
+		{text: 'Button2', relativePath: 'foo'},
 	]])
 	const keyboard = await menu.renderKeyboard(undefined, '/')
 	t.deepEqual(keyboard, [[
 		{text: 'Button1', url: 'https://edjopato.de'},
-		{text: 'Button2', callback_data: '/foo'}
+		{text: 'Button2', callback_data: '/foo'},
 	]])
 })
 
