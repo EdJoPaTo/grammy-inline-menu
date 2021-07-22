@@ -514,3 +514,55 @@ test('venue reply', async t => {
 
 	await editMenuOnContext(menu, fakeContext as any, '/')
 })
+
+test('invoice reply', async t => {
+	t.plan(3)
+	const menu = new MenuTemplate<BaseContext>({invoice: {
+		title: 'A',
+		description: 'B',
+		start_parameter: 'C',
+		currency: 'EUR',
+		payload: 'D',
+		provider_token: 'E',
+		prices: [],
+	}})
+	menu.manual({text: 'Button', callback_data: '/'})
+
+	const fakeContext: Partial<BaseContext> = {
+		callbackQuery: {
+			id: '666',
+			from: undefined as any,
+			chat_instance: '666',
+			data: '666',
+			message: {
+				message_id: 666,
+				date: 666,
+				chat: undefined as any,
+				text: 'Hi Bob',
+			},
+		},
+		deleteMessage: async messageId => {
+			t.is(messageId, undefined)
+			return Promise.resolve(true)
+		},
+		replyWithInvoice: async (invoice, extra) => {
+			t.deepEqual(invoice, {
+				title: 'A',
+				description: 'B',
+				start_parameter: 'C',
+				currency: 'EUR',
+				payload: 'D',
+				provider_token: 'E',
+				prices: [],
+			})
+			t.deepEqual(extra, {
+				reply_markup: {
+					inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
+				},
+			})
+			return Promise.resolve(undefined as any)
+		},
+	}
+
+	await editMenuOnContext(menu, fakeContext as any, '/')
+})

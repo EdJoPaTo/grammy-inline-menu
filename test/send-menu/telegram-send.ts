@@ -144,3 +144,49 @@ test('venue', async t => {
 
 	await sendMenu(666, fakeContext as any)
 })
+
+test('invoice', async t => {
+	const menu = new MenuTemplate<BaseContext>({invoice: {
+		title: 'A',
+		description: 'B',
+		start_parameter: 'C',
+		currency: 'EUR',
+		payload: 'D',
+		provider_token: 'E',
+		prices: [],
+	}})
+
+	const fakeTelegram: Partial<Telegram> = {
+		sendInvoice: async (chatId, invoice, extra) => {
+			t.is(chatId, 666)
+			t.deepEqual(invoice, {
+				title: 'A',
+				description: 'B',
+				start_parameter: 'C',
+				currency: 'EUR',
+				payload: 'D',
+				provider_token: 'E',
+				prices: [],
+			})
+			t.deepEqual(extra, {
+				reply_markup: {
+					inline_keyboard: [],
+				},
+			})
+			return Promise.resolve({} as any)
+		},
+	}
+
+	const sendMenu = generateSendMenuToChatFunction(fakeTelegram as any, menu, '/')
+
+	const fakeContext: Partial<BaseContext> = {
+		callbackQuery: {
+			id: '666',
+			from: undefined as any,
+			chat_instance: '666',
+			data: '666',
+		},
+	}
+
+	await sendMenu(666, fakeContext as any)
+})

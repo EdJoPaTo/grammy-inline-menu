@@ -1,6 +1,6 @@
 import test, {ExecutionContext} from 'ava'
 
-import {Body, TextBody, MediaBody, LocationBody, VenueBody, isTextBody, isMediaBody, isLocationBody, isVenueBody, getBodyText} from './body'
+import {Body, TextBody, MediaBody, LocationBody, VenueBody, InvoiceBody, isTextBody, isMediaBody, isLocationBody, isVenueBody, isInvoiceBody, getBodyText} from './body'
 
 function mehToString(something: unknown): string {
 	if (typeof something === 'object' || !something) {
@@ -77,6 +77,13 @@ const EXAMPLE_WRONGS: readonly unknown[] = [
 			address: 'B',
 		},
 	},
+	{
+		invoice: {
+			title: 'A',
+			description: 'B',
+		},
+		text: 'Invoice cant have text',
+	},
 ]
 
 const EXAMPLE_TEXTS: ReadonlyArray<string | TextBody> = [
@@ -139,6 +146,18 @@ const EXAMPLE_VENUE: VenueBody = {
 	},
 }
 
+const EXAMPLE_INVOICE: InvoiceBody = {
+	invoice: {
+		title: 'A',
+		description: 'B',
+		start_parameter: 'C',
+		currency: 'EUR',
+		payload: 'D',
+		provider_token: 'E',
+		prices: [],
+	},
+}
+
 function isTextBodyMacro(t: ExecutionContext, expected: boolean, maybeBody: unknown): void {
 	t.is(isTextBody(maybeBody), expected)
 }
@@ -149,7 +168,7 @@ for (const body of EXAMPLE_TEXTS) {
 	test(isTextBodyMacro, true, body)
 }
 
-for (const body of [...EXAMPLE_MEDIA, ...EXAMPLE_LOCATION, EXAMPLE_VENUE, ...EXAMPLE_WRONGS]) {
+for (const body of [...EXAMPLE_MEDIA, ...EXAMPLE_LOCATION, EXAMPLE_VENUE, EXAMPLE_INVOICE, ...EXAMPLE_WRONGS]) {
 	test(isTextBodyMacro, false, body)
 }
 
@@ -163,7 +182,7 @@ for (const body of EXAMPLE_MEDIA) {
 	test(isMediaBodyMacro, true, body)
 }
 
-for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_LOCATION, EXAMPLE_VENUE, ...EXAMPLE_WRONGS]) {
+for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_LOCATION, EXAMPLE_VENUE, EXAMPLE_INVOICE, ...EXAMPLE_WRONGS]) {
 	test(isMediaBodyMacro, false, body)
 }
 
@@ -177,7 +196,7 @@ for (const body of EXAMPLE_LOCATION) {
 	test(isLocationBodyMacro, true, body)
 }
 
-for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_MEDIA, EXAMPLE_VENUE, ...EXAMPLE_WRONGS]) {
+for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_MEDIA, EXAMPLE_VENUE, EXAMPLE_INVOICE, ...EXAMPLE_WRONGS]) {
 	test(isLocationBodyMacro, false, body)
 }
 
@@ -193,6 +212,20 @@ for (const body of [EXAMPLE_VENUE]) {
 
 for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_MEDIA, ...EXAMPLE_LOCATION, ...EXAMPLE_WRONGS]) {
 	test(isVenueBodyMacro, false, body)
+}
+
+function isInvoiceBodyMacro(t: ExecutionContext, expected: boolean, maybeBody: unknown): void {
+	t.is(isInvoiceBody(maybeBody), expected)
+}
+
+isInvoiceBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => `isInvoiceBody ${String(expected)} ${mehToString(maybeBody)}`
+
+for (const body of [EXAMPLE_INVOICE]) {
+	test(isInvoiceBodyMacro, true, body)
+}
+
+for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_MEDIA, ...EXAMPLE_LOCATION, EXAMPLE_VENUE, ...EXAMPLE_WRONGS]) {
+	test(isInvoiceBodyMacro, false, body)
 }
 
 test('getBodyText string', t => {

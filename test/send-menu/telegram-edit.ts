@@ -120,3 +120,32 @@ test('venue', async t => {
 		message: /can not edit into a venue body/,
 	})
 })
+
+test('invoice', async t => {
+	const menu = new MenuTemplate<BaseContext>({invoice: {
+		title: 'A',
+		description: 'B',
+		start_parameter: 'C',
+		currency: 'EUR',
+		payload: 'D',
+		provider_token: 'E',
+		prices: [],
+	}})
+
+	const editIntoFunction = generateEditMessageIntoMenuFunction({} as any, menu, '/')
+
+	const fakeContext: Partial<BaseContext> = {
+		callbackQuery: {
+			id: '666',
+			from: undefined as any,
+			chat_instance: '666',
+			data: '666',
+		},
+	}
+
+	await t.throwsAsync(async () => {
+		await editIntoFunction(13, 37, fakeContext as any)
+	}, {
+		message: /can not edit into an invoice body/,
+	})
+})

@@ -1,9 +1,9 @@
 import {Context as BaseContext, Telegram} from 'telegraf'
-import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessageText, ExtraEditMessageMedia, ExtraLocation, ExtraVenue} from 'telegraf/typings/telegram-types'
+import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessageText, ExtraEditMessageMedia, ExtraLocation, ExtraVenue, ExtraInvoice} from 'telegraf/typings/telegram-types'
 import {InputMedia} from 'telegraf/typings/core/types/typegram'
 import {Message} from 'typegram'
 
-import {Body, TextBody, MediaBody, LocationBody, isMediaBody, isLocationBody, isTextBody, getBodyText, isVenueBody, VenueBody} from './body'
+import {Body, TextBody, MediaBody, LocationBody, isMediaBody, isLocationBody, isTextBody, getBodyText, isVenueBody, VenueBody, isInvoiceBody} from './body'
 import {ensurePathMenu} from './path'
 import {InlineKeyboard} from './keyboard'
 import {MenuLike} from './menu-like'
@@ -69,7 +69,7 @@ export async function editMenuOnContext<Context extends BaseContext>(menu: MenuL
 				// eslint-disable-next-line promise/prefer-await-to-then
 				.catch(catchMessageNotModified)
 		}
-	} else if (isLocationBody(body) || isVenueBody(body)) {
+	} else if (isLocationBody(body) || isVenueBody(body) || isInvoiceBody(body)) {
 		// Dont edit the message, just recreate it.
 	} else if (isTextBody(body)) {
 		const text = getBodyText(body)
@@ -155,6 +155,10 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(body
 		return context.replyWithVenue(location.latitude, location.longitude, title, address, createVenueExtra(body, keyboard, extra))
 	}
 
+	if (isInvoiceBody(body)) {
+		return context.replyWithInvoice(body.invoice, createInvoiceExtra(keyboard, extra))
+	}
+
 	if (isTextBody(body)) {
 		const text = getBodyText(body)
 		return context.reply(text, createTextExtra(body, keyboard, extra))
@@ -202,6 +206,11 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Teleg
 			return telegram.sendVenue(chatId, location.latitude, location.longitude, title, address, createVenueExtra(body, keyboard, extra))
 		}
 
+		if (isInvoiceBody(body)) {
+			// TODO: fix Telegraf typing issue
+			return telegram.sendInvoice(chatId as any, body.invoice, createInvoiceExtra(keyboard, extra))
+		}
+
 		if (isTextBody(body)) {
 			const text = getBodyText(body)
 			return telegram.sendMessage(chatId, text, createTextExtra(body, keyboard, extra))
@@ -242,6 +251,10 @@ export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<
 
 		if (isVenueBody(body)) {
 			throw new Error('You can not edit into a venue body. You have to send the menu as a new message.')
+		}
+
+		if (isInvoiceBody(body)) {
+			throw new Error('You can not edit into an invoice body. You have to send the menu as a new message.')
 		}
 
 		if (isTextBody(body)) {
@@ -299,6 +312,15 @@ function createVenueExtra(body: VenueBody, keyboard: InlineKeyboard, base: Reado
 		...base,
 		foursquare_id: body.venue.foursquare_id,
 		foursquare_type: body.venue.foursquare_type,
+		reply_markup: {
+			inline_keyboard: keyboard.map(o => [...o]),
+		},
+	}
+}
+
+function createInvoiceExtra(keyboard: InlineKeyboard, base: Readonly<ExtraReplyMessage>): ExtraInvoice {
+	return {
+		...base,
 		reply_markup: {
 			inline_keyboard: keyboard.map(o => [...o]),
 		},

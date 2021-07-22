@@ -1,9 +1,10 @@
 import {InputFile} from 'telegraf/typings/core/types/typegram'
+import {NewInvoiceParameters} from 'telegraf/typings/telegram-types'
 import {Location, ParseMode, Venue} from 'typegram'
 
 import {hasTruthyKey, isObject} from './generic-types'
 
-export type Body = string | TextBody | MediaBody | LocationBody | VenueBody
+export type Body = string | TextBody | MediaBody | LocationBody | VenueBody | InvoiceBody
 
 export type MediaType = 'animation' | 'audio' | 'document' | 'photo' | 'video'
 export const MEDIA_TYPES: readonly MediaType[] = ['animation', 'audio', 'document', 'photo', 'video']
@@ -29,6 +30,10 @@ export interface LocationBody {
 
 export interface VenueBody {
 	readonly venue: Readonly<Venue>;
+}
+
+export interface InvoiceBody {
+	readonly invoice: Readonly<NewInvoiceParameters>;
 }
 
 function isKnownMediaType(type: unknown): type is MediaType {
@@ -61,6 +66,10 @@ export function isTextBody(body: unknown): body is string | TextBody {
 	}
 
 	if (body['venue'] !== undefined) {
+		return false
+	}
+
+	if (body['invoice'] !== undefined) {
 		return false
 	}
 
@@ -113,6 +122,20 @@ export function isVenueBody(body: unknown): body is VenueBody {
 	}
 
 	return typeof venue.title === 'string' && typeof venue.address === 'string'
+}
+
+export function isInvoiceBody(body: unknown): body is InvoiceBody {
+	if (!hasTruthyKey(body, 'invoice')) {
+		return false
+	}
+
+	// Invoices can't have text
+	if (hasTruthyKey(body, 'text')) {
+		return false
+	}
+
+	const {invoice} = body as InvoiceBody
+	return typeof invoice.title === 'string' && typeof invoice.description === 'string'
 }
 
 export function getBodyText(body: TextBody | string): string {
