@@ -53,16 +53,20 @@ test('action is run and no path to update afterwards is returned', async t => {
 		}
 	})
 
-	const bot = new Telegraf('')
-	bot.telegram.getMe = async () => ({} as any)
-	bot.context.reply = () => {
-		throw new Error('Use sendMenu instead')
-	}
+	const bot = new Telegraf('123:ABC');
+	(bot as any).botInfo = {}
+	bot.use(async (ctx, next) => {
+		ctx.reply = () => {
+			throw new Error('Use sendMenu instead')
+		}
 
-	bot.context.answerCbQuery = async () => {
-		t.pass()
-		return Promise.resolve(true)
-	}
+		ctx.answerCbQuery = async () => {
+			t.pass()
+			return Promise.resolve(true)
+		}
+
+		return next()
+	})
 
 	bot.use(mm.middleware())
 
@@ -112,16 +116,20 @@ test('action is run and an empty path to update afterwards is returned throws', 
 		}
 	})
 
-	const bot = new Telegraf('')
-	bot.telegram.getMe = async () => ({} as any)
-	bot.context.reply = () => {
-		throw new Error('Use sendMenu instead')
-	}
+	const bot = new Telegraf('123:ABC');
+	(bot as any).botInfo = {}
+	bot.use(async (ctx, next) => {
+		ctx.reply = () => {
+			throw new Error('Use sendMenu instead')
+		}
 
-	bot.context.answerCbQuery = async () => {
-		t.pass()
-		return Promise.resolve(true)
-	}
+		ctx.answerCbQuery = async () => {
+			t.pass()
+			return Promise.resolve(true)
+		}
+
+		return next()
+	})
 
 	bot.use(mm.middleware())
 

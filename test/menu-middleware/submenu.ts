@@ -35,16 +35,20 @@ test('root path responds main menu', async t => {
 		}
 	})
 
-	const bot = new Telegraf<MyContext>('')
-	bot.telegram.getMe = async () => ({} as any)
-	bot.context.reply = () => {
-		throw new Error('Use sendMenu instead')
-	}
+	const bot = new Telegraf<MyContext>('123:ABC');
+	(bot as any).botInfo = {}
+	bot.use(async (ctx, next) => {
+		ctx.reply = () => {
+			throw new Error('Use sendMenu instead')
+		}
 
-	bot.context.answerCbQuery = async () => {
-		t.pass()
-		return Promise.resolve(true)
-	}
+		ctx.answerCbQuery = async () => {
+			t.pass()
+			return Promise.resolve(true)
+		}
+
+		return next()
+	})
 
 	bot.use(mm.middleware())
 
@@ -90,16 +94,20 @@ test('submenu path responds submenu when not hidden', async t => {
 		}
 	})
 
-	const bot = new Telegraf<MyContext>('')
-	bot.telegram.getMe = async () => ({} as any)
-	bot.context.reply = () => {
-		throw new Error('Use sendMenu instead')
-	}
+	const bot = new Telegraf<MyContext>('123:ABC');
+	(bot as any).botInfo = {}
+	bot.use(async (ctx, next) => {
+		ctx.reply = () => {
+			throw new Error('Use sendMenu instead')
+		}
 
-	bot.context.answerCbQuery = async () => {
-		t.pass()
-		return Promise.resolve(true)
-	}
+		ctx.answerCbQuery = async () => {
+			t.pass()
+			return Promise.resolve(true)
+		}
+
+		return next()
+	})
 
 	bot.use(mm.middleware())
 
@@ -145,16 +153,20 @@ test('submenu path responds submenu when no hide function', async t => {
 		}
 	})
 
-	const bot = new Telegraf<MyContext>('')
-	bot.telegram.getMe = async () => ({} as any)
-	bot.context.reply = () => {
-		throw new Error('Use sendMenu instead')
-	}
+	const bot = new Telegraf<MyContext>('123:ABC');
+	(bot as any).botInfo = {}
+	bot.use(async (ctx, next) => {
+		ctx.reply = () => {
+			throw new Error('Use sendMenu instead')
+		}
 
-	bot.context.answerCbQuery = async () => {
-		t.pass()
-		return Promise.resolve(true)
-	}
+		ctx.answerCbQuery = async () => {
+			t.pass()
+			return Promise.resolve(true)
+		}
+
+		return next()
+	})
 
 	bot.use(mm.middleware())
 
@@ -200,16 +212,20 @@ test('submenu path responds main menu when hidden', async t => {
 		}
 	})
 
-	const bot = new Telegraf<MyContext>('')
-	bot.telegram.getMe = async () => ({} as any)
-	bot.context.reply = () => {
-		throw new Error('Use sendMenu instead')
-	}
+	const bot = new Telegraf<MyContext>('123:ABC');
+	(bot as any).botInfo = {}
+	bot.use(async (ctx, next) => {
+		ctx.reply = () => {
+			throw new Error('Use sendMenu instead')
+		}
 
-	bot.context.answerCbQuery = async () => {
-		t.pass()
-		return Promise.resolve(true)
-	}
+		ctx.answerCbQuery = async () => {
+			t.pass()
+			return Promise.resolve(true)
+		}
+
+		return next()
+	})
 
 	bot.use(mm.middleware())
 
