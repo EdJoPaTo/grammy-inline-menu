@@ -1,5 +1,5 @@
 import test from 'ava'
-import {Context as TelegrafContext} from 'telegraf'
+import {Context as BaseContext} from 'telegraf'
 
 import {MenuTemplate} from '../../source'
 
@@ -8,9 +8,9 @@ import {editMenuOnContext} from '../../source/send-menu'
 
 test('text reply when not a callback query', async t => {
 	t.plan(2)
-	const menu = new MenuTemplate<TelegrafContext>('whatever')
+	const menu = new MenuTemplate<BaseContext>('whatever')
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: undefined,
 		reply: async (text, extra) => {
 			t.is(text, 'whatever')
@@ -30,9 +30,9 @@ test('text reply when not a callback query', async t => {
 
 test('text reply when no message on callback query', async t => {
 	t.plan(2)
-	const menu = new MenuTemplate<TelegrafContext>('whatever')
+	const menu = new MenuTemplate<BaseContext>('whatever')
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -57,9 +57,9 @@ test('text reply when no message on callback query', async t => {
 
 test('text edit when message is a text message', async t => {
 	t.plan(2)
-	const menu = new MenuTemplate<TelegrafContext>('whatever')
+	const menu = new MenuTemplate<BaseContext>('whatever')
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -90,9 +90,9 @@ test('text edit when message is a text message', async t => {
 
 test('text reply when message is a media message', async t => {
 	t.plan(3)
-	const menu = new MenuTemplate<TelegrafContext>('whatever')
+	const menu = new MenuTemplate<BaseContext>('whatever')
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -127,9 +127,9 @@ test('text reply when message is a media message', async t => {
 
 test('text reply when message is a media message but fails with delete', async t => {
 	t.plan(2)
-	const menu = new MenuTemplate<TelegrafContext>('whatever')
+	const menu = new MenuTemplate<BaseContext>('whatever')
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -160,9 +160,9 @@ test('text reply when message is a media message but fails with delete', async t
 
 test('media reply when not a callback query', async t => {
 	t.plan(2)
-	const menu = new MenuTemplate<TelegrafContext>({media: 'whatever', type: 'photo'})
+	const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: 'photo'})
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: undefined,
 		replyWithPhoto: async (photo, extra) => {
 			t.is(photo, 'whatever')
@@ -182,9 +182,9 @@ test('media reply when not a callback query', async t => {
 
 test('media reply when text message', async t => {
 	t.plan(3)
-	const menu = new MenuTemplate<TelegrafContext>({media: 'whatever', type: 'photo'})
+	const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: 'photo'})
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -219,9 +219,9 @@ test('media reply when text message', async t => {
 
 test('media edit when media message', async t => {
 	t.plan(2)
-	const menu = new MenuTemplate<TelegrafContext>({media: 'whatever', type: 'photo'})
+	const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: 'photo'})
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -259,9 +259,9 @@ test('media edit when media message', async t => {
 
 test('does not throw message is not modified', async t => {
 	t.plan(2)
-	const menu = new MenuTemplate<TelegrafContext>('whatever')
+	const menu = new MenuTemplate<BaseContext>('whatever')
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -285,9 +285,9 @@ test('does not throw message is not modified', async t => {
 
 test('does throw unrecoverable edit errors', async t => {
 	t.plan(2)
-	const menu = new MenuTemplate<TelegrafContext>('whatever')
+	const menu = new MenuTemplate<BaseContext>('whatever')
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -313,9 +313,9 @@ test('does throw unrecoverable edit errors', async t => {
 })
 
 test('text edit without webpage preview', async t => {
-	const menu = new MenuTemplate<TelegrafContext>({text: 'whatever', disable_web_page_preview: true})
+	const menu = new MenuTemplate<BaseContext>({text: 'whatever', disable_web_page_preview: true})
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -344,9 +344,9 @@ test('text edit without webpage preview', async t => {
 })
 
 test('text edit with parse mode', async t => {
-	const menu = new MenuTemplate<TelegrafContext>({text: 'whatever', parse_mode: 'Markdown'})
+	const menu = new MenuTemplate<BaseContext>({text: 'whatever', parse_mode: 'Markdown'})
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -375,10 +375,10 @@ test('text edit with parse mode', async t => {
 })
 
 test('text edit with button', async t => {
-	const menu = new MenuTemplate<TelegrafContext>('whatever')
+	const menu = new MenuTemplate<BaseContext>('whatever')
 	menu.manual({text: 'Button', callback_data: '/'})
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -406,10 +406,10 @@ test('text edit with button', async t => {
 })
 
 test('media edit with button', async t => {
-	const menu = new MenuTemplate<TelegrafContext>({media: 'whatever', type: 'photo'})
+	const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: 'photo'})
 	menu.manual({text: 'Button', callback_data: '/'})
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -438,10 +438,10 @@ test('media edit with button', async t => {
 
 test('location reply', async t => {
 	t.plan(4)
-	const menu = new MenuTemplate<TelegrafContext>({location: {latitude: 53.5, longitude: 10}, live_period: 666})
+	const menu = new MenuTemplate<BaseContext>({location: {latitude: 53.5, longitude: 10}, live_period: 666})
 	menu.manual({text: 'Button', callback_data: '/'})
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -476,10 +476,10 @@ test('location reply', async t => {
 
 test('venue reply', async t => {
 	t.plan(6)
-	const menu = new MenuTemplate<TelegrafContext>({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}})
+	const menu = new MenuTemplate<BaseContext>({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}})
 	menu.manual({text: 'Button', callback_data: '/'})
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,

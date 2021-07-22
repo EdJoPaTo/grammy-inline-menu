@@ -1,9 +1,9 @@
-import {Telegraf, Context as TelegrafContext} from 'telegraf'
+import {Telegraf, Context as BaseContext} from 'telegraf'
 
 import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../source'
 
 // TODO: Ugly workaround. This library should know better...
-type MyContext = TelegrafContext & {match: RegExpExecArray | undefined}
+type MyContext = BaseContext & {match: RegExpExecArray | undefined}
 
 const menu = new MenuTemplate<MyContext>(() => 'Main Menu\n' + new Date().toISOString())
 

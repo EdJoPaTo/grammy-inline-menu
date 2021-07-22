@@ -1,4 +1,4 @@
-import {Telegraf, Context as TelegrafContext} from 'telegraf'
+import {Telegraf, Context as BaseContext} from 'telegraf'
 import test from 'ava'
 
 import {MenuLike} from '../../source/menu-like'
@@ -33,7 +33,7 @@ test('not supply reply as a middleware directly', async t => {
 
 test('action is run and no path to update afterwards is returned', async t => {
 	t.plan(2)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<BaseContext> = {
 		trigger: /^\/what$/,
 		// @ts-expect-error
 		doFunction: () => {
@@ -41,7 +41,7 @@ test('action is run and no path to update afterwards is returned', async t => {
 			// Not returning something is the issue here
 		}
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<BaseContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
@@ -93,14 +93,14 @@ test('action is run and no path to update afterwards is returned', async t => {
 
 test('action is run and an empty path to update afterwards is returned throws', async t => {
 	t.plan(2)
-	const action: ButtonAction<TelegrafContext> = {
+	const action: ButtonAction<BaseContext> = {
 		trigger: /^\/what$/,
 		doFunction: () => {
 			t.pass()
 			return ''
 		}
 	}
-	const menu: MenuLike<TelegrafContext> = {
+	const menu: MenuLike<BaseContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',

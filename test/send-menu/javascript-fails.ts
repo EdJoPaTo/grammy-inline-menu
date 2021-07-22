@@ -1,5 +1,5 @@
 import test from 'ava'
-import {Context as TelegrafContext} from 'telegraf'
+import {Context as BaseContext} from 'telegraf'
 
 import {editMenuOnContext, replyMenuToContext, generateSendMenuToChatFunction, generateEditMessageIntoMenuFunction} from '../../source/send-menu'
 import {MenuTemplate} from '../../source'
@@ -22,7 +22,7 @@ const FAULTY_MENU_TEMPLATES: Readonly<Record<string, MenuTemplate<unknown>>> = {
 
 for (const [fault, menu] of Object.entries(FAULTY_MENU_TEMPLATES)) {
 	test('context edit ' + fault, async t => {
-		const fakeContext: Partial<TelegrafContext> = {
+		const fakeContext: Partial<BaseContext> = {
 			callbackQuery: {
 				id: '666',
 				chat_instance: '666',

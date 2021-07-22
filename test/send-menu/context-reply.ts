@@ -1,5 +1,5 @@
 import test from 'ava'
-import {Context as TelegrafContext} from 'telegraf'
+import {Context as BaseContext} from 'telegraf'
 
 import {MenuTemplate} from '../../source'
 import {MEDIA_TYPES} from '../../source/body'
@@ -9,7 +9,7 @@ import {replyMenuToContext} from '../../source/send-menu'
 for (const mediaType of MEDIA_TYPES) {
 	test('reply media ' + mediaType, async t => {
 		t.plan(2)
-		const menu = new MenuTemplate<TelegrafContext>({media: 'whatever', type: mediaType})
+		const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: mediaType})
 
 		const replyFunction = async (media: unknown, extra: unknown) => {
 			t.is(media, 'whatever')
@@ -23,7 +23,7 @@ for (const mediaType of MEDIA_TYPES) {
 			return Promise.resolve(undefined as any)
 		}
 
-		const fakeContext: Partial<TelegrafContext> = {
+		const fakeContext: Partial<BaseContext> = {
 			callbackQuery: {
 				id: '666',
 				from: undefined as any,

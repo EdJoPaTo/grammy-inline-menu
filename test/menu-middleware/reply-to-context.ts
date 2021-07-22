@@ -1,4 +1,4 @@
-import {Context as TelegrafContext} from 'telegraf'
+import {Context as BaseContext} from 'telegraf'
 import test from 'ava'
 
 import {MenuLike, Submenu} from '../../source/menu-like'
@@ -27,7 +27,7 @@ test('replies main menu', async t => {
 
 	const mm = new MenuMiddleware('/', menu)
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		reply: async (text, extra) => {
 			t.is(text, 'whatever')
 			t.deepEqual(extra, {
@@ -66,7 +66,7 @@ test('replies main menu explicitly', async t => {
 
 	const mm = new MenuMiddleware('/', menu)
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		reply: async (text, extra) => {
 			t.is(text, 'whatever')
 			t.deepEqual(extra, {
@@ -105,7 +105,7 @@ test('replies submenu', async t => {
 
 	const mm = new MenuMiddleware('/', menu)
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		reply: async (text, extra) => {
 			t.is(text, 'submenu')
 			t.deepEqual(extra, {

@@ -1,4 +1,4 @@
-import {Telegraf, Context as TelegrafContext} from 'telegraf'
+import {Telegraf, Context as BaseContext} from 'telegraf'
 import test from 'ava'
 
 import {MenuLike, Submenu} from '../../source/menu-like'
@@ -7,7 +7,7 @@ import {MenuMiddleware} from '../../source/menu-middleware'
 import {ButtonAction} from '../../source/action-hive'
 
 // TODO: Ugly workaround. This library should know better...
-type MyContext = TelegrafContext & {match: RegExpExecArray | null | undefined}
+type MyContext = BaseContext & {match: RegExpExecArray | null | undefined}
 
 test('action is run without updating menu afterwards', async t => {
 	t.plan(3)

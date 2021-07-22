@@ -1,4 +1,4 @@
-import {Composer, Context as TelegrafContext} from 'telegraf'
+import {Composer, Context as BaseContext} from 'telegraf'
 import {Message} from 'typegram'
 
 import {ActionFunc} from './action-hive'
@@ -33,7 +33,7 @@ export interface Options<Context> {
 	readonly sendMenu?: SendMenuFunc<Context>;
 }
 
-export class MenuMiddleware<Context extends TelegrafContext> {
+export class MenuMiddleware<Context extends BaseContext> {
 	private readonly _sendMenu: SendMenuFunc<Context>
 
 	private readonly _responder: MenuResponder<Context>
@@ -150,7 +150,7 @@ function responderMatch<Context>(responder: Responder<Context>, path: string): R
 	return new RegExp(responder.trigger.source, responder.trigger.flags).exec(path)
 }
 
-async function getLongestMatchMenuResponder<Context extends TelegrafContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | null; responder: MenuResponder<Context>}> {
+async function getLongestMatchMenuResponder<Context extends BaseContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | null; responder: MenuResponder<Context>}> {
 	for (const sub of current.submenuResponders) {
 		const match = responderMatch(sub, path)
 		if (!match?.[0]) {
@@ -171,7 +171,7 @@ async function getLongestMatchMenuResponder<Context extends TelegrafContext>(con
 	return {match, responder: current}
 }
 
-async function getLongestMatchActionResponder<Context extends TelegrafContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | null; responder: Responder<Context>}> {
+async function getLongestMatchActionResponder<Context extends BaseContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | null; responder: Responder<Context>}> {
 	const currentMatch = responderMatch(current, path)
 
 	for (const sub of current.submenuResponders) {
@@ -204,7 +204,7 @@ async function getLongestMatchActionResponder<Context extends TelegrafContext>(c
 	return {match: currentMatch, responder: current}
 }
 
-function createResponder<Context extends TelegrafContext>(menuTrigger: RegExpLike, canEnter: ContextPathFunc<Context, boolean>, menu: MenuLike<Context>): MenuResponder<Context> {
+function createResponder<Context extends BaseContext>(menuTrigger: RegExpLike, canEnter: ContextPathFunc<Context, boolean>, menu: MenuLike<Context>): MenuResponder<Context> {
 	const actionResponders = [...menu.renderActionHandlers(menuTrigger)]
 		.map(({trigger, doFunction}): ActionResponder<Context> => ({
 			type: 'action',

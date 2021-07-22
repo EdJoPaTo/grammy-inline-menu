@@ -1,4 +1,4 @@
-import {Telegraf, Context as TelegrafContext} from 'telegraf'
+import {Telegraf, Context as BaseContext} from 'telegraf'
 import test from 'ava'
 
 import {MenuLike, Submenu} from '../../source/menu-like'
@@ -6,7 +6,7 @@ import {MenuLike, Submenu} from '../../source/menu-like'
 import {MenuMiddleware} from '../../source/menu-middleware'
 
 // TODO: Ugly workaround. This library should know better...
-type MyContext = TelegrafContext & {match: RegExpExecArray | null | undefined}
+type MyContext = BaseContext & {match: RegExpExecArray | null | undefined}
 
 test('root path responds main menu', async t => {
 	const submenuMenu: MenuLike<unknown> = {

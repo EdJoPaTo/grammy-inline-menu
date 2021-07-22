@@ -1,4 +1,4 @@
-import {Context as TelegrafContext, Telegram} from 'telegraf'
+import {Context as BaseContext, Telegram} from 'telegraf'
 import test from 'ava'
 
 import {MenuTemplate} from '../../source'
@@ -7,7 +7,7 @@ import {MEDIA_TYPES} from '../../source/body'
 import {generateEditMessageIntoMenuFunction} from '../../source/send-menu'
 
 test('text', async t => {
-	const menu = new MenuTemplate<TelegrafContext>('whatever')
+	const menu = new MenuTemplate<BaseContext>('whatever')
 
 	const fakeTelegram: Partial<Telegram> = {
 		editMessageText: async (chatId, messageId, inlineMessageId, text, extra) => {
@@ -28,7 +28,7 @@ test('text', async t => {
 
 	const editIntoFunction = generateEditMessageIntoMenuFunction(fakeTelegram as any, menu, '/')
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -42,7 +42,7 @@ test('text', async t => {
 
 for (const mediaType of MEDIA_TYPES) {
 	test('media ' + mediaType, async t => {
-		const menu = new MenuTemplate<TelegrafContext>({media: 'whatever', type: mediaType})
+		const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: mediaType})
 
 		const fakeTelegram: Partial<Telegram> = {
 			editMessageMedia: async (chatId: unknown, messageId: unknown, inlineMessageId: unknown, media: unknown, extra: unknown) => {
@@ -66,7 +66,7 @@ for (const mediaType of MEDIA_TYPES) {
 
 		const editIntoFunction = generateEditMessageIntoMenuFunction(fakeTelegram as any, menu, '/')
 
-		const fakeContext: Partial<TelegrafContext> = {
+		const fakeContext: Partial<BaseContext> = {
 			callbackQuery: {
 				id: '666',
 				from: undefined as any,
@@ -80,11 +80,11 @@ for (const mediaType of MEDIA_TYPES) {
 }
 
 test('location', async t => {
-	const menu = new MenuTemplate<TelegrafContext>({location: {latitude: 53.5, longitude: 10}, live_period: 666})
+	const menu = new MenuTemplate<BaseContext>({location: {latitude: 53.5, longitude: 10}, live_period: 666})
 
 	const editIntoFunction = generateEditMessageIntoMenuFunction({} as any, menu, '/')
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,
@@ -101,11 +101,11 @@ test('location', async t => {
 })
 
 test('venue', async t => {
-	const menu = new MenuTemplate<TelegrafContext>({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}})
+	const menu = new MenuTemplate<BaseContext>({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}})
 
 	const editIntoFunction = generateEditMessageIntoMenuFunction({} as any, menu, '/')
 
-	const fakeContext: Partial<TelegrafContext> = {
+	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
 			from: undefined as any,

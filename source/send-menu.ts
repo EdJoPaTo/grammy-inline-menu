@@ -1,4 +1,4 @@
-import {Context as TelegrafContext, Telegram} from 'telegraf'
+import {Context as BaseContext, Telegram} from 'telegraf'
 import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessageText, ExtraEditMessageMedia, ExtraLocation, ExtraVenue} from 'telegraf/typings/telegram-types'
 import {InputMedia} from 'telegraf/typings/core/types/typegram'
 import {Message} from 'typegram'
@@ -32,7 +32,7 @@ export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, mes
  * @param path path of the menu
  * @param extra optional additional Telegraf Extra options
  */
-export async function replyMenuToContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
+export async function replyMenuToContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
 	ensurePathMenu(path)
 	const body = await menu.renderBody(context, path)
 	const keyboard = await menu.renderKeyboard(context, path)
@@ -46,7 +46,7 @@ export async function replyMenuToContext<Context extends TelegrafContext>(menu: 
  * @param path path of the menu
  * @param extra optional additional Telegraf Extra options
  */
-export async function editMenuOnContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraEditMessageText | ExtraEditMessageMedia> = {}): Promise<Message | boolean> {
+export async function editMenuOnContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraEditMessageText | ExtraEditMessageMedia> = {}): Promise<Message | boolean> {
 	ensurePathMenu(path)
 	const body = await menu.renderBody(context, path)
 	const keyboard = await menu.renderKeyboard(context, path)
@@ -95,7 +95,7 @@ export async function editMenuOnContext<Context extends TelegrafContext>(menu: M
  * If thats not possible the reply markup (keyboard) is removed. The user can not press any buttons on that old message.
  * @param context context of the message to be deleted
  */
-export async function deleteMenuFromContext<Context extends TelegrafContext>(context: Context): Promise<void> {
+export async function deleteMenuFromContext<Context extends BaseContext>(context: Context): Promise<void> {
 	try {
 		await context.deleteMessage()
 	} catch {
@@ -110,7 +110,7 @@ export async function deleteMenuFromContext<Context extends TelegrafContext>(con
  * @param path path of the menu
  * @param extra optional additional Telegraf Extra options
  */
-export async function resendMenuToContext<Context extends TelegrafContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
+export async function resendMenuToContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
 	const [menuMessage] = await Promise.all([
 		replyMenuToContext(menu, context, path, extra),
 		deleteMenuFromContext(context)
@@ -127,7 +127,7 @@ function catchMessageNotModified(error: unknown): false {
 	throw error
 }
 
-async function replyRenderedMenuPartsToContext<Context extends TelegrafContext>(body: Body, keyboard: InlineKeyboard, context: Context, extra: Readonly<ExtraReplyMessage>): Promise<Message> {
+async function replyRenderedMenuPartsToContext<Context extends BaseContext>(body: Body, keyboard: InlineKeyboard, context: Context, extra: Readonly<ExtraReplyMessage>): Promise<Message> {
 	if (isMediaBody(body)) {
 		const mediaExtra = createSendMediaExtra(body, keyboard, extra)
 
