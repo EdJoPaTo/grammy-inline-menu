@@ -159,15 +159,14 @@ test('invoice', async t => {
 	const fakeTelegram: Partial<Telegram> = {
 		sendInvoice: async (chatId, invoice, extra) => {
 			t.is(chatId, 666)
-			t.deepEqual(invoice, {
-				title: 'A',
-				description: 'B',
-				start_parameter: 'C',
-				currency: 'EUR',
-				payload: 'D',
-				provider_token: 'E',
-				prices: [],
-			})
+			const {title, description, start_parameter, currency, payload, provider_token, prices} = invoice
+			t.is(title, 'A')
+			t.is(description, 'B')
+			t.is(start_parameter, 'C')
+			t.is(currency, 'EUR')
+			t.is(payload, 'D')
+			t.is(provider_token, 'E')
+			t.deepEqual(prices, [])
 			t.deepEqual(extra, {
 				reply_markup: {
 					inline_keyboard: [],

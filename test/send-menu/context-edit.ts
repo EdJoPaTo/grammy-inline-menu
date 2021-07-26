@@ -516,7 +516,7 @@ test('venue reply', async t => {
 })
 
 test('invoice reply', async t => {
-	t.plan(3)
+	t.plan(9)
 	const menu = new MenuTemplate<BaseContext>({invoice: {
 		title: 'A',
 		description: 'B',
@@ -546,15 +546,14 @@ test('invoice reply', async t => {
 			return Promise.resolve(true)
 		},
 		replyWithInvoice: async (invoice, extra) => {
-			t.deepEqual(invoice, {
-				title: 'A',
-				description: 'B',
-				start_parameter: 'C',
-				currency: 'EUR',
-				payload: 'D',
-				provider_token: 'E',
-				prices: [],
-			})
+			const {title, description, start_parameter, currency, payload, provider_token, prices} = invoice
+			t.is(title, 'A')
+			t.is(description, 'B')
+			t.is(start_parameter, 'C')
+			t.is(currency, 'EUR')
+			t.is(payload, 'D')
+			t.is(provider_token, 'E')
+			t.deepEqual(prices, [])
 			t.deepEqual(extra, {
 				reply_markup: {
 					inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
