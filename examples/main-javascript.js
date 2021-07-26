@@ -220,7 +220,7 @@ bot.command('start', async ctx => menuMiddleware.replyToContext(ctx))
 bot.use(menuMiddleware.middleware())
 
 bot.catch(error => {
-	console.log('telegraf error', error)
+	console.log('bot error', error)
 })
 
 async function startup() {

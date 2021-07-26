@@ -15,27 +15,18 @@ This menu library is made to easily create an inline menu for your Telegram bot.
 # Installation
 
 ```
-$ npm install telegraf-inline-menu
-```
-
-or using `yarn`:
-
-```
-$ yarn add telegraf-inline-menu
+$ npm install telegraf telegraf-inline-menu
 ```
 
 Consider using TypeScript with this library as it helps with finding some common mistakes faster.
 
-A good starting point for TypeScript and Telegraf bots might be this repo: [EdJoPaTo/telegram-typescript-bot-template](https://github.com/EdJoPaTo/telegram-typescript-bot-template)
+A good starting point for TypeScript and Telegram bots might be this repo: [EdJoPaTo/telegram-typescript-bot-template](https://github.com/EdJoPaTo/telegram-typescript-bot-template)
 
 # Examples
 
 ## Basic Example
 
 ```ts
-const {Telegraf} = require('telegraf')
-const {MenuTemplate, MenuMiddleware} = require('telegraf-inline-menu')
-// or
 import {Telegraf} from 'telegraf'
 import {MenuTemplate, MenuMiddleware} from 'telegraf-inline-menu'
 
@@ -63,7 +54,7 @@ bot.launch()
 
 Look at the code here: [TypeScript](examples/main-typescript.ts) / [JavaScript (consider using TypeScript)](examples/main-javascript.js)
 
-# Migrate from version 4 to version 5
+# Migrate from version 4 to 5
 
 If your project still uses version 4 of this library see [v4 documentation](https://github.com/EdJoPaTo/telegraf-inline-menu/blob/v4.0.1/README.md) and consider refactoring to version 5.
 
@@ -74,13 +65,13 @@ List of things to migrate:
 - Applying the menu to the bot via `bot.use` changed. This can now be done with the `MenuMiddleware`. Check the [Basic Example](#Basic-Example)
 - `button` and `simpleButton` are combined and renamed into `interact`. See [How can I run a simple method when pressing a button?](#how-can-i-run-a-simple-method-when-pressing-a-button)
 - `selectSubmenu` was renamed to `chooseIntoSubmenu`
-- `select` was split into `choose` and `select`. See [Whats the difference between choose and select?](#Whats-the-difference-between-choose-and-select)
-- `question` is moved into a separate library. See [Didnt this menu had a question function?](#Didnt-this-menu-had-a-question-function)
+- `select` was split into `choose` and `select`. See [What's the difference between choose and select?](#Whats-the-difference-between-choose-and-select)
+- `question` is moved into a separate library. See [Didn't this menu had a question function?](#Didnt-this-menu-had-a-question-function)
 - The menu does not automatically add back and main menu buttons anymore.
   Use `menuTemplate.manualRow(createBackMainMenuButtons())` for that at each menu which should include these buttons.
 - `setCommand` and `replyMenuMiddleware` were replaced by multiple different functions. See [Can I send the menu manually?](#Can-I-send-the-menu-manually)
 
-# Migrate from version 5 to version 6
+# Migrate from version 5 to 6
 
 Version 6 switched from Telegraf 3.38 to 4.0. See the [Telegraf migration guide for this set of changes](https://github.com/telegraf/telegraf/releases/tag/v4.0.0).
 
@@ -107,7 +98,7 @@ When a button is hit, the callback data is sent to the bot.
 You know this from Telegraf from `bot.action`.
 
 This library both creates the buttons and listens for callback data events.
-When a button is pressed and its callback data is occuring the function relevant to the button is executed.
+When a button is pressed and its callback data is occurring the function relevant to the button is executed.
 
 In order to handle tree like menu structures with submenus the buttons itself use a tree like structure to differentiate between the buttons.
 Imagine it as the file structure on a PC.
@@ -120,7 +111,7 @@ This way the library knows what do to when an action occurs:
 If the callback data ends with a `/` it will show the corresponding menu.
 If it does not end with a `/` it is an interaction to be executed.
 
-You can use a Telegraf middleware in order to see which callback data is used when you hit a button:
+You can use a middleware in order to see which callback data is used when you hit a button:
 
 ```ts
 bot.use((ctx, next) => {
@@ -155,7 +146,7 @@ Let's improve things together!
 
 ## Can I use HTML / MarkdownV2 in the message body?
 
-Maybe this is also useful: [npm package telegram-format](https://github.com/EdJoPaTo/telegram-format)
+Maybe this is also useful: [NPM package telegram-format](https://github.com/EdJoPaTo/telegram-format)
 
 ```ts
 const menuTemplate = new MenuTemplate<MyContext>(ctx => {
@@ -238,7 +229,7 @@ menuTemplate.interact(ctx => ctx.i18n.t('button'), 'unique', {
 })
 ```
 
-## How can I show an url button?
+## How can I show a URL button?
 
 ```ts
 menuTemplate.url('Text', 'https://edjopato.de')
@@ -314,7 +305,7 @@ menuTemplate.choose('unique', ['walk', 'swim'], {
 })
 ```
 
-## Whats the difference between choose and select?
+## What's the difference between choose and select?
 
 If you want to do something based on the choice, use `menuTemplate.choose(…)`.
 If you want to change the state of something, select one out of many options for example, use `menuTemplate.select(…)`.
@@ -417,7 +408,7 @@ Keep in mind: You can not delete messages which are older than 48 hours.
 
 `deleteMenuFromContext` tries to help you with that:
 It tries to delete the menu.
-If that does not work the keyboard is removed from the message so the user will not accidentally press something.
+If that does not work the keyboard is removed from the message, so the user will not accidentally press something.
 
 ```ts
 menuTemplate.interact('Delete the menu', 'unique', {
@@ -468,7 +459,7 @@ async function externalEventOccured() {
 }
 ```
 
-## Didnt this menu had a question function?
+## Didn't this menu had a question function?
 
 Yes. It was moved into a separate library with version 5 as it made the source code overly complicated.
 

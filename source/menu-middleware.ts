@@ -157,7 +157,7 @@ async function getLongestMatchMenuResponder<Context extends BaseContext>(context
 			continue
 		}
 
-		// Telegraf users expect context.match to contain the relevant match
+		// Users expect context.match to contain the relevant match
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		(context as any).match = match
 
@@ -180,7 +180,7 @@ async function getLongestMatchActionResponder<Context extends BaseContext>(conte
 			continue
 		}
 
-		// Telegraf users expect context.match to contain the relevant match
+		// Users expect context.match to contain the relevant match
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		(context as any).match = match
 

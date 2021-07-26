@@ -45,7 +45,7 @@ for (const mediaType of MEDIA_TYPES) {
 		const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: mediaType})
 
 		const fakeTelegram: Partial<Telegram> = {
-			editMessageMedia: async (chatId: unknown, messageId: unknown, inlineMessageId: unknown, media: unknown, extra: unknown) => {
+			editMessageMedia: async (chatId, messageId, inlineMessageId, media, extra) => {
 				t.is(chatId, 13)
 				t.is(messageId, 37)
 				t.is(inlineMessageId, undefined)

@@ -1,5 +1,5 @@
 import {Context as BaseContext, Telegram} from 'telegraf'
-import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessageText, ExtraEditMessageMedia, ExtraLocation, ExtraVenue, ExtraInvoice} from 'telegraf/typings/telegram-types'
+import {ExtraPhoto, ExtraReplyMessage, ExtraEditMessageText, ExtraEditMessageMedia, ExtraLocation, ExtraVenue} from 'telegraf/typings/telegram-types'
 import {InputMedia} from 'telegraf/typings/core/types/typegram'
 import {Message} from 'typegram'
 
@@ -30,7 +30,7 @@ export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, mes
  * @param menu menu to be shown
  * @param context current Telegraf context to reply the menu to it
  * @param path path of the menu
- * @param extra optional additional Telegraf Extra options
+ * @param extra optional additional options
  */
 export async function replyMenuToContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
 	ensurePathMenu(path)
@@ -44,7 +44,7 @@ export async function replyMenuToContext<Context extends BaseContext>(menu: Menu
  * @param menu menu to be shown
  * @param context current Telegraf context to edit the menu into
  * @param path path of the menu
- * @param extra optional additional Telegraf Extra options
+ * @param extra optional additional options
  */
 export async function editMenuOnContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraEditMessageText | ExtraEditMessageMedia> = {}): Promise<Message | boolean> {
 	ensurePathMenu(path)
@@ -65,7 +65,7 @@ export async function editMenuOnContext<Context extends BaseContext>(menu: MenuL
 				parse_mode: body.parse_mode,
 			}
 
-			return context.editMessageMedia(media, createEditMediaExtra(keyboard, extra))
+			return context.editMessageMedia(media, createGenericExtra(keyboard, extra))
 				// eslint-disable-next-line promise/prefer-await-to-then
 				.catch(catchMessageNotModified)
 		}
@@ -108,7 +108,7 @@ export async function deleteMenuFromContext<Context extends BaseContext>(context
  * @param menu menu to be shown
  * @param context current Telegraf context to send the menu to
  * @param path path of the menu
- * @param extra optional additional Telegraf Extra options
+ * @param extra optional additional options
  */
 export async function resendMenuToContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, extra: Readonly<ExtraReplyMessage> = {}): Promise<Message> {
 	const [menuMessage] = await Promise.all([
@@ -156,7 +156,7 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(body
 	}
 
 	if (isInvoiceBody(body)) {
-		return context.replyWithInvoice(body.invoice, createInvoiceExtra(keyboard, extra))
+		return context.replyWithInvoice(body.invoice, createGenericExtra(keyboard, extra))
 	}
 
 	if (isTextBody(body)) {
@@ -208,7 +208,7 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Teleg
 
 		if (isInvoiceBody(body)) {
 			// TODO: fix Telegraf typing issue
-			return telegram.sendInvoice(chatId as any, body.invoice, createInvoiceExtra(keyboard, extra))
+			return telegram.sendInvoice(chatId as any, body.invoice, createGenericExtra(keyboard, extra))
 		}
 
 		if (isTextBody(body)) {
@@ -241,8 +241,7 @@ export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<
 				parse_mode: body.parse_mode,
 			}
 
-			const mediaExtra = createEditMediaExtra(keyboard, extra)
-			return telegram.editMessageMedia(chatId, messageId, undefined, media, mediaExtra)
+			return telegram.editMessageMedia(chatId, messageId, undefined, media, createGenericExtra(keyboard, extra))
 		}
 
 		if (isLocationBody(body)) {
@@ -288,15 +287,6 @@ function createSendMediaExtra(body: MediaBody, keyboard: InlineKeyboard, base: R
 	}
 }
 
-function createEditMediaExtra(keyboard: InlineKeyboard, base: Readonly<ExtraEditMessageMedia>): ExtraEditMessageMedia {
-	return {
-		...base,
-		reply_markup: {
-			inline_keyboard: keyboard.map(o => [...o]),
-		},
-	}
-}
-
 function createLocationExtra(body: LocationBody, keyboard: InlineKeyboard, base: Readonly<ExtraLocation>): ExtraLocation {
 	return {
 		...base,
@@ -318,7 +308,7 @@ function createVenueExtra(body: VenueBody, keyboard: InlineKeyboard, base: Reado
 	}
 }
 
-function createInvoiceExtra(keyboard: InlineKeyboard, base: Readonly<ExtraReplyMessage>): ExtraInvoice {
+function createGenericExtra(keyboard: InlineKeyboard, base: Readonly<ExtraReplyMessage>) {
 	return {
 		...base,
 		reply_markup: {
