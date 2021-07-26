@@ -1,5 +1,5 @@
-import {Composer, Context as BaseContext} from 'telegraf'
-import {Message} from 'typegram'
+import {Composer, Context as BaseContext} from 'grammy'
+import {Message} from 'grammy/out/platform'
 
 import {ActionFunc} from './action-hive'
 import {combineTrigger, createRootMenuTrigger, combinePath} from './path'
@@ -89,7 +89,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 
 		const trigger = new RegExp(this._responder.trigger.source, this._responder.trigger.flags)
 		// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-		composer.action(trigger, async (context, next) => {
+		composer.callbackQuery(trigger, async (context, next) => {
 			if (!('data' in context.callbackQuery)) {
 				return next()
 			}
@@ -99,11 +99,10 @@ export class MenuMiddleware<Context extends BaseContext> {
 			let target: string | undefined = path
 
 			if (!path.endsWith('/')) {
-				const {match, responder} = await getLongestMatchActionResponder(context as any, path, this._responder)
+				const {match, responder} = await getLongestMatchActionResponder(context, path, this._responder)
 				if (match?.[0] && responder.type === 'action') {
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-					(context as any).match = match
-					const afterwardsTarget = await responder.do(context as any, match[0])
+					context.match = match
+					const afterwardsTarget = await responder.do(context, match[0])
 
 					if (typeof afterwardsTarget === 'string' && afterwardsTarget) {
 						target = combinePath(path, afterwardsTarget)
@@ -118,17 +117,16 @@ export class MenuMiddleware<Context extends BaseContext> {
 			}
 
 			if (target) {
-				const {match, responder} = await getLongestMatchMenuResponder(context as any, target, this._responder)
+				const {match, responder} = await getLongestMatchMenuResponder(context, target, this._responder)
 				if (!match?.[0]) {
 					// TODO: think about using next() in this case?
 					throw new Error(`There is no menu "${target}" which can be reached in this menu`)
 				}
 
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				(context as any).match = match
+				context.match = match
 				const targetPath = match[0]
-				await this._sendMenu(responder.menu as any, context as any, targetPath)
-				await context.answerCbQuery()
+				await this._sendMenu(responder.menu as any, context, targetPath)
+				await context.answerCallbackQuery()
 					.catch(catchCallbackOld)
 			}
 		})
@@ -158,8 +156,7 @@ async function getLongestMatchMenuResponder<Context extends BaseContext>(context
 		}
 
 		// Users expect context.match to contain the relevant match
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		(context as any).match = match
+		context.match = match
 
 		// eslint-disable-next-line no-await-in-loop
 		if (await sub.canEnter(context, match[0])) {
@@ -181,8 +178,7 @@ async function getLongestMatchActionResponder<Context extends BaseContext>(conte
 		}
 
 		// Users expect context.match to contain the relevant match
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		(context as any).match = match
+		context.match = match
 
 		// eslint-disable-next-line no-await-in-loop
 		if (await sub.canEnter(context, match[0])) {

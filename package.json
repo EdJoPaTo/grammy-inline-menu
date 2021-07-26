@@ -1,9 +1,9 @@
 {
-	"name": "telegraf-inline-menu",
+	"name": "grammy-inline-menu",
 	"version": "6.3.0",
-	"description": "Inline Menus for Telegraf made simple.",
+	"description": "Inline Menus for Telegram made simple.",
 	"keywords": [
-		"Telegraf",
+		"grammY",
 		"Telegram",
 		"keyboard",
 		"button",
@@ -12,14 +12,14 @@
 		"middleware"
 	],
 	"license": "MIT",
-	"repository": "EdJoPaTo/telegraf-inline-menu",
+	"repository": "EdJoPaTo/grammy-inline-menu",
 	"bugs": {
-		"url": "https://github.com/EdJoPaTo/telegraf-inline-menu/issues"
+		"url": "https://github.com/EdJoPaTo/grammy-inline-menu/issues"
 	},
-	"homepage": "https://github.com/EdJoPaTo/telegraf-inline-menu#readme",
+	"homepage": "https://github.com/EdJoPaTo/grammy-inline-menu#readme",
 	"author": {
 		"name": "EdJoPaTo",
-		"email": "telegraf-inline-menu-npm-package@edjopato.de",
+		"email": "grammy-inline-menu-npm-package@edjopato.de",
 		"url": "https://EdJoPaTo.de"
 	},
 	"scripts": {
@@ -34,19 +34,16 @@
 	"engines": {
 		"node": ">=12"
 	},
-	"dependencies": {
-		"typegram": "^3.0.2"
-	},
 	"peerDependencies": {
-		"telegraf": "^4.3.0"
+		"grammy": "^1.2.0"
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^2.0.0",
 		"@types/node": "^12.20.19",
 		"ava": "^3.6.0",
 		"del-cli": "^4.0.0",
+		"grammy": "^1.2.0",
 		"nyc": "^15.0.0",
-		"telegraf": "^4.3.0",
 		"ts-node": "^10.0.0",
 		"typescript": "^4.2.0",
 		"xo": "^0.42.0"

@@ -1,4 +1,4 @@
-import {Context as BaseContext, Telegram} from 'telegraf'
+import {Context as BaseContext, Api} from 'grammy'
 import test from 'ava'
 
 import {MenuTemplate} from '../../source'
@@ -9,13 +9,12 @@ import {generateEditMessageIntoMenuFunction} from '../../source/send-menu'
 test('text', async t => {
 	const menu = new MenuTemplate<BaseContext>('whatever')
 
-	const fakeTelegram: Partial<Telegram> = {
-		editMessageText: async (chatId, messageId, inlineMessageId, text, extra) => {
+	const fakeTelegram: Partial<Api> = {
+		editMessageText: async (chatId, messageId, text, other) => {
 			t.is(chatId, 13)
 			t.is(messageId, 37)
-			t.is(inlineMessageId, undefined)
 			t.is(text, 'whatever')
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
@@ -44,18 +43,17 @@ for (const mediaType of MEDIA_TYPES) {
 	test('media ' + mediaType, async t => {
 		const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: mediaType})
 
-		const fakeTelegram: Partial<Telegram> = {
-			editMessageMedia: async (chatId, messageId, inlineMessageId, media, extra) => {
+		const fakeTelegram: Partial<Api> = {
+			editMessageMedia: async (chatId, messageId, media, other) => {
 				t.is(chatId, 13)
 				t.is(messageId, 37)
-				t.is(inlineMessageId, undefined)
 				t.deepEqual(media, {
 					media: 'whatever',
 					type: mediaType,
 					caption: undefined,
 					parse_mode: undefined,
 				})
-				t.deepEqual(extra, {
+				t.deepEqual(other, {
 					reply_markup: {
 						inline_keyboard: [],
 					},
@@ -125,7 +123,6 @@ test('invoice', async t => {
 	const menu = new MenuTemplate<BaseContext>({invoice: {
 		title: 'A',
 		description: 'B',
-		start_parameter: 'C',
 		currency: 'EUR',
 		payload: 'D',
 		provider_token: 'E',

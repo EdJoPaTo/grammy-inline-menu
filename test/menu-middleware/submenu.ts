@@ -1,4 +1,4 @@
-import {Telegraf, Context as BaseContext} from 'telegraf'
+import {Bot, Context as BaseContext} from 'grammy'
 import test from 'ava'
 
 import {MenuLike, Submenu} from '../../source/menu-like'
@@ -35,14 +35,14 @@ test('root path responds main menu', async t => {
 		},
 	})
 
-	const bot = new Telegraf<MyContext>('123:ABC');
+	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCbQuery = async () => {
+		ctx.answerCallbackQuery = async () => {
 			t.pass()
 			return Promise.resolve(true)
 		}
@@ -94,14 +94,14 @@ test('submenu path responds submenu when not hidden', async t => {
 		},
 	})
 
-	const bot = new Telegraf<MyContext>('123:ABC');
+	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCbQuery = async () => {
+		ctx.answerCallbackQuery = async () => {
 			t.pass()
 			return Promise.resolve(true)
 		}
@@ -153,14 +153,14 @@ test('submenu path responds submenu when no hide function', async t => {
 		},
 	})
 
-	const bot = new Telegraf<MyContext>('123:ABC');
+	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCbQuery = async () => {
+		ctx.answerCallbackQuery = async () => {
 			t.pass()
 			return Promise.resolve(true)
 		}
@@ -212,14 +212,14 @@ test('submenu path responds main menu when hidden', async t => {
 		},
 	})
 
-	const bot = new Telegraf<MyContext>('123:ABC');
+	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCbQuery = async () => {
+		ctx.answerCallbackQuery = async () => {
 			t.pass()
 			return Promise.resolve(true)
 		}

@@ -1,4 +1,4 @@
-import {InlineKeyboardButton as TelegramInlineKeyboardButton} from 'typegram'
+import {InlineKeyboardButton as TelegramInlineKeyboardButton} from 'grammy/out/platform'
 
 import {ConstOrContextPathFunc, ContextPathFunc, filterNonNullable} from './generic-types'
 import {combinePath} from './path'

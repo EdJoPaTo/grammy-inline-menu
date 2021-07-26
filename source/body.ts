@@ -1,6 +1,4 @@
-import {InputFile} from 'telegraf/typings/core/types/typegram'
-import {NewInvoiceParameters} from 'telegraf/typings/telegram-types'
-import {Location, ParseMode, Venue} from 'typegram'
+import {InputFile, LabeledPrice, Location, ParseMode, Venue} from 'grammy/out/platform'
 
 import {hasTruthyKey, isObject} from './generic-types'
 
@@ -33,7 +31,14 @@ export interface VenueBody {
 }
 
 export interface InvoiceBody {
-	readonly invoice: Readonly<NewInvoiceParameters>;
+	readonly invoice: {
+		readonly title: string;
+		readonly description: string;
+		readonly payload: string;
+		readonly provider_token: string;
+		readonly currency: string;
+		readonly prices: readonly LabeledPrice[];
+	};
 }
 
 function isKnownMediaType(type: unknown): type is MediaType {

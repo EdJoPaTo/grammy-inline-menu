@@ -1,4 +1,4 @@
-import {Telegraf, Context as BaseContext} from 'telegraf'
+import {Bot, Context as BaseContext} from 'grammy'
 
 import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../source'
 
@@ -22,7 +22,7 @@ menu.toggle('toggle me', 'toggle me', {
 menu.interact('interaction', 'interact', {
 	hide: () => mainMenuToggle,
 	do: async ctx => {
-		await ctx.answerCbQuery('you clicked me!')
+		await ctx.answerCallbackQuery({text: 'you clicked me!'})
 		// Do not update the menu afterwards
 		return false
 	},
@@ -32,7 +32,7 @@ menu.interact('update after action', 'update afterwards', {
 	joinLastRow: true,
 	hide: () => mainMenuToggle,
 	do: async ctx => {
-		await ctx.answerCbQuery('I will update the menu now…')
+		await ctx.answerCallbackQuery({text: 'I will update the menu now…'})
 
 		return true
 
@@ -46,7 +46,7 @@ let selectedKey = 'b'
 menu.select('select', ['A', 'B', 'C'], {
 	set: async (ctx, key) => {
 		selectedKey = key
-		await ctx.answerCbQuery(`you selected ${key}`)
+		await ctx.answerCallbackQuery({text: `you selected ${key}`})
 		return true
 	},
 	isSet: (_, key) => key === selectedKey,
@@ -189,7 +189,7 @@ const mediaMenu = new MenuTemplate<MyContext>(() => {
 })
 mediaMenu.interact('Just a button', 'randomButton', {
 	do: async ctx => {
-		await ctx.answerCbQuery('Just a callback query answer')
+		await ctx.answerCallbackQuery({text: 'Just a callback query answer'})
 		return false
 	},
 })
@@ -208,13 +208,10 @@ menu.submenu('Media Menu', 'media', mediaMenu)
 const menuMiddleware = new MenuMiddleware<MyContext>('/', menu)
 console.log(menuMiddleware.tree())
 
-const bot = new Telegraf<MyContext>(process.env['BOT_TOKEN']!)
+const bot = new Bot<MyContext>(process.env['BOT_TOKEN']!)
 
-bot.use(async (ctx, next) => {
-	if (ctx.callbackQuery && 'data' in ctx.callbackQuery) {
-		console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
-	}
-
+bot.on('callback_query:data', async (ctx, next) => {
+	console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
 	return next()
 })
 
@@ -226,8 +223,9 @@ bot.catch(error => {
 })
 
 async function startup(): Promise<void> {
-	await bot.launch()
-	console.log(new Date(), 'Bot started as', bot.botInfo?.username)
+	const {username} = await bot.api.getMe()
+	console.log(new Date(), 'Bot starts as', username)
+	await bot.start()
 }
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises

@@ -11,9 +11,9 @@ assignees: ''
 A clear and concise description of what the bug is.
 
 **Versions**
-Did you updated telegraf and telegraf-inline-menu to the latest version?
-* Version of telegraf:
-* Version of telegraf-inline-menu:
+Did you updated grammY and grammy-inline-menu to the latest version?
+* Version of grammy:
+* Version of grammy-inline-menu:
 
 What version of NodeJS (and TypeScript) do you use?
 * Version of NodeJS:

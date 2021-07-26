@@ -1,5 +1,5 @@
 import test from 'ava'
-import {Context as BaseContext} from 'telegraf'
+import {Context as BaseContext} from 'grammy'
 
 import {editMenuOnContext, replyMenuToContext, generateSendMenuToChatFunction, generateEditMessageIntoMenuFunction} from '../../source/send-menu'
 import {MenuTemplate} from '../../source'

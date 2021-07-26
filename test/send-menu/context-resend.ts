@@ -1,5 +1,5 @@
 import test from 'ava'
-import {Context as BaseContext} from 'telegraf'
+import {Context as BaseContext} from 'grammy'
 
 import {MenuTemplate} from '../../source'
 
@@ -20,9 +20,9 @@ test('resend on callback query', async t => {
 			t.is(messageId, undefined)
 			return Promise.resolve(true)
 		},
-		reply: async (text, extra) => {
+		reply: async (text, other) => {
 			t.is(text, 'whatever')
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
@@ -45,9 +45,9 @@ test('resend on whatever', async t => {
 			t.is(messageId, undefined)
 			return Promise.resolve(true)
 		},
-		reply: async (text, extra) => {
+		reply: async (text, other) => {
 			t.is(text, 'whatever')
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
