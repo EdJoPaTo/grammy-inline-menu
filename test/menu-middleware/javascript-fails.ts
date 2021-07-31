@@ -31,7 +31,7 @@ test('not supply reply as a middleware directly', async t => {
 	)
 })
 
-test('action is run and no path to update afterwards is returned', async t => {
+test.skip('action is run and no path to update afterwards is returned', async t => {
 	t.plan(2)
 	const action: ButtonAction<BaseContext> = {
 		trigger: /^\/what$/,
@@ -95,7 +95,7 @@ test('action is run and no path to update afterwards is returned', async t => {
 	})
 })
 
-test('action is run and an empty path to update afterwards is returned throws', async t => {
+test.skip('action is run and an empty path to update afterwards is returned throws', async t => {
 	t.plan(2)
 	const action: ButtonAction<BaseContext> = {
 		trigger: /^\/what$/,

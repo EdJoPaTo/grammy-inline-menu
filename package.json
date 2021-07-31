@@ -70,6 +70,7 @@
 		"rules": {
 			"@typescript-eslint/prefer-readonly-parameter-types": "error",
 			"ava/no-ignored-test-files": "off",
+			"ava/no-skip-test": "warn",
 			"camelcase": "off",
 			"import/extensions": "off"
 		},
