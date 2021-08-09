@@ -48,7 +48,7 @@ let selectedKey = 'b'
 menu.select('select', ['A', 'B', 'C'], {
 	set: async (ctx, key) => {
 		selectedKey = key
-		await ctx.answerCallbackQuery({text: `you selected ${key}`})
+		await ctx.answerCallbackQuery({text: `you selected ${key}`})
 		return true
 	},
 	isSet: (_, key) => key === selectedKey,
