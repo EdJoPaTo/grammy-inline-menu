@@ -1,3 +1,5 @@
+import * as process from 'process'
+
 import {Bot, Context as BaseContext} from 'grammy'
 
 import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../source'
