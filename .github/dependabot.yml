@@ -11,3 +11,6 @@ updates:
       time: "03:37" # UTC
     commit-message:
       prefix: "build(npm):"
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
