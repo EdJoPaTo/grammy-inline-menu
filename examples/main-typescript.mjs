@@ -223,9 +223,11 @@ bot.catch(error => {
 })
 
 async function startup() {
-	const {username} = await bot.api.getMe()
-	console.log(new Date(), 'Bot starts as', username)
-	await bot.start()
+	await bot.start({
+		onStart: botInfo => {
+			console.log(new Date(), 'Bot starts as', botInfo.username)
+		},
+	})
 }
 
 startup()
