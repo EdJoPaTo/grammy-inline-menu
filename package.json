@@ -77,10 +77,10 @@
 		"overrides": [
 			{
 				"files": [
-					"examples/**/*.js"
+					"examples/**/*.*js"
 				],
 				"rules": {
-					"unicorn/prefer-module": "off"
+					"dot-notation": "off"
 				}
 			},
 			{

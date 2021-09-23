@@ -6,7 +6,7 @@
 
 import * as process from 'process'
 
-import {Bot, Context as BaseContext} from 'grammy'
+import {Bot} from 'grammy'
 
 import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../dist/source/index.js'
 
@@ -228,5 +228,4 @@ async function startup() {
 	await bot.start()
 }
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 startup()
