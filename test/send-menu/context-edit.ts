@@ -1,5 +1,5 @@
 import test from 'ava'
-import {Context as BaseContext} from 'telegraf'
+import {Context as BaseContext} from 'grammy'
 
 import {MenuTemplate} from '../../source'
 
@@ -12,9 +12,9 @@ test('text reply when not a callback query', async t => {
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: undefined,
-		reply: async (text, extra) => {
+		reply: async (text, other) => {
 			t.is(text, 'whatever')
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
@@ -39,9 +39,9 @@ test('text reply when no message on callback query', async t => {
 			chat_instance: '666',
 			data: '666',
 		},
-		reply: async (text, extra) => {
+		reply: async (text, other) => {
 			t.is(text, 'whatever')
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
@@ -72,9 +72,9 @@ test('text edit when message is a text message', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		editMessageText: async (text, extra) => {
+		editMessageText: async (text, other) => {
 			t.is(text, 'whatever')
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
@@ -109,9 +109,9 @@ test('text reply when message is a media message', async t => {
 			t.is(messageId, undefined)
 			return Promise.resolve(true)
 		},
-		reply: async (text, extra) => {
+		reply: async (text, other) => {
 			t.is(text, 'whatever')
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
@@ -164,9 +164,9 @@ test('media reply when not a callback query', async t => {
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: undefined,
-		replyWithPhoto: async (photo, extra) => {
+		replyWithPhoto: async (photo, other) => {
 			t.is(photo, 'whatever')
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				caption: undefined,
 				parse_mode: undefined,
 				reply_markup: {
@@ -201,9 +201,9 @@ test('media reply when text message', async t => {
 			t.is(messageId, undefined)
 			return Promise.resolve(true)
 		},
-		replyWithPhoto: async (photo, extra) => {
+		replyWithPhoto: async (photo, other) => {
 			t.is(photo, 'whatever')
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				caption: undefined,
 				parse_mode: undefined,
 				reply_markup: {
@@ -238,14 +238,14 @@ test('media edit when media message', async t => {
 			t.is(messageId, undefined)
 			return Promise.resolve(true)
 		},
-		editMessageMedia: async (media, extra) => {
+		editMessageMedia: async (media, other) => {
 			t.deepEqual(media, {
 				media: 'whatever',
 				type: 'photo',
 				caption: undefined,
 				parse_mode: undefined,
 			})
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				reply_markup: {
 					inline_keyboard: [],
 				},
@@ -328,8 +328,8 @@ test('text edit without webpage preview', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		editMessageText: async (_text, extra) => {
-			t.deepEqual(extra, {
+		editMessageText: async (_text, other) => {
+			t.deepEqual(other, {
 				disable_web_page_preview: true,
 				parse_mode: undefined,
 				reply_markup: {
@@ -359,8 +359,8 @@ test('text edit with parse mode', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		editMessageText: async (_text, extra) => {
-			t.deepEqual(extra, {
+		editMessageText: async (_text, other) => {
+			t.deepEqual(other, {
 				disable_web_page_preview: undefined,
 				parse_mode: 'Markdown',
 				reply_markup: {
@@ -391,8 +391,8 @@ test('text edit with button', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		editMessageText: async (_text, extra) => {
-			t.deepEqual(extra?.reply_markup, {
+		editMessageText: async (_text, other) => {
+			t.deepEqual(other?.reply_markup, {
 				inline_keyboard: [[{
 					text: 'Button',
 					callback_data: '/',
@@ -422,8 +422,8 @@ test('media edit with button', async t => {
 				photo: [],
 			},
 		},
-		editMessageMedia: async (_media, extra) => {
-			t.deepEqual(extra?.reply_markup, {
+		editMessageMedia: async (_media, other) => {
+			t.deepEqual(other?.reply_markup, {
 				inline_keyboard: [[{
 					text: 'Button',
 					callback_data: '/',
@@ -458,10 +458,10 @@ test('location reply', async t => {
 			t.is(messageId, undefined)
 			return Promise.resolve(true)
 		},
-		replyWithLocation: async (latitude, longitude, extra) => {
+		replyWithLocation: async (latitude, longitude, other) => {
 			t.is(latitude, 53.5)
 			t.is(longitude, 10)
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				live_period: 666,
 				reply_markup: {
 					inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
@@ -496,12 +496,12 @@ test('venue reply', async t => {
 			t.is(messageId, undefined)
 			return Promise.resolve(true)
 		},
-		replyWithVenue: async (latitude, longitude, title, address, extra) => {
+		replyWithVenue: async (latitude, longitude, title, address, other) => {
 			t.is(latitude, 53.5)
 			t.is(longitude, 10)
 			t.is(title, 'A')
 			t.is(address, 'B')
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				foursquare_id: undefined,
 				foursquare_type: undefined,
 				reply_markup: {
@@ -516,11 +516,10 @@ test('venue reply', async t => {
 })
 
 test('invoice reply', async t => {
-	t.plan(9)
+	t.plan(8)
 	const menu = new MenuTemplate<BaseContext>({invoice: {
 		title: 'A',
 		description: 'B',
-		start_parameter: 'C',
 		currency: 'EUR',
 		payload: 'D',
 		provider_token: 'E',
@@ -545,16 +544,14 @@ test('invoice reply', async t => {
 			t.is(messageId, undefined)
 			return Promise.resolve(true)
 		},
-		replyWithInvoice: async (invoice, extra) => {
-			const {title, description, start_parameter, currency, payload, provider_token, prices} = invoice
+		replyWithInvoice: async (title, description, payload, provider_token, currency, prices, other) => {
 			t.is(title, 'A')
 			t.is(description, 'B')
-			t.is(start_parameter, 'C')
 			t.is(currency, 'EUR')
 			t.is(payload, 'D')
 			t.is(provider_token, 'E')
 			t.deepEqual(prices, [])
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				reply_markup: {
 					inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
 				},

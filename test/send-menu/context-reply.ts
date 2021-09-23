@@ -1,5 +1,5 @@
 import test from 'ava'
-import {Context as BaseContext} from 'telegraf'
+import {Context as BaseContext} from 'grammy'
 
 import {MenuTemplate} from '../../source'
 import {MEDIA_TYPES} from '../../source/body'
@@ -11,9 +11,9 @@ for (const mediaType of MEDIA_TYPES) {
 		t.plan(2)
 		const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: mediaType})
 
-		const replyFunction = async (media: unknown, extra: unknown) => {
+		const replyFunction = async (media: unknown, other: unknown) => {
 			t.is(media, 'whatever')
-			t.deepEqual(extra, {
+			t.deepEqual(other, {
 				caption: undefined,
 				parse_mode: undefined,
 				reply_markup: {

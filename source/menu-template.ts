@@ -174,7 +174,7 @@ export class MenuTemplate<Context> {
 	 * @example
 	 * menuTemplate.interact('Knock Knock', 'unique', {
 	 *   do: async context => {
-	 *     await context.answerCbQuery('Who is there?')
+	 *     await context.answerCallbackQuery('Who is there?')
 	 *     return false // Do not update the menu afterwards
 	 *   }
 	 * })
@@ -208,7 +208,7 @@ export class MenuTemplate<Context> {
 	 * @example
 	 * const submenuTemplate = new MenuTemplate('I am a submenu')
 	 * submenuTemplate.interact('Text', 'unique', {
-	 *   do: async ctx => ctx.answerCbQuery('You hit a button in a submenu')
+	 *   do: async ctx => ctx.answerCallbackQuery('You hit a button in a submenu')
 	 * })
 	 * submenuTemplate.manualRow(createBackMainMenuButtons())
 	 *
@@ -270,7 +270,7 @@ export class MenuTemplate<Context> {
 	 * submenu.interact('Text', 'unique', {
 	 *   do: async ctx => {
 	 *     console.log('Take a look at ctx.match. It contains the chosen city', ctx.match)
-	 *     await ctx.answerCbQuery('You hit a button in a submenu')
+	 *     await ctx.answerCallbackQuery('You hit a button in a submenu')
 	 *     return false
 	 *   }
 	 * })

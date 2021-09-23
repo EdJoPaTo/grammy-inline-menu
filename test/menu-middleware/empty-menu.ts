@@ -1,4 +1,4 @@
-import {Telegraf, Context as BaseContext} from 'telegraf'
+import {Bot, Context as BaseContext} from 'grammy'
 import test from 'ava'
 
 import {MenuLike} from '../../source/menu-like'
@@ -15,7 +15,7 @@ test('non callback queries are passing through', async t => {
 
 	const mm = new MenuMiddleware('/', menu)
 
-	const bot = new Telegraf<BaseContext>('123:ABC');
+	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {}
 	bot.use(mm.middleware())
 
@@ -45,7 +45,7 @@ test('irrelevant callback queries are passing through', async t => {
 
 	const mm = new MenuMiddleware('/', menu)
 
-	const bot = new Telegraf<BaseContext>('123:ABC');
+	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {}
 	bot.use(mm.middleware())
 
@@ -80,14 +80,14 @@ test('default root path is responded', async t => {
 		},
 	})
 
-	const bot = new Telegraf<BaseContext>('123:ABC');
+	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {}
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCbQuery = async () => {
+		ctx.answerCallbackQuery = async () => {
 			t.pass()
 			return Promise.resolve(true)
 		}
@@ -128,14 +128,14 @@ test('custom root path is responded', async t => {
 		},
 	})
 
-	const bot = new Telegraf<BaseContext>('123:ABC');
+	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {}
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCbQuery = async () => {
+		ctx.answerCallbackQuery = async () => {
 			t.pass()
 			return Promise.resolve(true)
 		}
@@ -176,14 +176,14 @@ test('custom regex root path is responded', async t => {
 		},
 	})
 
-	const bot = new Telegraf<BaseContext>('123:ABC');
+	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {}
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCbQuery = async () => {
+		ctx.answerCallbackQuery = async () => {
 			t.pass()
 			return Promise.resolve(true)
 		}
@@ -218,7 +218,7 @@ test('default root path does not trigger custom root path', async t => {
 
 	const mm = new MenuMiddleware('custom/', menu)
 
-	const bot = new Telegraf<BaseContext>('123:ABC');
+	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {}
 	bot.use(mm.middleware())
 
@@ -253,14 +253,14 @@ test('not existing path below is responded with root menu', async t => {
 		},
 	})
 
-	const bot = new Telegraf<BaseContext>('123:ABC');
+	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {}
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCbQuery = async () => {
+		ctx.answerCallbackQuery = async () => {
 			t.pass()
 			return Promise.resolve(true)
 		}

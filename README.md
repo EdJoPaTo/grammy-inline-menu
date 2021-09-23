@@ -1,12 +1,12 @@
-# Telegraf Inline Menu
+# grammY Inline Menu
 
-[![NPM Version](https://img.shields.io/npm/v/telegraf-inline-menu.svg)](https://www.npmjs.com/package/telegraf-inline-menu)
-[![node](https://img.shields.io/node/v/telegraf-inline-menu.svg)](https://www.npmjs.com/package/telegraf-inline-menu)
-[![Build Status](https://github.com/EdJoPaTo/telegraf-inline-menu/workflows/NodeJS/badge.svg)](https://github.com/EdJoPaTo/telegraf-inline-menu/actions)
-[![Last Commit](https://img.shields.io/github/last-commit/EdJoPaTo/telegraf-inline-menu.svg)](https://github.com/EdJoPaTo/telegraf-inline-menu)
-[![Dependency Status](https://david-dm.org/EdJoPaTo/telegraf-inline-menu/status.svg)](https://david-dm.org/EdJoPaTo/telegraf-inline-menu)
-[![Peer Dependency Status](https://david-dm.org/EdJoPaTo/telegraf-inline-menu/peer-status.svg)](https://david-dm.org/EdJoPaTo/telegraf-inline-menu?type=peer)
-[![Dev Dependency Status](https://david-dm.org/EdJoPaTo/telegraf-inline-menu/dev-status.svg)](https://david-dm.org/EdJoPaTo/telegraf-inline-menu?type=dev)
+[![NPM Version](https://img.shields.io/npm/v/grammy-inline-menu.svg)](https://www.npmjs.com/package/grammy-inline-menu)
+[![node](https://img.shields.io/node/v/grammy-inline-menu.svg)](https://www.npmjs.com/package/grammy-inline-menu)
+[![Build Status](https://github.com/EdJoPaTo/grammy-inline-menu/workflows/NodeJS/badge.svg)](https://github.com/EdJoPaTo/grammy-inline-menu/actions)
+[![Last Commit](https://img.shields.io/github/last-commit/EdJoPaTo/grammy-inline-menu.svg)](https://github.com/EdJoPaTo/grammy-inline-menu)
+[![Dependency Status](https://david-dm.org/EdJoPaTo/grammy-inline-menu/status.svg)](https://david-dm.org/EdJoPaTo/grammy-inline-menu)
+[![Peer Dependency Status](https://david-dm.org/EdJoPaTo/grammy-inline-menu/peer-status.svg)](https://david-dm.org/EdJoPaTo/grammy-inline-menu?type=peer)
+[![Dev Dependency Status](https://david-dm.org/EdJoPaTo/grammy-inline-menu/dev-status.svg)](https://david-dm.org/EdJoPaTo/grammy-inline-menu?type=dev)
 
 This menu library is made to easily create an inline menu for your Telegram bot.
 
@@ -15,7 +15,7 @@ This menu library is made to easily create an inline menu for your Telegram bot.
 # Installation
 
 ```
-$ npm install telegraf telegraf-inline-menu
+$ npm install grammy grammy-inline-menu
 ```
 
 Consider using TypeScript with this library as it helps with finding some common mistakes faster.
@@ -27,8 +27,8 @@ A good starting point for TypeScript and Telegram bots might be this repo: [EdJo
 ## Basic Example
 
 ```ts
-import {Telegraf} from 'telegraf'
-import {MenuTemplate, MenuMiddleware} from 'telegraf-inline-menu'
+import {Bot} from 'grammy'
+import {MenuTemplate, MenuMiddleware} from 'grammy-inline-menu'
 
 const menuTemplate = new MenuTemplate<MyContext>(ctx => `Hey ${ctx.from.first_name}!`)
 
@@ -39,7 +39,7 @@ menuTemplate.interact('I am excited!', 'a', {
 	}
 })
 
-const bot = new Telegraf(process.env.BOT_TOKEN)
+const bot = new Bot(process.env.BOT_TOKEN)
 
 const menuMiddleware = new MenuMiddleware('/', menuTemplate)
 bot.command('start', ctx => menuMiddleware.replyToContext(ctx))
@@ -89,13 +89,25 @@ Telegraf knows when match is available or not.
 The default Context does not have match anymore.
 telegraf-inline-menu should also know this in a future release.
 
+# Migrate from version 6 to 7
+
+Version 7 switches from Telegraf to grammY as a Telegram Bot framework.
+grammY has various benefits over Telegraf as Telegraf is quite old and grammY learned a lot from its mistakes and shortcomings.
+
+```diff
+-import {Telegraf} from 'telegraf'
+-import {MenuTemplate, MenuMiddleware} from 'telegraf-inline-menu'
++import {Bot} from 'grammy'
++import {MenuTemplate, MenuMiddleware} from 'grammy-inline-menu'
+```
+
 # How does it work
 
 Telegrams inline keyboards have buttons.
 These buttons have a text and callback data.
 
 When a button is hit, the callback data is sent to the bot.
-You know this from Telegraf from `bot.action`.
+You know this from grammY as `bot.callbackQuery`.
 
 This library both creates the buttons and listens for callback data events.
 When a button is pressed and its callback data is occurring the function relevant to the button is executed.
@@ -135,7 +147,7 @@ If you want to manually send your submenu `/my-submenu/` you have to supply the 
 ## Improve the docs
 
 If you have any questions on how the library works head out to the issues and ask ahead.
-You can also join the [Telegraf community chat](https://t.me/TelegrafJSChat) in order to talk about the questions on your mind.
+You can also join the [grammY community chat](https://t.me/grammyjs) in order to talk about the questions on your mind.
 
 When you think there is something to improve on this explanation, feel free to open a Pull Request!
 I am already stuck in my bubble on how this is working.
@@ -159,7 +171,7 @@ const menuTemplate = new MenuTemplate<MyContext>(ctx => {
 
 The menu body can be an object containing `media` and `type` for media.
 The `media` and `type` is the same as [Telegrams InputMedia](https://core.telegram.org/bots/api#inputmedia).
-The media is just passed to telegraf so check its documentation on [how to work with files](https://telegraf.js.org/#/?id=working-with-files).
+The media is just passed to grammY so check its documentation on [how to work with files](https://grammy.dev/guide/files.html).
 
 The [example](examples/main-typescript.ts) features a media submenu with all currently supported media types.
 
@@ -187,7 +199,7 @@ When using as a function the arguments are the context and the path of the menu 
 ```ts
 menuTemplate.interact('Text', 'unique', {
 	do: async ctx => {
-		await ctx.answerCbQuery('yaay')
+		await ctx.answerCallbackQuery('yaay')
 		return false
 	}
 })
@@ -208,7 +220,7 @@ If you just want to navigate without doing logic, you should prefer `.navigate(â
 ```ts
 menuTemplate.interact('Text', 'unique', {
 	do: async ctx => {
-		await ctx.answerCbQuery('go to parent menu after doing some logic')
+		await ctx.answerCallbackQuery('go to parent menu after doing some logic')
 		return '..'
 	}
 })
@@ -216,14 +228,14 @@ menuTemplate.interact('Text', 'unique', {
 
 ## How to use a dynamic text of a button?
 
-This is often required when translating ([telegraf-i18n](https://github.com/telegraf/telegraf-i18n)) your bot.
+This is often required when translating ([i18n](https://grammy.dev/plugins/i18n.html)) your bot.
 
 Also check out other buttons like [toggle](#how-can-i-toggle-a-value-easily) as they do some formatting of the button text for you.
 
 ```ts
 menuTemplate.interact(ctx => ctx.i18n.t('button'), 'unique', {
 	do: async ctx => {
-		await ctx.answerCbQuery(ctx.i18n.t('reponse'))
+		await ctx.answerCallbackQuery(ctx.i18n.t('reponse'))
 		return '.'
 	}
 })
@@ -242,7 +254,7 @@ Use `joinLastRow` in the second button
 ```ts
 menuTemplate.interact('Text', 'unique', {
 	do: async ctx => {
-		await ctx.answerCbQuery('yaay')
+		await ctx.answerCallbackQuery('yaay')
 		return false
 	}
 })
@@ -250,7 +262,7 @@ menuTemplate.interact('Text', 'unique', {
 menuTemplate.interact('Text', 'unique', {
 	joinLastRow: true,
 	do: async ctx => {
-		await ctx.answerCbQuery('yaay')
+		await ctx.answerCallbackQuery('yaay')
 		return false
 	}
 })
@@ -298,7 +310,7 @@ menuTemplate.select('unique', ['has arms', 'has legs', 'has eyes', 'has wings'],
 ```ts
 menuTemplate.choose('unique', ['walk', 'swim'], {
 	do: async (ctx, key) => {
-		await ctx.answerCbQuery(`Lets ${key}`)
+		await ctx.answerCallbackQuery(`Lets ${key}`)
 		// You can also go back to the parent menu afterwards for some 'quick' interactions in submenus
 		return '..'
 	}
@@ -378,7 +390,7 @@ menuTemplate.choose('eat', ['cheese', 'bread', 'salad', 'tree', â€¦], {
 ```ts
 const submenu = new MenuTemplate<MyContext>('I am a submenu')
 submenuTemplate.interact('Text', 'unique', {
-	do: async ctx => ctx.answerCbQuery('You hit a button in a submenu')
+	do: async ctx => ctx.answerCallbackQuery('You hit a button in a submenu')
 })
 submenuTemplate.manualRow(createBackMainMenuButtons())
 
@@ -392,7 +404,7 @@ const submenuTemplate = new MenuTemplate<MyContext>(ctx => `You chose city ${ctx
 submenuTemplate.interact('Text', 'unique', {
 	do: async ctx => {
 		console.log('Take a look at ctx.match. It contains the chosen city', ctx.match)
-		await ctx.answerCbQuery('You hit a button in a submenu')
+		await ctx.answerCallbackQuery('You hit a button in a submenu')
 		return false
 	}
 })
@@ -403,7 +415,7 @@ menuTemplate.chooseIntoSubmenu('unique', ['Gotham', 'Mos Eisley', 'Springfield']
 
 ## Can I close the menu?
 
-You can delete the message like you would do with Telegraf: `context.deleteMessage()`.
+You can delete the message like you would do with grammY: `ctx.deleteMessage()`.
 Keep in mind: You can not delete messages which are older than 48 hours.
 
 `deleteMenuFromContext` tries to help you with that:
@@ -440,7 +452,7 @@ bot.command('start', ctx => menuMiddleware.replyToContext(ctx, path))
 You can also use sendMenu functions like `replyMenuToContext` to send a menu manually.
 
 ```ts
-import {MenuTemplate, replyMenuToContext} from 'telegraf-inline-menu'
+import {MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
 const settingsMenu = new MenuTemplate('Settings')
 bot.command('settings', async ctx => replyMenuToContext(settingsMenu, ctx, '/settings/'))
 ```
@@ -463,10 +475,10 @@ async function externalEventOccured() {
 
 Yes. It was moved into a separate library with version 5 as it made the source code overly complicated.
 
-When you want to use it check [telegraf-stateless-question](https://github.com/EdJoPaTo/telegraf-stateless-question).
+When you want to use it check [grammy-stateless-question](https://github.com/grammyjs/stateless-question).
 
 ```ts
-import {getMenuOfPath} from 'telegraf-inline-menu'
+import {getMenuOfPath} from 'grammy-inline-menu'
 
 const myQuestion = new TelegrafStatelessQuestion<MyContext>('unique', async (context, additionalState) => {
 	const answer = context.message.text

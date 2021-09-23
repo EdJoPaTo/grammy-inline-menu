@@ -150,7 +150,6 @@ const EXAMPLE_INVOICE: InvoiceBody = {
 	invoice: {
 		title: 'A',
 		description: 'B',
-		start_parameter: 'C',
 		currency: 'EUR',
 		payload: 'D',
 		provider_token: 'E',
