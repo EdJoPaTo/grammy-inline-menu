@@ -1,13 +1,16 @@
+// This is the same example as the main-typescript.ts just without type anotations.
+// Consider using TypeScript. If you compare both examples they are fairly similar.
+// Learning TypeScript will be worth it!
+//
+// If you just want to use JavaScript, go ahead :)
+
 import * as process from 'process'
 
 import {Bot, Context as BaseContext} from 'grammy'
 
-import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../source'
+import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../dist/source/index.js'
 
-// Check out https://grammy.dev/guide/context.html and Context flavours
-type MyContext = BaseContext
-
-const menu = new MenuTemplate<MyContext>(() => 'Main Menu\n' + new Date().toISOString())
+const menu = new MenuTemplate(() => 'Main Menu\n' + new Date().toISOString())
 
 menu.url('EdJoPaTo.de', 'https://edjopato.de')
 
@@ -54,17 +57,12 @@ menu.select('select', ['A', 'B', 'C'], {
 	isSet: (_, key) => key === selectedKey,
 })
 
-const foodMenu = new MenuTemplate<MyContext>('People like food. What do they like?')
+const foodMenu = new MenuTemplate('People like food. What do they like?')
 
-interface FoodChoises {
-	food?: string;
-	tee?: boolean;
-}
-
-const people: Record<string, FoodChoises> = {Mark: {}, Paul: {}}
+const people = {Mark: {}, Paul: {}}
 const food = ['bread', 'cake', 'bananas']
 
-function personButtonText(_: MyContext, key: string): string {
+function personButtonText(_, key) {
 	const entry = people[key]
 	if (entry?.food) {
 		return `${key} (${entry.food})`
@@ -73,9 +71,9 @@ function personButtonText(_: MyContext, key: string): string {
 	return key
 }
 
-function foodSelectText(ctx: MyContext): string {
-	const person = ctx.match![1]!
-	const hisChoice = people[person]!.food
+function foodSelectText(ctx) {
+	const person = ctx.match[1]
+	const hisChoice = people[person].food
 	if (!hisChoice) {
 		return `${person} is still unsure what to eat.`
 	}
@@ -83,27 +81,27 @@ function foodSelectText(ctx: MyContext): string {
 	return `${person} likes ${hisChoice} currently.`
 }
 
-const foodSelectSubmenu = new MenuTemplate<MyContext>(foodSelectText)
+const foodSelectSubmenu = new MenuTemplate(foodSelectText)
 foodSelectSubmenu.toggle('Prefer tea', 'tea', {
 	set: (ctx, choice) => {
-		const person = ctx.match![1]!
-		people[person]!.tee = choice
+		const person = ctx.match[1]
+		people[person].tee = choice
 		return true
 	},
 	isSet: ctx => {
-		const person = ctx.match![1]!
-		return people[person]!.tee === true
+		const person = ctx.match[1]
+		return people[person].tee === true
 	},
 })
 foodSelectSubmenu.select('food', food, {
 	set: (ctx, key) => {
-		const person = ctx.match![1]!
-		people[person]!.food = key
+		const person = ctx.match[1]
+		people[person].food = key
 		return true
 	},
 	isSet: (ctx, key) => {
-		const person = ctx.match![1]!
-		return people[person]!.food === key
+		const person = ctx.match[1]
+		return people[person].food === key
 	},
 })
 foodSelectSubmenu.manualRow(createBackMainMenuButtons())
@@ -119,7 +117,7 @@ menu.submenu('Food menu', 'food', foodMenu, {
 })
 
 let mediaOption = 'photo1'
-const mediaMenu = new MenuTemplate<MyContext>(() => {
+const mediaMenu = new MenuTemplate(() => {
 	if (mediaOption === 'video') {
 		return {
 			type: 'video',
@@ -207,10 +205,10 @@ mediaMenu.manualRow(createBackMainMenuButtons())
 
 menu.submenu('Media Menu', 'media', mediaMenu)
 
-const menuMiddleware = new MenuMiddleware<MyContext>('/', menu)
+const menuMiddleware = new MenuMiddleware('/', menu)
 console.log(menuMiddleware.tree())
 
-const bot = new Bot<MyContext>(process.env['BOT_TOKEN']!)
+const bot = new Bot(process.env['BOT_TOKEN'])
 
 bot.on('callback_query:data', async (ctx, next) => {
 	console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
