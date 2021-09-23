@@ -1,13 +1,5 @@
 # grammY Inline Menu
 
-[![NPM Version](https://img.shields.io/npm/v/grammy-inline-menu.svg)](https://www.npmjs.com/package/grammy-inline-menu)
-[![node](https://img.shields.io/node/v/grammy-inline-menu.svg)](https://www.npmjs.com/package/grammy-inline-menu)
-[![Build Status](https://github.com/EdJoPaTo/grammy-inline-menu/workflows/NodeJS/badge.svg)](https://github.com/EdJoPaTo/grammy-inline-menu/actions)
-[![Last Commit](https://img.shields.io/github/last-commit/EdJoPaTo/grammy-inline-menu.svg)](https://github.com/EdJoPaTo/grammy-inline-menu)
-[![Dependency Status](https://david-dm.org/EdJoPaTo/grammy-inline-menu/status.svg)](https://david-dm.org/EdJoPaTo/grammy-inline-menu)
-[![Peer Dependency Status](https://david-dm.org/EdJoPaTo/grammy-inline-menu/peer-status.svg)](https://david-dm.org/EdJoPaTo/grammy-inline-menu?type=peer)
-[![Dev Dependency Status](https://david-dm.org/EdJoPaTo/grammy-inline-menu/dev-status.svg)](https://david-dm.org/EdJoPaTo/grammy-inline-menu?type=dev)
-
 This menu library is made to easily create an inline menu for your Telegram bot.
 
 ![Example shown as a gif](media/example-food.gif)
