@@ -28,7 +28,7 @@
 		"build": "del-cli dist && tsc",
 		"prepack": "npm run build",
 		"preexample-js": "npm run build",
-		"example-js": "node examples/main-javascript.js",
+		"example-js": "node examples/main-javascript.mjs",
 		"start": "ts-node examples/main-typescript.ts",
 		"test": "tsc --sourceMap && xo && nyc ava"
 	},

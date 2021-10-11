@@ -44,7 +44,7 @@ bot.launch()
 
 ![Example shown as a gif](media/example-food.gif)
 
-Look at the code here: [TypeScript](examples/main-typescript.ts) / [JavaScript (consider using TypeScript)](examples/main-javascript.js)
+Look at the code here: [TypeScript](examples/main-typescript.ts) / [JavaScript (consider using TypeScript)](examples/main-javascript.mjs)
 
 # Migrate from version 4 to 5
 
