@@ -1,5 +1,5 @@
 import {Context as BaseContext, Api} from 'grammy'
-import {InputMedia, Message} from 'grammy/out/platform'
+import {Message} from '@grammyjs/types'
 
 import {Body, TextBody, MediaBody, LocationBody, isMediaBody, isLocationBody, isTextBody, getBodyText, isVenueBody, VenueBody, isInvoiceBody} from './body'
 import {ensurePathMenu} from './path'
@@ -30,7 +30,7 @@ export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, mes
  * @param path path of the menu
  * @param other optional additional options
  */
-export async function replyMenuToContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, other?: Readonly<Record<string, unknown>>): Promise<Message> {
+export async function replyMenuToContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, other?: Readonly<Record<string, unknown>>) {
 	ensurePathMenu(path)
 	const body = await menu.renderBody(context, path)
 	const keyboard = await menu.renderKeyboard(context, path)
@@ -44,7 +44,7 @@ export async function replyMenuToContext<Context extends BaseContext>(menu: Menu
  * @param path path of the menu
  * @param other optional additional options
  */
-export async function editMenuOnContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, other: Readonly<Record<string, unknown>> = {}): Promise<Message | boolean> {
+export async function editMenuOnContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, other: Readonly<Record<string, unknown>> = {}) {
 	ensurePathMenu(path)
 	const body = await menu.renderBody(context, path)
 	const keyboard = await menu.renderKeyboard(context, path)
@@ -56,14 +56,15 @@ export async function editMenuOnContext<Context extends BaseContext>(menu: MenuL
 
 	if (isMediaBody(body)) {
 		if ('animation' in message || 'audio' in message || 'document' in message || 'photo' in message || 'video' in message) {
-			const media: InputMedia = {
-				type: body.type,
-				media: body.media,
-				caption: body.text,
-				parse_mode: body.parse_mode,
-			}
-
-			return context.editMessageMedia(media, createGenericOther(keyboard, other))
+			return context.editMessageMedia(
+				{
+					type: body.type,
+					media: body.media,
+					caption: body.text,
+					parse_mode: body.parse_mode,
+				},
+				createGenericOther(keyboard, other)
+			)
 				// eslint-disable-next-line promise/prefer-await-to-then
 				.catch(catchMessageNotModified)
 		}
@@ -108,7 +109,7 @@ export async function deleteMenuFromContext<Context extends BaseContext>(context
  * @param path path of the menu
  * @param other optional additional options
  */
-export async function resendMenuToContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, other: Readonly<Record<string, unknown>> = {}): Promise<Message> {
+export async function resendMenuToContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, other: Readonly<Record<string, unknown>> = {}) {
 	const [menuMessage] = await Promise.all([
 		replyMenuToContext(menu, context, path, other),
 		deleteMenuFromContext(context),
@@ -125,7 +126,7 @@ function catchMessageNotModified(error: unknown): false {
 	throw error
 }
 
-async function replyRenderedMenuPartsToContext<Context extends BaseContext>(body: Body, keyboard: InlineKeyboard, context: Context, other: Readonly<Record<string, unknown>> = {}): Promise<Message> {
+async function replyRenderedMenuPartsToContext<Context extends BaseContext>(body: Body, keyboard: InlineKeyboard, context: Context, other: Readonly<Record<string, unknown>> = {}) {
 	if (isMediaBody(body)) {
 		const mediaOther = createSendMediaOther(body, keyboard, other)
 
@@ -233,14 +234,17 @@ export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<
 		const keyboard = await menu.renderKeyboard(context, path)
 
 		if (isMediaBody(body)) {
-			const media: InputMedia = {
-				type: body.type,
-				media: body.media,
-				caption: body.text,
-				parse_mode: body.parse_mode,
-			}
-
-			return telegram.editMessageMedia(chatId, messageId, media, createGenericOther(keyboard, other))
+			return telegram.editMessageMedia(
+				chatId,
+				messageId,
+				{
+					type: body.type,
+					media: body.media,
+					caption: body.text,
+					parse_mode: body.parse_mode,
+				},
+				createGenericOther(keyboard, other),
+			)
 		}
 
 		if (isLocationBody(body)) {

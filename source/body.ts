@@ -1,4 +1,5 @@
-import {InputFile, LabeledPrice, Location, ParseMode, Venue} from 'grammy/out/platform'
+import {InputFile} from 'grammy'
+import {LabeledPrice, Location, ParseMode, Venue} from '@grammyjs/types'
 
 import {hasTruthyKey, isObject} from './generic-types'
 

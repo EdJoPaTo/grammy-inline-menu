@@ -1,5 +1,4 @@
 import {Composer, Context as BaseContext} from 'grammy'
-import {Message} from 'grammy/out/platform'
 
 import {ActionFunc} from './action-hive'
 import {combineTrigger, createRootMenuTrigger, combinePath} from './path'
@@ -56,7 +55,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 	 * const menuMiddleware = new MenuMiddleware('/', menuTemplate)
 	 * bot.command('start', async ctx => menuMiddleware.replyToContext(ctx))
 	 */
-	async replyToContext(context: Context, path = this.rootTrigger): Promise<Message> {
+	async replyToContext(context: Context, path = this.rootTrigger) {
 		if (typeof path === 'function') {
 			// Happens when a JS User does this as next is the second argument and not a string:
 			// ctx.command('start', menuMiddleware.replyToContext)
