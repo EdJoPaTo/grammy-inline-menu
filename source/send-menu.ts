@@ -63,7 +63,7 @@ export async function editMenuOnContext<Context extends BaseContext>(menu: MenuL
 					caption: body.text,
 					parse_mode: body.parse_mode,
 				},
-				createGenericOther(keyboard, other)
+				createGenericOther(keyboard, other),
 			)
 				// eslint-disable-next-line promise/prefer-await-to-then
 				.catch(catchMessageNotModified)
