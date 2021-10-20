@@ -4,8 +4,8 @@ on:
   push:
   pull_request:
   schedule:
-    # Check if it works with current dependencies (weekly on Wednesday 4:32 UTC)
-    - cron: '32 4 * * 3'
+    # Check if it works with current dependencies (weekly on Wednesday 2:32 UTC)
+    - cron: '32 2 * * 3'
 
 jobs:
   test:
@@ -19,9 +19,9 @@ jobs:
           - 14
           - 12
     steps:
-      - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+      - uses: actions/checkout@v2
       - run: npm install
       - run: npm test
