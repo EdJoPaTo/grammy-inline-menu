@@ -74,8 +74,6 @@ test.skip('action is run and no path to update afterwards is returned', async t 
 		t.fail()
 	})
 
-	// False positive
-	// eslint-disable-next-line promise/prefer-await-to-then
 	bot.catch(error => {
 		if (error instanceof Error) {
 			t.is(error.message, 'You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.')
@@ -137,8 +135,6 @@ test.skip('action is run and an empty path to update afterwards is returned thro
 		t.fail()
 	})
 
-	// False positive
-	// eslint-disable-next-line promise/prefer-await-to-then
 	bot.catch(error => {
 		if (error instanceof Error) {
 			t.is(error.message, 'You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.')

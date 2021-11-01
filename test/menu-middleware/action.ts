@@ -215,8 +215,6 @@ test.skip('action returns non existing path afterwards throws Error', async t =>
 		t.fail()
 	})
 
-	// False positive
-	// eslint-disable-next-line promise/prefer-await-to-then
 	bot.catch(error => {
 		if (error instanceof Error) {
 			t.is(error.message, 'There is no menu "/foo/" which can be reached in this menu')
@@ -634,8 +632,6 @@ test.skip('updating menu still throws unknown error from answerCallbackQuery', a
 		t.fail()
 	})
 
-	// False positive
-	// eslint-disable-next-line promise/prefer-await-to-then
 	bot.catch(error => {
 		if (error instanceof Error) {
 			t.is(error.message, 'Whatever went wrong here for the test')
