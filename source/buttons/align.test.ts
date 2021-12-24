@@ -5,10 +5,10 @@ import {getRowsOfButtons, maximumButtonsPerPage, getButtonsAsRows, getButtonsOfP
 function generateCharArray(charA: string, charZ: string): string[] {
 	// https://stackoverflow.com/questions/24597634/how-to-generate-an-array-of-alphabet-in-jquery/24597663#24597663
 	const a = []
-	let i = charA.charCodeAt(0)
-	const j = charZ.charCodeAt(0)
+	let i = charA.codePointAt(0)!
+	const j = charZ.codePointAt(0)!
 	for (; i <= j; ++i) {
-		a.push(String.fromCharCode(i))
+		a.push(String.fromCodePoint(i))
 	}
 
 	return a
