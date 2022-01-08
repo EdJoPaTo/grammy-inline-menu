@@ -1,4 +1,4 @@
-import test, {ExecutionContext} from 'ava'
+import test from 'ava'
 
 import {Body, TextBody, MediaBody, LocationBody, VenueBody, InvoiceBody, isTextBody, isMediaBody, isLocationBody, isVenueBody, isInvoiceBody, getBodyText} from './body'
 
@@ -157,11 +157,14 @@ const EXAMPLE_INVOICE: InvoiceBody = {
 	},
 }
 
-function isTextBodyMacro(t: ExecutionContext, expected: boolean, maybeBody: unknown): void {
-	t.is(isTextBody(maybeBody), expected)
-}
-
-isTextBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => `isTextBody ${String(expected)} ${mehToString(maybeBody)}`
+const isTextBodyMacro = test.macro({
+	exec(t, expected: boolean, maybeBody: unknown) {
+		t.is(isTextBody(maybeBody), expected)
+	},
+	title(_providedTitle, expected, maybeBody) {
+		return `isTextBody ${String(expected)} ${mehToString(maybeBody)}`
+	},
+})
 
 for (const body of EXAMPLE_TEXTS) {
 	test(isTextBodyMacro, true, body)
@@ -171,11 +174,14 @@ for (const body of [...EXAMPLE_MEDIA, ...EXAMPLE_LOCATION, EXAMPLE_VENUE, EXAMPL
 	test(isTextBodyMacro, false, body)
 }
 
-function isMediaBodyMacro(t: ExecutionContext, expected: boolean, maybeBody: unknown): void {
-	t.is(isMediaBody(maybeBody), expected)
-}
-
-isMediaBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => `isMediaBody ${String(expected)} ${mehToString(maybeBody)}`
+const isMediaBodyMacro = test.macro({
+	exec(t, expected: boolean, maybeBody: unknown) {
+		t.is(isMediaBody(maybeBody), expected)
+	},
+	title(_providedTitle, expected, maybeBody) {
+		return `isMediaBody ${String(expected)} ${mehToString(maybeBody)}`
+	},
+})
 
 for (const body of EXAMPLE_MEDIA) {
 	test(isMediaBodyMacro, true, body)
@@ -185,11 +191,14 @@ for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_LOCATION, EXAMPLE_VENUE, EXAMPL
 	test(isMediaBodyMacro, false, body)
 }
 
-function isLocationBodyMacro(t: ExecutionContext, expected: boolean, maybeBody: unknown): void {
-	t.is(isLocationBody(maybeBody), expected)
-}
-
-isLocationBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => `isLocationBody ${String(expected)} ${mehToString(maybeBody)}`
+const isLocationBodyMacro = test.macro({
+	exec(t, expected: boolean, maybeBody: unknown) {
+		t.is(isLocationBody(maybeBody), expected)
+	},
+	title(_providedTitle, expected, maybeBody) {
+		return `isLocationBody ${String(expected)} ${mehToString(maybeBody)}`
+	},
+})
 
 for (const body of EXAMPLE_LOCATION) {
 	test(isLocationBodyMacro, true, body)
@@ -199,11 +208,14 @@ for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_MEDIA, EXAMPLE_VENUE, EXAMPLE_I
 	test(isLocationBodyMacro, false, body)
 }
 
-function isVenueBodyMacro(t: ExecutionContext, expected: boolean, maybeBody: unknown): void {
-	t.is(isVenueBody(maybeBody), expected)
-}
-
-isVenueBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => `isVenueBody ${String(expected)} ${mehToString(maybeBody)}`
+const isVenueBodyMacro = test.macro({
+	exec(t, expected: boolean, maybeBody: unknown) {
+		t.is(isVenueBody(maybeBody), expected)
+	},
+	title(_providedTitle, expected, maybeBody) {
+		return `isVenueBody ${String(expected)} ${mehToString(maybeBody)}`
+	},
+})
 
 for (const body of [EXAMPLE_VENUE]) {
 	test(isVenueBodyMacro, true, body)
@@ -213,11 +225,14 @@ for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_MEDIA, ...EXAMPLE_LOCATION, ...
 	test(isVenueBodyMacro, false, body)
 }
 
-function isInvoiceBodyMacro(t: ExecutionContext, expected: boolean, maybeBody: unknown): void {
-	t.is(isInvoiceBody(maybeBody), expected)
-}
-
-isInvoiceBodyMacro.title = (_title: string, expected: boolean, maybeBody: unknown) => `isInvoiceBody ${String(expected)} ${mehToString(maybeBody)}`
+const isInvoiceBodyMacro = test.macro({
+	exec(t, expected: boolean, maybeBody: unknown) {
+		t.is(isInvoiceBody(maybeBody), expected)
+	},
+	title(_providedTitle, expected, maybeBody) {
+		return `isInvoiceBody ${String(expected)} ${mehToString(maybeBody)}`
+	},
+})
 
 for (const body of [EXAMPLE_INVOICE]) {
 	test(isInvoiceBodyMacro, true, body)

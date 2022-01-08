@@ -1,11 +1,11 @@
-import test, {ExecutionContext} from 'ava'
+import test from 'ava'
 import {createPaginationChoices} from './pagination'
 
-function keysCorrectMacro(t: ExecutionContext, totalPages: number, currentPage: number, expected: readonly number[]): void {
+const keysCorrectMacro = test.macro((t, totalPages: number, currentPage: number, expected: readonly number[]) => {
 	const result = createPaginationChoices(totalPages, currentPage)
-	const keys = Object.keys(result).map(o => Number(o))
+	const keys = Object.keys(result).map(o => Number(o)) as readonly number[]
 	t.deepEqual(keys, expected)
-}
+})
 
 test('two pages on first page', keysCorrectMacro, 2, 1, [1, 2])
 test('two pages on second page', keysCorrectMacro, 2, 1, [1, 2])

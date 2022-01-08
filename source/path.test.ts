@@ -1,15 +1,17 @@
-import test, {ExecutionContext} from 'ava'
+import test from 'ava'
 
 import {RegExpLike} from './generic-types'
 
 import {combinePath, combineTrigger, ensureTriggerChild, createRootMenuTrigger, ensureTriggerLastChild, ensurePathMenu, getMenuOfPath} from './path'
 
-function combinePathMacro(t: ExecutionContext, parent: string, relativePath: string, expected: string): void {
-	t.is(combinePath(parent, relativePath), expected)
-}
-
-combinePathMacro.title = (_title: string, parent: string, relativePath: string, expected: string) =>
-	`combinePath(${parent}, ${relativePath}) is ${expected}`
+const combinePathMacro = test.macro({
+	exec(t, parent: string, relativePath: string, expected: string) {
+		t.is(combinePath(parent, relativePath), expected)
+	},
+	title(_providedTitle, parent, relativePath, expected) {
+		return `combinePath(${parent}, ${relativePath}) is ${expected}`
+	},
+})
 
 test(combinePathMacro, '/', 'wow', '/wow')
 test(combinePathMacro, '/', 'foo/bar', '/foo/bar')
@@ -80,12 +82,14 @@ test('createRootMenuTrigger throws when it matches multiple slashes /', t => {
 	}, {message: /root menu trigger.+exactly one slash/})
 })
 
-function combineTriggerMacro(t: ExecutionContext, parent: RegExp, child: string | RegExpLike, expected: RegExp): void {
-	t.deepEqual(combineTrigger(parent, child), expected)
-}
-
-combineTriggerMacro.title = (_title: string, parent: RegExp, child: string | RegExpLike, expected: RegExp) =>
-	`combineTrigger ${String(parent)} with ${String(child)} is ${String(expected)}`
+const combineTriggerMacro = test.macro({
+	exec(t, parent: RegExp, child: string | RegExpLike, expected: RegExp) {
+		t.deepEqual(combineTrigger(parent, child), expected)
+	},
+	title(_providedTitle, parent, child, expected) {
+		return `combineTrigger ${String(parent)} with ${String(child)} is ${String(expected)}`
+	},
+})
 
 test(combineTriggerMacro, /^\//, 'foo', /^\/foo/)
 test(combineTriggerMacro, /^\//, /foo/, /^\/foo/)

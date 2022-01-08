@@ -1,15 +1,11 @@
-import test, {ExecutionContext} from 'ava'
+import test from 'ava'
 
 import {filterNonNullable, isRegExpExecArray, isObject, hasTruthyKey} from './generic-types'
-
-function filterNonNullableTypesafeEqual(t: ExecutionContext, actual: string[], expected: string[]): void {
-	t.deepEqual(actual, expected)
-}
 
 test('filterNonNullable', t => {
 	const input = ['bla', undefined, 'blubb', null]
 	const output = input.filter(filterNonNullable())
-	filterNonNullableTypesafeEqual(t, output, ['bla', 'blubb'])
+	t.deepEqual(output, ['bla', 'blubb'])
 })
 
 test('isRegExpExecArray true', t => {
