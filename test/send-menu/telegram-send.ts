@@ -20,7 +20,7 @@ test('text', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve({} as any)
+			return {} as any
 		},
 	}
 
@@ -52,7 +52,7 @@ for (const mediaType of MEDIA_TYPES) {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve({} as any)
+			return {} as any
 		}
 
 		const fakeTelegram: Partial<Api> = {
@@ -92,7 +92,7 @@ test('location', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve({} as any)
+			return {} as any
 		},
 	}
 
@@ -127,7 +127,7 @@ test('venue', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve({} as any)
+			return {} as any
 		},
 	}
 
@@ -169,7 +169,7 @@ test('invoice', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve({} as any)
+			return {} as any
 		},
 	}
 

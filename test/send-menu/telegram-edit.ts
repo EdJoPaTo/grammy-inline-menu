@@ -21,7 +21,7 @@ test('text', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(true)
+			return true
 		},
 	}
 
@@ -58,7 +58,7 @@ for (const mediaType of MEDIA_TYPES) {
 						inline_keyboard: [],
 					},
 				})
-				return Promise.resolve(true)
+				return true
 			},
 		}
 

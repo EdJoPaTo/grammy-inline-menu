@@ -124,6 +124,7 @@ function catchMessageNotModified(error: unknown): false {
 	throw error
 }
 
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 async function replyRenderedMenuPartsToContext<Context extends BaseContext>(body: Body, keyboard: InlineKeyboard, context: Context, other: Readonly<Record<string, unknown>> = {}) {
 	if (isMediaBody(body)) {
 		const mediaOther = createSendMediaOther(body, keyboard, other)
@@ -277,6 +278,7 @@ function createTextOther(body: string | TextBody, keyboard: InlineKeyboard, base
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 function createSendMediaOther(body: MediaBody, keyboard: InlineKeyboard, base: Readonly<Record<string, unknown>>) {
 	return {
 		...base,
@@ -298,7 +300,6 @@ function createLocationOther(body: LocationBody, keyboard: InlineKeyboard, base:
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 function createVenueOther(body: VenueBody, keyboard: InlineKeyboard, base: Readonly<Record<string, unknown>>) {
 	return {
 		...base,

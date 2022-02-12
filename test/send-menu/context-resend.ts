@@ -18,7 +18,7 @@ test('resend on callback query', async t => {
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
-			return Promise.resolve(true)
+			return true
 		},
 		reply: async (text, other) => {
 			t.is(text, 'whatever')
@@ -29,7 +29,7 @@ test('resend on callback query', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -43,7 +43,7 @@ test('resend on whatever', async t => {
 	const fakeContext: Partial<BaseContext> = {
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
-			return Promise.resolve(true)
+			return true
 		},
 		reply: async (text, other) => {
 			t.is(text, 'whatever')
@@ -54,7 +54,7 @@ test('resend on whatever', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 

@@ -20,7 +20,7 @@ for (const mediaType of MEDIA_TYPES) {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		}
 
 		const fakeContext: Partial<BaseContext> = {

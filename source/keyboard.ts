@@ -1,4 +1,5 @@
 import {InlineKeyboardButton as TelegramInlineKeyboardButton} from '@grammyjs/types'
+import {ReadonlyDeep} from 'type-fest'
 
 import {ConstOrContextPathFunc, ContextPathFunc, filterNonNullable} from './generic-types'
 import {combinePath} from './path'
@@ -8,7 +9,7 @@ export interface CallbackButtonTemplate {
 	readonly relativePath: string;
 }
 
-export type InlineKeyboardButton = Readonly<TelegramInlineKeyboardButton>
+export type InlineKeyboardButton = ReadonlyDeep<TelegramInlineKeyboardButton>
 export type InlineKeyboard = ReadonlyArray<readonly InlineKeyboardButton[]>
 
 export type ButtonTemplate = CallbackButtonTemplate | InlineKeyboardButton
@@ -19,7 +20,7 @@ type RowOfUncreatedTemplates<Context> = Array<UncreatedTemplate<Context>>
 type ButtonTemplateRowGenerator<Context> = ContextPathFunc<Context, ButtonTemplateRow[]>
 type KeyboardTemplateEntry<Context> = RowOfUncreatedTemplates<Context> | ButtonTemplateRowGenerator<Context>
 
-function isRow<Context>(entry: undefined | KeyboardTemplateEntry<Context>): entry is RowOfUncreatedTemplates<Context> {
+function isRow<Context>(entry: undefined | ReadonlyDeep<KeyboardTemplateEntry<Context>>): entry is RowOfUncreatedTemplates<Context> {
 	return Array.isArray(entry)
 }
 
@@ -47,6 +48,7 @@ export class Keyboard<Context> {
 
 	async render(context: Context, path: string): Promise<InlineKeyboard> {
 		const arrayOfRowArrays = await Promise.all(
+			// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 			this._entries.map(async o => entryToRows(o, context, path)),
 		)
 		const rows = arrayOfRowArrays
@@ -57,16 +59,16 @@ export class Keyboard<Context> {
 	}
 }
 
-async function entryToRows<Context>(entry: KeyboardTemplateEntry<Context>, context: Context, path: string): Promise<ButtonTemplateRow[]> {
-	if (isRow(entry)) {
-		const buttonsInRow = await Promise.all(entry.map(async button =>
-			typeof button === 'function' ? button(context, path) : button,
-		))
-		const filtered = buttonsInRow.filter(filterNonNullable())
-		return [filtered]
+async function entryToRows<Context>(entry: ReadonlyDeep<KeyboardTemplateEntry<Context>>, context: Context, path: string): Promise<ButtonTemplateRow[]> {
+	if (typeof entry === 'function') {
+		return entry(context, path)
 	}
 
-	return entry(context, path)
+	const buttonsInRow = await Promise.all(entry.map(async button =>
+		typeof button === 'function' ? button(context, path) : button,
+	))
+	const filtered = buttonsInRow.filter(filterNonNullable())
+	return [filtered]
 }
 
 function renderRow(templates: readonly ButtonTemplate[], path: string): readonly InlineKeyboardButton[] {

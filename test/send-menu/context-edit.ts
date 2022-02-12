@@ -21,7 +21,7 @@ test('text reply when not a callback query', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -48,7 +48,7 @@ test('text reply when no message on callback query', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -81,7 +81,7 @@ test('text edit when message is a text message', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -107,7 +107,7 @@ test('text reply when message is a media message', async t => {
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
-			return Promise.resolve(true)
+			return true
 		},
 		reply: async (text, other) => {
 			t.is(text, 'whatever')
@@ -118,7 +118,7 @@ test('text reply when message is a media message', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -147,11 +147,11 @@ test('text reply when message is a media message but fails with delete', async t
 		},
 		editMessageReplyMarkup: async markup => {
 			t.is(markup, undefined)
-			return Promise.resolve(true)
+			return true
 		},
 		reply: async () => {
 			t.pass()
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -173,7 +173,7 @@ test('media reply when not a callback query', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -199,7 +199,7 @@ test('media reply when text message', async t => {
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
-			return Promise.resolve(true)
+			return true
 		},
 		replyWithPhoto: async (photo, other) => {
 			t.is(photo, 'whatever')
@@ -210,7 +210,7 @@ test('media reply when text message', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -236,7 +236,7 @@ test('media edit when media message', async t => {
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
-			return Promise.resolve(true)
+			return true
 		},
 		editMessageMedia: async (media, other) => {
 			t.deepEqual(media, {
@@ -250,7 +250,7 @@ test('media edit when media message', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -336,7 +336,7 @@ test('text edit without webpage preview', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -367,7 +367,7 @@ test('text edit with parse mode', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -398,7 +398,7 @@ test('text edit with button', async t => {
 					callback_data: '/',
 				}]],
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -429,7 +429,7 @@ test('media edit with button', async t => {
 					callback_data: '/',
 				}]],
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -456,7 +456,7 @@ test('location reply', async t => {
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
-			return Promise.resolve(true)
+			return true
 		},
 		replyWithLocation: async (latitude, longitude, other) => {
 			t.is(latitude, 53.5)
@@ -467,7 +467,7 @@ test('location reply', async t => {
 					inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -494,7 +494,7 @@ test('venue reply', async t => {
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
-			return Promise.resolve(true)
+			return true
 		},
 		replyWithVenue: async (latitude, longitude, title, address, other) => {
 			t.is(latitude, 53.5)
@@ -508,7 +508,7 @@ test('venue reply', async t => {
 					inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 
@@ -542,7 +542,7 @@ test('invoice reply', async t => {
 		},
 		deleteMessage: async messageId => {
 			t.is(messageId, undefined)
-			return Promise.resolve(true)
+			return true
 		},
 		replyWithInvoice: async (title, description, payload, provider_token, currency, prices, other) => {
 			t.is(title, 'A')
@@ -556,7 +556,7 @@ test('invoice reply', async t => {
 					inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
 				},
 			})
-			return Promise.resolve(undefined as any)
+			return undefined as any
 		},
 	}
 

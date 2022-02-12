@@ -19,7 +19,7 @@ test('not supply reply as a middleware directly', async t => {
 	// I cant catch the error here so I am triggering it manually
 	// bot.use(mm.replyToContext)
 
-	const next = async () => Promise.resolve()
+	const next = async () => {}
 
 	await t.throwsAsync(
 		async () => {
@@ -62,7 +62,7 @@ test.skip('action is run and no path to update afterwards is returned', async t 
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -123,7 +123,7 @@ test.skip('action is run and an empty path to update afterwards is returned thro
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()

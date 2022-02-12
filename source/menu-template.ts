@@ -26,6 +26,7 @@ export class MenuTemplate<Context> {
 	private readonly _submenus: Set<Submenu<Context>> = new Set()
 
 	constructor(
+		// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 		body: ConstOrContextPathFunc<Context, Body>,
 	) {
 		this._body = typeof body === 'function' ? body : () => body

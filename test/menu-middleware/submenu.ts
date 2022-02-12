@@ -6,7 +6,7 @@ import {MenuLike, Submenu} from '../../source/menu-like'
 import {MenuMiddleware} from '../../source/menu-middleware'
 
 // TODO: Ugly workaround. This library should know better...
-type MyContext = BaseContext & {match: RegExpExecArray | null | undefined}
+type MyContext = BaseContext & {match: RegExpExecArray | undefined}
 
 test('root path responds main menu', async t => {
 	const submenuMenu: MenuLike<unknown> = {
@@ -31,7 +31,6 @@ test('root path responds main menu', async t => {
 		sendMenu: async (menu, _context, path) => {
 			t.is(menu.listSubmenus().size, 1)
 			t.is(path, '/')
-			return Promise.resolve()
 		},
 	})
 
@@ -44,7 +43,7 @@ test('root path responds main menu', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -90,7 +89,6 @@ test('submenu path responds submenu when not hidden', async t => {
 		sendMenu: async (menu, _context, path) => {
 			t.is(menu.listSubmenus().size, 0)
 			t.is(path, '/submenu/')
-			return Promise.resolve()
 		},
 	})
 
@@ -103,7 +101,7 @@ test('submenu path responds submenu when not hidden', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -149,7 +147,6 @@ test('submenu path responds submenu when no hide function', async t => {
 		sendMenu: async (menu, _context, path) => {
 			t.is(menu.listSubmenus().size, 0)
 			t.is(path, '/submenu/')
-			return Promise.resolve()
 		},
 	})
 
@@ -162,7 +159,7 @@ test('submenu path responds submenu when no hide function', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -208,7 +205,6 @@ test('submenu path responds main menu when hidden', async t => {
 		sendMenu: async (menu, _context, path) => {
 			t.is(menu.listSubmenus().size, 1)
 			t.is(path, '/')
-			return Promise.resolve()
 		},
 	})
 
@@ -221,7 +217,7 @@ test('submenu path responds main menu when hidden', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()

@@ -1,5 +1,6 @@
 import {InputFile} from 'grammy'
 import {LabeledPrice, Location, ParseMode, Venue} from '@grammyjs/types'
+import {ReadonlyDeep} from 'type-fest'
 
 import {hasTruthyKey, isObject} from './generic-types'
 
@@ -28,7 +29,7 @@ export interface LocationBody {
 }
 
 export interface VenueBody {
-	readonly venue: Readonly<Venue>;
+	readonly venue: ReadonlyDeep<Venue>;
 }
 
 export interface InvoiceBody {
@@ -38,7 +39,7 @@ export interface InvoiceBody {
 		readonly payload: string;
 		readonly provider_token: string;
 		readonly currency: string;
-		readonly prices: readonly LabeledPrice[];
+		readonly prices: ReadonlyArray<Readonly<LabeledPrice>>;
 	};
 }
 

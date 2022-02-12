@@ -37,7 +37,7 @@ test('replies main menu', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve({} as any)
+			return {} as any
 		},
 	}
 
@@ -76,7 +76,7 @@ test('replies main menu explicitly', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve({} as any)
+			return {} as any
 		},
 	}
 
@@ -115,7 +115,7 @@ test('replies submenu', async t => {
 					inline_keyboard: [],
 				},
 			})
-			return Promise.resolve({} as any)
+			return {} as any
 		},
 	}
 

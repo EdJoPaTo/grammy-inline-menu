@@ -143,11 +143,11 @@ function catchCallbackOld(error: unknown): void {
 	throw error
 }
 
-function responderMatch<Context>(responder: Responder<Context>, path: string): RegExpExecArray | null {
-	return new RegExp(responder.trigger.source, responder.trigger.flags).exec(path)
+function responderMatch<Context>(responder: Responder<Context>, path: string): RegExpExecArray | undefined {
+	return new RegExp(responder.trigger.source, responder.trigger.flags).exec(path) ?? undefined
 }
 
-async function getLongestMatchMenuResponder<Context extends BaseContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | null; responder: MenuResponder<Context>}> {
+async function getLongestMatchMenuResponder<Context extends BaseContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | undefined; responder: MenuResponder<Context>}> {
 	for (const sub of current.submenuResponders) {
 		const match = responderMatch(sub, path)
 		if (!match?.[0]) {
@@ -167,7 +167,7 @@ async function getLongestMatchMenuResponder<Context extends BaseContext>(context
 	return {match, responder: current}
 }
 
-async function getLongestMatchActionResponder<Context extends BaseContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | null; responder: Responder<Context>}> {
+async function getLongestMatchActionResponder<Context extends BaseContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | undefined; responder: Responder<Context>}> {
 	const currentMatch = responderMatch(current, path)
 
 	for (const sub of current.submenuResponders) {

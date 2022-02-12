@@ -7,7 +7,7 @@ import {MenuMiddleware} from '../../source/menu-middleware'
 import {ButtonAction} from '../../source/action-hive'
 
 // TODO: Ugly workaround. This library should know better...
-type MyContext = BaseContext & {match: RegExpExecArray | null | undefined}
+type MyContext = BaseContext & {match: RegExpExecArray | undefined}
 
 test('action is run without updating menu afterwards', async t => {
 	t.plan(3)
@@ -41,7 +41,7 @@ test('action is run without updating menu afterwards', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.fail()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -84,7 +84,6 @@ test('action is run and updating menu afterwards with path', async t => {
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
-			return Promise.resolve()
 		},
 	})
 
@@ -97,7 +96,7 @@ test('action is run and updating menu afterwards with path', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -140,7 +139,6 @@ test('action is run and updating menu afterwards with true', async t => {
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
-			return Promise.resolve()
 		},
 	})
 
@@ -153,7 +151,7 @@ test('action is run and updating menu afterwards with true', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -203,7 +201,7 @@ test.skip('action returns non existing path afterwards throws Error', async t =>
 
 		ctx.answerCallbackQuery = async () => {
 			t.fail()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -251,7 +249,6 @@ test('not existing action updates menu', async t => {
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
-			return Promise.resolve()
 		},
 	})
 
@@ -264,7 +261,7 @@ test('not existing action updates menu', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -330,7 +327,7 @@ test('action in submenu is run', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.fail()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -381,7 +378,6 @@ test('not existing action in submenu updates submenu', async t => {
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/submenu/')
-			return Promise.resolve()
 		},
 	})
 
@@ -394,7 +390,7 @@ test('not existing action in submenu updates submenu', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -445,7 +441,6 @@ test('action in hidden submenu updates main menu', async t => {
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
-			return Promise.resolve()
 		},
 	})
 
@@ -458,7 +453,7 @@ test('action in hidden submenu updates main menu', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -509,7 +504,6 @@ test('action in non existing submenu updates main menu', async t => {
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
-			return Promise.resolve()
 		},
 	})
 
@@ -522,7 +516,7 @@ test('action in non existing submenu updates main menu', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -558,7 +552,7 @@ test('action run took too long and updating menu afterwards tries to answerCallb
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async () => Promise.resolve(),
+		sendMenu: async () => {},
 	})
 
 	const bot = new Bot<MyContext>('123:ABC');
@@ -608,7 +602,7 @@ test.skip('updating menu still throws unknown error from answerCallbackQuery', a
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async () => Promise.resolve(),
+		sendMenu: async () => {},
 	})
 
 	const bot = new Bot<MyContext>('123:ABC');

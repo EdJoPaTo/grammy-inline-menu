@@ -76,7 +76,6 @@ test('default root path is responded', async t => {
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
-			return Promise.resolve()
 		},
 	})
 
@@ -89,7 +88,7 @@ test('default root path is responded', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -124,7 +123,6 @@ test('custom root path is responded', async t => {
 	const mm = new MenuMiddleware('custom/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, 'custom/')
-			return Promise.resolve()
 		},
 	})
 
@@ -137,7 +135,7 @@ test('custom root path is responded', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -172,7 +170,6 @@ test('custom regex root path is responded', async t => {
 	const mm = new MenuMiddleware(/^tree(\d+)\//, menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, 'tree42/')
-			return Promise.resolve()
 		},
 	})
 
@@ -185,7 +182,7 @@ test('custom regex root path is responded', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
@@ -249,7 +246,6 @@ test('not existing path below is responded with root menu', async t => {
 	const mm = new MenuMiddleware('/', menu, {
 		sendMenu: async (_menu, _context, path) => {
 			t.is(path, '/')
-			return Promise.resolve()
 		},
 	})
 
@@ -262,7 +258,7 @@ test('not existing path below is responded with root menu', async t => {
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			return Promise.resolve(true)
+			return true
 		}
 
 		return next()
