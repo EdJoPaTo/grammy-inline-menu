@@ -3,7 +3,7 @@ import {createPaginationChoices} from './pagination'
 
 const keysCorrectMacro = test.macro((t, totalPages: number, currentPage: number, expected: readonly number[]) => {
 	const result = createPaginationChoices(totalPages, currentPage)
-	const keys = Object.keys(result).map(o => Number(o)) as readonly number[]
+	const keys = Object.keys(result).map(Number)
 	t.deepEqual(keys, expected)
 })
 

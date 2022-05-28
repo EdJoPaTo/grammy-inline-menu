@@ -10,11 +10,11 @@ export function choicesIsMap(choices: Choices): choices is ChoicesMap {
 
 export function getChoiceKeysFromChoices(choices: Choices): string[] {
 	if (choicesIsArray(choices)) {
-		return choices.map(o => String(o))
+		return choices.map(String)
 	}
 
 	if (choicesIsMap(choices)) {
-		return [...choices.keys()].map(o => String(o))
+		return [...choices.keys()].map(String)
 	}
 
 	return Object.keys(choices)

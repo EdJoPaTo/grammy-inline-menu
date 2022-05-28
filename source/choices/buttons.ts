@@ -40,7 +40,7 @@ export function generateChoicesPaginationButtons<Context>(actionPrefix: string, 
 	const entriesPerPage = maximumButtonsPerPage(options.columns, options.maxRows)
 	const totalPages = choiceKeys / entriesPerPage
 	const pageRecord = createPaginationChoices(totalPages, currentPage)
-	const pageKeys = Object.keys(pageRecord).map(o => Number(o))
+	const pageKeys = Object.keys(pageRecord).map(Number)
 	const pageButtons = pageKeys
 		.map((page): CallbackButtonTemplate => ({
 			relativePath: `${actionPrefix}P:${page}`,
