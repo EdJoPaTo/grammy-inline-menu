@@ -1,11 +1,11 @@
 import test from 'ava'
 
-import {generateSelectButtons} from './select'
+import {generateSelectButtons} from './select.js'
 
 test('empty choices no buttons', async t => {
 	const func = generateSelectButtons('pre', [], {
 		isSet: () => false,
-		set: () => {
+		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
 	})
@@ -17,7 +17,7 @@ test('empty choices no buttons', async t => {
 test('is set creates false button', async t => {
 	const func = generateSelectButtons('pre', ['a'], {
 		isSet: () => true,
-		set: () => {
+		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
 	})
@@ -32,7 +32,7 @@ test('is set creates false button', async t => {
 test('is not set creates true button', async t => {
 	const func = generateSelectButtons('pre', ['a'], {
 		isSet: () => false,
-		set: () => {
+		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
 	})
@@ -48,7 +48,7 @@ test('showFalseEmoji also prefixes currently false buttons', async t => {
 	const func = generateSelectButtons('pre', ['a'], {
 		showFalseEmoji: true,
 		isSet: () => false,
-		set: () => {
+		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
 	})
@@ -65,10 +65,10 @@ test('creates pagination buttons', async t => {
 		columns: 1,
 		maxRows: 1,
 		isSet: () => false,
-		set: () => {
+		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
-		setPage: () => {
+		setPage() {
 			throw new Error('no need to call setPage on keyboard creation')
 		},
 	})
@@ -97,7 +97,7 @@ test('show keys of page 2', async t => {
 		maxRows: 1,
 		getCurrentPage: () => 2,
 		isSet: () => false,
-		set: () => {
+		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
 	})
@@ -117,7 +117,7 @@ test('choice function is run', async t => {
 
 	const func = generateSelectButtons('pre', choiceFunction, {
 		isSet: () => false,
-		set: () => {
+		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
 	})
@@ -139,10 +139,10 @@ test('hidden does not render any buttons', async t => {
 
 	const func = generateSelectButtons('pre', choiceFunction, {
 		hide: () => true,
-		isSet: () => {
+		isSet() {
 			throw new Error('dont call as its hidden')
 		},
-		set: () => {
+		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
 	})
@@ -153,10 +153,10 @@ test('hidden does not render any buttons', async t => {
 test('format state', async t => {
 	const func = generateSelectButtons('pre', ['a'], {
 		isSet: () => true,
-		set: () => {
+		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
-		formatState: (_context, textResult, state, key) => {
+		formatState(_context, textResult, state, key) {
 			t.is(textResult, 'a')
 			t.is(state, true)
 			t.is(key, 'a')

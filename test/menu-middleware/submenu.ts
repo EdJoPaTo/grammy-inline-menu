@@ -1,9 +1,9 @@
 import {Bot, Context as BaseContext} from 'grammy'
 import test from 'ava'
 
-import {MenuLike, Submenu} from '../../source/menu-like'
+import {MenuLike, Submenu} from '../../source/menu-like.js'
 
-import {MenuMiddleware} from '../../source/menu-middleware'
+import {MenuMiddleware} from '../../source/menu-middleware.js'
 
 // TODO: Ugly workaround. This library should know better...
 type MyContext = BaseContext & {match: RegExpExecArray | undefined}
@@ -28,7 +28,7 @@ test('root path responds main menu', async t => {
 	}
 
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async (menu, _context, path) => {
+		async sendMenu(menu, _context, path) {
 			t.is(menu.listSubmenus().size, 1)
 			t.is(path, '/')
 		},
@@ -86,7 +86,7 @@ test('submenu path responds submenu when not hidden', async t => {
 	}
 
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async (menu, _context, path) => {
+		async sendMenu(menu, _context, path) {
 			t.is(menu.listSubmenus().size, 0)
 			t.is(path, '/submenu/')
 		},
@@ -144,7 +144,7 @@ test('submenu path responds submenu when no hide function', async t => {
 	}
 
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async (menu, _context, path) => {
+		async sendMenu(menu, _context, path) {
 			t.is(menu.listSubmenus().size, 0)
 			t.is(path, '/submenu/')
 		},
@@ -202,7 +202,7 @@ test('submenu path responds main menu when hidden', async t => {
 	}
 
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async (menu, _context, path) => {
+		async sendMenu(menu, _context, path) {
 			t.is(menu.listSubmenus().size, 1)
 			t.is(path, '/')
 		},

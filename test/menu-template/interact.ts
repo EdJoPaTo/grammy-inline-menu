@@ -1,12 +1,12 @@
 import test from 'ava'
 
-import {MenuTemplate} from '../../source/menu-template'
+import {MenuTemplate} from '../../source/menu-template.js'
 
 test('button is added to keyboard', async t => {
 	const menu = new MenuTemplate('whatever')
 
 	menu.interact('Button', 'unique', {
-		do: () => {
+		do() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -26,7 +26,7 @@ test('button is added to keyboard with text function', async t => {
 	const menu = new MenuTemplate('whatever')
 
 	menu.interact(() => 'Button', 'unique', {
-		do: () => {
+		do() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -47,7 +47,7 @@ test('hidden button is not shown on keyboard', async t => {
 
 	menu.interact(() => 'Button', 'unique', {
 		hide: () => true,
-		do: () => {
+		do() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -60,7 +60,7 @@ test('action is added with correct trigger', t => {
 	const menu = new MenuTemplate('whatever')
 
 	menu.interact('Button', 'unique', {
-		do: () => {
+		do() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -77,7 +77,7 @@ test('action can be called', async t => {
 	const menu = new MenuTemplate('whatever')
 
 	menu.interact('Button', 'unique', {
-		do: (context, path) => {
+		do(context, path) {
 			t.is(context, undefined)
 			t.is(path, '/unique')
 			return 'wow'
@@ -97,7 +97,7 @@ test('action can not be called when hidden', async t => {
 
 	menu.interact('Button', 'unique', {
 		hide: () => true,
-		do: () => {
+		do() {
 			throw new Error('do not call this function when hidden')
 		},
 	})

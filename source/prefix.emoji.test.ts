@@ -4,7 +4,7 @@ import {
 	prefixEmoji,
 	emojiFalse,
 	emojiTrue,
-} from './prefix'
+} from './prefix.js'
 
 test('no prefix', t => {
 	const result = prefixEmoji('42', undefined)

@@ -1,14 +1,14 @@
 import test from 'ava'
 
-import {generateToggleButton} from './toggle'
+import {generateToggleButton} from './toggle.js'
 
 test('hidden does not render any button', async t => {
 	const func = generateToggleButton('text', 'pre', {
 		hide: () => true,
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call as its hidden')
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call as its hidden')
 		},
 	})
@@ -20,7 +20,7 @@ test('hidden does not render any button', async t => {
 test('is true button', async t => {
 	const func = generateToggleButton('text', 'pre', {
 		isSet: () => true,
-		set: () => {
+		set() {
 			throw new Error('do not call as the button is not hit')
 		},
 	})
@@ -35,7 +35,7 @@ test('is true button', async t => {
 test('is false button', async t => {
 	const func = generateToggleButton('text', 'pre', {
 		isSet: () => false,
-		set: () => {
+		set() {
 			throw new Error('do not call as the button is not hit')
 		},
 	})
@@ -50,10 +50,10 @@ test('is false button', async t => {
 test('own format', async t => {
 	const func = generateToggleButton('text', 'pre', {
 		isSet: () => true,
-		set: () => {
+		set() {
 			throw new Error('do not call as the button is not hit')
 		},
-		formatState: (_context, text, state) => {
+		formatState(_context, text, state) {
 			t.is(text, 'text')
 			t.is(state, true)
 			return 'lalala'
@@ -70,7 +70,7 @@ test('own format', async t => {
 test('async text', async t => {
 	const func = generateToggleButton(() => 'text', 'pre', {
 		isSet: () => true,
-		set: () => {
+		set() {
 			throw new Error('do not call as the button is not hit')
 		},
 	})

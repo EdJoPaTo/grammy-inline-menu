@@ -1,3 +1,3 @@
-export * from './actions'
-export * from './buttons'
-export * from './types'
+export * from './actions.js'
+export * from './buttons.js'
+export * from './types.js'

@@ -1,15 +1,15 @@
 import test from 'ava'
 
-import {MenuTemplate} from '../../source/menu-template'
+import {MenuTemplate} from '../../source/menu-template.js'
 
 test('button hidden', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.toggle('Button', 'unique', {
 		hide: () => true,
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function when hidden')
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -20,12 +20,12 @@ test('button hidden', async t => {
 test('button true', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
-		isSet: (context, path) => {
+		isSet(context, path) {
 			t.is(context, 'foo')
 			t.is(path, '/')
 			return true
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -39,12 +39,12 @@ test('button true', async t => {
 test('button false', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
-		isSet: (context, path) => {
+		isSet(context, path) {
 			t.is(context, 'foo')
 			t.is(path, '/')
 			return false
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -59,10 +59,10 @@ test('action triggers', t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
 		hide: () => true,
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function')
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -80,10 +80,10 @@ test('action hidden', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
 		hide: () => true,
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function')
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -100,10 +100,10 @@ test('action hidden', async t => {
 test('action true', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function')
 		},
-		set: (context, newState, path) => {
+		set(context, newState, path) {
 			t.is(context, 'foo')
 			t.is(newState, true)
 			t.is(path, '/unique:true')
@@ -120,10 +120,10 @@ test('action true', async t => {
 test('action false', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function')
 		},
-		set: (context, newState, path) => {
+		set(context, newState, path) {
 			t.is(context, 'foo')
 			t.is(newState, false)
 			t.is(path, '/unique:false')

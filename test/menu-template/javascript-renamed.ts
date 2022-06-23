@@ -1,13 +1,13 @@
 import test from 'ava'
 
-import {MenuTemplate} from '../../source/menu-template'
+import {MenuTemplate} from '../../source/menu-template.js'
 
 test('interaction doFunc', t => {
 	const menu = new MenuTemplate('whatever')
 	t.throws(() => {
 		menu.interact('Button', 'unique', {
 			// @ts-expect-error
-			doFunc: () => {
+			doFunc() {
 				throw new Error('dont call this function')
 			},
 		})
@@ -21,7 +21,7 @@ test('select set', t => {
 	t.throws(() => {
 		menu.select('unique', [], {
 			// @ts-expect-error
-			setFunc: () => {
+			setFunc() {
 				throw new Error('dont call this function')
 			},
 		})
@@ -33,7 +33,7 @@ test('choose do', t => {
 	t.throws(() => {
 		menu.choose('unique', [], {
 			// @ts-expect-error
-			doFunc: () => {
+			doFunc() {
 				throw new Error('dont call this function')
 			},
 		})
@@ -45,7 +45,7 @@ test('select isSet', t => {
 	t.throws(() => {
 		menu.select('unique', [], {
 			// @ts-expect-error
-			isSetFunc: () => {
+			isSetFunc() {
 				throw new Error('dont call this function')
 			},
 		})
@@ -57,7 +57,7 @@ test('toggle set', t => {
 	t.throws(() => {
 		menu.toggle('Button', 'unique', {
 			// @ts-expect-error
-			setFunc: () => {
+			setFunc() {
 				throw new Error('dont call this function')
 			},
 		})
@@ -69,7 +69,7 @@ test('toggle isSet', t => {
 	t.throws(() => {
 		menu.toggle('Button', 'unique', {
 			// @ts-expect-error
-			isSetFunc: () => {
+			isSetFunc() {
 				throw new Error('dont call this function')
 			},
 		})

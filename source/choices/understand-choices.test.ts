@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {getChoiceKeysFromChoices, getChoiceTextByKey, ensureCorrectChoiceKeys} from './understand-choices'
+import {getChoiceKeysFromChoices, getChoiceTextByKey, ensureCorrectChoiceKeys} from './understand-choices.js'
 
 test('getChoiceKeysFromChoices from array', t => {
 	const choices = ['A', 'B', 1]

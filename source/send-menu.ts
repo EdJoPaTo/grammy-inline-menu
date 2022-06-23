@@ -1,10 +1,10 @@
 import {Context as BaseContext, Api} from 'grammy'
 import {Message} from '@grammyjs/types'
 
-import {Body, TextBody, MediaBody, LocationBody, isMediaBody, isLocationBody, isTextBody, getBodyText, isVenueBody, VenueBody, isInvoiceBody} from './body'
-import {ensurePathMenu} from './path'
-import {InlineKeyboard} from './keyboard'
-import {MenuLike} from './menu-like'
+import {Body, TextBody, MediaBody, LocationBody, isMediaBody, isLocationBody, isTextBody, getBodyText, isVenueBody, VenueBody, isInvoiceBody} from './body.js'
+import {ensurePathMenu} from './path.js'
+import {InlineKeyboard} from './keyboard.js'
+import {MenuLike} from './menu-like.js'
 
 /**
  * Generic Method which is able to send a menu to a context (given a path where it is)

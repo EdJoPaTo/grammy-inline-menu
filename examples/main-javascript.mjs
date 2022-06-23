@@ -4,7 +4,7 @@
 //
 // If you just want to use JavaScript, go ahead :)
 
-import * as process from 'process'
+import * as process from 'node:process'
 
 import {Bot} from 'grammy'
 
@@ -16,7 +16,7 @@ menu.url('EdJoPaTo.de', 'https://edjopato.de')
 
 let mainMenuToggle = false
 menu.toggle('toggle me', 'toggle me', {
-	set: (_, newState) => {
+	set(_, newState) {
 		mainMenuToggle = newState
 		// Update the menu afterwards
 		return true
@@ -26,7 +26,7 @@ menu.toggle('toggle me', 'toggle me', {
 
 menu.interact('interaction', 'interact', {
 	hide: () => mainMenuToggle,
-	do: async ctx => {
+	async do(ctx) {
 		await ctx.answerCallbackQuery({text: 'you clicked me!'})
 		// Do not update the menu afterwards
 		return false
@@ -36,7 +36,7 @@ menu.interact('interaction', 'interact', {
 menu.interact('update after action', 'update afterwards', {
 	joinLastRow: true,
 	hide: () => mainMenuToggle,
-	do: async ctx => {
+	async do(ctx) {
 		await ctx.answerCallbackQuery({text: 'I will update the menu now…'})
 
 		return true
@@ -49,7 +49,7 @@ menu.interact('update after action', 'update afterwards', {
 
 let selectedKey = 'b'
 menu.select('select', ['A', 'B', 'C'], {
-	set: async (ctx, key) => {
+	async set(ctx, key) {
 		selectedKey = key
 		await ctx.answerCallbackQuery({text: `you selected ${key}`})
 		return true
@@ -83,23 +83,23 @@ function foodSelectText(ctx) {
 
 const foodSelectSubmenu = new MenuTemplate(foodSelectText)
 foodSelectSubmenu.toggle('Prefer tea', 'tea', {
-	set: (ctx, choice) => {
+	set(ctx, choice) {
 		const person = ctx.match[1]
 		people[person].tee = choice
 		return true
 	},
-	isSet: ctx => {
+	isSet(ctx) {
 		const person = ctx.match[1]
 		return people[person].tee === true
 	},
 })
 foodSelectSubmenu.select('food', food, {
-	set: (ctx, key) => {
+	set(ctx, key) {
 		const person = ctx.match[1]
 		people[person].food = key
 		return true
 	},
-	isSet: (ctx, key) => {
+	isSet(ctx, key) {
 		const person = ctx.match[1]
 		return people[person].food === key
 	},
@@ -188,7 +188,7 @@ const mediaMenu = new MenuTemplate(() => {
 	}
 })
 mediaMenu.interact('Just a button', 'randomButton', {
-	do: async ctx => {
+	async do(ctx) {
 		await ctx.answerCallbackQuery({text: 'Just a callback query answer'})
 		return false
 	},
@@ -196,7 +196,7 @@ mediaMenu.interact('Just a button', 'randomButton', {
 mediaMenu.select('type', ['animation', 'document', 'photo1', 'photo2', 'video', 'location', 'venue', 'just text'], {
 	columns: 2,
 	isSet: (_, key) => mediaOption === key,
-	set: (_, key) => {
+	set(_, key) {
 		mediaOption = key
 		return true
 	},
@@ -224,7 +224,7 @@ bot.catch(error => {
 
 async function startup() {
 	await bot.start({
-		onStart: botInfo => {
+		onStart(botInfo) {
 			console.log(new Date(), 'Bot starts as', botInfo.username)
 		},
 	})

@@ -2,7 +2,7 @@ import test from 'ava'
 
 import {
 	prefixText,
-} from './prefix'
+} from './prefix.js'
 
 test('no prefix', t => {
 	const result = prefixText('42', undefined)

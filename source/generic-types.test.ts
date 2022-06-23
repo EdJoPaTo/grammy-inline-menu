@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {filterNonNullable, isRegExpExecArray, isObject, hasTruthyKey} from './generic-types'
+import {filterNonNullable, isRegExpExecArray, isObject, hasTruthyKey} from './generic-types.js'
 
 test('filterNonNullable', t => {
 	const input = ['bla', undefined, 'blubb', null]

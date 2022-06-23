@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {MenuTemplate} from '../../source/menu-template'
+import {MenuTemplate} from '../../source/menu-template.js'
 
 test('interact do', t => {
 	const menu = new MenuTemplate('whatever')
@@ -23,7 +23,7 @@ test('select set', t => {
 	t.throws(() => {
 		// @ts-expect-error
 		menu.select('unique', [], {
-			isSet: () => {
+			isSet() {
 				throw new Error('dont call this function')
 			},
 		})
@@ -35,7 +35,7 @@ test('select isSet', t => {
 	t.throws(() => {
 		// @ts-expect-error
 		menu.select('unique', [], {
-			set: () => {
+			set() {
 				throw new Error('dont call this function')
 			},
 		})
@@ -47,7 +47,7 @@ test('toggle set', t => {
 	t.throws(() => {
 		// @ts-expect-error
 		menu.toggle('Button', 'unique', {
-			isSet: () => {
+			isSet() {
 				throw new Error('dont call this function')
 			},
 		})
@@ -59,7 +59,7 @@ test('toggle isSet', t => {
 	t.throws(() => {
 		// @ts-expect-error
 		menu.toggle('Button', 'unique', {
-			set: () => {
+			set() {
 				throw new Error('dont call this function')
 			},
 		})
@@ -71,10 +71,10 @@ test('pagination getCurrentPage', t => {
 	t.throws(() => {
 		// @ts-expect-error
 		menu.pagination('unique', {
-			getTotalPages: () => {
+			getTotalPages() {
 				throw new Error('dont call this function')
 			},
-			setPage: () => {
+			setPage() {
 				throw new Error('dont call this function')
 			},
 		})
@@ -86,10 +86,10 @@ test('pagination getTotalPages', t => {
 	t.throws(() => {
 		// @ts-expect-error
 		menu.pagination('unique', {
-			getCurrentPage: () => {
+			getCurrentPage() {
 				throw new Error('dont call this function')
 			},
-			setPage: () => {
+			setPage() {
 				throw new Error('dont call this function')
 			},
 		})
@@ -101,10 +101,10 @@ test('pagination setPage', t => {
 	t.throws(() => {
 		// @ts-expect-error
 		menu.pagination('unique', {
-			getCurrentPage: () => {
+			getCurrentPage() {
 				throw new Error('dont call this function')
 			},
-			getTotalPages: () => {
+			getTotalPages() {
 				throw new Error('dont call this function')
 			},
 		})

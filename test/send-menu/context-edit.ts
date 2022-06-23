@@ -1,10 +1,10 @@
 import test from 'ava'
 import {Context as BaseContext} from 'grammy'
 
-import {MenuTemplate} from '../../source'
+import {MenuTemplate} from '../../source/index.js'
 
 // This test file also tests replyMenuToContext indirectly as its the edit fallback
-import {editMenuOnContext} from '../../source/send-menu'
+import {editMenuOnContext} from '../../source/send-menu.js'
 
 test('text reply when not a callback query', async t => {
 	t.plan(2)
@@ -12,7 +12,7 @@ test('text reply when not a callback query', async t => {
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: undefined,
-		reply: async (text, other) => {
+		async reply(text, other) {
 			t.is(text, 'whatever')
 			t.deepEqual(other, {
 				disable_web_page_preview: false,
@@ -39,7 +39,7 @@ test('text reply when no message on callback query', async t => {
 			chat_instance: '666',
 			data: '666',
 		},
-		reply: async (text, other) => {
+		async reply(text, other) {
 			t.is(text, 'whatever')
 			t.deepEqual(other, {
 				disable_web_page_preview: false,
@@ -72,7 +72,7 @@ test('text edit when message is a text message', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		editMessageText: async (text, other) => {
+		async editMessageText(text, other) {
 			t.is(text, 'whatever')
 			t.deepEqual(other, {
 				disable_web_page_preview: false,
@@ -105,11 +105,11 @@ test('text reply when message is a media message', async t => {
 				photo: [],
 			},
 		},
-		deleteMessage: async messageId => {
+		async deleteMessage(messageId) {
 			t.is(messageId, undefined)
 			return true
 		},
-		reply: async (text, other) => {
+		async reply(text, other) {
 			t.is(text, 'whatever')
 			t.deepEqual(other, {
 				disable_web_page_preview: false,
@@ -142,14 +142,14 @@ test('text reply when message is a media message but fails with delete', async t
 				photo: [],
 			},
 		},
-		deleteMessage: async () => {
+		async deleteMessage() {
 			throw new Error('whatever went wrong')
 		},
-		editMessageReplyMarkup: async markup => {
+		async editMessageReplyMarkup(markup) {
 			t.is(markup, undefined)
 			return true
 		},
-		reply: async () => {
+		async reply() {
 			t.pass()
 			return undefined as any
 		},
@@ -164,7 +164,7 @@ test('media reply when not a callback query', async t => {
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: undefined,
-		replyWithPhoto: async (photo, other) => {
+		async replyWithPhoto(photo, other) {
 			t.is(photo, 'whatever')
 			t.deepEqual(other, {
 				caption: undefined,
@@ -197,11 +197,11 @@ test('media reply when text message', async t => {
 				text: 'whatever',
 			},
 		},
-		deleteMessage: async messageId => {
+		async deleteMessage(messageId) {
 			t.is(messageId, undefined)
 			return true
 		},
-		replyWithPhoto: async (photo, other) => {
+		async replyWithPhoto(photo, other) {
 			t.is(photo, 'whatever')
 			t.deepEqual(other, {
 				caption: undefined,
@@ -234,11 +234,11 @@ test('media edit when media message', async t => {
 				photo: [],
 			},
 		},
-		deleteMessage: async messageId => {
+		async deleteMessage(messageId) {
 			t.is(messageId, undefined)
 			return true
 		},
-		editMessageMedia: async (media, other) => {
+		async editMessageMedia(media, other) {
 			t.deepEqual(media, {
 				media: 'whatever',
 				type: 'photo',
@@ -274,7 +274,7 @@ test('does not throw message is not modified', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		editMessageText: async () => {
+		async editMessageText() {
 			t.pass()
 			throw new Error('lalala message is not modified lalala')
 		},
@@ -300,7 +300,7 @@ test('does throw unrecoverable edit errors', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		editMessageText: async () => {
+		async editMessageText() {
 			t.pass()
 			throw new Error('something went wrong for testing')
 		},
@@ -328,7 +328,7 @@ test('text edit without webpage preview', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		editMessageText: async (_text, other) => {
+		async editMessageText(_text, other) {
 			t.deepEqual(other, {
 				disable_web_page_preview: true,
 				parse_mode: undefined,
@@ -359,7 +359,7 @@ test('text edit with parse mode', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		editMessageText: async (_text, other) => {
+		async editMessageText(_text, other) {
 			t.deepEqual(other, {
 				disable_web_page_preview: undefined,
 				parse_mode: 'Markdown',
@@ -391,7 +391,7 @@ test('text edit with button', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		editMessageText: async (_text, other) => {
+		async editMessageText(_text, other) {
 			t.deepEqual(other?.reply_markup, {
 				inline_keyboard: [[{
 					text: 'Button',
@@ -422,7 +422,7 @@ test('media edit with button', async t => {
 				photo: [],
 			},
 		},
-		editMessageMedia: async (_media, other) => {
+		async editMessageMedia(_media, other) {
 			t.deepEqual(other?.reply_markup, {
 				inline_keyboard: [[{
 					text: 'Button',
@@ -454,11 +454,11 @@ test('location reply', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		deleteMessage: async messageId => {
+		async deleteMessage(messageId) {
 			t.is(messageId, undefined)
 			return true
 		},
-		replyWithLocation: async (latitude, longitude, other) => {
+		async replyWithLocation(latitude, longitude, other) {
 			t.is(latitude, 53.5)
 			t.is(longitude, 10)
 			t.deepEqual(other, {
@@ -492,11 +492,11 @@ test('venue reply', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		deleteMessage: async messageId => {
+		async deleteMessage(messageId) {
 			t.is(messageId, undefined)
 			return true
 		},
-		replyWithVenue: async (latitude, longitude, title, address, other) => {
+		async replyWithVenue(latitude, longitude, title, address, other) {
 			t.is(latitude, 53.5)
 			t.is(longitude, 10)
 			t.is(title, 'A')
@@ -540,11 +540,11 @@ test('invoice reply', async t => {
 				text: 'Hi Bob',
 			},
 		},
-		deleteMessage: async messageId => {
+		async deleteMessage(messageId) {
 			t.is(messageId, undefined)
 			return true
 		},
-		replyWithInvoice: async (title, description, payload, provider_token, currency, prices, other) => {
+		async replyWithInvoice(title, description, payload, provider_token, currency, prices, other) {
 			t.is(title, 'A')
 			t.is(description, 'B')
 			t.is(currency, 'EUR')

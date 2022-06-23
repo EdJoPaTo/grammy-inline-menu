@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {Keyboard} from './keyboard'
+import {Keyboard} from './keyboard.js'
 
 test('no buttons', async t => {
 	const k = new Keyboard<unknown>()

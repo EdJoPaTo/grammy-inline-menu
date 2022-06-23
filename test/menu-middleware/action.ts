@@ -1,10 +1,10 @@
 import {Bot, Context as BaseContext} from 'grammy'
 import test from 'ava'
 
-import {MenuLike, Submenu} from '../../source/menu-like'
+import {MenuLike, Submenu} from '../../source/menu-like.js'
 
-import {MenuMiddleware} from '../../source/menu-middleware'
-import {ButtonAction} from '../../source/action-hive'
+import {MenuMiddleware} from '../../source/menu-middleware.js'
+import {ButtonAction} from '../../source/action-hive.js'
 
 // TODO: Ugly workaround. This library should know better...
 type MyContext = BaseContext & {match: RegExpExecArray | undefined}
@@ -13,7 +13,7 @@ test('action is run without updating menu afterwards', async t => {
 	t.plan(3)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
-		doFunction: (context, path) => {
+		doFunction(context, path) {
 			t.is(context.match![0], '/what')
 			t.is(context.match![1], undefined)
 			t.is(path, '/what')
@@ -27,7 +27,7 @@ test('action is run without updating menu afterwards', async t => {
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async () => {
+		async sendMenu() {
 			throw new Error('dont open the menu')
 		},
 	})
@@ -68,7 +68,7 @@ test('action is run and updating menu afterwards with path', async t => {
 	t.plan(5)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
-		doFunction: (context, path) => {
+		doFunction(context, path) {
 			t.is(context.match![0], '/what')
 			t.is(context.match![1], undefined)
 			t.is(path, '/what')
@@ -82,7 +82,7 @@ test('action is run and updating menu afterwards with path', async t => {
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async (_menu, _context, path) => {
+		async sendMenu(_menu, _context, path) {
 			t.is(path, '/')
 		},
 	})
@@ -123,7 +123,7 @@ test('action is run and updating menu afterwards with true', async t => {
 	t.plan(5)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
-		doFunction: (context, path) => {
+		doFunction(context, path) {
 			t.is(context.match![0], '/what')
 			t.is(context.match![1], undefined)
 			t.is(path, '/what')
@@ -137,7 +137,7 @@ test('action is run and updating menu afterwards with true', async t => {
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async (_menu, _context, path) => {
+		async sendMenu(_menu, _context, path) {
 			t.is(path, '/')
 		},
 	})
@@ -187,7 +187,7 @@ test.skip('action returns non existing path afterwards throws Error', async t =>
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('custom/', menu, {
-		sendMenu: async () => {
+		async sendMenu() {
 			throw new Error('dont send main menu')
 		},
 	})
@@ -236,7 +236,7 @@ test('not existing action updates menu', async t => {
 	t.plan(2)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
-		doFunction: () => {
+		doFunction() {
 			throw new Error('not the correct action')
 		},
 	}
@@ -247,7 +247,7 @@ test('not existing action updates menu', async t => {
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async (_menu, _context, path) => {
+		async sendMenu(_menu, _context, path) {
 			t.is(path, '/')
 		},
 	})
@@ -288,7 +288,7 @@ test('action in submenu is run', async t => {
 	t.plan(3)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/submenu\/what$/,
-		doFunction: (context, path) => {
+		doFunction(context, path) {
 			t.is(context.match![0], '/submenu/what')
 			t.is(context.match![1], undefined)
 			t.is(path, '/submenu/what')
@@ -313,7 +313,7 @@ test('action in submenu is run', async t => {
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async () => {
+		async sendMenu() {
 			throw new Error('dont open the menu')
 		},
 	})
@@ -354,7 +354,7 @@ test('not existing action in submenu updates submenu', async t => {
 	t.plan(2)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/submenu\/what$/,
-		doFunction: () => {
+		doFunction() {
 			throw new Error('not the correct action')
 		},
 	}
@@ -376,7 +376,7 @@ test('not existing action in submenu updates submenu', async t => {
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async (_menu, _context, path) => {
+		async sendMenu(_menu, _context, path) {
 			t.is(path, '/submenu/')
 		},
 	})
@@ -417,7 +417,7 @@ test('action in hidden submenu updates main menu', async t => {
 	t.plan(2)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/submenu\/what$/,
-		doFunction: () => {
+		doFunction() {
 			throw new Error('submenu is hidden')
 		},
 	}
@@ -439,7 +439,7 @@ test('action in hidden submenu updates main menu', async t => {
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async (_menu, _context, path) => {
+		async sendMenu(_menu, _context, path) {
 			t.is(path, '/')
 		},
 	})
@@ -480,7 +480,7 @@ test('action in non existing submenu updates main menu', async t => {
 	t.plan(2)
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/submenu\/what$/,
-		doFunction: () => {
+		doFunction() {
 			throw new Error('submenu is hidden')
 		},
 	}
@@ -502,7 +502,7 @@ test('action in non existing submenu updates main menu', async t => {
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async (_menu, _context, path) => {
+		async sendMenu(_menu, _context, path) {
 			t.is(path, '/')
 		},
 	})
@@ -552,7 +552,7 @@ test('action run took too long and updating menu afterwards tries to answerCallb
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async () => {},
+		async sendMenu() {},
 	})
 
 	const bot = new Bot<MyContext>('123:ABC');
@@ -602,7 +602,7 @@ test.skip('updating menu still throws unknown error from answerCallbackQuery', a
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async () => {},
+		async sendMenu() {},
 	})
 
 	const bot = new Bot<MyContext>('123:ABC');

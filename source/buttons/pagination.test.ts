@@ -1,5 +1,5 @@
 import test from 'ava'
-import {createPaginationChoices} from './pagination'
+import {createPaginationChoices} from './pagination.js'
 
 const keysCorrectMacro = test.macro((t, totalPages: number, currentPage: number, expected: readonly number[]) => {
 	const result = createPaginationChoices(totalPages, currentPage)

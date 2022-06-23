@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {generateChoicesButtons} from './buttons'
+import {generateChoicesButtons} from './buttons.js'
 
 test('empty choices no buttons', async t => {
 	const func = generateChoicesButtons('pre', false, [], {})
@@ -30,7 +30,7 @@ test('creates pagination buttons', async t => {
 	const func = generateChoicesButtons('pre', false, ['a', 'b', 'c'], {
 		columns: 1,
 		maxRows: 1,
-		setPage: () => {
+		setPage() {
 			throw new Error('no need to call setPage on keyboard creation')
 		},
 	})
@@ -111,7 +111,7 @@ test('hidden does not render any buttons', async t => {
 	}
 
 	const func = generateChoicesButtons('pre', false, choiceFunction, {
-		hide: (context, path) => {
+		hide(context, path) {
 			t.is(context, undefined)
 			t.is(path, '/')
 			return true

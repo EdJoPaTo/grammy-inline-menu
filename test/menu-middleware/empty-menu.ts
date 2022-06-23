@@ -1,9 +1,9 @@
 import {Bot, Context as BaseContext} from 'grammy'
 import test from 'ava'
 
-import {MenuLike} from '../../source/menu-like'
+import {MenuLike} from '../../source/menu-like.js'
 
-import {MenuMiddleware} from '../../source/menu-middleware'
+import {MenuMiddleware} from '../../source/menu-middleware.js'
 
 test('non callback queries are passing through', async t => {
 	const menu: MenuLike<unknown> = {
@@ -74,7 +74,7 @@ test('default root path is responded', async t => {
 	}
 
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async (_menu, _context, path) => {
+		async sendMenu(_menu, _context, path) {
 			t.is(path, '/')
 		},
 	})
@@ -121,7 +121,7 @@ test('custom root path is responded', async t => {
 	}
 
 	const mm = new MenuMiddleware('custom/', menu, {
-		sendMenu: async (_menu, _context, path) => {
+		async sendMenu(_menu, _context, path) {
 			t.is(path, 'custom/')
 		},
 	})
@@ -168,7 +168,7 @@ test('custom regex root path is responded', async t => {
 	}
 
 	const mm = new MenuMiddleware(/^tree(\d+)\//, menu, {
-		sendMenu: async (_menu, _context, path) => {
+		async sendMenu(_menu, _context, path) {
 			t.is(path, 'tree42/')
 		},
 	})
@@ -244,7 +244,7 @@ test('not existing path below is responded with root menu', async t => {
 	}
 
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async (_menu, _context, path) => {
+		async sendMenu(_menu, _context, path) {
 			t.is(path, '/')
 		},
 	})

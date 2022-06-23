@@ -1,4 +1,4 @@
-import {Choices, ChoicesArray, ChoicesMap} from './types'
+import {Choices, ChoicesArray, ChoicesMap} from './types.js'
 
 export function choicesIsArray(choices: Choices): choices is ChoicesArray {
 	return Array.isArray(choices)

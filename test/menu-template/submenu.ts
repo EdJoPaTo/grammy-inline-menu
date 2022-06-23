@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {MenuTemplate} from '../../source/menu-template'
+import {MenuTemplate} from '../../source/menu-template.js'
 
 test('submenu is listed', t => {
 	const menu = new MenuTemplate('foo')

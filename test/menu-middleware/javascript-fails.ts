@@ -1,10 +1,10 @@
 import {Bot, Context as BaseContext} from 'grammy'
 import test from 'ava'
 
-import {MenuLike} from '../../source/menu-like'
+import {MenuLike} from '../../source/menu-like.js'
 
-import {ButtonAction} from '../../source/action-hive'
-import {MenuMiddleware} from '../../source/menu-middleware'
+import {ButtonAction} from '../../source/action-hive.js'
+import {MenuMiddleware} from '../../source/menu-middleware.js'
 
 test('not supply reply as a middleware directly', async t => {
 	const menu: MenuLike<unknown> = {
@@ -36,7 +36,7 @@ test.skip('action is run and no path to update afterwards is returned', async t 
 	const action: ButtonAction<BaseContext> = {
 		trigger: /^\/what$/,
 		// @ts-expect-error
-		doFunction: () => {
+		doFunction() {
 			t.pass()
 			// Not returning something is the issue here
 		},
@@ -48,7 +48,7 @@ test.skip('action is run and no path to update afterwards is returned', async t 
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async () => {
+		async sendMenu() {
 			throw new Error('dont update menu as error is expected')
 		},
 	})
@@ -97,7 +97,7 @@ test.skip('action is run and an empty path to update afterwards is returned thro
 	t.plan(2)
 	const action: ButtonAction<BaseContext> = {
 		trigger: /^\/what$/,
-		doFunction: () => {
+		doFunction() {
 			t.pass()
 			return ''
 		},
@@ -109,7 +109,7 @@ test.skip('action is run and an empty path to update afterwards is returned thro
 		renderKeyboard: () => [],
 	}
 	const mm = new MenuMiddleware('/', menu, {
-		sendMenu: async () => {
+		async sendMenu() {
 			throw new Error('dont update menu as error is expected')
 		},
 	})

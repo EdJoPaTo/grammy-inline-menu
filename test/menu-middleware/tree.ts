@@ -1,9 +1,9 @@
 import test from 'ava'
 
-import {MenuLike, Submenu} from '../../source/menu-like'
+import {MenuLike, Submenu} from '../../source/menu-like.js'
 
-import {MenuMiddleware} from '../../source/menu-middleware'
-import {ButtonAction} from '../../source/action-hive'
+import {MenuMiddleware} from '../../source/menu-middleware.js'
+import {ButtonAction} from '../../source/action-hive.js'
 
 const EMPTY_MENU: MenuLike<unknown> = {
 	listSubmenus: () => new Set(),
@@ -22,7 +22,7 @@ menu                          /
 test('action', t => {
 	const action: ButtonAction<unknown> = {
 		trigger: /^\/what$/,
-		doFunction: () => {
+		doFunction() {
 			throw new Error('dont call me')
 		},
 	}
@@ -92,7 +92,7 @@ menu                          /
 test('action in submenu', t => {
 	const action: ButtonAction<unknown> = {
 		trigger: /^\/submenu\/what$/,
-		doFunction: () => {
+		doFunction() {
 			throw new Error('dont call me')
 		},
 	}

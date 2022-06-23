@@ -1,16 +1,16 @@
 import {Context as BaseContext, Api} from 'grammy'
 import test from 'ava'
 
-import {MenuTemplate} from '../../source'
-import {MEDIA_TYPES} from '../../source/body'
+import {MenuTemplate} from '../../source/index.js'
+import {MEDIA_TYPES} from '../../source/body.js'
 
-import {generateEditMessageIntoMenuFunction} from '../../source/send-menu'
+import {generateEditMessageIntoMenuFunction} from '../../source/send-menu.js'
 
 test('text', async t => {
 	const menu = new MenuTemplate<BaseContext>('whatever')
 
 	const fakeTelegram: Partial<Api> = {
-		editMessageText: async (chatId, messageId, text, other) => {
+		async editMessageText(chatId, messageId, text, other) {
 			t.is(chatId, 13)
 			t.is(messageId, 37)
 			t.is(text, 'whatever')
@@ -44,7 +44,7 @@ for (const mediaType of MEDIA_TYPES) {
 		const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: mediaType})
 
 		const fakeTelegram: Partial<Api> = {
-			editMessageMedia: async (chatId, messageId, media, other) => {
+			async editMessageMedia(chatId, messageId, media, other) {
 				t.is(chatId, 13)
 				t.is(messageId, 37)
 				t.deepEqual(media, {

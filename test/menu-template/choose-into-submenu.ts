@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {MenuTemplate} from '../../source/menu-template'
+import {MenuTemplate} from '../../source/menu-template.js'
 
 test('submenu is listed', t => {
 	const menu = new MenuTemplate('foo')
@@ -84,7 +84,7 @@ test('with pagnination buttons', async t => {
 	menu.chooseIntoSubmenu('unique', ['Button', 'Tree'], submenu, {
 		columns: 1,
 		maxRows: 1,
-		setPage: () => {
+		setPage() {
 			throw new Error('dont set the page on rendering buttons')
 		},
 	})
@@ -114,7 +114,7 @@ test('set page action', async t => {
 	menu.chooseIntoSubmenu('unique', ['Button', 'Tree'], submenu, {
 		columns: 1,
 		maxRows: 1,
-		setPage: (context, page) => {
+		setPage(context, page) {
 			t.is(context, 'bla')
 			t.is(page, 2)
 		},

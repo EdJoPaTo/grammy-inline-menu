@@ -1,1 +1,1 @@
-export * from './back-main-buttons'
+export * from './back-main-buttons.js'

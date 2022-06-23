@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {MenuTemplate} from '../../source/menu-template'
+import {MenuTemplate} from '../../source/menu-template.js'
 
 test('string body is passed through', async t => {
 	const menu = new MenuTemplate('foobar')

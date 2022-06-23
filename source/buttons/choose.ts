@@ -1,5 +1,5 @@
-import {ConstOrPromise} from '../generic-types'
-import {ManyChoicesOptions} from '../choices'
+import {ConstOrPromise} from '../generic-types.js'
+import {ManyChoicesOptions} from '../choices/index.js'
 
 export type ChooseActionFunc<Context> = (context: Context, key: string) => ConstOrPromise<string | boolean>
 

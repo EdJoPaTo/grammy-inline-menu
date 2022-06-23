@@ -1,6 +1,6 @@
-import {ContextFunc, ConstOrPromise} from '../generic-types'
+import {ContextFunc, ConstOrPromise} from '../generic-types.js'
 
-import {BasicOptions} from './basic'
+import {BasicOptions} from './basic.js'
 
 export type SetPageFunction<Context> = (context: Context, page: number) => ConstOrPromise<void>
 export type GetCurrentPageFunction<Context> = ContextFunc<Context, number | undefined>

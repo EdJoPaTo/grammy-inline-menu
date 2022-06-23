@@ -1,12 +1,12 @@
 import test from 'ava'
 
-import {MenuTemplate} from '../../source/menu-template'
+import {MenuTemplate} from '../../source/menu-template.js'
 
 test('buttons hidden', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.choose('unique', ['Button'], {
 		hide: () => true,
-		do: () => {
+		do() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -17,7 +17,7 @@ test('buttons hidden', async t => {
 test('buttons', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.choose('unique', ['Button'], {
-		do: () => {
+		do() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -31,7 +31,7 @@ test('buttons', async t => {
 test('action triggers', t => {
 	const menu = new MenuTemplate('whatever')
 	menu.choose('unique', ['Button'], {
-		do: () => {
+		do() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -47,7 +47,7 @@ test('action hidden', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.choose('unique', ['Button'], {
 		hide: () => true,
-		do: () => {
+		do() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -61,7 +61,7 @@ test('action hidden', async t => {
 test('action existing button', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.choose('unique', ['Button'], {
-		do: (context, key) => {
+		do(context, key) {
 			t.is(context, 'bla')
 			t.is(key, 'Button')
 			return 'wow'
@@ -77,7 +77,7 @@ test('action existing button', async t => {
 test('action not existing button', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.choose('unique', ['Button'], {
-		do: () => {
+		do() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -92,7 +92,7 @@ test('action not existing button check disabled', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.choose('unique', ['Button'], {
 		disableChoiceExistsCheck: true,
-		do: (context, key) => {
+		do(context, key) {
 			t.is(context, 'bla')
 			t.is(key, 'Tree')
 			return 'wow'
@@ -110,10 +110,10 @@ test('with pagnination buttons', async t => {
 	menu.choose('unique', ['Button', 'Tree'], {
 		columns: 1,
 		maxRows: 1,
-		setPage: () => {
+		setPage() {
 			throw new Error('dont set the page on rendering buttons')
 		},
-		do: () => {
+		do() {
 			throw new Error('dont run the do function when pagination is of interest')
 		},
 	})
@@ -142,11 +142,11 @@ test('set page action', async t => {
 	menu.choose('unique', ['Button', 'Tree'], {
 		columns: 1,
 		maxRows: 1,
-		setPage: (context, page) => {
+		setPage(context, page) {
 			t.is(context, 'bla')
 			t.is(page, 2)
 		},
-		do: () => {
+		do() {
 			throw new Error('dont call the do function when pagination is of interest')
 		},
 	})

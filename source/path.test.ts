@@ -1,8 +1,8 @@
 import test from 'ava'
 
-import {RegExpLike} from './generic-types'
+import {RegExpLike} from './generic-types.js'
 
-import {combinePath, combineTrigger, ensureTriggerChild, createRootMenuTrigger, ensureTriggerLastChild, ensurePathMenu, getMenuOfPath} from './path'
+import {combinePath, combineTrigger, ensureTriggerChild, createRootMenuTrigger, ensureTriggerLastChild, ensurePathMenu, getMenuOfPath} from './path.js'
 
 const combinePathMacro = test.macro({
 	exec(t, parent: string, relativePath: string, expected: string) {

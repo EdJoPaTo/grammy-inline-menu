@@ -2,7 +2,7 @@ import {InputFile} from 'grammy'
 import {LabeledPrice, Location, ParseMode, Venue} from '@grammyjs/types'
 import {ReadonlyDeep} from 'type-fest'
 
-import {hasTruthyKey, isObject} from './generic-types'
+import {hasTruthyKey, isObject} from './generic-types.js'
 
 export type Body = string | TextBody | MediaBody | LocationBody | VenueBody | InvoiceBody
 

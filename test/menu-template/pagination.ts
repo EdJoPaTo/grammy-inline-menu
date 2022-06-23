@@ -1,18 +1,18 @@
 import test from 'ava'
 
-import {MenuTemplate} from '../../source/menu-template'
+import {MenuTemplate} from '../../source/menu-template.js'
 
 test('buttons hidden', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.pagination('unique', {
 		hide: () => true,
-		getCurrentPage: () => {
+		getCurrentPage() {
 			throw new Error('do not call this function when hidden')
 		},
-		getTotalPages: () => {
+		getTotalPages() {
 			throw new Error('do not call this function when hidden')
 		},
-		setPage: () => {
+		setPage() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -24,13 +24,13 @@ test('action hidden', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.pagination('unique', {
 		hide: () => true,
-		getCurrentPage: () => {
+		getCurrentPage() {
 			throw new Error('do not call this function when hidden')
 		},
-		getTotalPages: () => {
+		getTotalPages() {
 			throw new Error('do not call this function when hidden')
 		},
-		setPage: () => {
+		setPage() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -44,15 +44,15 @@ test('action hidden', async t => {
 test('buttons 2 pages', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.pagination('unique', {
-		getCurrentPage: context => {
+		getCurrentPage(context) {
 			t.is(context, 'foo')
 			return 1
 		},
-		getTotalPages: context => {
+		getTotalPages(context) {
 			t.is(context, 'foo')
 			return 2
 		},
-		setPage: () => {
+		setPage() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -72,13 +72,13 @@ test('buttons 2 pages', async t => {
 test('action trigger', t => {
 	const menu = new MenuTemplate('whatever')
 	menu.pagination('unique', {
-		getCurrentPage: () => {
+		getCurrentPage() {
 			throw new Error('do not call this function')
 		},
-		getTotalPages: () => {
+		getTotalPages() {
 			throw new Error('do not call this function')
 		},
-		setPage: () => {
+		setPage() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -93,15 +93,15 @@ test('action sets page', async t => {
 	const errorMessage = 'The current status is not relevant when setting the page. It is validated when its important anyway.'
 	const menu = new MenuTemplate<string>('whatever')
 	menu.pagination('unique', {
-		getCurrentPage: () => {
+		getCurrentPage() {
 			t.fail(errorMessage)
 			throw new Error(errorMessage)
 		},
-		getTotalPages: () => {
+		getTotalPages() {
 			t.fail(errorMessage)
 			throw new Error(errorMessage)
 		},
-		setPage: (context, page) => {
+		setPage(context, page) {
 			t.is(context, 'foo')
 			t.is(page, 2)
 		},

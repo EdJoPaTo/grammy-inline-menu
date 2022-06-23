@@ -1,9 +1,9 @@
 import test from 'ava'
 import {Context as BaseContext} from 'grammy'
 
-import {MenuTemplate} from '../../source'
+import {MenuTemplate} from '../../source/index.js'
 
-import {resendMenuToContext} from '../../source/send-menu'
+import {resendMenuToContext} from '../../source/send-menu.js'
 
 test('resend on callback query', async t => {
 	t.plan(3)
@@ -16,11 +16,11 @@ test('resend on callback query', async t => {
 			chat_instance: '666',
 			data: '666',
 		},
-		deleteMessage: async messageId => {
+		async deleteMessage(messageId) {
 			t.is(messageId, undefined)
 			return true
 		},
-		reply: async (text, other) => {
+		async reply(text, other) {
 			t.is(text, 'whatever')
 			t.deepEqual(other, {
 				disable_web_page_preview: false,
@@ -41,11 +41,11 @@ test('resend on whatever', async t => {
 	const menu = new MenuTemplate<BaseContext>('whatever')
 
 	const fakeContext: Partial<BaseContext> = {
-		deleteMessage: async messageId => {
+		async deleteMessage(messageId) {
 			t.is(messageId, undefined)
 			return true
 		},
-		reply: async (text, other) => {
+		async reply(text, other) {
 			t.is(text, 'whatever')
 			t.deepEqual(other, {
 				disable_web_page_preview: false,

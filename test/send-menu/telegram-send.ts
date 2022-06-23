@@ -1,16 +1,16 @@
 import {Context as BaseContext, Api} from 'grammy'
 import test from 'ava'
 
-import {MenuTemplate} from '../../source'
-import {MEDIA_TYPES} from '../../source/body'
+import {MenuTemplate} from '../../source/index.js'
+import {MEDIA_TYPES} from '../../source/body.js'
 
-import {generateSendMenuToChatFunction} from '../../source/send-menu'
+import {generateSendMenuToChatFunction} from '../../source/send-menu.js'
 
 test('text', async t => {
 	const menu = new MenuTemplate<BaseContext>('whatever')
 
 	const fakeTelegram: Partial<Api> = {
-		sendMessage: async (chatId, text, other) => {
+		async sendMessage(chatId, text, other) {
 			t.is(chatId, 666)
 			t.is(text, 'whatever')
 			t.deepEqual(other, {
@@ -82,7 +82,7 @@ test('location', async t => {
 	const menu = new MenuTemplate<BaseContext>({location: {latitude: 53.5, longitude: 10}, live_period: 666})
 
 	const fakeTelegram: Partial<Api> = {
-		sendLocation: async (chatId, latitude, longitude, other) => {
+		async sendLocation(chatId, latitude, longitude, other) {
 			t.is(chatId, 666)
 			t.is(latitude, 53.5)
 			t.is(longitude, 10)
@@ -114,7 +114,7 @@ test('venue', async t => {
 	const menu = new MenuTemplate<BaseContext>({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}})
 
 	const fakeTelegram: Partial<Api> = {
-		sendVenue: async (chatId, latitude, longitude, title, address, other) => {
+		async sendVenue(chatId, latitude, longitude, title, address, other) {
 			t.is(chatId, 666)
 			t.is(latitude, 53.5)
 			t.is(longitude, 10)
@@ -156,7 +156,7 @@ test('invoice', async t => {
 	}})
 
 	const fakeTelegram: Partial<Api> = {
-		sendInvoice: async (chatId, title, description, payload, provider_token, currency, prices, other) => {
+		async sendInvoice(chatId, title, description, payload, provider_token, currency, prices, other) {
 			t.is(chatId, 666)
 			t.is(title, 'A')
 			t.is(description, 'B')

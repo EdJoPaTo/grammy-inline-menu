@@ -1,15 +1,15 @@
 import test from 'ava'
 
-import {MenuTemplate} from '../../source/menu-template'
+import {MenuTemplate} from '../../source/menu-template.js'
 
 test('buttons hidden', async t => {
 	const menu = new MenuTemplate('whatever')
 	menu.select('unique', ['Button'], {
 		hide: () => true,
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function when hidden')
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -21,12 +21,12 @@ test('button true', async t => {
 	t.plan(3)
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
-		isSet: (context, key) => {
+		isSet(context, key) {
 			t.is(context, 'foo')
 			t.is(key, 'Button')
 			return true
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -41,12 +41,12 @@ test('button false', async t => {
 	t.plan(3)
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
-		isSet: (context, key) => {
+		isSet(context, key) {
 			t.is(context, 'foo')
 			t.is(key, 'Button')
 			return false
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -62,12 +62,12 @@ test('button false with emoji', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
 		showFalseEmoji: true,
-		isSet: (context, key) => {
+		isSet(context, key) {
 			t.is(context, 'foo')
 			t.is(key, 'Button')
 			return false
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -81,10 +81,10 @@ test('button false with emoji', async t => {
 test('action triggers', t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function')
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -102,10 +102,10 @@ test('action hidden', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
 		hide: () => true,
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function')
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -122,10 +122,10 @@ test('action hidden', async t => {
 test('action skipped when not existing', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function')
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -143,10 +143,10 @@ test('action true', async t => {
 	t.plan(4)
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function')
 		},
-		set: (context, key, newState) => {
+		set(context, key, newState) {
 			t.is(context, 'foo')
 			t.is(key, 'Button')
 			t.is(newState, true)
@@ -164,10 +164,10 @@ test('action false', async t => {
 	t.plan(4)
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function')
 		},
-		set: (context, key, newState) => {
+		set(context, key, newState) {
 			t.is(context, 'foo')
 			t.is(key, 'Button')
 			t.is(newState, false)
@@ -186,10 +186,10 @@ test('action true not existing check disabled', async t => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
 		disableChoiceExistsCheck: true,
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function')
 		},
-		set: (context, key, newState) => {
+		set(context, key, newState) {
 			t.is(context, 'foo')
 			t.is(key, 'Tree')
 			t.is(newState, true)
@@ -208,15 +208,15 @@ test('with pagnination buttons', async t => {
 	menu.select('unique', ['Button', 'Tree'], {
 		columns: 1,
 		maxRows: 1,
-		setPage: () => {
+		setPage() {
 			throw new Error('dont set the page on rendering buttons')
 		},
-		isSet: (context, key) => {
+		isSet(context, key) {
 			t.is(context, 'foo')
 			t.is(key, 'Button')
 			return false
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})
@@ -245,14 +245,14 @@ test('set page action', async t => {
 	menu.select('unique', ['Button', 'Tree'], {
 		columns: 1,
 		maxRows: 1,
-		setPage: (context, page) => {
+		setPage(context, page) {
 			t.is(context, 'bla')
 			t.is(page, 2)
 		},
-		isSet: () => {
+		isSet() {
 			throw new Error('do not call this function')
 		},
-		set: () => {
+		set() {
 			throw new Error('do not call this function')
 		},
 	})

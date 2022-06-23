@@ -1,5 +1,5 @@
-import {combineTrigger, ensureTriggerChild} from './path'
-import {ContextPathFunc, RegExpLike, ConstOrPromise} from './generic-types'
+import {combineTrigger, ensureTriggerChild} from './path.js'
+import {ContextPathFunc, RegExpLike, ConstOrPromise} from './generic-types.js'
 
 export type ActionFunc<Context> = (context: Context, path: string) => ConstOrPromise<string | boolean>
 
@@ -23,7 +23,7 @@ export class ActionHive<Context> {
 
 		this._actions.add({
 			trigger,
-			doFunction: async (context, path) => {
+			async doFunction(context, path) {
 				if (await hide?.(context, path)) {
 					return '.'
 				}

@@ -1,7 +1,7 @@
-import {Body} from './body'
-import {ButtonAction} from './action-hive'
-import {ContextPathFunc, RegExpLike} from './generic-types'
-import {InlineKeyboard} from './keyboard'
+import {Body} from './body.js'
+import {ButtonAction} from './action-hive.js'
+import {ContextPathFunc, RegExpLike} from './generic-types.js'
+import {InlineKeyboard} from './keyboard.js'
 
 export interface MenuLike<Context> {
 	readonly renderBody: ContextPathFunc<Context, Body>;

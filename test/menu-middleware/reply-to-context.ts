@@ -1,9 +1,9 @@
 import {Context as BaseContext} from 'grammy'
 import test from 'ava'
 
-import {MenuLike, Submenu} from '../../source/menu-like'
+import {MenuLike, Submenu} from '../../source/menu-like.js'
 
-import {MenuMiddleware} from '../../source/menu-middleware'
+import {MenuMiddleware} from '../../source/menu-middleware.js'
 
 test('replies main menu', async t => {
 	t.plan(2)
@@ -28,7 +28,7 @@ test('replies main menu', async t => {
 	const mm = new MenuMiddleware('/', menu)
 
 	const fakeContext: Partial<BaseContext> = {
-		reply: async (text, other) => {
+		async reply(text, other) {
 			t.is(text, 'whatever')
 			t.deepEqual(other, {
 				disable_web_page_preview: false,
@@ -67,7 +67,7 @@ test('replies main menu explicitly', async t => {
 	const mm = new MenuMiddleware('/', menu)
 
 	const fakeContext: Partial<BaseContext> = {
-		reply: async (text, other) => {
+		async reply(text, other) {
 			t.is(text, 'whatever')
 			t.deepEqual(other, {
 				disable_web_page_preview: false,
@@ -106,7 +106,7 @@ test('replies submenu', async t => {
 	const mm = new MenuMiddleware('/', menu)
 
 	const fakeContext: Partial<BaseContext> = {
-		reply: async (text, other) => {
+		async reply(text, other) {
 			t.is(text, 'submenu')
 			t.deepEqual(other, {
 				disable_web_page_preview: false,

@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {ActionHive, ActionFunc} from './action-hive'
+import {ActionHive, ActionFunc} from './action-hive.js'
 
 test('add nothing is empty', t => {
 	const a = new ActionHive()

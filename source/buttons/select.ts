@@ -1,10 +1,10 @@
-import {CallbackButtonTemplate} from '../keyboard'
-import {ConstOrPromise, ConstOrContextFunc} from '../generic-types'
-import {getChoiceKeysFromChoices, ensureCorrectChoiceKeys} from '../choices/understand-choices'
-import {ManyChoicesOptions, Choices, createChoiceTextFunction, generateChoicesPaginationButtons} from '../choices'
-import {prefixEmoji} from '../prefix'
+import {CallbackButtonTemplate} from '../keyboard.js'
+import {ConstOrPromise, ConstOrContextFunc} from '../generic-types.js'
+import {getChoiceKeysFromChoices, ensureCorrectChoiceKeys} from '../choices/understand-choices.js'
+import {ManyChoicesOptions, Choices, createChoiceTextFunction, generateChoicesPaginationButtons} from '../choices/index.js'
+import {prefixEmoji} from '../prefix.js'
 
-import {getButtonsOfPage, getButtonsAsRows} from './align'
+import {getButtonsOfPage, getButtonsAsRows} from './align.js'
 
 export type IsSetFunction<Context> = (context: Context, key: string) => ConstOrPromise<boolean>
 export type SetFunction<Context> = (context: Context, key: string, newState: boolean) => ConstOrPromise<string | boolean>
