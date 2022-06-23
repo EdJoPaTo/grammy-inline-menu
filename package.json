@@ -58,8 +58,8 @@
 		"dist/source",
 		"!*.test.*"
 	],
-	"main": "dist/source",
-	"types": "dist/source",
+	"main": "./dist/source/index.js",
+	"types": "./dist/source/index.d.ts",
 	"nyc": {
 		"all": true,
 		"include": [
