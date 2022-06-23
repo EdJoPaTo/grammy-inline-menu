@@ -18,7 +18,6 @@ jobs:
           - 18
           - 16
           - 14
-          - 12
     steps:
       - uses: actions/setup-node@v3
         with:
