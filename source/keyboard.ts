@@ -78,8 +78,9 @@ function renderRow(templates: readonly ButtonTemplate[], path: string): readonly
 
 function renderCallbackButtonTemplate(template: CallbackButtonTemplate, path: string): InlineKeyboardButton {
 	const absolutePath = combinePath(path, template.relativePath)
-	if (absolutePath.length > 64) {
-		throw new Error(`callback_data only supports 1-64 bytes. With this button (${template.relativePath}) it would get too long (${absolutePath.length}). Full path: ${absolutePath}`)
+	const absolutePathLength = Buffer.byteLength(absolutePath, 'utf-8')
+	if (absolutePathLength > 64) {
+		throw new Error(`callback_data only supports 1-64 bytes. With this button (${template.relativePath}) it would get too long (${absolutePathLength}). Full path: ${absolutePath}`)
 	}
 
 	return {
