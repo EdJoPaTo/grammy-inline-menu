@@ -144,7 +144,7 @@ test('hints too long cyrillic callback data', async t => {
 	const relativePath = 'очень длинный абсолютный путь больше 32 символов'
 
 	const k = new Keyboard<unknown>()
-	k.add(false, {text: 'bla', relativePath})
+	k.add(false, {text: 'bla', relativePath: `/${relativePath}/`})
 
 	await t.throwsAsync(
 		async () => {
