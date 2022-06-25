@@ -139,3 +139,17 @@ test('hints too long callback data', async t => {
 		{message: /callback_data only supports 1-64 bytes/},
 	)
 })
+
+test('hints too long cyrillic callback data', async t => {
+	const relativePath = 'очень длинный абсолютный путь больше 32 символов'
+
+	const k = new Keyboard<unknown>()
+	k.add(false, {text: 'bla', relativePath})
+
+	await t.throwsAsync(
+		async () => {
+			await k.render(undefined, `/${relativePath}/`)
+		},
+		{message: /callback_data only supports 1-64 bytes/},
+	)
+})
