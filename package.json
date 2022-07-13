@@ -54,10 +54,6 @@
 		"typescript": "^4.4.4",
 		"xo": "^0.50.0"
 	},
-	"files": [
-		"dist/source",
-		"!*.test.*"
-	],
 	"main": "./dist/source/index.js",
 	"types": "./dist/source/index.d.ts",
 	"nyc": {

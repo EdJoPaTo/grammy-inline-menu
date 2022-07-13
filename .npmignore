@@ -1,0 +1,5 @@
+# see https://github.com/npm/cli/issues/2441
+
+*
+!dist/source/**/*
+*.test.*
