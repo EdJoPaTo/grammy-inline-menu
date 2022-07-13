@@ -76,8 +76,7 @@
 		"rules": {
 			"@typescript-eslint/naming-convention": "off",
 			"@typescript-eslint/prefer-readonly-parameter-types": "error",
-			"ava/no-ignored-test-files": "off",
-			"camelcase": "off"
+			"ava/no-ignored-test-files": "off"
 		},
 		"overrides": [
 			{
@@ -85,6 +84,7 @@
 					"examples/**/*.*js"
 				],
 				"rules": {
+					"camelcase": "off",
 					"dot-notation": "off"
 				}
 			},
