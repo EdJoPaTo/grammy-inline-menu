@@ -130,26 +130,24 @@ test('hints too long callback data', async t => {
 	const ten = '0123456789'
 
 	const k = new Keyboard<unknown>()
-	k.add(false, {text: 'bla', relativePath: ten + ten + ten})
+	k.add(false, {text: 'bla', relativePath: ten + ten + ten + ten + ten})
 
 	await t.throwsAsync(
-		async () => {
-			await k.render(undefined, `/${ten}${ten}/${ten}${ten}${ten}/`)
-		},
+		// This would render to /some/long/base/ + 5*ten which is longer than 64 chars
+		async () => k.render(undefined, '/some/long/base/'),
 		{message: /callback_data only supports 1-64 bytes/},
 	)
 })
 
 test('hints too long cyrillic callback data', async t => {
+	// This is 48 characters but due to unicode its 2*48 -> more than 64
 	const relativePath = 'очень длинный абсолютный путь больше 32 символов'
 
 	const k = new Keyboard<unknown>()
-	k.add(false, {text: 'bla', relativePath: `/${relativePath}/`})
+	k.add(false, {text: 'bla', relativePath})
 
 	await t.throwsAsync(
-		async () => {
-			await k.render(undefined, `/${relativePath}/`)
-		},
+		async () => k.render(undefined, '/base/'),
 		{message: /callback_data only supports 1-64 bytes/},
 	)
 })
