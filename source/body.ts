@@ -1,5 +1,5 @@
 import {InputFile} from 'grammy'
-import {LabeledPrice, Location, ParseMode, Venue} from '@grammyjs/types'
+import {LabeledPrice, Location, ParseMode, Venue} from 'grammy/types'
 import {ReadonlyDeep} from 'type-fest'
 
 import {hasTruthyKey, isObject} from './generic-types.js'

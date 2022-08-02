@@ -1,6 +1,6 @@
 import {Buffer} from 'node:buffer'
 
-import {InlineKeyboardButton as TelegramInlineKeyboardButton} from '@grammyjs/types'
+import {InlineKeyboardButton as TelegramInlineKeyboardButton} from 'grammy/types'
 import {ReadonlyDeep} from 'type-fest'
 
 import {ConstOrContextPathFunc, ContextPathFunc, filterNonNullable} from './generic-types.js'

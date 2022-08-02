@@ -1,5 +1,5 @@
 import {Context as BaseContext, Api} from 'grammy'
-import {Message} from '@grammyjs/types'
+import {Message} from 'grammy/types'
 
 import {Body, TextBody, MediaBody, LocationBody, isMediaBody, isLocationBody, isTextBody, getBodyText, isVenueBody, VenueBody, isInvoiceBody} from './body.js'
 import {ensurePathMenu} from './path.js'
