@@ -83,7 +83,7 @@ telegraf-inline-menu should also know this in a future release.
 
 # Migrate from version 6 to 7
 
-Version 7 switches from Telegraf to grammY as a Telegram Bot framework.
+Version 7 switches from Telegraf to [grammY](https://github.com/grammyjs/grammY) as a Telegram Bot framework.
 grammY has various benefits over Telegraf as Telegraf is quite old and grammY learned a lot from its mistakes and shortcomings.
 
 ```diff
