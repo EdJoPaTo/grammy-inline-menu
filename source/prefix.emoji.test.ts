@@ -1,10 +1,6 @@
 import test from 'ava'
 
-import {
-	prefixEmoji,
-	emojiFalse,
-	emojiTrue,
-} from './prefix.js'
+import {emojiFalse, emojiTrue, prefixEmoji} from './prefix.js'
 
 test('no prefix', t => {
 	const result = prefixEmoji('42', undefined)

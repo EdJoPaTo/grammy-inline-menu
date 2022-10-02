@@ -1,5 +1,5 @@
 import test from 'ava'
-import {Context as BaseContext} from 'grammy'
+import type {Context as BaseContext} from 'grammy'
 
 import {MenuTemplate} from '../../source/index.js'
 
@@ -160,7 +160,10 @@ test('text reply when message is a media message but fails with delete', async t
 
 test('media reply when not a callback query', async t => {
 	t.plan(2)
-	const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: 'photo'})
+	const menu = new MenuTemplate<BaseContext>({
+		media: 'whatever',
+		type: 'photo',
+	})
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: undefined,
@@ -182,7 +185,10 @@ test('media reply when not a callback query', async t => {
 
 test('media reply when text message', async t => {
 	t.plan(3)
-	const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: 'photo'})
+	const menu = new MenuTemplate<BaseContext>({
+		media: 'whatever',
+		type: 'photo',
+	})
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
@@ -219,7 +225,10 @@ test('media reply when text message', async t => {
 
 test('media edit when media message', async t => {
 	t.plan(2)
-	const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: 'photo'})
+	const menu = new MenuTemplate<BaseContext>({
+		media: 'whatever',
+		type: 'photo',
+	})
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
@@ -313,7 +322,10 @@ test('does throw unrecoverable edit errors', async t => {
 })
 
 test('text edit without webpage preview', async t => {
-	const menu = new MenuTemplate<BaseContext>({text: 'whatever', disable_web_page_preview: true})
+	const menu = new MenuTemplate<BaseContext>({
+		text: 'whatever',
+		disable_web_page_preview: true,
+	})
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
@@ -344,7 +356,10 @@ test('text edit without webpage preview', async t => {
 })
 
 test('text edit with parse mode', async t => {
-	const menu = new MenuTemplate<BaseContext>({text: 'whatever', parse_mode: 'Markdown'})
+	const menu = new MenuTemplate<BaseContext>({
+		text: 'whatever',
+		parse_mode: 'Markdown',
+	})
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
@@ -406,7 +421,10 @@ test('text edit with button', async t => {
 })
 
 test('media edit with button', async t => {
-	const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: 'photo'})
+	const menu = new MenuTemplate<BaseContext>({
+		media: 'whatever',
+		type: 'photo',
+	})
 	menu.manual({text: 'Button', callback_data: '/'})
 
 	const fakeContext: Partial<BaseContext> = {
@@ -438,7 +456,10 @@ test('media edit with button', async t => {
 
 test('location reply', async t => {
 	t.plan(4)
-	const menu = new MenuTemplate<BaseContext>({location: {latitude: 53.5, longitude: 10}, live_period: 666})
+	const menu = new MenuTemplate<BaseContext>({
+		location: {latitude: 53.5, longitude: 10},
+		live_period: 666,
+	})
 	menu.manual({text: 'Button', callback_data: '/'})
 
 	const fakeContext: Partial<BaseContext> = {
@@ -476,7 +497,13 @@ test('location reply', async t => {
 
 test('venue reply', async t => {
 	t.plan(6)
-	const menu = new MenuTemplate<BaseContext>({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}})
+	const menu = new MenuTemplate<BaseContext>({
+		venue: {
+			location: {latitude: 53.5, longitude: 10},
+			title: 'A',
+			address: 'B',
+		},
+	})
 	menu.manual({text: 'Button', callback_data: '/'})
 
 	const fakeContext: Partial<BaseContext> = {
@@ -517,14 +544,16 @@ test('venue reply', async t => {
 
 test('invoice reply', async t => {
 	t.plan(8)
-	const menu = new MenuTemplate<BaseContext>({invoice: {
-		title: 'A',
-		description: 'B',
-		currency: 'EUR',
-		payload: 'D',
-		provider_token: 'E',
-		prices: [],
-	}})
+	const menu = new MenuTemplate<BaseContext>({
+		invoice: {
+			title: 'A',
+			description: 'B',
+			currency: 'EUR',
+			payload: 'D',
+			provider_token: 'E',
+			prices: [],
+		},
+	})
 	menu.manual({text: 'Button', callback_data: '/'})
 
 	const fakeContext: Partial<BaseContext> = {

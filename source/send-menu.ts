@@ -1,27 +1,41 @@
-import {Context as BaseContext, Api} from 'grammy'
-import {Message} from 'grammy/types'
+import type {Api, Context as BaseContext} from 'grammy'
+import type {Message} from 'grammy/types'
 
-import {Body, TextBody, MediaBody, LocationBody, isMediaBody, isLocationBody, isTextBody, getBodyText, isVenueBody, VenueBody, isInvoiceBody} from './body.js'
 import {ensurePathMenu} from './path.js'
-import {InlineKeyboard} from './keyboard.js'
-import {MenuLike} from './menu-like.js'
+import {getBodyText, isInvoiceBody, isLocationBody, isMediaBody, isTextBody, isVenueBody} from './body.js'
+import type {Body, LocationBody, MediaBody, TextBody, VenueBody} from './body.js'
+import type {InlineKeyboard} from './keyboard.js'
+import type {MenuLike} from './menu-like.js'
 
 /**
  * Generic Method which is able to send a menu to a context (given a path where it is)
  */
-export type SendMenuFunc<Context> = (menu: MenuLike<Context>, context: Context, path: string) => Promise<unknown>
+export type SendMenuFunc<Context> = (
+	menu: MenuLike<Context>,
+	context: Context,
+	path: string,
+) => Promise<unknown>
 
 /**
  * Method which is able to send a menu to a chat.
  * Generated via `generateSendMenuToChatFunction`.
  */
-export type SendMenuToChatFunction<Context> = (chatId: string | number, context: Context, other?: Readonly<Record<string, unknown>>) => Promise<Message>
+export type SendMenuToChatFunction<Context> = (
+	chatId: string | number,
+	context: Context,
+	other?: Readonly<Record<string, unknown>>,
+) => Promise<Message>
 
 /**
  * Method which is able to edit a message in a chat into a menu.
  * Generated via `generateEditMessageIntoMenuFunction`.
  */
-export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, messageId: number, context: Context, other?: Readonly<Record<string, unknown>>) => Promise<Message | true>
+export type EditMessageIntoMenuFunction<Context> = (
+	chatId: number | string,
+	messageId: number,
+	context: Context,
+	other?: Readonly<Record<string, unknown>>,
+) => Promise<Message | true>
 
 /**
  * Reply a menu to a context as a new message
@@ -30,7 +44,12 @@ export type EditMessageIntoMenuFunction<Context> = (chatId: number | string, mes
  * @param path path of the menu
  * @param other optional additional options
  */
-export async function replyMenuToContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, other?: Readonly<Record<string, unknown>>) {
+export async function replyMenuToContext<Context extends BaseContext>(
+	menu: MenuLike<Context>,
+	context: Context,
+	path: string,
+	other?: Readonly<Record<string, unknown>>,
+) {
 	ensurePathMenu(path)
 	const body = await menu.renderBody(context, path)
 	const keyboard = await menu.renderKeyboard(context, path)
@@ -44,7 +63,12 @@ export async function replyMenuToContext<Context extends BaseContext>(menu: Menu
  * @param path path of the menu
  * @param other optional additional options
  */
-export async function editMenuOnContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, other: Readonly<Record<string, unknown>> = {}) {
+export async function editMenuOnContext<Context extends BaseContext>(
+	menu: MenuLike<Context>,
+	context: Context,
+	path: string,
+	other: Readonly<Record<string, unknown>> = {},
+) {
 	ensurePathMenu(path)
 	const body = await menu.renderBody(context, path)
 	const keyboard = await menu.renderKeyboard(context, path)
@@ -92,7 +116,9 @@ export async function editMenuOnContext<Context extends BaseContext>(menu: MenuL
  * If thats not possible the reply markup (keyboard) is removed. The user can not press any buttons on that old message.
  * @param context context of the message to be deleted
  */
-export async function deleteMenuFromContext<Context extends BaseContext>(context: Context): Promise<void> {
+export async function deleteMenuFromContext<Context extends BaseContext>(
+	context: Context,
+): Promise<void> {
 	try {
 		await context.deleteMessage()
 	} catch {
@@ -107,7 +133,12 @@ export async function deleteMenuFromContext<Context extends BaseContext>(context
  * @param path path of the menu
  * @param other optional additional options
  */
-export async function resendMenuToContext<Context extends BaseContext>(menu: MenuLike<Context>, context: Context, path: string, other: Readonly<Record<string, unknown>> = {}) {
+export async function resendMenuToContext<Context extends BaseContext>(
+	menu: MenuLike<Context>,
+	context: Context,
+	path: string,
+	other: Readonly<Record<string, unknown>> = {},
+) {
 	const [menuMessage] = await Promise.all([
 		replyMenuToContext(menu, context, path, other),
 		deleteMenuFromContext(context),
@@ -124,8 +155,13 @@ function catchMessageNotModified(error: unknown): false {
 	throw error
 }
 
-// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-async function replyRenderedMenuPartsToContext<Context extends BaseContext>(body: Body, keyboard: InlineKeyboard, context: Context, other: Readonly<Record<string, unknown>> = {}) {
+async function replyRenderedMenuPartsToContext<Context extends BaseContext>(
+	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+	body: Body,
+	keyboard: InlineKeyboard,
+	context: Context,
+	other: Readonly<Record<string, unknown>> = {},
+) {
 	if (isMediaBody(body)) {
 		const mediaOther = createSendMediaOther(body, keyboard, other)
 
@@ -145,7 +181,11 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(body
 	}
 
 	if (isLocationBody(body)) {
-		return context.replyWithLocation(body.location.latitude, body.location.longitude, createLocationOther(body, keyboard, other))
+		return context.replyWithLocation(
+			body.location.latitude,
+			body.location.longitude,
+			createLocationOther(body, keyboard, other),
+		)
 	}
 
 	if (isVenueBody(body)) {
@@ -172,8 +212,12 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(body
  * @param menu menu to be shown
  * @param path path of the menu
  */
-// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Api>, menu: MenuLike<Context>, path: string): SendMenuToChatFunction<Context> {
+export function generateSendMenuToChatFunction<Context>(
+	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+	telegram: Api,
+	menu: MenuLike<Context>,
+	path: string,
+): SendMenuToChatFunction<Context> {
 	return async (chatId, context, other = {}) => {
 		const body = await menu.renderBody(context, path)
 		const keyboard = await menu.renderKeyboard(context, path)
@@ -197,17 +241,38 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Api>,
 		}
 
 		if (isLocationBody(body)) {
-			return telegram.sendLocation(chatId, body.location.latitude, body.location.longitude, createLocationOther(body, keyboard, other))
+			return telegram.sendLocation(
+				chatId,
+				body.location.latitude,
+				body.location.longitude,
+				createLocationOther(body, keyboard, other),
+			)
 		}
 
 		if (isVenueBody(body)) {
 			const {location, title, address} = body.venue
-			return telegram.sendVenue(chatId, location.latitude, location.longitude, title, address, createVenueOther(body, keyboard, other))
+			return telegram.sendVenue(
+				chatId,
+				location.latitude,
+				location.longitude,
+				title,
+				address,
+				createVenueOther(body, keyboard, other),
+			)
 		}
 
 		if (isInvoiceBody(body)) {
 			const {title, description, payload, provider_token, currency, prices} = body.invoice
-			return telegram.sendInvoice(chatId, title, description, payload, provider_token, currency, prices, createGenericOther(keyboard, other))
+			return telegram.sendInvoice(
+				chatId,
+				title,
+				description,
+				payload,
+				provider_token,
+				currency,
+				prices,
+				createGenericOther(keyboard, other),
+			)
 		}
 
 		if (isTextBody(body)) {
@@ -226,8 +291,12 @@ export function generateSendMenuToChatFunction<Context>(telegram: Readonly<Api>,
  * @param menu menu to be shown
  * @param path path of the menu
  */
-// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<Api>, menu: MenuLike<Context>, path: string): EditMessageIntoMenuFunction<Context> {
+export function generateEditMessageIntoMenuFunction<Context>(
+	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+	telegram: Api,
+	menu: MenuLike<Context>,
+	path: string,
+): EditMessageIntoMenuFunction<Context> {
 	return async (chatId, messageId, context, other = {}) => {
 		const body = await menu.renderBody(context, path)
 		const keyboard = await menu.renderKeyboard(context, path)
@@ -267,7 +336,11 @@ export function generateEditMessageIntoMenuFunction<Context>(telegram: Readonly<
 	}
 }
 
-function createTextOther(body: string | TextBody, keyboard: InlineKeyboard, base: Readonly<Record<string, unknown>>) {
+function createTextOther(
+	body: string | TextBody,
+	keyboard: InlineKeyboard,
+	base: Readonly<Record<string, unknown>>,
+) {
 	return {
 		...base,
 		parse_mode: typeof body === 'string' ? undefined : body.parse_mode,
@@ -278,8 +351,12 @@ function createTextOther(body: string | TextBody, keyboard: InlineKeyboard, base
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-function createSendMediaOther(body: MediaBody, keyboard: InlineKeyboard, base: Readonly<Record<string, unknown>>) {
+function createSendMediaOther(
+	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+	body: MediaBody,
+	keyboard: InlineKeyboard,
+	base: Readonly<Record<string, unknown>>,
+) {
 	return {
 		...base,
 		parse_mode: body.parse_mode,
@@ -290,7 +367,11 @@ function createSendMediaOther(body: MediaBody, keyboard: InlineKeyboard, base: R
 	}
 }
 
-function createLocationOther(body: LocationBody, keyboard: InlineKeyboard, base: Readonly<Record<string, unknown>>) {
+function createLocationOther(
+	body: LocationBody,
+	keyboard: InlineKeyboard,
+	base: Readonly<Record<string, unknown>>,
+) {
 	return {
 		...base,
 		live_period: body.live_period,
@@ -300,7 +381,11 @@ function createLocationOther(body: LocationBody, keyboard: InlineKeyboard, base:
 	}
 }
 
-function createVenueOther(body: VenueBody, keyboard: InlineKeyboard, base: Readonly<Record<string, unknown>>) {
+function createVenueOther(
+	body: VenueBody,
+	keyboard: InlineKeyboard,
+	base: Readonly<Record<string, unknown>>,
+) {
 	return {
 		...base,
 		foursquare_id: body.venue.foursquare_id,
@@ -311,7 +396,10 @@ function createVenueOther(body: VenueBody, keyboard: InlineKeyboard, base: Reado
 	}
 }
 
-function createGenericOther(keyboard: InlineKeyboard, base: Readonly<Record<string, unknown>>) {
+function createGenericOther(
+	keyboard: InlineKeyboard,
+	base: Readonly<Record<string, unknown>>,
+) {
 	return {
 		...base,
 		reply_markup: {

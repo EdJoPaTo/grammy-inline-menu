@@ -1,16 +1,22 @@
-import {Body} from './body.js'
-import {ButtonAction, ActionHive, ActionFunc} from './action-hive.js'
-import {Choices, ChoicesRecord, generateChoicesButtons, combineHideAndChoices} from './choices/index.js'
-import {ChooseOptions} from './buttons/choose.js'
-import {ContextFunc, ContextPathFunc, ConstOrContextFunc, ConstOrContextPathFunc, RegExpLike} from './generic-types.js'
+import {ActionHive} from './action-hive.js'
+import {combineHideAndChoices, generateChoicesButtons} from './choices/index.js'
+import {createPaginationChoices} from './buttons/pagination.js'
 import {ensureTriggerChild} from './path.js'
-import {Keyboard, ButtonTemplate, CallbackButtonTemplate, ButtonTemplateRow, InlineKeyboard} from './keyboard.js'
-import {MenuLike, Submenu} from './menu-like.js'
-import {PaginationOptions, createPaginationChoices, SetPageFunction} from './buttons/pagination.js'
-import {SelectOptions, generateSelectButtons} from './buttons/select.js'
-import {SingleButtonOptions} from './buttons/basic.js'
-import {SubmenuOptions, ChooseIntoSubmenuOptions} from './buttons/submenu.js'
-import {ToggleOptions, generateToggleButton} from './buttons/toggle.js'
+import {generateSelectButtons} from './buttons/select.js'
+import {generateToggleButton} from './buttons/toggle.js'
+import {Keyboard} from './keyboard.js'
+import type {ActionFunc, ButtonAction} from './action-hive.js'
+import type {Body} from './body.js'
+import type {ButtonTemplate, ButtonTemplateRow, CallbackButtonTemplate, InlineKeyboard} from './keyboard.js'
+import type {Choices, ChoicesRecord} from './choices/index.js'
+import type {ChooseIntoSubmenuOptions, SubmenuOptions} from './buttons/submenu.js'
+import type {ChooseOptions} from './buttons/choose.js'
+import type {ConstOrContextFunc, ConstOrContextPathFunc, ContextFunc, ContextPathFunc, RegExpLike} from './generic-types.js'
+import type {MenuLike, Submenu} from './menu-like.js'
+import type {PaginationOptions, SetPageFunction} from './buttons/pagination.js'
+import type {SelectOptions} from './buttons/select.js'
+import type {SingleButtonOptions} from './buttons/basic.js'
+import type {ToggleOptions} from './buttons/toggle.js'
 
 export interface InteractionOptions<Context> extends SingleButtonOptions<Context> {
 	/**
@@ -21,9 +27,9 @@ export interface InteractionOptions<Context> extends SingleButtonOptions<Context
 
 export class MenuTemplate<Context> {
 	private readonly _body: ContextPathFunc<Context, Body>
-	private readonly _keyboard: Keyboard<Context> = new Keyboard()
-	private readonly _actions: ActionHive<Context> = new ActionHive()
-	private readonly _submenus: Set<Submenu<Context>> = new Set()
+	private readonly _keyboard = new Keyboard<Context>()
+	private readonly _actions = new ActionHive<Context>()
+	private readonly _submenus = new Set<Submenu<Context>>()
 
 	constructor(
 		// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
@@ -45,7 +51,10 @@ export class MenuTemplate<Context> {
 	 * @param context Context to be supplied to the buttons on on creation
 	 * @param path Path within the menu. Will be used for the relativePaths
 	 */
-	async renderKeyboard(context: Context, path: string): Promise<InlineKeyboard> {
+	async renderKeyboard(
+		context: Context,
+		path: string,
+	): Promise<InlineKeyboard> {
 		return this._keyboard.render(context, path)
 	}
 
@@ -69,7 +78,10 @@ export class MenuTemplate<Context> {
 	 * @param button constant or function returning a button representation to be added to the keyboard
 	 * @param options additional options
 	 */
-	manual(button: ConstOrContextPathFunc<Context, ButtonTemplate>, options: SingleButtonOptions<Context> = {}): void {
+	manual(
+		button: ConstOrContextPathFunc<Context, ButtonTemplate>,
+		options: SingleButtonOptions<Context> = {},
+	): void {
 		const {hide} = options
 		if (hide) {
 			this._keyboard.add(Boolean(options.joinLastRow), async (context, path) => {
@@ -114,7 +126,11 @@ export class MenuTemplate<Context> {
 	 * @param url url where this button should be heading
 	 * @param options additional options
 	 */
-	url(text: ConstOrContextPathFunc<Context, string>, url: ConstOrContextPathFunc<Context, string>, options: SingleButtonOptions<Context> = {}): void {
+	url(
+		text: ConstOrContextPathFunc<Context, string>,
+		url: ConstOrContextPathFunc<Context, string>,
+		options: SingleButtonOptions<Context> = {},
+	): void {
 		this.manual(async (context, path) => ({
 			text: typeof text === 'function' ? await text(context, path) : text,
 			url: typeof url === 'function' ? await url(context, path) : url,
@@ -127,7 +143,11 @@ export class MenuTemplate<Context> {
 	 * @param query query that is shown next to the bot username. Can be empty ('')
 	 * @param options additional options
 	 */
-	switchToChat(text: ConstOrContextPathFunc<Context, string>, query: ConstOrContextPathFunc<Context, string>, options: SingleButtonOptions<Context> = {}): void {
+	switchToChat(
+		text: ConstOrContextPathFunc<Context, string>,
+		query: ConstOrContextPathFunc<Context, string>,
+		options: SingleButtonOptions<Context> = {},
+	): void {
 		this.manual(async (context, path) => ({
 			text: typeof text === 'function' ? await text(context, path) : text,
 			switch_inline_query: typeof query === 'function' ? await query(context, path) : query,
@@ -140,7 +160,11 @@ export class MenuTemplate<Context> {
 	 * @param query query that is shown next to the bot username. Can be empty ('')
 	 * @param options additional options
 	 */
-	switchToCurrentChat(text: ConstOrContextPathFunc<Context, string>, query: ConstOrContextPathFunc<Context, string>, options: SingleButtonOptions<Context> = {}): void {
+	switchToCurrentChat(
+		text: ConstOrContextPathFunc<Context, string>,
+		query: ConstOrContextPathFunc<Context, string>,
+		options: SingleButtonOptions<Context> = {},
+	): void {
 		this.manual(async (context, path) => ({
 			text: typeof text === 'function' ? await text(context, path) : text,
 			switch_inline_query_current_chat: typeof query === 'function' ? await query(context, path) : query,
@@ -162,8 +186,15 @@ export class MenuTemplate<Context> {
 	 * @example menuTemplate.navigate('to the root menu', '/')
 	 * @example menuTemplate.navigate('to a sibling menu', '../sibling/')
 	 */
-	navigate(text: ConstOrContextPathFunc<Context, string>, relativePath: string, options: SingleButtonOptions<Context> = {}): void {
-		this._keyboard.add(Boolean(options.joinLastRow), generateCallbackButtonTemplate(text, relativePath, options.hide))
+	navigate(
+		text: ConstOrContextPathFunc<Context, string>,
+		relativePath: string,
+		options: SingleButtonOptions<Context> = {},
+	): void {
+		this._keyboard.add(
+			Boolean(options.joinLastRow),
+			generateCallbackButtonTemplate(text, relativePath, options.hide),
+		)
 	}
 
 	/**
@@ -187,7 +218,11 @@ export class MenuTemplate<Context> {
 	 *   }
 	 * })
 	 */
-	interact(text: ConstOrContextPathFunc<Context, string>, action: string, options: InteractionOptions<Context>): void {
+	interact(
+		text: ConstOrContextPathFunc<Context, string>,
+		action: string,
+		options: InteractionOptions<Context>,
+	): void {
 		if ('doFunc' in options) {
 			throw new TypeError('doFunc was renamed to do')
 		}
@@ -197,7 +232,10 @@ export class MenuTemplate<Context> {
 		}
 
 		this._actions.add(new RegExp(action + '$'), options.do, options.hide)
-		this._keyboard.add(Boolean(options.joinLastRow), generateCallbackButtonTemplate(text, action, options.hide))
+		this._keyboard.add(
+			Boolean(options.joinLastRow),
+			generateCallbackButtonTemplate(text, action, options.hide),
+		)
 	}
 
 	/**
@@ -215,7 +253,12 @@ export class MenuTemplate<Context> {
 	 *
 	 * menuTemplate.submenu('enter submenu', 'unique', submenuTemplate)
 	 */
-	submenu(text: ConstOrContextPathFunc<Context, string>, action: string, submenu: MenuLike<Context>, options: SubmenuOptions<Context> = {}): void {
+	submenu(
+		text: ConstOrContextPathFunc<Context, string>,
+		action: string,
+		submenu: MenuLike<Context>,
+		options: SubmenuOptions<Context> = {},
+	): void {
 		ensureTriggerChild(action)
 		const actionRegex = new RegExp(action + '/')
 		if ([...this._submenus].map(o => o.action.source).includes(actionRegex.source)) {
@@ -227,7 +270,10 @@ export class MenuTemplate<Context> {
 			hide: options.hide,
 			menu: submenu,
 		})
-		this._keyboard.add(Boolean(options.joinLastRow), generateCallbackButtonTemplate(text, action + '/', options.hide))
+		this._keyboard.add(
+			Boolean(options.joinLastRow),
+			generateCallbackButtonTemplate(text, action + '/', options.hide),
+		)
 	}
 
 	/**
@@ -236,7 +282,11 @@ export class MenuTemplate<Context> {
 	 * @param choices choices the user can pick from
 	 * @param options additional options. Requires `do` as you want to do something when the user pressed a button.
 	 */
-	choose(actionPrefix: string, choices: ConstOrContextFunc<Context, Choices>, options: ChooseOptions<Context>): void {
+	choose(
+		actionPrefix: string,
+		choices: ConstOrContextFunc<Context, Choices>,
+		options: ChooseOptions<Context>,
+	): void {
 		if ('doFunc' in options) {
 			throw new TypeError('doFunc was renamed to do')
 		}
@@ -279,7 +329,12 @@ export class MenuTemplate<Context> {
 	 *
 	 * menu.chooseIntoSubmenu('unique', ['Gotham', 'Mos Eisley', 'Springfield'], submenu)
 	 */
-	chooseIntoSubmenu(actionPrefix: string, choices: ConstOrContextFunc<Context, Choices>, submenu: MenuLike<Context>, options: ChooseIntoSubmenuOptions<Context> = {}): void {
+	chooseIntoSubmenu(
+		actionPrefix: string,
+		choices: ConstOrContextFunc<Context, Choices>,
+		submenu: MenuLike<Context>,
+		options: ChooseIntoSubmenuOptions<Context> = {},
+	): void {
 		ensureTriggerChild(actionPrefix)
 		const actionRegex = new RegExp(actionPrefix + ':([^/]+)/')
 		if ([...this._submenus].map(o => o.action.source).includes(actionRegex.source)) {
@@ -325,7 +380,11 @@ export class MenuTemplate<Context> {
 	 *   }
 	 * })
 	 */
-	select(actionPrefix: string, choices: ConstOrContextFunc<Context, Choices>, options: SelectOptions<Context>): void {
+	select(
+		actionPrefix: string,
+		choices: ConstOrContextFunc<Context, Choices>,
+		options: SelectOptions<Context>,
+	): void {
 		if ('setFunc' in options || 'isSetFunc' in options) {
 			throw new TypeError('setFunc and isSetFunc were renamed to set and isSet')
 		}
@@ -413,7 +472,11 @@ export class MenuTemplate<Context> {
 	 *   }
 	 * })
 	 */
-	toggle(text: ConstOrContextPathFunc<Context, string>, actionPrefix: string, options: ToggleOptions<Context>): void {
+	toggle(
+		text: ConstOrContextPathFunc<Context, string>,
+		actionPrefix: string,
+		options: ToggleOptions<Context>,
+	): void {
 		if ('setFunc' in options || 'isSetFunc' in options) {
 			throw new TypeError('setFunc and isSetFunc were renamed to set and isSet')
 		}
@@ -434,11 +497,18 @@ export class MenuTemplate<Context> {
 			options.hide,
 		)
 
-		this._keyboard.add(Boolean(options.joinLastRow), generateToggleButton(text, actionPrefix, options))
+		this._keyboard.add(
+			Boolean(options.joinLastRow),
+			generateToggleButton(text, actionPrefix, options),
+		)
 	}
 }
 
-function generateCallbackButtonTemplate<Context>(text: ConstOrContextPathFunc<Context, string>, relativePath: string, hide: undefined | ContextPathFunc<Context, boolean>): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
+function generateCallbackButtonTemplate<Context>(
+	text: ConstOrContextPathFunc<Context, string>,
+	relativePath: string,
+	hide: undefined | ContextPathFunc<Context, boolean>,
+): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
 	return async (context, path) => {
 		if (await hide?.(context, path)) {
 			return undefined
@@ -461,7 +531,10 @@ function getKeyFromPath(trigger: RegExpLike, path: string): string {
 	return key
 }
 
-function setPageAction<Context>(pageTrigger: RegExpLike, setPage: SetPageFunction<Context>): ActionFunc<Context> {
+function setPageAction<Context>(
+	pageTrigger: RegExpLike,
+	setPage: SetPageFunction<Context>,
+): ActionFunc<Context> {
 	return async (context, path) => {
 		const key = getKeyFromPath(pageTrigger, path)
 		const page = Number(key)

@@ -1,10 +1,10 @@
-import {Bot, Context as BaseContext} from 'grammy'
+import {Bot} from 'grammy'
 import test from 'ava'
+import type {Context as BaseContext} from 'grammy'
 
-import {MenuLike} from '../../source/menu-like.js'
-
-import {ButtonAction} from '../../source/action-hive.js'
 import {MenuMiddleware} from '../../source/menu-middleware.js'
+import type {ButtonAction} from '../../source/action-hive.js'
+import type {MenuLike} from '../../source/menu-like.js'
 
 test('not supply reply as a middleware directly', async t => {
 	const menu: MenuLike<unknown> = {

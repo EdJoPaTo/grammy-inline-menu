@@ -1,8 +1,8 @@
-import {CallbackButtonTemplate} from '../keyboard.js'
-import {ContextPathFunc, ConstOrPromise, ConstOrContextPathFunc} from '../generic-types.js'
 import {prefixEmoji} from '../prefix.js'
+import type {CallbackButtonTemplate} from '../keyboard.js'
+import type {ConstOrContextPathFunc, ConstOrPromise, ContextPathFunc} from '../generic-types.js'
 
-import {SingleButtonOptions} from './basic.js'
+import type {SingleButtonOptions} from './basic.js'
 
 export type FormatStateFunction<Context> = (context: Context, text: string, state: boolean, path: string) => ConstOrPromise<string>
 
@@ -23,7 +23,11 @@ export interface ToggleOptions<Context> extends SingleButtonOptions<Context> {
 	readonly formatState?: FormatStateFunction<Context>;
 }
 
-export function generateToggleButton<Context>(text: ConstOrContextPathFunc<Context, string>, actionPrefix: string, options: ToggleOptions<Context>): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
+export function generateToggleButton<Context>(
+	text: ConstOrContextPathFunc<Context, string>,
+	actionPrefix: string,
+	options: ToggleOptions<Context>,
+): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
 	const formatFunction: FormatStateFunction<Context> = options.formatState ?? ((_, text, state) => prefixEmoji(text, state))
 	return async (context, path) => {
 		if (await options.hide?.(context, path)) {

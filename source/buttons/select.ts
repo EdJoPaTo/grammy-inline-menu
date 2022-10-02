@@ -1,10 +1,11 @@
-import {CallbackButtonTemplate} from '../keyboard.js'
-import {ConstOrPromise, ConstOrContextFunc} from '../generic-types.js'
-import {getChoiceKeysFromChoices, ensureCorrectChoiceKeys} from '../choices/understand-choices.js'
-import {ManyChoicesOptions, Choices, createChoiceTextFunction, generateChoicesPaginationButtons} from '../choices/index.js'
+import {createChoiceTextFunction, generateChoicesPaginationButtons} from '../choices/index.js'
+import {ensureCorrectChoiceKeys, getChoiceKeysFromChoices} from '../choices/understand-choices.js'
 import {prefixEmoji} from '../prefix.js'
+import type {CallbackButtonTemplate} from '../keyboard.js'
+import type {Choices, ManyChoicesOptions} from '../choices/index.js'
+import type {ConstOrContextFunc, ConstOrPromise} from '../generic-types.js'
 
-import {getButtonsOfPage, getButtonsAsRows} from './align.js'
+import {getButtonsAsRows, getButtonsOfPage} from './align.js'
 
 export type IsSetFunction<Context> = (context: Context, key: string) => ConstOrPromise<boolean>
 export type SetFunction<Context> = (context: Context, key: string, newState: boolean) => ConstOrPromise<string | boolean>
@@ -34,7 +35,11 @@ export interface SelectOptions<Context> extends ManyChoicesOptions<Context> {
 	readonly formatState?: FormatStateFunction<Context>;
 }
 
-export function generateSelectButtons<Context>(actionPrefix: string, choices: ConstOrContextFunc<Context, Choices>, options: SelectOptions<Context>): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
+export function generateSelectButtons<Context>(
+	actionPrefix: string,
+	choices: ConstOrContextFunc<Context, Choices>,
+	options: SelectOptions<Context>,
+): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
 	return async (context, path) => {
 		if (await options.hide?.(context, path)) {
 			return []

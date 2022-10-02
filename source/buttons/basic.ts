@@ -1,4 +1,4 @@
-import {ContextPathFunc} from '../generic-types.js'
+import type {ContextPathFunc} from '../generic-types.js'
 
 export interface BasicOptions<Context> {
 	/**

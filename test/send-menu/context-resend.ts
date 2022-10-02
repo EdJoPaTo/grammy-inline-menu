@@ -1,5 +1,5 @@
 import test from 'ava'
-import {Context as BaseContext} from 'grammy'
+import type {Context as BaseContext} from 'grammy'
 
 import {MenuTemplate} from '../../source/index.js'
 

@@ -1,14 +1,16 @@
-import {Composer, Context as BaseContext} from 'grammy'
+import {Composer} from 'grammy'
+import type {Context as BaseContext} from 'grammy'
 
-import {ActionFunc} from './action-hive.js'
-import {combineTrigger, createRootMenuTrigger, combinePath} from './path.js'
-import {ContextPathFunc, RegExpLike} from './generic-types.js'
-import {MenuLike} from './menu-like.js'
-import {SendMenuFunc, editMenuOnContext, replyMenuToContext} from './send-menu.js'
+import {combinePath, combineTrigger, createRootMenuTrigger} from './path.js'
+import {editMenuOnContext, replyMenuToContext} from './send-menu.js'
+import type {ActionFunc} from './action-hive.js'
+import type {ContextPathFunc, RegExpLike} from './generic-types.js'
+import type {MenuLike} from './menu-like.js'
+import type {SendMenuFunc} from './send-menu.js'
 
 type Responder<Context> = MenuResponder<Context> | ActionResponder<Context>
 
-interface MenuResponder<Context> {
+type MenuResponder<Context> = {
 	readonly type: 'menu';
 	readonly trigger: RegExpLike;
 	readonly canEnter: ContextPathFunc<Context, boolean>;
@@ -17,13 +19,13 @@ interface MenuResponder<Context> {
 	readonly actionResponders: ReadonlyArray<ActionResponder<Context>>;
 }
 
-interface ActionResponder<Context> {
+type ActionResponder<Context> = {
 	readonly type: 'action';
 	readonly trigger: RegExpLike;
 	readonly do: ActionFunc<Context>;
 }
 
-export interface Options<Context> {
+export type Options<Context> = {
 	/**
 	 * Function which is used to send and update the menu.
 	 *
@@ -143,11 +145,18 @@ function catchCallbackOld(error: unknown): void {
 	throw error
 }
 
-function responderMatch<Context>(responder: Responder<Context>, path: string): RegExpExecArray | undefined {
+function responderMatch<Context>(
+	responder: Responder<Context>,
+	path: string,
+): RegExpExecArray | undefined {
 	return new RegExp(responder.trigger.source, responder.trigger.flags).exec(path) ?? undefined
 }
 
-async function getLongestMatchMenuResponder<Context extends BaseContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | undefined; responder: MenuResponder<Context>}> {
+async function getLongestMatchMenuResponder<Context extends BaseContext>(
+	context: Context,
+	path: string,
+	current: MenuResponder<Context>,
+): Promise<{match: RegExpExecArray | undefined; responder: MenuResponder<Context>}> {
 	for (const sub of current.submenuResponders) {
 		const match = responderMatch(sub, path)
 		if (!match?.[0]) {
@@ -167,7 +176,11 @@ async function getLongestMatchMenuResponder<Context extends BaseContext>(context
 	return {match, responder: current}
 }
 
-async function getLongestMatchActionResponder<Context extends BaseContext>(context: Context, path: string, current: MenuResponder<Context>): Promise<{match: RegExpExecArray | undefined; responder: Responder<Context>}> {
+async function getLongestMatchActionResponder<Context extends BaseContext>(
+	context: Context,
+	path: string,
+	current: MenuResponder<Context>,
+): Promise<{match: RegExpExecArray | undefined; responder: Responder<Context>}> {
 	const currentMatch = responderMatch(current, path)
 
 	for (const sub of current.submenuResponders) {
@@ -199,7 +212,11 @@ async function getLongestMatchActionResponder<Context extends BaseContext>(conte
 	return {match: currentMatch, responder: current}
 }
 
-function createResponder<Context extends BaseContext>(menuTrigger: RegExpLike, canEnter: ContextPathFunc<Context, boolean>, menu: MenuLike<Context>): MenuResponder<Context> {
+function createResponder<Context extends BaseContext>(
+	menuTrigger: RegExpLike,
+	canEnter: ContextPathFunc<Context, boolean>,
+	menu: MenuLike<Context>,
+): MenuResponder<Context> {
 	const actionResponders = [...menu.renderActionHandlers(menuTrigger)]
 		.map(({trigger, doFunction}): ActionResponder<Context> => ({
 			type: 'action',
@@ -232,7 +249,10 @@ function createResponder<Context extends BaseContext>(menuTrigger: RegExpLike, c
 	}
 }
 
-function responderTree<Context>(responder: MenuResponder<Context>, indention = ''): string {
+function responderTree<Context>(
+	responder: MenuResponder<Context>,
+	indention = '',
+): string {
 	let text = treeLine(indention, responder.type, responder.trigger.source)
 
 	const subIndention = '  ' + indention
@@ -248,7 +268,11 @@ function responderTree<Context>(responder: MenuResponder<Context>, indention = '
 	return text
 }
 
-function treeLine(indention: string, type: string, regexSource: string): string {
+function treeLine(
+	indention: string,
+	type: string,
+	regexSource: string,
+): string {
 	let text = indention + type
 
 	const offset = Math.max(1, 30 - text.length)

@@ -1,6 +1,7 @@
 import * as process from 'node:process'
 
-import {Bot, Context as BaseContext} from 'grammy'
+import {Bot} from 'grammy'
+import type {Context as BaseContext} from 'grammy'
 
 import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../source/index.js'
 
@@ -56,7 +57,7 @@ menu.select('select', ['A', 'B', 'C'], {
 
 const foodMenu = new MenuTemplate<MyContext>('People like food. What do they like?')
 
-interface FoodChoises {
+type FoodChoises = {
 	food?: string;
 	tee?: boolean;
 }

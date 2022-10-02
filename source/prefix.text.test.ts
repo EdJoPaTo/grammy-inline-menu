@@ -1,8 +1,6 @@
 import test from 'ava'
 
-import {
-	prefixText,
-} from './prefix.js'
+import {prefixText} from './prefix.js'
 
 test('no prefix', t => {
 	const result = prefixText('42', undefined)

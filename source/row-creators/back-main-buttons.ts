@@ -1,7 +1,10 @@
-import {CallbackButtonTemplate} from '../keyboard.js'
-import {ConstOrContextPathFunc} from '../generic-types.js'
+import type {CallbackButtonTemplate} from '../keyboard.js'
+import type {ConstOrContextPathFunc} from '../generic-types.js'
 
-export function createBackMainMenuButtons<Context>(backButtonText: ConstOrContextPathFunc<Context, string> = '🔙back…', mainMenuButtonText: ConstOrContextPathFunc<Context, string> = '🔝main menu'): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
+export function createBackMainMenuButtons<Context>(
+	backButtonText: ConstOrContextPathFunc<Context, string> = '🔙back…',
+	mainMenuButtonText: ConstOrContextPathFunc<Context, string> = '🔝main menu',
+): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
 	return async (context, path) => {
 		const hasMainMenu = mainMenuButtonText && path.startsWith('/')
 		const parts = path.split('/').length

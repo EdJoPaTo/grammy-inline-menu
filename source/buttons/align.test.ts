@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {getRowsOfButtons, maximumButtonsPerPage, getButtonsAsRows, getButtonsOfPage} from './align.js'
+import {getButtonsAsRows, getButtonsOfPage, getRowsOfButtons, maximumButtonsPerPage} from './align.js'
 
 function generateCharArray(charA: string, charZ: string): string[] {
 	// https://stackoverflow.com/questions/24597634/how-to-generate-an-array-of-alphabet-in-jquery/24597663#24597663

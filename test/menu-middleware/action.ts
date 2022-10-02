@@ -1,10 +1,11 @@
-import {Bot, Context as BaseContext} from 'grammy'
+import {Bot} from 'grammy'
 import test from 'ava'
+import type {Context as BaseContext} from 'grammy'
 
-import {MenuLike, Submenu} from '../../source/menu-like.js'
+import type {MenuLike, Submenu} from '../../source/menu-like.js'
 
 import {MenuMiddleware} from '../../source/menu-middleware.js'
-import {ButtonAction} from '../../source/action-hive.js'
+import type {ButtonAction} from '../../source/action-hive.js'
 
 // TODO: Ugly workaround. This library should know better...
 type MyContext = BaseContext & {match: RegExpExecArray | undefined}

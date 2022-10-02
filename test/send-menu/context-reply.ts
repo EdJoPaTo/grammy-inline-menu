@@ -1,5 +1,5 @@
 import test from 'ava'
-import {Context as BaseContext} from 'grammy'
+import type {Context as BaseContext} from 'grammy'
 
 import {MenuTemplate} from '../../source/index.js'
 import {MEDIA_TYPES} from '../../source/body.js'
@@ -9,7 +9,10 @@ import {replyMenuToContext} from '../../source/send-menu.js'
 for (const mediaType of MEDIA_TYPES) {
 	test('reply media ' + mediaType, async t => {
 		t.plan(2)
-		const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: mediaType})
+		const menu = new MenuTemplate<BaseContext>({
+			media: 'whatever',
+			type: mediaType,
+		})
 
 		const replyFunction = async (media: unknown, other: unknown) => {
 			t.is(media, 'whatever')

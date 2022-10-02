@@ -1,17 +1,21 @@
 import {combineTrigger, ensureTriggerChild} from './path.js'
-import {ContextPathFunc, RegExpLike, ConstOrPromise} from './generic-types.js'
+import type {ConstOrPromise, ContextPathFunc, RegExpLike} from './generic-types.js'
 
 export type ActionFunc<Context> = (context: Context, path: string) => ConstOrPromise<string | boolean>
 
-export interface ButtonAction<Context> {
+export type ButtonAction<Context> = {
 	readonly trigger: RegExpLike;
 	readonly doFunction: ActionFunc<Context>;
 }
 
 export class ActionHive<Context> {
-	private readonly _actions: Set<ButtonAction<Context>> = new Set()
+	private readonly _actions = new Set<ButtonAction<Context>>()
 
-	add(trigger: RegExpLike, doFunction: ActionFunc<Context>, hide: undefined | ContextPathFunc<Context, boolean>): void {
+	add(
+		trigger: RegExpLike,
+		doFunction: ActionFunc<Context>,
+		hide: undefined | ContextPathFunc<Context, boolean>,
+	): void {
 		ensureTriggerChild(trigger)
 
 		const alreadyExisting = [...this._actions]
@@ -34,7 +38,7 @@ export class ActionHive<Context> {
 	}
 
 	list(path: RegExpLike): ReadonlySet<ButtonAction<Context>> {
-		const result: Set<ButtonAction<Context>> = new Set()
+		const result = new Set<ButtonAction<Context>>()
 		for (const {trigger, doFunction} of this._actions) {
 			result.add({
 				trigger: combineTrigger(path, trigger),

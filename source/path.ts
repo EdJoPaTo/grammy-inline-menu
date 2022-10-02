@@ -2,7 +2,7 @@
 // A menu is having a trigger. When a specific path is matching the trigger, the menu is opened.
 // Example: The Trigger /\/events\/e-(.+)\/delete/ will get triggered when the path is called: /events/e-42/delete
 
-import {RegExpLike} from './generic-types.js'
+import type {RegExpLike} from './generic-types.js'
 
 export function ensureTriggerChild(trigger: string | RegExpLike): void {
 	const source = typeof trigger === 'string' ? trigger : trigger.source
@@ -21,7 +21,10 @@ export function ensureTriggerLastChild(trigger: string | RegExpLike): void {
 	}
 }
 
-export function combineTrigger(parent: RegExpLike, child: string | RegExpLike): RegExp {
+export function combineTrigger(
+	parent: RegExpLike,
+	child: string | RegExpLike,
+): RegExp {
 	if (!parent.source.startsWith('^')) {
 		throw new Error('the path has to begin from start in order to prevent mistakes: /^something…\\//')
 	}
@@ -34,10 +37,15 @@ export function combineTrigger(parent: RegExpLike, child: string | RegExpLike): 
 		throw new Error('flags will not be merged')
 	}
 
-	return new RegExp(parent.source + (typeof child === 'string' ? child : child.source), parent.flags)
+	return new RegExp(
+		parent.source + (typeof child === 'string' ? child : child.source),
+		parent.flags,
+	)
 }
 
-export function createRootMenuTrigger(rootTrigger: string | RegExpLike): RegExpLike {
+export function createRootMenuTrigger(
+	rootTrigger: string | RegExpLike,
+): RegExpLike {
 	if (typeof rootTrigger === 'string') {
 		const count = rootTrigger.match(/\//g)?.length
 		if (count !== 1) {

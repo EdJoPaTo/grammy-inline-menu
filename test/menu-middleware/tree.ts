@@ -1,9 +1,9 @@
 import test from 'ava'
 
-import {MenuLike, Submenu} from '../../source/menu-like.js'
+import type {MenuLike, Submenu} from '../../source/menu-like.js'
 
 import {MenuMiddleware} from '../../source/menu-middleware.js'
-import {ButtonAction} from '../../source/action-hive.js'
+import type {ButtonAction} from '../../source/action-hive.js'
 
 const EMPTY_MENU: MenuLike<unknown> = {
 	listSubmenus: () => new Set(),

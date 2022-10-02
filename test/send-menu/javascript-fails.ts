@@ -1,7 +1,7 @@
 import test from 'ava'
-import {Context as BaseContext} from 'grammy'
+import type {Context as BaseContext} from 'grammy'
 
-import {editMenuOnContext, replyMenuToContext, generateSendMenuToChatFunction, generateEditMessageIntoMenuFunction} from '../../source/send-menu.js'
+import {editMenuOnContext, generateEditMessageIntoMenuFunction, generateSendMenuToChatFunction, replyMenuToContext} from '../../source/send-menu.js'
 import {MenuTemplate} from '../../source/index.js'
 
 const EXPECTED_ERROR = {message: /The body has to be a string or an object containing text or media/}

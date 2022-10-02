@@ -1,6 +1,6 @@
-import {ManyChoicesOptions} from '../choices/index.js'
+import type {ManyChoicesOptions} from '../choices/index.js'
 
-import {SingleButtonOptions} from './basic.js'
+import type {SingleButtonOptions} from './basic.js'
 
 export interface SubmenuOptions<Context> extends SingleButtonOptions<Context> {
 }

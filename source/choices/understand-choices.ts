@@ -1,4 +1,4 @@
-import {Choices, ChoicesArray, ChoicesMap} from './types.js'
+import type {Choices, ChoicesArray, ChoicesMap} from './types.js'
 
 export function choicesIsArray(choices: Choices): choices is ChoicesArray {
 	return Array.isArray(choices)
@@ -37,7 +37,11 @@ export function getChoiceTextByKey(choices: Choices, key: string): string {
 	return key
 }
 
-export function ensureCorrectChoiceKeys(actionPrefix: string, path: string, choiceKeys: readonly string[]): void {
+export function ensureCorrectChoiceKeys(
+	actionPrefix: string,
+	path: string,
+	choiceKeys: readonly string[],
+): void {
 	const containSlashExample = choiceKeys.find(o => o.includes('/'))
 	if (containSlashExample) {
 		throw new Error(`Choices can not contain '/'. Found '${containSlashExample}' in action '${actionPrefix}' at path '${path}'.`)

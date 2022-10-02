@@ -1,13 +1,18 @@
-import {CallbackButtonTemplate} from '../keyboard.js'
-import {ConstOrContextFunc} from '../generic-types.js'
+import type {CallbackButtonTemplate} from '../keyboard.js'
+import type {ConstOrContextFunc} from '../generic-types.js'
 
 import {createPaginationChoices} from '../buttons/pagination.js'
-import {getButtonsOfPage, getButtonsAsRows, maximumButtonsPerPage} from '../buttons/align.js'
+import {getButtonsAsRows, getButtonsOfPage, maximumButtonsPerPage} from '../buttons/align.js'
 
-import {Choices, ManyChoicesOptions, ChoiceTextFunc} from './types.js'
-import {getChoiceKeysFromChoices, getChoiceTextByKey, ensureCorrectChoiceKeys} from './understand-choices.js'
+import {ensureCorrectChoiceKeys, getChoiceKeysFromChoices, getChoiceTextByKey} from './understand-choices.js'
+import type {Choices, ChoiceTextFunc, ManyChoicesOptions} from './types.js'
 
-export function generateChoicesButtons<Context>(actionPrefix: string, isSubmenu: boolean, choices: ConstOrContextFunc<Context, Choices>, options: ManyChoicesOptions<Context>): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
+export function generateChoicesButtons<Context>(
+	actionPrefix: string,
+	isSubmenu: boolean,
+	choices: ConstOrContextFunc<Context, Choices>,
+	options: ManyChoicesOptions<Context>,
+): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
 	return async (context, path) => {
 		if (await options.hide?.(context, path)) {
 			return []
@@ -36,7 +41,12 @@ export function generateChoicesButtons<Context>(actionPrefix: string, isSubmenu:
 	}
 }
 
-export function generateChoicesPaginationButtons<Context>(actionPrefix: string, choiceKeys: number, currentPage: number | undefined, options: ManyChoicesOptions<Context>): CallbackButtonTemplate[] {
+export function generateChoicesPaginationButtons<Context>(
+	actionPrefix: string,
+	choiceKeys: number,
+	currentPage: number | undefined,
+	options: ManyChoicesOptions<Context>,
+): CallbackButtonTemplate[] {
 	const entriesPerPage = maximumButtonsPerPage(options.columns, options.maxRows)
 	const totalPages = choiceKeys / entriesPerPage
 	const pageRecord = createPaginationChoices(totalPages, currentPage)
@@ -50,7 +60,10 @@ export function generateChoicesPaginationButtons<Context>(actionPrefix: string, 
 	return pageButtons
 }
 
-export function createChoiceTextFunction<Context>(choices: Choices, buttonText: undefined | ChoiceTextFunc<Context>): ChoiceTextFunc<Context> {
+export function createChoiceTextFunction<Context>(
+	choices: Choices,
+	buttonText: undefined | ChoiceTextFunc<Context>,
+): ChoiceTextFunc<Context> {
 	if (buttonText) {
 		return buttonText
 	}

@@ -1,4 +1,4 @@
-export interface PrefixOptions {
+export type PrefixOptions = {
 	/**
 	 * Emoji which is used as prefix when true.
 	 *
@@ -34,7 +34,11 @@ export const emojiFalse = '🚫'
  * @param prefix true / false or a custom (string) prefix.
  * @param options optional options to customize emojis
  */
-export function prefixEmoji(text: string, prefix: string | boolean | undefined, options: PrefixOptions = {}): string {
+export function prefixEmoji(
+	text: string,
+	prefix: string | boolean | undefined,
+	options: PrefixOptions = {},
+): string {
 	const internalOptions = {
 		...options,
 		prefixTrue: options.prefixTrue ?? emojiTrue,
@@ -45,7 +49,10 @@ export function prefixEmoji(text: string, prefix: string | boolean | undefined, 
 	return prefixText(text, prefixContent)
 }
 
-function applyOptionsToPrefix(prefix: string | boolean | undefined, options: PrefixOptions): string | undefined {
+function applyOptionsToPrefix(
+	prefix: string | boolean | undefined,
+	options: PrefixOptions,
+): string | undefined {
 	const {
 		prefixFalse,
 		prefixTrue,

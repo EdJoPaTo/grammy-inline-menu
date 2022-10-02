@@ -1,12 +1,13 @@
 import {Buffer} from 'node:buffer'
 
-import {InlineKeyboardButton as TelegramInlineKeyboardButton} from 'grammy/types'
-import {ReadonlyDeep} from 'type-fest'
+import type {InlineKeyboardButton as TelegramInlineKeyboardButton} from 'grammy/types'
+import type {ReadonlyDeep} from 'type-fest'
 
-import {ConstOrContextPathFunc, ContextPathFunc, filterNonNullable} from './generic-types.js'
 import {combinePath} from './path.js'
+import {filterNonNullable} from './generic-types.js'
+import type {ConstOrContextPathFunc, ContextPathFunc} from './generic-types.js'
 
-export interface CallbackButtonTemplate {
+export type CallbackButtonTemplate = {
 	readonly text: string;
 	readonly relativePath: string;
 }
@@ -22,11 +23,15 @@ type RowOfUncreatedTemplates<Context> = Array<UncreatedTemplate<Context>>
 type ButtonTemplateRowGenerator<Context> = ContextPathFunc<Context, ButtonTemplateRow[]>
 type KeyboardTemplateEntry<Context> = RowOfUncreatedTemplates<Context> | ButtonTemplateRowGenerator<Context>
 
-function isRow<Context>(entry: undefined | ReadonlyDeep<KeyboardTemplateEntry<Context>>): entry is RowOfUncreatedTemplates<Context> {
+function isRow<Context>(
+	entry: undefined | ReadonlyDeep<KeyboardTemplateEntry<Context>>,
+): entry is RowOfUncreatedTemplates<Context> {
 	return Array.isArray(entry)
 }
 
-function isCallbackButtonTemplate(kindOfButton: ButtonTemplate): kindOfButton is CallbackButtonTemplate {
+function isCallbackButtonTemplate(
+	kindOfButton: ButtonTemplate,
+): kindOfButton is CallbackButtonTemplate {
 	return 'text' in kindOfButton && 'relativePath' in kindOfButton
 }
 
@@ -37,7 +42,10 @@ export class Keyboard<Context> {
 		this._entries.push(creator)
 	}
 
-	add(joinLastRow: boolean, ...buttons: ReadonlyArray<UncreatedTemplate<Context>>): void {
+	add(
+		joinLastRow: boolean,
+		...buttons: ReadonlyArray<UncreatedTemplate<Context>>
+	): void {
 		const lastEntry = this._entries.slice(-1)[0]
 
 		if (joinLastRow && isRow(lastEntry)) {
@@ -61,7 +69,11 @@ export class Keyboard<Context> {
 	}
 }
 
-async function entryToRows<Context>(entry: ReadonlyDeep<KeyboardTemplateEntry<Context>>, context: Context, path: string): Promise<ButtonTemplateRow[]> {
+async function entryToRows<Context>(
+	entry: ReadonlyDeep<KeyboardTemplateEntry<Context>>,
+	context: Context,
+	path: string,
+): Promise<ButtonTemplateRow[]> {
 	if (typeof entry === 'function') {
 		return entry(context, path)
 	}
@@ -73,12 +85,18 @@ async function entryToRows<Context>(entry: ReadonlyDeep<KeyboardTemplateEntry<Co
 	return [filtered]
 }
 
-function renderRow(templates: readonly ButtonTemplate[], path: string): readonly InlineKeyboardButton[] {
+function renderRow(
+	templates: readonly ButtonTemplate[],
+	path: string,
+): readonly InlineKeyboardButton[] {
 	return templates
 		.map(template => isCallbackButtonTemplate(template) ? renderCallbackButtonTemplate(template, path) : template)
 }
 
-function renderCallbackButtonTemplate(template: CallbackButtonTemplate, path: string): InlineKeyboardButton {
+function renderCallbackButtonTemplate(
+	template: CallbackButtonTemplate,
+	path: string,
+): InlineKeyboardButton {
 	const absolutePath = combinePath(path, template.relativePath)
 	const absolutePathLength = Buffer.byteLength(absolutePath, 'utf8')
 	if (absolutePathLength > 64) {

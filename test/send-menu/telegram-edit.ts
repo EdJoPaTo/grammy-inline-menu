@@ -1,5 +1,5 @@
-import {Context as BaseContext, Api} from 'grammy'
 import test from 'ava'
+import type {Api, Context as BaseContext} from 'grammy'
 
 import {MenuTemplate} from '../../source/index.js'
 import {MEDIA_TYPES} from '../../source/body.js'
@@ -41,7 +41,10 @@ test('text', async t => {
 
 for (const mediaType of MEDIA_TYPES) {
 	test('media ' + mediaType, async t => {
-		const menu = new MenuTemplate<BaseContext>({media: 'whatever', type: mediaType})
+		const menu = new MenuTemplate<BaseContext>({
+			media: 'whatever',
+			type: mediaType,
+		})
 
 		const fakeTelegram: Partial<Api> = {
 			async editMessageMedia(chatId, messageId, media, other) {
@@ -78,7 +81,10 @@ for (const mediaType of MEDIA_TYPES) {
 }
 
 test('location', async t => {
-	const menu = new MenuTemplate<BaseContext>({location: {latitude: 53.5, longitude: 10}, live_period: 666})
+	const menu = new MenuTemplate<BaseContext>({
+		location: {latitude: 53.5, longitude: 10},
+		live_period: 666,
+	})
 
 	const editIntoFunction = generateEditMessageIntoMenuFunction({} as any, menu, '/')
 
@@ -99,7 +105,13 @@ test('location', async t => {
 })
 
 test('venue', async t => {
-	const menu = new MenuTemplate<BaseContext>({venue: {location: {latitude: 53.5, longitude: 10}, title: 'A', address: 'B'}})
+	const menu = new MenuTemplate<BaseContext>({
+		venue: {
+			location: {latitude: 53.5, longitude: 10},
+			title: 'A',
+			address: 'B',
+		},
+	})
 
 	const editIntoFunction = generateEditMessageIntoMenuFunction({} as any, menu, '/')
 
@@ -120,14 +132,16 @@ test('venue', async t => {
 })
 
 test('invoice', async t => {
-	const menu = new MenuTemplate<BaseContext>({invoice: {
-		title: 'A',
-		description: 'B',
-		currency: 'EUR',
-		payload: 'D',
-		provider_token: 'E',
-		prices: [],
-	}})
+	const menu = new MenuTemplate<BaseContext>({
+		invoice: {
+			title: 'A',
+			description: 'B',
+			currency: 'EUR',
+			payload: 'D',
+			provider_token: 'E',
+			prices: [],
+		},
+	})
 
 	const editIntoFunction = generateEditMessageIntoMenuFunction({} as any, menu, '/')
 

@@ -1,38 +1,51 @@
-import {InputFile} from 'grammy'
-import {LabeledPrice, Location, ParseMode, Venue} from 'grammy/types'
-import {ReadonlyDeep} from 'type-fest'
+import type {InputFile} from 'grammy'
+import type {LabeledPrice, Location, ParseMode, Venue} from 'grammy/types'
+import type {ReadonlyDeep} from 'type-fest'
 
 import {hasTruthyKey, isObject} from './generic-types.js'
 
-export type Body = string | TextBody | MediaBody | LocationBody | VenueBody | InvoiceBody
+export type Body =
+  | string
+  | TextBody
+  | MediaBody
+  | LocationBody
+  | VenueBody
+  | InvoiceBody
 
 export type MediaType = 'animation' | 'audio' | 'document' | 'photo' | 'video'
-export const MEDIA_TYPES: readonly MediaType[] = ['animation', 'audio', 'document', 'photo', 'video']
+export const MEDIA_TYPES: readonly MediaType[] = [
+	'animation',
+	'audio',
+	'document',
+	'photo',
+	'video',
+]
 
-interface TextPart {
+export type TextBody = {
 	readonly text: string;
 	readonly parse_mode?: ParseMode;
-}
-
-export interface TextBody extends TextPart {
 	readonly disable_web_page_preview?: boolean;
 }
 
-export interface MediaBody extends Partial<TextPart> {
+export type MediaBody = {
 	readonly type: MediaType;
 	readonly media: string | InputFile;
+
+	/** Caption */
+	readonly text?: string;
+	readonly parse_mode?: ParseMode;
 }
 
-export interface LocationBody {
+export type LocationBody = {
 	readonly location: Readonly<Location>;
 	readonly live_period?: number;
 }
 
-export interface VenueBody {
+export type VenueBody = {
 	readonly venue: ReadonlyDeep<Venue>;
 }
 
-export interface InvoiceBody {
+export type InvoiceBody = {
 	readonly invoice: {
 		readonly title: string;
 		readonly description: string;

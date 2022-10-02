@@ -1,7 +1,8 @@
-import {Bot, Context as BaseContext} from 'grammy'
+import {Bot} from 'grammy'
 import test from 'ava'
+import type {Context as BaseContext} from 'grammy'
 
-import {MenuLike} from '../../source/menu-like.js'
+import type {MenuLike} from '../../source/menu-like.js'
 
 import {MenuMiddleware} from '../../source/menu-middleware.js'
 

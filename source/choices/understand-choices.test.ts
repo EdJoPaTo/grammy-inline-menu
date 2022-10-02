@@ -1,6 +1,6 @@
 import test from 'ava'
 
-import {getChoiceKeysFromChoices, getChoiceTextByKey, ensureCorrectChoiceKeys} from './understand-choices.js'
+import {ensureCorrectChoiceKeys, getChoiceKeysFromChoices, getChoiceTextByKey} from './understand-choices.js'
 
 test('getChoiceKeysFromChoices from array', t => {
 	const choices = ['A', 'B', 1]
@@ -16,7 +16,7 @@ test('getChoiceKeysFromChoices from record', t => {
 })
 
 test('getChoiceKeysFromChoices from map', t => {
-	const choices: Map<string | number, string> = new Map()
+	const choices = new Map<string | number, string>()
 	choices.set('A', 'Aaa')
 	choices.set('B', 'Bbb')
 	choices.set(1, '111')
@@ -37,7 +37,7 @@ test('getChoiceTextByKey from record', t => {
 })
 
 test('getChoiceTextByKey from map', t => {
-	const choices: Map<string, string> = new Map()
+	const choices = new Map<string, string>()
 	choices.set('A', 'Aaa')
 	choices.set('B', 'Bbb')
 	const text = getChoiceTextByKey(choices, 'A')
@@ -51,7 +51,7 @@ test('getChoiceTextByKey from record but undefined', t => {
 })
 
 test('getChoiceTextByKey from map but undefined', t => {
-	const choices: Map<string, string> = new Map()
+	const choices = new Map<string, string>()
 	choices.set('A', 'Aaa')
 	choices.set('B', 'Bbb')
 	const text = getChoiceTextByKey(choices, 'C')

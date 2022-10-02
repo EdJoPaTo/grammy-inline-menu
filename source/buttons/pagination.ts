@@ -1,6 +1,6 @@
-import {ContextFunc, ConstOrPromise} from '../generic-types.js'
+import type {ConstOrPromise, ContextFunc} from '../generic-types.js'
 
-import {BasicOptions} from './basic.js'
+import type {BasicOptions} from './basic.js'
 
 export type SetPageFunction<Context> = (context: Context, page: number) => ConstOrPromise<void>
 export type GetCurrentPageFunction<Context> = ContextFunc<Context, number | undefined>
@@ -46,7 +46,10 @@ export interface PaginationOptions<Context> extends BasicOptions<Context>, Gener
  * @param  currentPage current page. Has to be between [1..totalPages]
  * @return returns the Choices
  */
-export function createPaginationChoices(totalPages: number, currentPage: number | undefined): Record<number, string> {
+export function createPaginationChoices(
+	totalPages: number,
+	currentPage: number | undefined,
+): Record<number, string> {
 	// Numbers have to be within
 	// currentPage in [1..totalPages]
 	const totalPagesFixed = Math.ceil(totalPages)
