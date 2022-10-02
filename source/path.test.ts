@@ -8,7 +8,7 @@ const combinePathMacro = test.macro({
 	exec(t, parent: string, relativePath: string, expected: string) {
 		t.is(combinePath(parent, relativePath), expected)
 	},
-	title(_providedTitle, parent, relativePath, expected) {
+	title(_providedTitle, parent: string, relativePath: string, expected: string) {
 		return `combinePath(${parent}, ${relativePath}) is ${expected}`
 	},
 })
