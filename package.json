@@ -29,7 +29,7 @@
 		"prepack": "npm run build",
 		"preexample-js": "npm run build",
 		"example-js": "node examples/main-javascript.mjs",
-		"start": "ts-node examples/main-typescript.ts",
+		"start": "tsc --sourceMap && node --enable-source-maps dist/examples/main-typescript.js",
 		"test": "tsc --sourceMap && xo && nyc ava"
 	},
 	"type": "commonjs",
@@ -46,7 +46,6 @@
 		"del-cli": "^5.0.0",
 		"grammy": "^1.10.1",
 		"nyc": "^15.0.0",
-		"ts-node": "^10.0.0",
 		"type-fest": "^3.0.0",
 		"typescript": "^4.4.4",
 		"xo": "^0.52.3"
