@@ -380,7 +380,7 @@ menuTemplate.choose('eat', ['cheese', 'bread', 'salad', 'tree', …], {
 ## How can I use a submenu?
 
 ```ts
-const submenu = new MenuTemplate<MyContext>('I am a submenu')
+const submenuTemplate = new MenuTemplate<MyContext>('I am a submenu')
 submenuTemplate.interact('Text', 'unique', {
 	do: async ctx => ctx.answerCallbackQuery('You hit a button in a submenu')
 })
