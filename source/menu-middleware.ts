@@ -102,6 +102,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 			if (!path.endsWith('/')) {
 				const {match, responder} = await getLongestMatchActionResponder(context, path, this._responder)
 				if (match?.[0] && responder.type === 'action') {
+					// @ts-expect-error grammy has some more specific type there
 					context.match = match
 					const afterwardsTarget = await responder.do(context, match[0])
 
@@ -124,6 +125,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 					throw new Error(`There is no menu "${target}" which can be reached in this menu`)
 				}
 
+				// @ts-expect-error grammy has some more specific type there
 				context.match = match
 				const targetPath = match[0]
 				await this._sendMenu(responder.menu as any, context, targetPath)
