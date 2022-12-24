@@ -167,16 +167,25 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(
 
 		// eslint-disable-next-line default-case
 		switch (body.type) {
-			case 'animation':
+			case 'animation': {
 				return context.replyWithAnimation(body.media, mediaOther)
-			case 'audio':
+			}
+
+			case 'audio': {
 				return context.replyWithAudio(body.media, mediaOther)
-			case 'document':
+			}
+
+			case 'document': {
 				return context.replyWithDocument(body.media, mediaOther)
-			case 'photo':
+			}
+
+			case 'photo': {
 				return context.replyWithPhoto(body.media, mediaOther)
-			case 'video':
+			}
+
+			case 'video': {
 				return context.replyWithVideo(body.media, mediaOther)
+			}
 		}
 	}
 
@@ -227,16 +236,25 @@ export function generateSendMenuToChatFunction<Context>(
 
 			// eslint-disable-next-line default-case
 			switch (body.type) {
-				case 'animation':
+				case 'animation': {
 					return telegram.sendAnimation(chatId, body.media, mediaOther)
-				case 'audio':
+				}
+
+				case 'audio': {
 					return telegram.sendAudio(chatId, body.media, mediaOther)
-				case 'document':
+				}
+
+				case 'document': {
 					return telegram.sendDocument(chatId, body.media, mediaOther)
-				case 'photo':
+				}
+
+				case 'photo': {
 					return telegram.sendPhoto(chatId, body.media, mediaOther)
-				case 'video':
+				}
+
+				case 'video': {
 					return telegram.sendVideo(chatId, body.media, mediaOther)
+				}
 			}
 		}
 

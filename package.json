@@ -48,7 +48,7 @@
 		"nyc": "^15.0.0",
 		"type-fest": "^3.0.0",
 		"typescript": "^4.4.4",
-		"xo": "^0.52.3"
+		"xo": "^0.53.1"
 	},
 	"main": "./dist/source/index.js",
 	"types": "./dist/source/index.d.ts",
@@ -95,7 +95,8 @@
 					"@typescript-eslint/no-unsafe-return": "off",
 					"@typescript-eslint/prefer-readonly-parameter-types": "off",
 					"ava/no-skip-test": "warn",
-					"max-params": "off"
+					"max-params": "off",
+					"unicorn/prefer-top-level-await": "off"
 				}
 			}
 		]
