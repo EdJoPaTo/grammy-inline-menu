@@ -5,12 +5,12 @@ import type {ReadonlyDeep} from 'type-fest'
 import {hasTruthyKey, isObject} from './generic-types.js'
 
 export type Body =
-  | string
-  | TextBody
-  | MediaBody
-  | LocationBody
-  | VenueBody
-  | InvoiceBody
+	| string
+	| TextBody
+	| MediaBody
+	| LocationBody
+	| VenueBody
+	| InvoiceBody
 
 export type MediaType = 'animation' | 'audio' | 'document' | 'photo' | 'video'
 export const MEDIA_TYPES: readonly MediaType[] = [
