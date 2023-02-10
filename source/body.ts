@@ -12,14 +12,14 @@ export type Body =
 	| VenueBody
 	| InvoiceBody
 
-export type MediaType = 'animation' | 'audio' | 'document' | 'photo' | 'video'
-export const MEDIA_TYPES: readonly MediaType[] = [
+export const MEDIA_TYPES = [
 	'animation',
 	'audio',
 	'document',
 	'photo',
 	'video',
-]
+] as const
+export type MediaType = typeof MEDIA_TYPES[number]
 
 export type TextBody = {
 	readonly text: string;
