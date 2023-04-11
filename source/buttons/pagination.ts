@@ -1,5 +1,4 @@
 import type {ConstOrPromise, ContextFunc} from '../generic-types.js'
-
 import type {BasicOptions} from './basic.js'
 
 export type SetPageFunction<Context> = (context: Context, page: number) => ConstOrPromise<void>

@@ -1,7 +1,5 @@
 import test from 'ava'
-
 import type {MenuLike, Submenu} from '../../source/menu-like.js'
-
 import {MenuMiddleware} from '../../source/menu-middleware.js'
 import type {ButtonAction} from '../../source/action-hive.js'
 

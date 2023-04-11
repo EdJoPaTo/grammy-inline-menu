@@ -4,7 +4,6 @@ import {prefixEmoji} from '../prefix.js'
 import type {CallbackButtonTemplate} from '../keyboard.js'
 import type {Choices, ManyChoicesOptions} from '../choices/index.js'
 import type {ConstOrContextFunc, ConstOrPromise} from '../generic-types.js'
-
 import {getButtonsAsRows, getButtonsOfPage} from './align.js'
 
 export type IsSetFunction<Context> = (context: Context, key: string) => ConstOrPromise<boolean>

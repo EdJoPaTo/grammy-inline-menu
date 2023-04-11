@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {MenuTemplate} from '../../source/menu-template.js'
 
 test('url', async t => {

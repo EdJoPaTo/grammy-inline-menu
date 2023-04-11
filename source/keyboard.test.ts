@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {Keyboard} from './keyboard.js'
 
 test('no buttons', async t => {

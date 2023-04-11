@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {combineHideAndChoices} from './actions.js'
 
 test('choices are not called when hide is true', async t => {

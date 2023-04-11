@@ -1,9 +1,7 @@
 import test from 'ava'
 import type {Api, Context as BaseContext} from 'grammy'
-
 import {MenuTemplate} from '../../source/index.js'
 import {MEDIA_TYPES} from '../../source/body.js'
-
 import {generateEditMessageIntoMenuFunction} from '../../source/send-menu.js'
 
 test('text', async t => {

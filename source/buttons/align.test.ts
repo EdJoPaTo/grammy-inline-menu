@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {getButtonsAsRows, getButtonsOfPage, getRowsOfButtons, maximumButtonsPerPage} from './align.js'
 
 function generateCharArray(charA: string, charZ: string): string[] {

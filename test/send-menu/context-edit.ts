@@ -1,9 +1,8 @@
+// This test file also tests replyMenuToContext indirectly as its the edit fallback
+
 import test from 'ava'
 import type {Context as BaseContext} from 'grammy'
-
 import {MenuTemplate} from '../../source/index.js'
-
-// This test file also tests replyMenuToContext indirectly as its the edit fallback
 import {editMenuOnContext} from '../../source/send-menu.js'
 
 test('text reply when not a callback query', async t => {

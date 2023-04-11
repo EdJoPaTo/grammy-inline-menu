@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {ActionHive} from './action-hive.js'
 import type {ActionFunc} from './action-hive.js'
 

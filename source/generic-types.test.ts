@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {filterNonNullable, hasTruthyKey, isObject, isRegExpExecArray} from './generic-types.js'
 
 test('filterNonNullable', t => {

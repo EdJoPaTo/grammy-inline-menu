@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {ensureCorrectChoiceKeys, getChoiceKeysFromChoices, getChoiceTextByKey} from './understand-choices.js'
 
 test('getChoiceKeysFromChoices from array', t => {

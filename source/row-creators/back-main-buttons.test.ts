@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {createBackMainMenuButtons} from './back-main-buttons.js'
 
 test('creates no buttons in root menu', async t => {

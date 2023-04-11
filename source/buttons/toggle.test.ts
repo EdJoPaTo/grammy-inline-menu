@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {generateToggleButton} from './toggle.js'
 
 test('hidden does not render any button', async t => {

@@ -1,6 +1,5 @@
 import {Composer} from 'grammy'
 import type {Context as BaseContext} from 'grammy'
-
 import {combinePath, combineTrigger, createRootMenuTrigger} from './path.js'
 import {editMenuOnContext, replyMenuToContext} from './send-menu.js'
 import type {ActionFunc} from './action-hive.js'
@@ -128,7 +127,8 @@ export class MenuMiddleware<Context extends BaseContext> {
 				// @ts-expect-error grammy has some more specific type there
 				context.match = match
 				const targetPath = match[0]
-				await this._sendMenu(responder.menu as any, context, targetPath)
+				// @ts-expect-error menu context is not exactly the context type (callback query context vs base context)
+				await this._sendMenu(responder.menu, context, targetPath)
 				await context.answerCallbackQuery()
 					.catch(catchCallbackOld)
 			}

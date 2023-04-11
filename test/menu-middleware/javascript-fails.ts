@@ -1,7 +1,6 @@
 import {Bot} from 'grammy'
 import test from 'ava'
 import type {Context as BaseContext} from 'grammy'
-
 import {MenuMiddleware} from '../../source/menu-middleware.js'
 import type {ButtonAction} from '../../source/action-hive.js'
 import type {MenuLike} from '../../source/menu-like.js'

@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {prefixText} from './prefix.js'
 
 test('no prefix', t => {

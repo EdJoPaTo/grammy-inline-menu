@@ -5,9 +5,7 @@
 // If you just want to use JavaScript, go ahead :)
 
 import * as process from 'node:process'
-
 import {Bot} from 'grammy'
-
 import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../dist/source/index.js'
 
 const menu = new MenuTemplate(() => 'Main Menu\n' + new Date().toISOString())

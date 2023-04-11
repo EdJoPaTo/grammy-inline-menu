@@ -1,8 +1,6 @@
 import * as process from 'node:process'
-
 import {Bot} from 'grammy'
 import type {Context as BaseContext} from 'grammy'
-
 import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../source/index.js'
 
 // Check out https://grammy.dev/guide/context.html and Context flavours

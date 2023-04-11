@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {emojiFalse, emojiTrue, prefixEmoji} from './prefix.js'
 
 test('no prefix', t => {

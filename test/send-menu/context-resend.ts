@@ -1,8 +1,6 @@
 import test from 'ava'
 import type {Context as BaseContext} from 'grammy'
-
 import {MenuTemplate} from '../../source/index.js'
-
 import {resendMenuToContext} from '../../source/send-menu.js'
 
 test('resend on callback query', async t => {

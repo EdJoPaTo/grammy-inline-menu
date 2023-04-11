@@ -1,9 +1,7 @@
 import {Bot} from 'grammy'
 import test from 'ava'
 import type {Context as BaseContext} from 'grammy'
-
 import type {MenuLike} from '../../source/menu-like.js'
-
 import {MenuMiddleware} from '../../source/menu-middleware.js'
 
 test('non callback queries are passing through', async t => {

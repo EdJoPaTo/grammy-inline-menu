@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {generateSelectButtons} from './select.js'
 
 test('empty choices no buttons', async t => {

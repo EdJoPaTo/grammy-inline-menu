@@ -1,6 +1,5 @@
 import test from 'ava'
 import type {Context as BaseContext} from 'grammy'
-
 import {editMenuOnContext, generateEditMessageIntoMenuFunction, generateSendMenuToChatFunction, replyMenuToContext} from '../../source/send-menu.js'
 import {MenuTemplate} from '../../source/index.js'
 

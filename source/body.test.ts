@@ -1,5 +1,4 @@
 import test from 'ava'
-
 import {getBodyText, isInvoiceBody, isLocationBody, isMediaBody, isTextBody, isVenueBody} from './body.js'
 import type {Body, InvoiceBody, LocationBody, MediaBody, TextBody, VenueBody} from './body.js'
 

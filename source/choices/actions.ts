@@ -1,5 +1,4 @@
 import type {ConstOrContextFunc, ContextPathFunc} from '../generic-types.js'
-
 import {getChoiceKeysFromChoices} from './understand-choices.js'
 import type {Choices} from './types.js'
 

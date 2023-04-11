@@ -1,7 +1,5 @@
 import test from 'ava'
-
 import type {RegExpLike} from './generic-types.js'
-
 import {combinePath, combineTrigger, createRootMenuTrigger, ensurePathMenu, ensureTriggerChild, ensureTriggerLastChild, getMenuOfPath} from './path.js'
 
 const combinePathMacro = test.macro({
