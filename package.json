@@ -50,6 +50,10 @@
 		"typescript": "^5.0.2",
 		"xo": "^0.54.0"
 	},
+	"files": [
+		"dist/source",
+		"!*.test.*"
+	],
 	"main": "./dist/source/index.js",
 	"types": "./dist/source/index.d.ts",
 	"nyc": {
