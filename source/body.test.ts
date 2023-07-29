@@ -1,6 +1,5 @@
 import test from 'ava'
-import {getBodyText, isInvoiceBody, isLocationBody, isMediaBody, isTextBody, isVenueBody} from './body.js'
-import type {Body, InvoiceBody, LocationBody, MediaBody, TextBody, VenueBody} from './body.js'
+import {type Body, getBodyText, type InvoiceBody, isInvoiceBody, isLocationBody, isMediaBody, isTextBody, isVenueBody, type LocationBody, type MediaBody, type TextBody, type VenueBody} from './body.js'
 
 function mehToString(something: unknown): string {
 	if (typeof something === 'object' || !something) {

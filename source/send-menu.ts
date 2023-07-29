@@ -1,8 +1,7 @@
 import type {Api, Context as BaseContext} from 'grammy'
 import type {Message} from 'grammy/types'
 import {ensurePathMenu} from './path.js'
-import {getBodyText, isInvoiceBody, isLocationBody, isMediaBody, isTextBody, isVenueBody} from './body.js'
-import type {Body, LocationBody, MediaBody, TextBody, VenueBody} from './body.js'
+import {type Body, getBodyText, isInvoiceBody, isLocationBody, isMediaBody, isTextBody, isVenueBody, type LocationBody, type MediaBody, type TextBody, type VenueBody} from './body.js'
 import type {InlineKeyboard} from './keyboard.js'
 import type {MenuLike} from './menu-like.js'
 

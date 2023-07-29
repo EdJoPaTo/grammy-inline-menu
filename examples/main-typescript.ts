@@ -1,7 +1,6 @@
 import * as process from 'node:process'
-import {Bot} from 'grammy'
-import type {Context as BaseContext} from 'grammy'
-import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../source/index.js'
+import {Bot, type Context as BaseContext} from 'grammy'
+import {createBackMainMenuButtons, MenuMiddleware, MenuTemplate} from '../source/index.js'
 
 // Check out https://grammy.dev/guide/context.html and Context flavours
 type MyContext = BaseContext

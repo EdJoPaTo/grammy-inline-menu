@@ -6,7 +6,7 @@
 
 import * as process from 'node:process'
 import {Bot} from 'grammy'
-import {MenuTemplate, MenuMiddleware, createBackMainMenuButtons} from '../dist/source/index.js'
+import {createBackMainMenuButtons, MenuMiddleware, MenuTemplate} from '../dist/source/index.js'
 
 const menu = new MenuTemplate(() => 'Main Menu\n' + new Date().toISOString())
 

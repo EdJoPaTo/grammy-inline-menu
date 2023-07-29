@@ -1,8 +1,7 @@
-import {createChoiceTextFunction, generateChoicesPaginationButtons} from '../choices/index.js'
+import {type Choices, createChoiceTextFunction, generateChoicesPaginationButtons, type ManyChoicesOptions} from '../choices/index.js'
 import {ensureCorrectChoiceKeys, getChoiceKeysFromChoices} from '../choices/understand-choices.js'
 import {prefixEmoji} from '../prefix.js'
 import type {CallbackButtonTemplate} from '../keyboard.js'
-import type {Choices, ManyChoicesOptions} from '../choices/index.js'
 import type {ConstOrContextFunc, ConstOrPromise} from '../generic-types.js'
 import {getButtonsAsRows, getButtonsOfPage} from './align.js'
 
