@@ -9,20 +9,12 @@ on:
 
 jobs:
   test:
-    name: Node.js ${{ matrix.node-version }}
+    name: Node.js
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version:
-          - 20
-          - 18
-          - 16
-          - 14
     steps:
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 'lts/*'
       - uses: actions/checkout@v3
       - run: npm install
       - run: npm test
@@ -40,7 +32,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 'lts/*'
           registry-url: 'https://registry.npmjs.org'
       - run: npm install
       - run: npm publish
