@@ -33,25 +33,25 @@
 		"preexample-js": "npm run build",
 		"example-js": "node examples/main-javascript.mjs",
 		"start": "tsc --sourceMap && node --enable-source-maps dist/examples/main-typescript.js",
-		"test": "tsc --sourceMap && xo && nyc ava"
+		"test": "tsc --sourceMap && xo && c8 --all ava"
 	},
-	"type": "commonjs",
+	"type": "module",
 	"engines": {
-		"node": ">=14"
+		"node": ">=18"
 	},
 	"dependencies": {
-		"type-fest": "^3.0.0"
+		"type-fest": "^4.0.0"
 	},
 	"peerDependencies": {
 		"grammy": "^1.10.1"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^3.0.1",
-		"@types/node": "^14.18.21",
+		"@sindresorhus/tsconfig": "^4.0.0",
+		"@types/node": "^18.17.12",
 		"ava": "^5.0.1",
+		"c8": "^8.0.1",
 		"del-cli": "^5.0.0",
 		"grammy": "^1.10.1",
-		"nyc": "^15.0.0",
 		"typescript": "^5.0.2",
 		"xo": "^0.54.0"
 	},
@@ -61,17 +61,6 @@
 	],
 	"main": "./dist/source/index.js",
 	"types": "./dist/source/index.d.ts",
-	"nyc": {
-		"all": true,
-		"include": [
-			"dist/source",
-			"source"
-		],
-		"reporter": [
-			"lcov",
-			"text"
-		]
-	},
 	"xo": {
 		"semicolon": false,
 		"rules": {
