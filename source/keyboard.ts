@@ -43,7 +43,7 @@ export class Keyboard<Context> {
 		joinLastRow: boolean,
 		...buttons: ReadonlyArray<UncreatedTemplate<Context>>
 	): void {
-		const lastEntry = this._entries.slice(-1)[0]
+		const lastEntry = this._entries.at(-1)
 
 		if (joinLastRow && isRow(lastEntry)) {
 			lastEntry.push(...buttons)

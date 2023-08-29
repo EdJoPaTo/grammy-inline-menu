@@ -281,7 +281,7 @@ function treeLine(
 	}
 
 	text += regexSource
-		.replace(/\\\//g, '/')
+		.replaceAll('\\/', '/')
 		.replace(/^\^/, '')
 		.replace(/\$$/, '')
 	text += '\n'
