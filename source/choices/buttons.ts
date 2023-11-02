@@ -1,9 +1,9 @@
-import type {CallbackButtonTemplate} from '../keyboard.js'
-import type {ConstOrContextFunc} from '../generic-types.js'
-import {createPaginationChoices} from '../buttons/pagination.js'
 import {getButtonsAsRows, getButtonsOfPage, maximumButtonsPerPage} from '../buttons/align.js'
-import {ensureCorrectChoiceKeys, getChoiceKeysFromChoices, getChoiceTextByKey} from './understand-choices.js'
+import {createPaginationChoices} from '../buttons/pagination.js'
+import type {ConstOrContextFunc} from '../generic-types.js'
+import type {CallbackButtonTemplate} from '../keyboard.js'
 import type {Choices, ChoiceTextFunc, ManyChoicesOptions} from './types.js'
+import {ensureCorrectChoiceKeys, getChoiceKeysFromChoices, getChoiceTextByKey} from './understand-choices.js'
 
 export function generateChoicesButtons<Context>(
 	actionPrefix: string,

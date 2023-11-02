@@ -1,8 +1,8 @@
 import {Buffer} from 'node:buffer'
 import type {InlineKeyboardButton as TelegramInlineKeyboardButton} from 'grammy/types'
 import type {ReadonlyDeep} from 'type-fest'
-import {combinePath} from './path.js'
 import {type ConstOrContextPathFunc, type ContextPathFunc, filterNonNullable} from './generic-types.js'
+import {combinePath} from './path.js'
 
 export type CallbackButtonTemplate = {
 	readonly text: string;

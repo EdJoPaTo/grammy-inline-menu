@@ -1,5 +1,5 @@
-import type {CallbackButtonTemplate} from '../keyboard.js'
 import type {ConstOrContextPathFunc} from '../generic-types.js'
+import type {CallbackButtonTemplate} from '../keyboard.js'
 
 export function createBackMainMenuButtons<Context>(
 	backButtonText: ConstOrContextPathFunc<Context, string> = '🔙back…',

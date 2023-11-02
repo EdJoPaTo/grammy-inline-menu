@@ -1,8 +1,8 @@
 import {type Choices, createChoiceTextFunction, generateChoicesPaginationButtons, type ManyChoicesOptions} from '../choices/index.js'
 import {ensureCorrectChoiceKeys, getChoiceKeysFromChoices} from '../choices/understand-choices.js'
-import {prefixEmoji} from '../prefix.js'
-import type {CallbackButtonTemplate} from '../keyboard.js'
 import type {ConstOrContextFunc, ConstOrPromise} from '../generic-types.js'
+import type {CallbackButtonTemplate} from '../keyboard.js'
+import {prefixEmoji} from '../prefix.js'
 import {getButtonsAsRows, getButtonsOfPage} from './align.js'
 
 export type IsSetFunction<Context> = (context: Context, key: string) => ConstOrPromise<boolean>
@@ -59,8 +59,7 @@ export function generateSelectButtons<Context>(
 				const dropinLetter = state ? 'F' : 'T'
 				const relativePath = actionPrefix + dropinLetter + ':' + key
 				return {text, relativePath}
-			}),
-		)
+			}))
 		const rows = getButtonsAsRows(buttonsOfPage, options.columns)
 
 		if (options.setPage) {

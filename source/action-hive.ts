@@ -1,5 +1,5 @@
-import {combineTrigger, ensureTriggerChild} from './path.js'
 import type {ConstOrPromise, ContextPathFunc, RegExpLike} from './generic-types.js'
+import {combineTrigger, ensureTriggerChild} from './path.js'
 
 export type ActionFunc<Context> = (context: Context, path: string) => ConstOrPromise<string | boolean>
 

@@ -1,6 +1,6 @@
-import {prefixEmoji} from '../prefix.js'
-import type {CallbackButtonTemplate} from '../keyboard.js'
 import type {ConstOrContextPathFunc, ConstOrPromise, ContextPathFunc} from '../generic-types.js'
+import type {CallbackButtonTemplate} from '../keyboard.js'
+import {prefixEmoji} from '../prefix.js'
 import type {SingleButtonOptions} from './basic.js'
 
 export type FormatStateFunction<Context> = (context: Context, text: string, state: boolean, path: string) => ConstOrPromise<string>

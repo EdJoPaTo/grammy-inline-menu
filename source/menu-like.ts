@@ -1,5 +1,5 @@
-import type {Body} from './body.js'
 import type {ButtonAction} from './action-hive.js'
+import type {Body} from './body.js'
 import type {ContextPathFunc, RegExpLike} from './generic-types.js'
 import type {InlineKeyboard} from './keyboard.js'
 
