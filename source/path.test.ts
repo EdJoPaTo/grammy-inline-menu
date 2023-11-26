@@ -1,12 +1,25 @@
 import test from 'ava'
 import type {RegExpLike} from './generic-types.js'
-import {combinePath, combineTrigger, createRootMenuTrigger, ensurePathMenu, ensureTriggerChild, ensureTriggerLastChild, getMenuOfPath} from './path.js'
+import {
+	combinePath,
+	combineTrigger,
+	createRootMenuTrigger,
+	ensurePathMenu,
+	ensureTriggerChild,
+	ensureTriggerLastChild,
+	getMenuOfPath,
+} from './path.js'
 
 const combinePathMacro = test.macro({
 	exec(t, parent: string, relativePath: string, expected: string) {
 		t.is(combinePath(parent, relativePath), expected)
 	},
-	title(_providedTitle, parent: string, relativePath: string, expected: string) {
+	title(
+		_providedTitle,
+		parent: string,
+		relativePath: string,
+		expected: string,
+	) {
 		return `combinePath(${parent}, ${relativePath}) is ${expected}`
 	},
 })
@@ -32,7 +45,9 @@ test('combinePath fails on relative ./', t => {
 })
 
 test('combinePath fails on empty relative', t => {
-	t.throws(() => combinePath('/whatever/', ''), {message: /empty string is not a relative path/})
+	t.throws(() => combinePath('/whatever/', ''), {
+		message: /empty string is not a relative path/,
+	})
 })
 
 test('getMenuOfPath with already menu', t => {
@@ -51,9 +66,8 @@ test('getMenuOfPath throws when not a path', t => {
 })
 
 test('createRootMenuTrigger does not throw on good trigger', t => {
-	t.notThrows(() => {
-		createRootMenuTrigger(/^blubb\//)
-	})
+	createRootMenuTrigger(/^blubb\//)
+	t.pass()
 })
 
 test('createRootMenuTrigger throws when not ending with /', t => {
@@ -98,16 +112,25 @@ test(combineTriggerMacro, /^\//i, 'foo', /^\/foo/i)
 test(combineTriggerMacro, /^\//i, /foo/, /^\/foo/i)
 
 test('combineTrigger fails when not beginning with ^', t => {
-	t.throws(() => combineTrigger(/\/whatever\//, /whatever/), {message: /begin from start/})
+	t.throws(() => combineTrigger(/\/whatever\//, /whatever/), {
+		message: /begin from start/,
+	})
 })
 
 test('combineTrigger fails when parent is not ending with /', t => {
-	t.throws(() => combineTrigger(/^\/whatever/, /whatever/), {message: /end with \//})
+	t.throws(() => combineTrigger(/^\/whatever/, /whatever/), {
+		message: /end with \//,
+	})
 })
 
 test('combineTrigger fails when child has flags/', t => {
-	t.throws(() => combineTrigger(/^\/whatever\//, /whatever/i), {message: /flags/})
-	t.throws(() => combineTrigger(/^\/whatever\//, {source: 'whatever', flags: 'i'}), {message: /flags/})
+	t.throws(() => combineTrigger(/^\/whatever\//, /whatever/i), {
+		message: /flags/,
+	})
+	t.throws(
+		() => combineTrigger(/^\/whatever\//, {source: 'whatever', flags: 'i'}),
+		{message: /flags/},
+	)
 })
 
 test('ensureTriggerLastChild throws when not ending with $', t => {
@@ -117,12 +140,8 @@ test('ensureTriggerLastChild throws when not ending with $', t => {
 	t.throws(() => {
 		ensureTriggerLastChild('blubb')
 	})
-	t.notThrows(() => {
-		ensureTriggerLastChild(/blubb$/)
-	})
-	t.notThrows(() => {
-		ensureTriggerLastChild('blubb$')
-	})
+	ensureTriggerLastChild(/blubb$/)
+	ensureTriggerLastChild('blubb$')
 })
 
 test('ensureTriggerChild throws when being somewhat relative', t => {
@@ -147,9 +166,8 @@ test('ensureTriggerChild throws when being somewhat relative', t => {
 })
 
 test('ensurePathMenu accepts correct paths', t => {
-	t.notThrows(() => {
-		ensurePathMenu('path/')
-	})
+	ensurePathMenu('path/')
+	t.pass()
 })
 
 test('ensurePathMenu throws when empty', t => {

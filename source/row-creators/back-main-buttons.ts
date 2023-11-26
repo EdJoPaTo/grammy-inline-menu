@@ -12,14 +12,18 @@ export function createBackMainMenuButtons<Context>(
 
 		if (parts >= (hasMainMenu ? 4 : 3)) {
 			row.push({
-				text: typeof backButtonText === 'function' ? await backButtonText(context, path) : backButtonText,
+				text: typeof backButtonText === 'function'
+					? await backButtonText(context, path)
+					: backButtonText,
 				relativePath: '..',
 			})
 		}
 
 		if (hasMainMenu && parts >= 3) {
 			row.push({
-				text: typeof mainMenuButtonText === 'function' ? await mainMenuButtonText(context, path) : mainMenuButtonText,
+				text: typeof mainMenuButtonText === 'function'
+					? await mainMenuButtonText(context, path)
+					: mainMenuButtonText,
 				relativePath: '/',
 			})
 		}

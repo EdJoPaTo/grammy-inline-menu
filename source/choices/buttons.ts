@@ -1,9 +1,17 @@
-import {getButtonsAsRows, getButtonsOfPage, maximumButtonsPerPage} from '../buttons/align.js'
+import {
+	getButtonsAsRows,
+	getButtonsOfPage,
+	maximumButtonsPerPage,
+} from '../buttons/align.js'
 import {createPaginationChoices} from '../buttons/pagination.js'
 import type {ConstOrContextFunc} from '../generic-types.js'
 import type {CallbackButtonTemplate} from '../keyboard.js'
 import type {Choices, ChoiceTextFunc, ManyChoicesOptions} from './types.js'
-import {ensureCorrectChoiceKeys, getChoiceKeysFromChoices, getChoiceTextByKey} from './understand-choices.js'
+import {
+	ensureCorrectChoiceKeys,
+	getChoiceKeysFromChoices,
+	getChoiceTextByKey,
+} from './understand-choices.js'
 
 export function generateChoicesButtons<Context>(
 	actionPrefix: string,
@@ -16,23 +24,36 @@ export function generateChoicesButtons<Context>(
 			return []
 		}
 
-		const choicesConstant = typeof choices === 'function' ? await choices(context) : choices
+		const choicesConstant = typeof choices === 'function'
+			? await choices(context)
+			: choices
 		const choiceKeys = getChoiceKeysFromChoices(choicesConstant)
 		ensureCorrectChoiceKeys(actionPrefix, path, choiceKeys)
-		const textFunction = createChoiceTextFunction(choicesConstant, options.buttonText)
-		const currentPage = await options.getCurrentPage?.(context)
-		const keysOfPage = getButtonsOfPage(choiceKeys, options.columns, options.maxRows, currentPage)
-		const buttonsOfPage = await Promise.all(keysOfPage
-			.map(async key => {
-				const text = await textFunction(context, key)
-				const relativePath = actionPrefix + ':' + key + (isSubmenu ? '/' : '')
-				return {text, relativePath}
-			}),
+		const textFunction = createChoiceTextFunction(
+			choicesConstant,
+			options.buttonText,
 		)
+		const currentPage = await options.getCurrentPage?.(context)
+		const keysOfPage = getButtonsOfPage(
+			choiceKeys,
+			options.columns,
+			options.maxRows,
+			currentPage,
+		)
+		const buttonsOfPage = await Promise.all(keysOfPage.map(async key => {
+			const text = await textFunction(context, key)
+			const relativePath = actionPrefix + ':' + key + (isSubmenu ? '/' : '')
+			return {text, relativePath}
+		}))
 		const rows = getButtonsAsRows(buttonsOfPage, options.columns)
 
 		if (options.setPage) {
-			rows.push(generateChoicesPaginationButtons(actionPrefix, choiceKeys.length, currentPage, options))
+			rows.push(generateChoicesPaginationButtons(
+				actionPrefix,
+				choiceKeys.length,
+				currentPage,
+				options,
+			))
 		}
 
 		return rows

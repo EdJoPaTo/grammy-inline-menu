@@ -1,8 +1,8 @@
-import {Bot, type Context as BaseContext} from 'grammy'
 import test from 'ava'
+import {Bot, type Context as BaseContext} from 'grammy'
+import type {ButtonAction} from '../../source/action-hive.js'
 import type {MenuLike, Submenu} from '../../source/menu-like.js'
 import {MenuMiddleware} from '../../source/menu-middleware.js'
-import type {ButtonAction} from '../../source/action-hive.js'
 
 // TODO: Ugly workaround. This library should know better...
 type MyContext = BaseContext & {match: RegExpExecArray | undefined}
@@ -213,7 +213,10 @@ test.skip('action returns non existing path afterwards throws Error', async t =>
 
 	bot.catch(error => {
 		if (error instanceof Error) {
-			t.is(error.message, 'There is no menu "/foo/" which can be reached in this menu')
+			t.is(
+				error.message,
+				'There is no menu "/foo/" which can be reached in this menu',
+			)
 		} else {
 			t.fail()
 		}
@@ -562,7 +565,9 @@ test('action run took too long and updating menu afterwards tries to answerCallb
 
 		ctx.answerCallbackQuery = async () => {
 			t.pass()
-			throw new Error('Bad Request: query is too old and response timeout expired or query ID is invalid')
+			throw new Error(
+				'Bad Request: query is too old and response timeout expired or query ID is invalid',
+			)
 		}
 
 		return next()
@@ -574,17 +579,16 @@ test('action run took too long and updating menu afterwards tries to answerCallb
 		t.fail()
 	})
 
-	await t.notThrowsAsync(async () =>
-		bot.handleUpdate({
-			update_id: 666,
-			callback_query: {
-				id: '666',
-				from: {} as any,
-				chat_instance: '666',
-				data: '/what',
-			},
-		}),
-	)
+	await bot.handleUpdate({
+		update_id: 666,
+		callback_query: {
+			id: '666',
+			from: {} as any,
+			chat_instance: '666',
+			data: '/what',
+		},
+	})
+	t.pass()
 })
 
 test.skip('updating menu still throws unknown error from answerCallbackQuery', async t => {

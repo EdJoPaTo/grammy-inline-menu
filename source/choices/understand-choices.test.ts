@@ -1,5 +1,9 @@
 import test from 'ava'
-import {ensureCorrectChoiceKeys, getChoiceKeysFromChoices, getChoiceTextByKey} from './understand-choices.js'
+import {
+	ensureCorrectChoiceKeys,
+	getChoiceKeysFromChoices,
+	getChoiceTextByKey,
+} from './understand-choices.js'
 
 test('getChoiceKeysFromChoices from array', t => {
 	const choices = ['A', 'B', 1]
@@ -59,9 +63,8 @@ test('getChoiceTextByKey from map but undefined', t => {
 
 test('ensureCorrectChoiceKeys correct keys are not a problem', t => {
 	const choiceKeys = ['a', 'A', 'a:A', 'aaaaaaaaaaa']
-	t.notThrows(() => {
-		ensureCorrectChoiceKeys('', '/', choiceKeys)
-	})
+	ensureCorrectChoiceKeys('', '/', choiceKeys)
+	t.pass()
 })
 
 test('ensureCorrectChoiceKeys slash throws', t => {

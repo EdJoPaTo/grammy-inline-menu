@@ -1,18 +1,47 @@
-import {type ActionFunc, ActionHive, type ButtonAction} from './action-hive.js'
+import {
+	type ActionFunc,
+	ActionHive,
+	type ButtonAction,
+} from './action-hive.js'
 import type {Body} from './body.js'
 import type {SingleButtonOptions} from './buttons/basic.js'
 import type {ChooseOptions} from './buttons/choose.js'
-import {createPaginationChoices, type PaginationOptions, type SetPageFunction} from './buttons/pagination.js'
+import {
+	createPaginationChoices,
+	type PaginationOptions,
+	type SetPageFunction,
+} from './buttons/pagination.js'
 import {generateSelectButtons, type SelectOptions} from './buttons/select.js'
-import type {ChooseIntoSubmenuOptions, SubmenuOptions} from './buttons/submenu.js'
+import type {
+	ChooseIntoSubmenuOptions,
+	SubmenuOptions,
+} from './buttons/submenu.js'
 import {generateToggleButton, type ToggleOptions} from './buttons/toggle.js'
-import {type Choices, type ChoicesRecord, combineHideAndChoices, generateChoicesButtons} from './choices/index.js'
-import type {ConstOrContextFunc, ConstOrContextPathFunc, ContextFunc, ContextPathFunc, RegExpLike} from './generic-types.js'
-import {type ButtonTemplate, type ButtonTemplateRow, type CallbackButtonTemplate, type InlineKeyboard, Keyboard} from './keyboard.js'
+import {
+	type Choices,
+	type ChoicesRecord,
+	combineHideAndChoices,
+	generateChoicesButtons,
+} from './choices/index.js'
+import type {
+	ConstOrContextFunc,
+	ConstOrContextPathFunc,
+	ContextFunc,
+	ContextPathFunc,
+	RegExpLike,
+} from './generic-types.js'
+import {
+	type ButtonTemplate,
+	type ButtonTemplateRow,
+	type CallbackButtonTemplate,
+	type InlineKeyboard,
+	Keyboard,
+} from './keyboard.js'
 import type {MenuLike, Submenu} from './menu-like.js'
 import {ensureTriggerChild} from './path.js'
 
-export interface InteractionOptions<Context> extends SingleButtonOptions<Context> {
+export interface InteractionOptions<Context>
+	extends SingleButtonOptions<Context> {
 	/**
 	 * Function which is called when the button is pressed
 	 */
@@ -78,13 +107,16 @@ export class MenuTemplate<Context> {
 	): void {
 		const {hide} = options
 		if (hide) {
-			this._keyboard.add(Boolean(options.joinLastRow), async (context, path) => {
-				if (await hide(context, path)) {
-					return undefined
-				}
+			this._keyboard.add(
+				Boolean(options.joinLastRow),
+				async (context, path) => {
+					if (await hide(context, path)) {
+						return undefined
+					}
 
-				return typeof button === 'function' ? button(context, path) : button
-			})
+					return typeof button === 'function' ? button(context, path) : button
+				},
+			)
 		} else {
 			this._keyboard.add(Boolean(options.joinLastRow), button)
 		}
@@ -144,7 +176,9 @@ export class MenuTemplate<Context> {
 	): void {
 		this.manual(async (context, path) => ({
 			text: typeof text === 'function' ? await text(context, path) : text,
-			switch_inline_query: typeof query === 'function' ? await query(context, path) : query,
+			switch_inline_query: typeof query === 'function'
+				? await query(context, path)
+				: query,
 		}), options)
 	}
 
@@ -161,7 +195,9 @@ export class MenuTemplate<Context> {
 	): void {
 		this.manual(async (context, path) => ({
 			text: typeof text === 'function' ? await text(context, path) : text,
-			switch_inline_query_current_chat: typeof query === 'function' ? await query(context, path) : query,
+			switch_inline_query_current_chat: typeof query === 'function'
+				? await query(context, path)
+				: query,
 		}), options)
 	}
 
@@ -222,7 +258,9 @@ export class MenuTemplate<Context> {
 		}
 
 		if (typeof options.do !== 'function') {
-			throw new TypeError('You have to specify `do` in order to have an interaction for this button. If you only want to navigate use `menuTemplate.navigate(…)` instead.')
+			throw new TypeError(
+				'You have to specify `do` in order to have an interaction for this button. If you only want to navigate use `menuTemplate.navigate(…)` instead.',
+			)
 		}
 
 		this._actions.add(new RegExp(action + '$'), options.do, options.hide)
@@ -255,8 +293,14 @@ export class MenuTemplate<Context> {
 	): void {
 		ensureTriggerChild(action)
 		const actionRegex = new RegExp(action + '/')
-		if ([...this._submenus].map(o => o.action.source).includes(actionRegex.source)) {
-			throw new Error(`There is already a submenu with the action "${action}". Change the action in order to access both menus.`)
+		if (
+			[...this._submenus]
+				.map(o => o.action.source)
+				.includes(actionRegex.source)
+		) {
+			throw new Error(
+				`There is already a submenu with the action "${action}". Change the action in order to access both menus.`,
+			)
 		}
 
 		this._submenus.add({
@@ -286,22 +330,33 @@ export class MenuTemplate<Context> {
 		}
 
 		if (typeof options.do !== 'function') {
-			throw new TypeError('You have to specify `do` in order to have an interaction for the buttons.')
+			throw new TypeError(
+				'You have to specify `do` in order to have an interaction for the buttons.',
+			)
 		}
 
 		const trigger = new RegExp(actionPrefix + ':(.+)$')
 		this._actions.add(
 			trigger,
-			async (context, path) => options.do(context, getKeyFromPath(trigger, path)),
-			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix, choices, options.hide),
+			async (context, path) =>
+				options.do(context, getKeyFromPath(trigger, path)),
+			options.disableChoiceExistsCheck
+				? options.hide
+				: combineHideAndChoices(actionPrefix, choices, options.hide),
 		)
 
 		if (options.setPage) {
 			const pageTrigger = new RegExp(actionPrefix + 'P:(\\d+)$')
-			this._actions.add(pageTrigger, setPageAction(pageTrigger, options.setPage), options.hide)
+			this._actions.add(
+				pageTrigger,
+				setPageAction(pageTrigger, options.setPage),
+				options.hide,
+			)
 		}
 
-		this._keyboard.addCreator(generateChoicesButtons(actionPrefix, false, choices, options))
+		this._keyboard.addCreator(
+			generateChoicesButtons(actionPrefix, false, choices, options),
+		)
 	}
 
 	/**
@@ -331,22 +386,36 @@ export class MenuTemplate<Context> {
 	): void {
 		ensureTriggerChild(actionPrefix)
 		const actionRegex = new RegExp(actionPrefix + ':([^/]+)/')
-		if ([...this._submenus].map(o => o.action.source).includes(actionRegex.source)) {
-			throw new Error(`There is already a submenu with the action "${actionPrefix}". Change the action in order to access both menus.`)
+		if (
+			[...this._submenus]
+				.map(o => o.action.source)
+				.includes(actionRegex.source)
+		) {
+			throw new Error(
+				`There is already a submenu with the action "${actionPrefix}". Change the action in order to access both menus.`,
+			)
 		}
 
 		this._submenus.add({
 			action: actionRegex,
-			hide: options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix, choices, options.hide),
+			hide: options.disableChoiceExistsCheck
+				? options.hide
+				: combineHideAndChoices(actionPrefix, choices, options.hide),
 			menu: submenu,
 		})
 
 		if (options.setPage) {
 			const pageTrigger = new RegExp(actionPrefix + 'P:(\\d+)$')
-			this._actions.add(pageTrigger, setPageAction(pageTrigger, options.setPage), options.hide)
+			this._actions.add(
+				pageTrigger,
+				setPageAction(pageTrigger, options.setPage),
+				options.hide,
+			)
 		}
 
-		this._keyboard.addCreator(generateChoicesButtons(actionPrefix, true, choices, options))
+		this._keyboard.addCreator(
+			generateChoicesButtons(actionPrefix, true, choices, options),
+		)
 	}
 
 	/**
@@ -383,8 +452,13 @@ export class MenuTemplate<Context> {
 			throw new TypeError('setFunc and isSetFunc were renamed to set and isSet')
 		}
 
-		if (typeof options.set !== 'function' || typeof options.isSet !== 'function') {
-			throw new TypeError('You have to specify `set` and `isSet` in order to work with select. If you just want to let the user choose between multiple options use `menuTemplate.choose(…)` instead.')
+		if (
+			typeof options.set !== 'function'
+			|| typeof options.isSet !== 'function'
+		) {
+			throw new TypeError(
+				'You have to specify `set` and `isSet` in order to work with select. If you just want to let the user choose between multiple options use `menuTemplate.choose(…)` instead.',
+			)
 		}
 
 		const trueTrigger = new RegExp(actionPrefix + 'T:(.+)$')
@@ -394,7 +468,9 @@ export class MenuTemplate<Context> {
 				const key = getKeyFromPath(trueTrigger, path)
 				return options.set(context, key, true)
 			},
-			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix + 'T', choices, options.hide),
+			options.disableChoiceExistsCheck
+				? options.hide
+				: combineHideAndChoices(actionPrefix + 'T', choices, options.hide),
 		)
 
 		const falseTrigger = new RegExp(actionPrefix + 'F:(.+)$')
@@ -404,15 +480,23 @@ export class MenuTemplate<Context> {
 				const key = getKeyFromPath(falseTrigger, path)
 				return options.set(context, key, false)
 			},
-			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(actionPrefix + 'F', choices, options.hide),
+			options.disableChoiceExistsCheck
+				? options.hide
+				: combineHideAndChoices(actionPrefix + 'F', choices, options.hide),
 		)
 
 		if (options.setPage) {
 			const pageTrigger = new RegExp(actionPrefix + 'P:(\\d+)$')
-			this._actions.add(pageTrigger, setPageAction(pageTrigger, options.setPage), options.hide)
+			this._actions.add(
+				pageTrigger,
+				setPageAction(pageTrigger, options.setPage),
+				options.hide,
+			)
 		}
 
-		this._keyboard.addCreator(generateSelectButtons(actionPrefix, choices, options))
+		this._keyboard.addCreator(
+			generateSelectButtons(actionPrefix, choices, options),
+		)
 	}
 
 	/**
@@ -423,8 +507,14 @@ export class MenuTemplate<Context> {
 	 * @param options additional options. Requires `getCurrentPage`, `getTotalPages` and `setPage`.
 	 */
 	pagination(actionPrefix: string, options: PaginationOptions<Context>): void {
-		if (typeof options.getCurrentPage !== 'function' || typeof options.getTotalPages !== 'function' || typeof options.setPage !== 'function') {
-			throw new TypeError('You have to specify `getCurrentPage`, `getTotalPages` and `setPage`.')
+		if (
+			typeof options.getCurrentPage !== 'function'
+			|| typeof options.getTotalPages !== 'function'
+			|| typeof options.setPage !== 'function'
+		) {
+			throw new TypeError(
+				'You have to specify `getCurrentPage`, `getTotalPages` and `setPage`.',
+			)
 		}
 
 		const paginationChoices: ContextFunc<Context, ChoicesRecord> = async context => {
@@ -434,11 +524,17 @@ export class MenuTemplate<Context> {
 		}
 
 		const trigger = new RegExp(actionPrefix + ':(\\d+)$')
-		this._actions.add(trigger, setPageAction(trigger, options.setPage), options.hide)
-		this._keyboard.addCreator(generateChoicesButtons(actionPrefix, false, paginationChoices, {
-			columns: 5,
-			hide: options.hide,
-		}))
+		this._actions.add(
+			trigger,
+			setPageAction(trigger, options.setPage),
+			options.hide,
+		)
+		this._keyboard.addCreator(
+			generateChoicesButtons(actionPrefix, false, paginationChoices, {
+				columns: 5,
+				hide: options.hide,
+			}),
+		)
 	}
 
 	/**
@@ -475,8 +571,13 @@ export class MenuTemplate<Context> {
 			throw new TypeError('setFunc and isSetFunc were renamed to set and isSet')
 		}
 
-		if (typeof options.set !== 'function' || typeof options.isSet !== 'function') {
-			throw new TypeError('You have to specify `set` and `isSet` in order to work with toggle. If you just want to implement something more generic use `interact`')
+		if (
+			typeof options.set !== 'function'
+			|| typeof options.isSet !== 'function'
+		) {
+			throw new TypeError(
+				'You have to specify `set` and `isSet` in order to work with toggle. If you just want to implement something more generic use `interact`',
+			)
 		}
 
 		this._actions.add(
@@ -519,7 +620,9 @@ function getKeyFromPath(trigger: RegExpLike, path: string): string {
 	const match = new RegExp(trigger.source, trigger.flags).exec(path)
 	const key = match?.[1]
 	if (!key) {
-		throw new Error(`Could not read key from path '${path}' for trigger '${trigger.source}'`)
+		throw new Error(
+			`Could not read key from path '${path}' for trigger '${trigger.source}'`,
+		)
 	}
 
 	return key

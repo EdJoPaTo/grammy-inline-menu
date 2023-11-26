@@ -108,7 +108,8 @@ export function isMediaBody(body: unknown): body is MediaBody {
 }
 
 function isValidLocation(location: Readonly<Location>): boolean {
-	return typeof location.latitude === 'number' && typeof location.longitude === 'number'
+	return typeof location.latitude === 'number'
+		&& typeof location.longitude === 'number'
 }
 
 export function isLocationBody(body: unknown): body is LocationBody {
@@ -154,7 +155,8 @@ export function isInvoiceBody(body: unknown): body is InvoiceBody {
 	}
 
 	const {invoice} = body as InvoiceBody
-	return typeof invoice.title === 'string' && typeof invoice.description === 'string'
+	return typeof invoice.title === 'string'
+		&& typeof invoice.description === 'string'
 }
 
 export function getBodyText(body: TextBody | string): string {

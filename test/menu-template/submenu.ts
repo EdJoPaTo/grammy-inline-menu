@@ -35,10 +35,7 @@ test('two same action codes throws', t => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.submenu('Button', 'unique', submenu)
-
-	t.notThrows(() => {
-		menu.submenu('Button', 'different', submenu)
-	})
+	menu.submenu('Button', 'different', submenu)
 	t.throws(() => {
 		menu.submenu('Button', 'unique', submenu)
 	}, {

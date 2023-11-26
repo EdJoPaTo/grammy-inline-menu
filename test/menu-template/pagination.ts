@@ -89,7 +89,8 @@ test('action trigger', t => {
 
 test('action sets page', async t => {
 	t.plan(4)
-	const errorMessage = 'The current status is not relevant when setting the page. It is validated when its important anyway.'
+	const errorMessage
+		= 'The current status is not relevant when setting the page. It is validated when its important anyway.'
 	const menu = new MenuTemplate<string>('whatever')
 	menu.pagination('unique', {
 		getCurrentPage() {

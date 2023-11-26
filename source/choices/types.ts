@@ -9,9 +9,13 @@ export type ChoicesRecord = Readonly<Record<Choice, ChoiceText>>
 export type ChoicesMap = Readonly<ReadonlyMap<Choice, ChoiceText>>
 export type Choices = ChoicesArray | ChoicesRecord | ChoicesMap
 
-export type ChoiceTextFunc<Context> = (context: Context, key: string) => ConstOrPromise<string>
+export type ChoiceTextFunc<Context> = (
+	context: Context,
+	key: string,
+) => ConstOrPromise<string>
 
-export interface ManyChoicesOptions<Context> extends BasicOptions<Context>, Partial<GenericPaginationOptions<Context>> {
+export interface ManyChoicesOptions<Context>
+	extends BasicOptions<Context>, Partial<GenericPaginationOptions<Context>> {
 	/**
 	 * Amount of buttons shown per row (side by side).
 	 *

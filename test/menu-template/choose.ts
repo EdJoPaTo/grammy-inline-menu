@@ -146,7 +146,9 @@ test('set page action', async t => {
 			t.is(page, 2)
 		},
 		do() {
-			throw new Error('dont call the do function when pagination is of interest')
+			throw new Error(
+				'dont call the do function when pagination is of interest',
+			)
 		},
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]

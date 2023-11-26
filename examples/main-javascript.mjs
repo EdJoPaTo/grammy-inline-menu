@@ -6,7 +6,11 @@
 
 import * as process from 'node:process'
 import {Bot} from 'grammy'
-import {createBackMainMenuButtons, MenuMiddleware, MenuTemplate} from '../dist/source/index.js'
+import {
+	createBackMainMenuButtons,
+	MenuMiddleware,
+	MenuTemplate,
+} from '../dist/source/index.js'
 
 const menu = new MenuTemplate(() => 'Main Menu\n' + new Date().toISOString())
 
@@ -55,7 +59,9 @@ menu.select('select', ['A', 'B', 'C'], {
 	isSet: (_, key) => key === selectedKey,
 })
 
-const foodMenu = new MenuTemplate('People like food. What do they like?')
+const foodMenu = new MenuTemplate(
+	'People like food. What do they like?',
+)
 
 const people = {Mark: {}, Paul: {}}
 const food = ['bread', 'cake', 'bananas']
@@ -209,7 +215,11 @@ console.log(menuMiddleware.tree())
 const bot = new Bot(process.env['BOT_TOKEN'])
 
 bot.on('callback_query:data', async (ctx, next) => {
-	console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
+	console.log(
+		'another callbackQuery happened',
+		ctx.callbackQuery.data.length,
+		ctx.callbackQuery.data,
+	)
 	return next()
 })
 

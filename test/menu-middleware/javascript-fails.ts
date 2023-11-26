@@ -1,8 +1,8 @@
-import {Bot, type Context as BaseContext} from 'grammy'
 import test from 'ava'
-import {MenuMiddleware} from '../../source/menu-middleware.js'
+import {Bot, type Context as BaseContext} from 'grammy'
 import type {ButtonAction} from '../../source/action-hive.js'
 import type {MenuLike} from '../../source/menu-like.js'
+import {MenuMiddleware} from '../../source/menu-middleware.js'
 
 test('not supply reply as a middleware directly', async t => {
 	const menu: MenuLike<unknown> = {
@@ -23,7 +23,8 @@ test('not supply reply as a middleware directly', async t => {
 		async () => {
 			// @ts-expect-error
 			await mm.replyToContext({} as any, next)
-		}, {
+		},
+		{
 			message: /not supply this as a middleware directly/,
 		},
 	)
@@ -74,7 +75,10 @@ test.skip('action is run and no path to update afterwards is returned', async t 
 
 	bot.catch(error => {
 		if (error instanceof Error) {
-			t.is(error.message, 'You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.')
+			t.is(
+				error.message,
+				'You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.',
+			)
 		} else {
 			t.fail('error is not of instance Error')
 		}
@@ -135,7 +139,10 @@ test.skip('action is run and an empty path to update afterwards is returned thro
 
 	bot.catch(error => {
 		if (error instanceof Error) {
-			t.is(error.message, 'You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.')
+			t.is(
+				error.message,
+				'You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.',
+			)
 		} else {
 			t.fail('error is not of instance Error')
 		}

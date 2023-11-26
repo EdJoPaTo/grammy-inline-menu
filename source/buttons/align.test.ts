@@ -1,5 +1,10 @@
 import test from 'ava'
-import {getButtonsAsRows, getButtonsOfPage, getRowsOfButtons, maximumButtonsPerPage} from './align.js'
+import {
+	getButtonsAsRows,
+	getButtonsOfPage,
+	getRowsOfButtons,
+	maximumButtonsPerPage,
+} from './align.js'
 
 function generateCharArray(charA: string, charZ: string): string[] {
 	// https://stackoverflow.com/questions/24597634/how-to-generate-an-array-of-alphabet-in-jquery/24597663#24597663
@@ -16,7 +21,8 @@ function generateCharArray(charA: string, charZ: string): string[] {
 test('getRowsOfButtons example', t => {
 	const result = getRowsOfButtons(
 		generateCharArray('A', 'Z'),
-		2, 3,
+		2,
+		3,
 		2,
 	)
 	t.deepEqual(result, [
@@ -76,7 +82,11 @@ test('getButtonsAsRows without buttons', t => {
 test('getButtonsOfPage default args', t => {
 	const result = getButtonsOfPage(generateCharArray('A', 'E'))
 	t.deepEqual(result, [
-		'A', 'B', 'C', 'D', 'E',
+		'A',
+		'B',
+		'C',
+		'D',
+		'E',
 	])
 })
 
@@ -88,28 +98,37 @@ test('getButtonsOfPage without buttons', t => {
 test('getButtonsOfPage trim by maxRows', t => {
 	const result = getButtonsOfPage(generateCharArray('A', 'Z'), 1, 5)
 	t.deepEqual(result, [
-		'A', 'B', 'C', 'D', 'E',
+		'A',
+		'B',
+		'C',
+		'D',
+		'E',
 	])
 })
 
 test('getButtonsOfPage second page', t => {
 	const result = getButtonsOfPage(generateCharArray('A', 'Z'), 1, 3, 2)
 	t.deepEqual(result, [
-		'D', 'E', 'F',
+		'D',
+		'E',
+		'F',
 	])
 })
 
 test('getButtonsOfPage partial last page', t => {
 	const result = getButtonsOfPage(generateCharArray('A', 'E'), 1, 3, 2)
 	t.deepEqual(result, [
-		'D', 'E',
+		'D',
+		'E',
 	])
 })
 
 test('getButtonsOfPage last possible page instead of wanted', t => {
 	const result = getButtonsOfPage(generateCharArray('A', 'F'), 1, 3, 3)
 	t.deepEqual(result, [
-		'D', 'E', 'F',
+		'D',
+		'E',
+		'F',
 	])
 })
 

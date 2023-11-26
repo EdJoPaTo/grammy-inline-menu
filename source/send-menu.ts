@@ -1,6 +1,18 @@
 import type {Api, Context as BaseContext} from 'grammy'
 import type {Message} from 'grammy/types'
-import {type Body, getBodyText, isInvoiceBody, isLocationBody, isMediaBody, isTextBody, isVenueBody, type LocationBody, type MediaBody, type TextBody, type VenueBody} from './body.js'
+import {
+	type Body,
+	getBodyText,
+	isInvoiceBody,
+	isLocationBody,
+	isMediaBody,
+	isTextBody,
+	isVenueBody,
+	type LocationBody,
+	type MediaBody,
+	type TextBody,
+	type VenueBody,
+} from './body.js'
 import type {InlineKeyboard} from './keyboard.js'
 import type {MenuLike} from './menu-like.js'
 import {ensurePathMenu} from './path.js'
@@ -77,7 +89,13 @@ export async function editMenuOnContext<Context extends BaseContext>(
 	}
 
 	if (isMediaBody(body)) {
-		if ('animation' in message || 'audio' in message || 'document' in message || 'photo' in message || 'video' in message) {
+		if (
+			'animation' in message
+			|| 'audio' in message
+			|| 'document' in message
+			|| 'photo' in message
+			|| 'video' in message
+		) {
 			return context.editMessageMedia(
 				{
 					type: body.type,
@@ -92,13 +110,17 @@ export async function editMenuOnContext<Context extends BaseContext>(
 	} else if (isLocationBody(body) || isVenueBody(body) || isInvoiceBody(body)) {
 		// Dont edit the message, just recreate it.
 	} else if (isTextBody(body)) {
-		const text = getBodyText(body)
 		if ('text' in message) {
-			return context.editMessageText(text, createTextOther(body, keyboard, other))
+			return context.editMessageText(
+				getBodyText(body),
+				createTextOther(body, keyboard, other),
+			)
 				.catch(catchMessageNotModified)
 		}
 	} else {
-		throw new TypeError('The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.')
+		throw new TypeError(
+			'The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.',
+		)
 	}
 
 	// The current menu is incompatible: delete and reply new one
@@ -145,7 +167,10 @@ export async function resendMenuToContext<Context extends BaseContext>(
 }
 
 function catchMessageNotModified(error: unknown): false {
-	if (error instanceof Error && error.message.includes('message is not modified')) {
+	if (
+		error instanceof Error
+		&& error.message.includes('message is not modified')
+	) {
 		// ignore
 		return false
 	}
@@ -196,13 +221,25 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(
 	}
 
 	if (isVenueBody(body)) {
-		const {location, title, address} = body.venue
-		return context.replyWithVenue(location.latitude, location.longitude, title, address, createVenueOther(body, keyboard, other))
+		return context.replyWithVenue(
+			body.venue.location.latitude,
+			body.venue.location.longitude,
+			body.venue.title,
+			body.venue.address,
+			createVenueOther(body, keyboard, other),
+		)
 	}
 
 	if (isInvoiceBody(body)) {
-		const {title, description, payload, provider_token, currency, prices} = body.invoice
-		return context.replyWithInvoice(title, description, payload, provider_token, currency, prices, createGenericOther(keyboard, other))
+		return context.replyWithInvoice(
+			body.invoice.title,
+			body.invoice.description,
+			body.invoice.payload,
+			body.invoice.provider_token,
+			body.invoice.currency,
+			body.invoice.prices,
+			createGenericOther(keyboard, other),
+		)
 	}
 
 	if (isTextBody(body)) {
@@ -210,7 +247,9 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(
 		return context.reply(text, createTextOther(body, keyboard, other))
 	}
 
-	throw new Error('The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.')
+	throw new Error(
+		'The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.',
+	)
 }
 
 /**
@@ -266,37 +305,40 @@ export function generateSendMenuToChatFunction<Context>(
 		}
 
 		if (isVenueBody(body)) {
-			const {location, title, address} = body.venue
 			return telegram.sendVenue(
 				chatId,
-				location.latitude,
-				location.longitude,
-				title,
-				address,
+				body.venue.location.latitude,
+				body.venue.location.longitude,
+				body.venue.title,
+				body.venue.address,
 				createVenueOther(body, keyboard, other),
 			)
 		}
 
 		if (isInvoiceBody(body)) {
-			const {title, description, payload, provider_token, currency, prices} = body.invoice
 			return telegram.sendInvoice(
 				chatId,
-				title,
-				description,
-				payload,
-				provider_token,
-				currency,
-				prices,
+				body.invoice.title,
+				body.invoice.description,
+				body.invoice.payload,
+				body.invoice.provider_token,
+				body.invoice.currency,
+				body.invoice.prices,
 				createGenericOther(keyboard, other),
 			)
 		}
 
 		if (isTextBody(body)) {
-			const text = getBodyText(body)
-			return telegram.sendMessage(chatId, text, createTextOther(body, keyboard, other))
+			return telegram.sendMessage(
+				chatId,
+				getBodyText(body),
+				createTextOther(body, keyboard, other),
+			)
 		}
 
-		throw new Error('The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.')
+		throw new Error(
+			'The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.',
+		)
 	}
 }
 
@@ -332,23 +374,35 @@ export function generateEditMessageIntoMenuFunction<Context>(
 		}
 
 		if (isLocationBody(body)) {
-			throw new Error('You can not edit into a location body. You have to send the menu as a new message.')
+			throw new Error(
+				'You can not edit into a location body. You have to send the menu as a new message.',
+			)
 		}
 
 		if (isVenueBody(body)) {
-			throw new Error('You can not edit into a venue body. You have to send the menu as a new message.')
+			throw new Error(
+				'You can not edit into a venue body. You have to send the menu as a new message.',
+			)
 		}
 
 		if (isInvoiceBody(body)) {
-			throw new Error('You can not edit into an invoice body. You have to send the menu as a new message.')
+			throw new Error(
+				'You can not edit into an invoice body. You have to send the menu as a new message.',
+			)
 		}
 
 		if (isTextBody(body)) {
-			const text = getBodyText(body)
-			return telegram.editMessageText(chatId, messageId, text, createTextOther(body, keyboard, other))
+			return telegram.editMessageText(
+				chatId,
+				messageId,
+				getBodyText(body),
+				createTextOther(body, keyboard, other),
+			)
 		}
 
-		throw new Error('The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.')
+		throw new Error(
+			'The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.',
+		)
 	}
 }
 
@@ -360,7 +414,8 @@ function createTextOther(
 	return {
 		...base,
 		parse_mode: typeof body === 'string' ? undefined : body.parse_mode,
-		disable_web_page_preview: typeof body !== 'string' && body.disable_web_page_preview,
+		disable_web_page_preview: typeof body !== 'string'
+			&& body.disable_web_page_preview,
 		reply_markup: {
 			inline_keyboard: keyboard.map(o => [...o]),
 		},

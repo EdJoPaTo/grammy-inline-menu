@@ -1,7 +1,7 @@
 import test from 'ava'
+import type {ButtonAction} from '../../source/action-hive.js'
 import type {MenuLike, Submenu} from '../../source/menu-like.js'
 import {MenuMiddleware} from '../../source/menu-middleware.js'
-import type {ButtonAction} from '../../source/action-hive.js'
 
 const EMPTY_MENU: MenuLike<unknown> = {
 	listSubmenus: () => new Set(),
@@ -12,9 +12,10 @@ const EMPTY_MENU: MenuLike<unknown> = {
 
 test('empty tree', t => {
 	const tree = new MenuMiddleware('/', EMPTY_MENU).tree()
-	t.is(tree, `Menu Tree
+	const expected = `Menu Tree
 menu                          /
-`)
+`
+	t.is(tree, expected)
 })
 
 test('action', t => {
@@ -31,10 +32,11 @@ test('action', t => {
 		renderKeyboard: () => [],
 	}
 	const tree = new MenuMiddleware('/', menu).tree()
-	t.is(tree, `Menu Tree
+	const expected = `Menu Tree
 menu                          /
   action                      /what
-`)
+`
+	t.is(tree, expected)
 })
 
 test('submenu', t => {
@@ -50,10 +52,11 @@ test('submenu', t => {
 		renderKeyboard: () => [],
 	}
 	const tree = new MenuMiddleware('/', menu).tree()
-	t.is(tree, `Menu Tree
+	const expected = `Menu Tree
 menu                          /
   menu                        /submenu/
-`)
+`
+	t.is(tree, expected)
 })
 
 test('subsubmenu', t => {
@@ -80,11 +83,12 @@ test('subsubmenu', t => {
 		renderKeyboard: () => [],
 	}
 	const tree = new MenuMiddleware('/', menu).tree()
-	t.is(tree, `Menu Tree
+	const expected = `Menu Tree
 menu                          /
   menu                        /submenu/
     menu                      /submenu/deep/
-`)
+`
+	t.is(tree, expected)
 })
 
 test('action in submenu', t => {
@@ -112,9 +116,10 @@ test('action in submenu', t => {
 		renderKeyboard: () => [],
 	}
 	const tree = new MenuMiddleware('/', menu).tree()
-	t.is(tree, `Menu Tree
+	const expected = `Menu Tree
 menu                          /
   menu                        /submenu/
     action                    /submenu/what
-`)
+`
+	t.is(tree, expected)
 })

@@ -1,11 +1,13 @@
 import test from 'ava'
 import {createPaginationChoices} from './pagination.js'
 
-const keysCorrectMacro = test.macro((t, totalPages: number, currentPage: number, expected: readonly number[]) => {
-	const result = createPaginationChoices(totalPages, currentPage)
-	const keys = Object.keys(result).map(Number)
-	t.deepEqual(keys, expected)
-})
+const keysCorrectMacro = test.macro(
+	(t, totalPages: number, currentPage: number, expected: readonly number[]) => {
+		const result = createPaginationChoices(totalPages, currentPage)
+		const keys = Object.keys(result).map(Number)
+		t.deepEqual(keys, expected)
+	},
+)
 
 test('two pages on first page', keysCorrectMacro, 2, 1, [1, 2])
 test('two pages on second page', keysCorrectMacro, 2, 1, [1, 2])

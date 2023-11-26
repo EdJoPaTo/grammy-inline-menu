@@ -1,10 +1,19 @@
 export type ConstOrPromise<T> = T | Promise<T>
 
-export type ContextFunc<Context, ReturnType> = (context: Context) => ConstOrPromise<ReturnType>
-export type ContextPathFunc<Context, ReturnType> = (context: Context, path: string) => ConstOrPromise<ReturnType>
+export type ContextFunc<Context, ReturnType> = (
+	context: Context,
+) => ConstOrPromise<ReturnType>
+export type ContextPathFunc<Context, ReturnType> = (
+	context: Context,
+	path: string,
+) => ConstOrPromise<ReturnType>
 
-export type ConstOrContextFunc<Context, ReturnType> = ReturnType | ContextFunc<Context, ReturnType>
-export type ConstOrContextPathFunc<Context, ReturnType> = ReturnType | ContextPathFunc<Context, ReturnType>
+export type ConstOrContextFunc<Context, ReturnType> =
+	| ReturnType
+	| ContextFunc<Context, ReturnType>
+export type ConstOrContextPathFunc<Context, ReturnType> =
+	| ReturnType
+	| ContextPathFunc<Context, ReturnType>
 
 export type RegExpLike = {
 	readonly source: string;

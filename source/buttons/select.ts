@@ -1,13 +1,33 @@
-import {type Choices, createChoiceTextFunction, generateChoicesPaginationButtons, type ManyChoicesOptions} from '../choices/index.js'
-import {ensureCorrectChoiceKeys, getChoiceKeysFromChoices} from '../choices/understand-choices.js'
+import {
+	type Choices,
+	createChoiceTextFunction,
+	generateChoicesPaginationButtons,
+	type ManyChoicesOptions,
+} from '../choices/index.js'
+import {
+	ensureCorrectChoiceKeys,
+	getChoiceKeysFromChoices,
+} from '../choices/understand-choices.js'
 import type {ConstOrContextFunc, ConstOrPromise} from '../generic-types.js'
 import type {CallbackButtonTemplate} from '../keyboard.js'
 import {prefixEmoji} from '../prefix.js'
 import {getButtonsAsRows, getButtonsOfPage} from './align.js'
 
-export type IsSetFunction<Context> = (context: Context, key: string) => ConstOrPromise<boolean>
-export type SetFunction<Context> = (context: Context, key: string, newState: boolean) => ConstOrPromise<string | boolean>
-export type FormatStateFunction<Context> = (context: Context, textResult: string, state: boolean, key: string) => ConstOrPromise<string>
+export type IsSetFunction<Context> = (
+	context: Context,
+	key: string,
+) => ConstOrPromise<boolean>
+export type SetFunction<Context> = (
+	context: Context,
+	key: string,
+	newState: boolean,
+) => ConstOrPromise<string | boolean>
+export type FormatStateFunction<Context> = (
+	context: Context,
+	textResult: string,
+	state: boolean,
+	key: string,
+) => ConstOrPromise<string>
 
 export interface SelectOptions<Context> extends ManyChoicesOptions<Context> {
 	/**
@@ -43,13 +63,27 @@ export function generateSelectButtons<Context>(
 			return []
 		}
 
-		const choicesConstant = typeof choices === 'function' ? await choices(context) : choices
+		const choicesConstant = typeof choices === 'function'
+			? await choices(context)
+			: choices
 		const choiceKeys = getChoiceKeysFromChoices(choicesConstant)
 		ensureCorrectChoiceKeys(actionPrefix, path, choiceKeys)
-		const textFunction = createChoiceTextFunction(choicesConstant, options.buttonText)
-		const formatFunction: FormatStateFunction<Context> = options.formatState ?? ((_, textResult, state) => prefixEmoji(textResult, state, {hideFalseEmoji: !options.showFalseEmoji}))
+		const textFunction = createChoiceTextFunction(
+			choicesConstant,
+			options.buttonText,
+		)
+		const formatFunction: FormatStateFunction<Context> = options.formatState
+			?? ((_, textResult, state) =>
+				prefixEmoji(textResult, state, {
+					hideFalseEmoji: !options.showFalseEmoji,
+				}))
 		const currentPage = await options.getCurrentPage?.(context)
-		const keysOfPage = getButtonsOfPage(choiceKeys, options.columns, options.maxRows, currentPage)
+		const keysOfPage = getButtonsOfPage(
+			choiceKeys,
+			options.columns,
+			options.maxRows,
+			currentPage,
+		)
 		const buttonsOfPage = await Promise.all(keysOfPage
 			.map(async key => {
 				const textResult = await textFunction(context, key)
@@ -63,7 +97,12 @@ export function generateSelectButtons<Context>(
 		const rows = getButtonsAsRows(buttonsOfPage, options.columns)
 
 		if (options.setPage) {
-			rows.push(generateChoicesPaginationButtons(actionPrefix, choiceKeys.length, currentPage, options))
+			rows.push(generateChoicesPaginationButtons(
+				actionPrefix,
+				choiceKeys.length,
+				currentPage,
+				options,
+			))
 		}
 
 		return rows

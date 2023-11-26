@@ -21,7 +21,9 @@ test('add simple doFunction', t => {
 	t.is(resultSet.size, 1)
 	const result = [...resultSet][0]!
 
-	t.truthy(new RegExp(result.trigger.source, result.trigger.flags).exec('foo/bar'))
+	t.truthy(
+		new RegExp(result.trigger.source, result.trigger.flags).exec('foo/bar'),
+	)
 
 	t.is(result.trigger.source, '^foo\\/bar$')
 	t.is(result.trigger.flags, '')

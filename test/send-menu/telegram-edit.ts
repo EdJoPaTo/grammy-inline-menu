@@ -1,7 +1,7 @@
 import test from 'ava'
 import type {Api, Context as BaseContext} from 'grammy'
-import {MenuTemplate} from '../../source/index.js'
 import {MEDIA_TYPES} from '../../source/body.js'
+import {MenuTemplate} from '../../source/index.js'
 import {generateEditMessageIntoMenuFunction} from '../../source/send-menu.js'
 
 test('text', async t => {
@@ -23,7 +23,11 @@ test('text', async t => {
 		},
 	}
 
-	const editIntoFunction = generateEditMessageIntoMenuFunction(fakeTelegram as any, menu, '/')
+	const editIntoFunction = generateEditMessageIntoMenuFunction(
+		fakeTelegram as any,
+		menu,
+		'/',
+	)
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
@@ -63,7 +67,11 @@ for (const mediaType of MEDIA_TYPES) {
 			},
 		}
 
-		const editIntoFunction = generateEditMessageIntoMenuFunction(fakeTelegram as any, menu, '/')
+		const editIntoFunction = generateEditMessageIntoMenuFunction(
+			fakeTelegram as any,
+			menu,
+			'/',
+		)
 
 		const fakeContext: Partial<BaseContext> = {
 			callbackQuery: {
@@ -84,7 +92,11 @@ test('location', async t => {
 		live_period: 666,
 	})
 
-	const editIntoFunction = generateEditMessageIntoMenuFunction({} as any, menu, '/')
+	const editIntoFunction = generateEditMessageIntoMenuFunction(
+		{} as any,
+		menu,
+		'/',
+	)
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
@@ -111,7 +123,11 @@ test('venue', async t => {
 		},
 	})
 
-	const editIntoFunction = generateEditMessageIntoMenuFunction({} as any, menu, '/')
+	const editIntoFunction = generateEditMessageIntoMenuFunction(
+		{} as any,
+		menu,
+		'/',
+	)
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
@@ -141,7 +157,11 @@ test('invoice', async t => {
 		},
 	})
 
-	const editIntoFunction = generateEditMessageIntoMenuFunction({} as any, menu, '/')
+	const editIntoFunction = generateEditMessageIntoMenuFunction(
+		{} as any,
+		menu,
+		'/',
+	)
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {

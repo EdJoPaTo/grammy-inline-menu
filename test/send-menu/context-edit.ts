@@ -288,7 +288,8 @@ test('does not throw message is not modified', async t => {
 		},
 	}
 
-	await t.notThrowsAsync(async () => editMenuOnContext(menu, fakeContext as any, '/'))
+	await editMenuOnContext(menu, fakeContext as any, '/')
+	t.pass()
 })
 
 test('does throw unrecoverable edit errors', async t => {
@@ -572,7 +573,15 @@ test('invoice reply', async t => {
 			t.is(messageId, undefined)
 			return true
 		},
-		async replyWithInvoice(title, description, payload, provider_token, currency, prices, other) {
+		async replyWithInvoice(
+			title,
+			description,
+			payload,
+			provider_token,
+			currency,
+			prices,
+			other,
+		) {
 			t.is(title, 'A')
 			t.is(description, 'B')
 			t.is(currency, 'EUR')

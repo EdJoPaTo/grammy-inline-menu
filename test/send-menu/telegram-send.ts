@@ -1,7 +1,7 @@
 import test from 'ava'
 import type {Api, Context as BaseContext} from 'grammy'
-import {MenuTemplate} from '../../source/index.js'
 import {MEDIA_TYPES} from '../../source/body.js'
+import {MenuTemplate} from '../../source/index.js'
 import {generateSendMenuToChatFunction} from '../../source/send-menu.js'
 
 test('text', async t => {
@@ -22,7 +22,11 @@ test('text', async t => {
 		},
 	}
 
-	const sendMenu = generateSendMenuToChatFunction(fakeTelegram as any, menu, '/')
+	const sendMenu = generateSendMenuToChatFunction(
+		fakeTelegram as any,
+		menu,
+		'/',
+	)
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
@@ -43,7 +47,11 @@ for (const mediaType of MEDIA_TYPES) {
 			type: mediaType,
 		})
 
-		const sendFunction = async (chatId: unknown, media: unknown, other: unknown) => {
+		const sendFunction = async (
+			chatId: unknown,
+			media: unknown,
+			other: unknown,
+		) => {
 			t.is(chatId, 666)
 			t.is(media, 'whatever')
 			t.deepEqual(other, {
@@ -64,7 +72,11 @@ for (const mediaType of MEDIA_TYPES) {
 			sendVideo: sendFunction,
 		}
 
-		const sendMenu = generateSendMenuToChatFunction(fakeTelegram as any, menu, '/')
+		const sendMenu = generateSendMenuToChatFunction(
+			fakeTelegram as any,
+			menu,
+			'/',
+		)
 
 		const fakeContext: Partial<BaseContext> = {
 			callbackQuery: {
@@ -100,7 +112,11 @@ test('location', async t => {
 		},
 	}
 
-	const sendMenu = generateSendMenuToChatFunction(fakeTelegram as any, menu, '/')
+	const sendMenu = generateSendMenuToChatFunction(
+		fakeTelegram as any,
+		menu,
+		'/',
+	)
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
@@ -141,7 +157,11 @@ test('venue', async t => {
 		},
 	}
 
-	const sendMenu = generateSendMenuToChatFunction(fakeTelegram as any, menu, '/')
+	const sendMenu = generateSendMenuToChatFunction(
+		fakeTelegram as any,
+		menu,
+		'/',
+	)
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
@@ -168,7 +188,16 @@ test('invoice', async t => {
 	})
 
 	const fakeTelegram: Partial<Api> = {
-		async sendInvoice(chatId, title, description, payload, provider_token, currency, prices, other) {
+		async sendInvoice(
+			chatId,
+			title,
+			description,
+			payload,
+			provider_token,
+			currency,
+			prices,
+			other,
+		) {
 			t.is(chatId, 666)
 			t.is(title, 'A')
 			t.is(description, 'B')
@@ -185,7 +214,11 @@ test('invoice', async t => {
 		},
 	}
 
-	const sendMenu = generateSendMenuToChatFunction(fakeTelegram as any, menu, '/')
+	const sendMenu = generateSendMenuToChatFunction(
+		fakeTelegram as any,
+		menu,
+		'/',
+	)
 
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {

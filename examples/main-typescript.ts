@@ -1,11 +1,17 @@
 import * as process from 'node:process'
 import {Bot, type Context as BaseContext} from 'grammy'
-import {createBackMainMenuButtons, MenuMiddleware, MenuTemplate} from '../source/index.js'
+import {
+	createBackMainMenuButtons,
+	MenuMiddleware,
+	MenuTemplate,
+} from '../source/index.js'
 
 // Check out https://grammy.dev/guide/context.html and Context flavours
 type MyContext = BaseContext
 
-const menu = new MenuTemplate<MyContext>(() => 'Main Menu\n' + new Date().toISOString())
+const menu = new MenuTemplate<MyContext>(() =>
+	'Main Menu\n' + new Date().toISOString(),
+)
 
 menu.url('EdJoPaTo.de', 'https://edjopato.de')
 
@@ -52,7 +58,9 @@ menu.select('select', ['A', 'B', 'C'], {
 	isSet: (_, key) => key === selectedKey,
 })
 
-const foodMenu = new MenuTemplate<MyContext>('People like food. What do they like?')
+const foodMenu = new MenuTemplate<MyContext>(
+	'People like food. What do they like?',
+)
 
 type FoodChoises = {
 	food?: string;
@@ -211,7 +219,11 @@ console.log(menuMiddleware.tree())
 const bot = new Bot<MyContext>(process.env['BOT_TOKEN']!)
 
 bot.on('callback_query:data', async (ctx, next) => {
-	console.log('another callbackQuery happened', ctx.callbackQuery.data.length, ctx.callbackQuery.data)
+	console.log(
+		'another callbackQuery happened',
+		ctx.callbackQuery.data.length,
+		ctx.callbackQuery.data,
+	)
 	return next()
 })
 

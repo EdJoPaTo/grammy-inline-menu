@@ -1,7 +1,14 @@
-import type {ConstOrPromise, ContextPathFunc, RegExpLike} from './generic-types.js'
+import type {
+	ConstOrPromise,
+	ContextPathFunc,
+	RegExpLike,
+} from './generic-types.js'
 import {combineTrigger, ensureTriggerChild} from './path.js'
 
-export type ActionFunc<Context> = (context: Context, path: string) => ConstOrPromise<string | boolean>
+export type ActionFunc<Context> = (
+	context: Context,
+	path: string,
+) => ConstOrPromise<string | boolean>
 
 export type ButtonAction<Context> = {
 	readonly trigger: RegExpLike;
@@ -22,7 +29,11 @@ export class ActionHive<Context> {
 			.map(o => o.trigger.source)
 			.includes(trigger.source)
 		if (alreadyExisting) {
-			throw new Error(`The action "${trigger.source.slice(0, -1)}" you wanna add was already added. When you hit the button only the first one will be used and not both. This one can not be accessed then. Change the action code to something different.`)
+			throw new Error(
+				`The action "${
+					trigger.source.slice(0, -1)
+				}" you wanna add was already added. When you hit the button only the first one will be used and not both. This one can not be accessed then. Change the action code to something different.`,
+			)
 		}
 
 		this._actions.add({

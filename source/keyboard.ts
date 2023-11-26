@@ -1,7 +1,11 @@
 import {Buffer} from 'node:buffer'
 import type {InlineKeyboardButton as TelegramInlineKeyboardButton} from 'grammy/types'
 import type {ReadonlyDeep} from 'type-fest'
-import {type ConstOrContextPathFunc, type ContextPathFunc, filterNonNullable} from './generic-types.js'
+import {
+	type ConstOrContextPathFunc,
+	type ContextPathFunc,
+	filterNonNullable,
+} from './generic-types.js'
 import {combinePath} from './path.js'
 
 export type CallbackButtonTemplate = {
@@ -18,7 +22,9 @@ export type ButtonTemplateRow = readonly ButtonTemplate[]
 type UncreatedTemplate<Context> = ConstOrContextPathFunc<Context, ButtonTemplate | undefined>
 type RowOfUncreatedTemplates<Context> = Array<UncreatedTemplate<Context>>
 type ButtonTemplateRowGenerator<Context> = ContextPathFunc<Context, ButtonTemplateRow[]>
-type KeyboardTemplateEntry<Context> = RowOfUncreatedTemplates<Context> | ButtonTemplateRowGenerator<Context>
+type KeyboardTemplateEntry<Context> =
+	| RowOfUncreatedTemplates<Context>
+	| ButtonTemplateRowGenerator<Context>
 
 function isRow<Context>(
 	entry: undefined | ReadonlyDeep<KeyboardTemplateEntry<Context>>,
@@ -75,9 +81,11 @@ async function entryToRows<Context>(
 		return entry(context, path)
 	}
 
-	const buttonsInRow = await Promise.all(entry.map(async button =>
-		typeof button === 'function' ? button(context, path) : button,
-	))
+	const buttonsInRow = await Promise.all(
+		entry.map(async button =>
+			typeof button === 'function' ? button(context, path) : button,
+		),
+	)
 	const filtered = buttonsInRow.filter(filterNonNullable())
 	return [filtered]
 }
@@ -86,8 +94,11 @@ function renderRow(
 	templates: readonly ButtonTemplate[],
 	path: string,
 ): readonly InlineKeyboardButton[] {
-	return templates
-		.map(template => isCallbackButtonTemplate(template) ? renderCallbackButtonTemplate(template, path) : template)
+	return templates.map(template =>
+		isCallbackButtonTemplate(template)
+			? renderCallbackButtonTemplate(template, path)
+			: template,
+	)
 }
 
 function renderCallbackButtonTemplate(
@@ -97,7 +108,9 @@ function renderCallbackButtonTemplate(
 	const absolutePath = combinePath(path, template.relativePath)
 	const absolutePathLength = Buffer.byteLength(absolutePath, 'utf8')
 	if (absolutePathLength > 64) {
-		throw new Error(`callback_data only supports 1-64 bytes. With this button (${template.relativePath}) it would get too long (${absolutePathLength}). Full path: ${absolutePath}`)
+		throw new Error(
+			`callback_data only supports 1-64 bytes. With this button (${template.relativePath}) it would get too long (${absolutePathLength}). Full path: ${absolutePath}`,
+		)
 	}
 
 	return {

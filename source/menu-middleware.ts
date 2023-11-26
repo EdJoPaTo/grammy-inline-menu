@@ -3,7 +3,11 @@ import type {ActionFunc} from './action-hive.js'
 import type {ContextPathFunc, RegExpLike} from './generic-types.js'
 import type {MenuLike} from './menu-like.js'
 import {combinePath, combineTrigger, createRootMenuTrigger} from './path.js'
-import {editMenuOnContext, replyMenuToContext, type SendMenuFunc} from './send-menu.js'
+import {
+	editMenuOnContext,
+	replyMenuToContext,
+	type SendMenuFunc,
+} from './send-menu.js'
 
 type Responder<Context> = MenuResponder<Context> | ActionResponder<Context>
 
@@ -58,17 +62,27 @@ export class MenuMiddleware<Context extends BaseContext> {
 		if (typeof path === 'function') {
 			// Happens when a JS User does this as next is the second argument and not a string:
 			// ctx.command('start', menuMiddleware.replyToContext)
-			throw new TypeError('Do not supply this as a middleware directly. Supply it as a function `ctx => menuMiddleware.replyToContext(ctx)`')
+			throw new TypeError(
+				'Do not supply this as a middleware directly. Supply it as a function `ctx => menuMiddleware.replyToContext(ctx)`',
+			)
 		}
 
 		if (typeof path !== 'string') {
 			// Happens when the rootTrigger is a RegExp
-			throw new TypeError('You have to specify an absolute path explicitly as a string in the second argument.')
+			throw new TypeError(
+				'You have to specify an absolute path explicitly as a string in the second argument.',
+			)
 		}
 
-		const {match, responder} = await getLongestMatchMenuResponder(context, path, this._responder)
+		const {match, responder} = await getLongestMatchMenuResponder(
+			context,
+			path,
+			this._responder,
+		)
 		if (!match) {
-			throw new Error('There is no menu which works with your supplied path: ' + path)
+			throw new Error(
+				'There is no menu which works with your supplied path: ' + path,
+			)
 		}
 
 		return replyMenuToContext(responder.menu, context, path)
@@ -85,7 +99,10 @@ export class MenuMiddleware<Context extends BaseContext> {
 	middleware(): (context: Context, next: () => Promise<void>) => void {
 		const composer = new Composer<Context>()
 
-		const trigger = new RegExp(this._responder.trigger.source, this._responder.trigger.flags)
+		const trigger = new RegExp(
+			this._responder.trigger.source,
+			this._responder.trigger.flags,
+		)
 		// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 		composer.callbackQuery(trigger, async (context, next) => {
 			if (!('data' in context.callbackQuery)) {
@@ -97,7 +114,11 @@ export class MenuMiddleware<Context extends BaseContext> {
 			let target: string | undefined = path
 
 			if (!path.endsWith('/')) {
-				const {match, responder} = await getLongestMatchActionResponder(context, path, this._responder)
+				const {match, responder} = await getLongestMatchActionResponder(
+					context,
+					path,
+					this._responder,
+				)
 				if (match?.[0] && responder.type === 'action') {
 					// @ts-expect-error grammy has some more specific type there
 					context.match = match
@@ -110,16 +131,24 @@ export class MenuMiddleware<Context extends BaseContext> {
 					} else if (afterwardsTarget === false) {
 						target = undefined
 					} else {
-						throw new Error('You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.')
+						throw new Error(
+							'You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.',
+						)
 					}
 				}
 			}
 
 			if (target) {
-				const {match, responder} = await getLongestMatchMenuResponder(context, target, this._responder)
+				const {match, responder} = await getLongestMatchMenuResponder(
+					context,
+					target,
+					this._responder,
+				)
 				if (!match?.[0]) {
 					// TODO: think about using next() in this case?
-					throw new Error(`There is no menu "${target}" which can be reached in this menu`)
+					throw new Error(
+						`There is no menu "${target}" which can be reached in this menu`,
+					)
 				}
 
 				// @ts-expect-error grammy has some more specific type there
@@ -137,7 +166,10 @@ export class MenuMiddleware<Context extends BaseContext> {
 }
 
 function catchCallbackOld(error: unknown): void {
-	if (error instanceof Error && error.message.includes('query is too old and response timeout expired')) {
+	if (
+		error instanceof Error
+		&& error.message.includes('query is too old and response timeout expired')
+	) {
 		// ignore
 		return
 	}
@@ -149,14 +181,15 @@ function responderMatch<Context>(
 	responder: Responder<Context>,
 	path: string,
 ): RegExpExecArray | undefined {
-	return new RegExp(responder.trigger.source, responder.trigger.flags).exec(path) ?? undefined
+	return new RegExp(responder.trigger.source, responder.trigger.flags)
+		.exec(path) ?? undefined
 }
 
 async function getLongestMatchMenuResponder<Context extends BaseContext>(
 	context: Context,
 	path: string,
 	current: MenuResponder<Context>,
-): Promise<{match: RegExpExecArray | undefined; responder: MenuResponder<Context>}> {
+): Promise<{match?: RegExpExecArray; responder: MenuResponder<Context>}> {
 	for (const sub of current.submenuResponders) {
 		const match = responderMatch(sub, path)
 		if (!match?.[0]) {
@@ -180,7 +213,7 @@ async function getLongestMatchActionResponder<Context extends BaseContext>(
 	context: Context,
 	path: string,
 	current: MenuResponder<Context>,
-): Promise<{match: RegExpExecArray | undefined; responder: Responder<Context>}> {
+): Promise<{match?: RegExpExecArray; responder: Responder<Context>}> {
 	const currentMatch = responderMatch(current, path)
 
 	for (const sub of current.submenuResponders) {
@@ -228,7 +261,10 @@ function createResponder<Context extends BaseContext>(
 		.map((submenu): MenuResponder<Context> => {
 			const submenuTrigger = combineTrigger(menuTrigger, submenu.action)
 
-			const canEnterSubmenu: ContextPathFunc<Context, boolean> = async (context, path) => {
+			const canEnterSubmenu: ContextPathFunc<Context, boolean> = async (
+				context,
+				path,
+			) => {
 				if (await submenu.hide?.(context, path)) {
 					return false
 				}

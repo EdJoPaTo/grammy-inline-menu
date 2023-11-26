@@ -1,7 +1,10 @@
 import type {ConstOrPromise, ContextFunc} from '../generic-types.js'
 import type {BasicOptions} from './basic.js'
 
-export type SetPageFunction<Context> = (context: Context, page: number) => ConstOrPromise<void>
+export type SetPageFunction<Context> = (
+	context: Context,
+	page: number,
+) => ConstOrPromise<void>
 export type GetCurrentPageFunction<Context> = ContextFunc<Context, number | undefined>
 export type GetTotalPagesFunction<Context> = ContextFunc<Context, number>
 
@@ -29,7 +32,8 @@ export interface GenericPaginationOptions<Context> {
 	readonly getCurrentPage: GetCurrentPageFunction<Context>;
 }
 
-export interface PaginationOptions<Context> extends BasicOptions<Context>, GenericPaginationOptions<Context> {
+export interface PaginationOptions<Context>
+	extends BasicOptions<Context>, GenericPaginationOptions<Context> {
 	/**
 	 * Returns the amount of pages which are available.
 	 *
@@ -56,7 +60,11 @@ export function createPaginationChoices(
 	const currentPageFixed = Math.max(1, Math.min(totalPagesFixed, Math.floor(currentPageFinite)))
 
 	const buttons: Record<number, string> = {}
-	if (!Number.isFinite(totalPagesFixed) || !Number.isFinite(currentPageFixed) || totalPagesFixed < 2) {
+	if (
+		!Number.isFinite(totalPagesFixed)
+		|| !Number.isFinite(currentPageFixed)
+		|| totalPagesFixed < 2
+	) {
 		return buttons
 	}
 
