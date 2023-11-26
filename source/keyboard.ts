@@ -39,30 +39,30 @@ function isCallbackButtonTemplate(
 }
 
 export class Keyboard<Context> {
-	private readonly _entries: Array<KeyboardTemplateEntry<Context>> = []
+	readonly #entries: Array<KeyboardTemplateEntry<Context>> = []
 
 	addCreator(creator: ButtonTemplateRowGenerator<Context>): void {
-		this._entries.push(creator)
+		this.#entries.push(creator)
 	}
 
 	add(
 		joinLastRow: boolean,
 		...buttons: ReadonlyArray<UncreatedTemplate<Context>>
 	): void {
-		const lastEntry = this._entries.at(-1)
+		const lastEntry = this.#entries.at(-1)
 
 		if (joinLastRow && isRow(lastEntry)) {
 			lastEntry.push(...buttons)
 			return
 		}
 
-		this._entries.push([...buttons])
+		this.#entries.push([...buttons])
 	}
 
 	async render(context: Context, path: string): Promise<InlineKeyboard> {
 		const arrayOfRowArrays = await Promise.all(
 			// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-			this._entries.map(async o => entryToRows(o, context, path)),
+			this.#entries.map(async o => entryToRows(o, context, path)),
 		)
 		const rows = arrayOfRowArrays
 			.flat(1)

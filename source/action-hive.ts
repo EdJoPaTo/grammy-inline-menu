@@ -16,7 +16,7 @@ export type ButtonAction<Context> = {
 }
 
 export class ActionHive<Context> {
-	private readonly _actions = new Set<ButtonAction<Context>>()
+	readonly #actions = new Set<ButtonAction<Context>>()
 
 	add(
 		trigger: RegExpLike,
@@ -25,7 +25,7 @@ export class ActionHive<Context> {
 	): void {
 		ensureTriggerChild(trigger)
 
-		const alreadyExisting = [...this._actions]
+		const alreadyExisting = [...this.#actions]
 			.map(o => o.trigger.source)
 			.includes(trigger.source)
 		if (alreadyExisting) {
@@ -36,7 +36,7 @@ export class ActionHive<Context> {
 			)
 		}
 
-		this._actions.add({
+		this.#actions.add({
 			trigger,
 			async doFunction(context, path) {
 				if (await hide?.(context, path)) {
@@ -50,7 +50,7 @@ export class ActionHive<Context> {
 
 	list(path: RegExpLike): ReadonlySet<ButtonAction<Context>> {
 		const result = new Set<ButtonAction<Context>>()
-		for (const {trigger, doFunction} of this._actions) {
+		for (const {trigger, doFunction} of this.#actions) {
 			result.add({
 				trigger: combineTrigger(path, trigger),
 				doFunction,

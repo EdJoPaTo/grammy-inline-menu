@@ -36,9 +36,8 @@ export type Options<Context> = {
 }
 
 export class MenuMiddleware<Context extends BaseContext> {
-	private readonly _sendMenu: SendMenuFunc<Context>
-
-	private readonly _responder: MenuResponder<Context>
+	readonly #sendMenu: SendMenuFunc<Context>
+	readonly #responder: MenuResponder<Context>
 
 	constructor(
 		public readonly rootTrigger: string | RegExpLike,
@@ -46,9 +45,9 @@ export class MenuMiddleware<Context extends BaseContext> {
 		readonly options: Options<Context> = {},
 	) {
 		const rootTriggerRegex = createRootMenuTrigger(rootTrigger)
-		this._responder = createResponder(rootTriggerRegex, () => true, rootMenu)
+		this.#responder = createResponder(rootTriggerRegex, () => true, rootMenu)
 
-		this._sendMenu = options.sendMenu ?? editMenuOnContext
+		this.#sendMenu = options.sendMenu ?? editMenuOnContext
 	}
 
 	/**
@@ -77,7 +76,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 		const {match, responder} = await getLongestMatchMenuResponder(
 			context,
 			path,
-			this._responder,
+			this.#responder,
 		)
 		if (!match) {
 			throw new Error(
@@ -93,15 +92,15 @@ export class MenuMiddleware<Context extends BaseContext> {
 	 * You can take a look on the menu you created.
 	 */
 	tree(): string {
-		return 'Menu Tree\n' + responderTree(this._responder)
+		return 'Menu Tree\n' + responderTree(this.#responder)
 	}
 
 	middleware(): (context: Context, next: () => Promise<void>) => void {
 		const composer = new Composer<Context>()
 
 		const trigger = new RegExp(
-			this._responder.trigger.source,
-			this._responder.trigger.flags,
+			this.#responder.trigger.source,
+			this.#responder.trigger.flags,
 		)
 		// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 		composer.callbackQuery(trigger, async (context, next) => {
@@ -117,7 +116,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 				const {match, responder} = await getLongestMatchActionResponder(
 					context,
 					path,
-					this._responder,
+					this.#responder,
 				)
 				if (match?.[0] && responder.type === 'action') {
 					// @ts-expect-error grammy has some more specific type there
@@ -142,7 +141,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 				const {match, responder} = await getLongestMatchMenuResponder(
 					context,
 					target,
-					this._responder,
+					this.#responder,
 				)
 				if (!match?.[0]) {
 					// TODO: think about using next() in this case?
@@ -155,7 +154,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 				context.match = match
 				const targetPath = match[0]
 				// @ts-expect-error menu context is not exactly the context type (callback query context vs base context)
-				await this._sendMenu(responder.menu, context, targetPath)
+				await this.#sendMenu(responder.menu, context, targetPath)
 				await context.answerCallbackQuery()
 					.catch(catchCallbackOld)
 			}

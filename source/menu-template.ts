@@ -49,16 +49,16 @@ export interface InteractionOptions<Context>
 }
 
 export class MenuTemplate<Context> {
-	private readonly _body: ContextPathFunc<Context, Body>
-	private readonly _keyboard = new Keyboard<Context>()
-	private readonly _actions = new ActionHive<Context>()
-	private readonly _submenus = new Set<Submenu<Context>>()
+	readonly #body: ContextPathFunc<Context, Body>
+	readonly #keyboard = new Keyboard<Context>()
+	readonly #actions = new ActionHive<Context>()
+	readonly #submenus = new Set<Submenu<Context>>()
 
 	constructor(
 		// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 		body: ConstOrContextPathFunc<Context, Body>,
 	) {
-		this._body = typeof body === 'function' ? body : () => body
+		this.#body = typeof body === 'function' ? body : () => body
 	}
 
 	/**
@@ -66,7 +66,7 @@ export class MenuTemplate<Context> {
 	 * @param context Context to be supplied to the buttons on on creation
 	 */
 	async renderBody(context: Context, path: string): Promise<Body> {
-		return this._body(context, path)
+		return this.#body(context, path)
 	}
 
 	/**
@@ -78,7 +78,7 @@ export class MenuTemplate<Context> {
 		context: Context,
 		path: string,
 	): Promise<InlineKeyboard> {
-		return this._keyboard.render(context, path)
+		return this.#keyboard.render(context, path)
 	}
 
 	/**
@@ -86,14 +86,14 @@ export class MenuTemplate<Context> {
 	 * @param path Path within the menu. Will be used for the relativePaths
 	 */
 	renderActionHandlers(path: RegExpLike): ReadonlySet<ButtonAction<Context>> {
-		return this._actions.list(path)
+		return this.#actions.list(path)
 	}
 
 	/**
 	 * Lists the submenus used in this menu template. Usage only recommended for advanced usage of this library.
 	 */
 	listSubmenus(): ReadonlySet<Submenu<Context>> {
-		return this._submenus
+		return this.#submenus
 	}
 
 	/**
@@ -107,7 +107,7 @@ export class MenuTemplate<Context> {
 	): void {
 		const {hide} = options
 		if (hide) {
-			this._keyboard.add(
+			this.#keyboard.add(
 				Boolean(options.joinLastRow),
 				async (context, path) => {
 					if (await hide(context, path)) {
@@ -118,7 +118,7 @@ export class MenuTemplate<Context> {
 				},
 			)
 		} else {
-			this._keyboard.add(Boolean(options.joinLastRow), button)
+			this.#keyboard.add(Boolean(options.joinLastRow), button)
 		}
 	}
 
@@ -127,7 +127,7 @@ export class MenuTemplate<Context> {
 	 * @param creator function generating a keyboard part
 	 */
 	manualRow(creator: ContextPathFunc<Context, ButtonTemplateRow[]>): void {
-		this._keyboard.addCreator(creator)
+		this.#keyboard.addCreator(creator)
 	}
 
 	/**
@@ -143,7 +143,7 @@ export class MenuTemplate<Context> {
 	 * })
 	 */
 	manualAction(trigger: RegExpLike, action: ActionFunc<Context>): void {
-		this._actions.add(trigger, action, undefined)
+		this.#actions.add(trigger, action, undefined)
 	}
 
 	/**
@@ -221,7 +221,7 @@ export class MenuTemplate<Context> {
 		relativePath: string,
 		options: SingleButtonOptions<Context> = {},
 	): void {
-		this._keyboard.add(
+		this.#keyboard.add(
 			Boolean(options.joinLastRow),
 			generateCallbackButtonTemplate(text, relativePath, options.hide),
 		)
@@ -263,8 +263,8 @@ export class MenuTemplate<Context> {
 			)
 		}
 
-		this._actions.add(new RegExp(action + '$'), options.do, options.hide)
-		this._keyboard.add(
+		this.#actions.add(new RegExp(action + '$'), options.do, options.hide)
+		this.#keyboard.add(
 			Boolean(options.joinLastRow),
 			generateCallbackButtonTemplate(text, action, options.hide),
 		)
@@ -294,7 +294,7 @@ export class MenuTemplate<Context> {
 		ensureTriggerChild(action)
 		const actionRegex = new RegExp(action + '/')
 		if (
-			[...this._submenus]
+			[...this.#submenus]
 				.map(o => o.action.source)
 				.includes(actionRegex.source)
 		) {
@@ -303,12 +303,12 @@ export class MenuTemplate<Context> {
 			)
 		}
 
-		this._submenus.add({
+		this.#submenus.add({
 			action: actionRegex,
 			hide: options.hide,
 			menu: submenu,
 		})
-		this._keyboard.add(
+		this.#keyboard.add(
 			Boolean(options.joinLastRow),
 			generateCallbackButtonTemplate(text, action + '/', options.hide),
 		)
@@ -336,7 +336,7 @@ export class MenuTemplate<Context> {
 		}
 
 		const trigger = new RegExp(actionPrefix + ':(.+)$')
-		this._actions.add(
+		this.#actions.add(
 			trigger,
 			async (context, path) =>
 				options.do(context, getKeyFromPath(trigger, path)),
@@ -347,14 +347,14 @@ export class MenuTemplate<Context> {
 
 		if (options.setPage) {
 			const pageTrigger = new RegExp(actionPrefix + 'P:(\\d+)$')
-			this._actions.add(
+			this.#actions.add(
 				pageTrigger,
 				setPageAction(pageTrigger, options.setPage),
 				options.hide,
 			)
 		}
 
-		this._keyboard.addCreator(
+		this.#keyboard.addCreator(
 			generateChoicesButtons(actionPrefix, false, choices, options),
 		)
 	}
@@ -387,7 +387,7 @@ export class MenuTemplate<Context> {
 		ensureTriggerChild(actionPrefix)
 		const actionRegex = new RegExp(actionPrefix + ':([^/]+)/')
 		if (
-			[...this._submenus]
+			[...this.#submenus]
 				.map(o => o.action.source)
 				.includes(actionRegex.source)
 		) {
@@ -396,7 +396,7 @@ export class MenuTemplate<Context> {
 			)
 		}
 
-		this._submenus.add({
+		this.#submenus.add({
 			action: actionRegex,
 			hide: options.disableChoiceExistsCheck
 				? options.hide
@@ -406,14 +406,14 @@ export class MenuTemplate<Context> {
 
 		if (options.setPage) {
 			const pageTrigger = new RegExp(actionPrefix + 'P:(\\d+)$')
-			this._actions.add(
+			this.#actions.add(
 				pageTrigger,
 				setPageAction(pageTrigger, options.setPage),
 				options.hide,
 			)
 		}
 
-		this._keyboard.addCreator(
+		this.#keyboard.addCreator(
 			generateChoicesButtons(actionPrefix, true, choices, options),
 		)
 	}
@@ -462,7 +462,7 @@ export class MenuTemplate<Context> {
 		}
 
 		const trueTrigger = new RegExp(actionPrefix + 'T:(.+)$')
-		this._actions.add(
+		this.#actions.add(
 			trueTrigger,
 			async (context, path) => {
 				const key = getKeyFromPath(trueTrigger, path)
@@ -474,7 +474,7 @@ export class MenuTemplate<Context> {
 		)
 
 		const falseTrigger = new RegExp(actionPrefix + 'F:(.+)$')
-		this._actions.add(
+		this.#actions.add(
 			falseTrigger,
 			async (context, path) => {
 				const key = getKeyFromPath(falseTrigger, path)
@@ -487,14 +487,14 @@ export class MenuTemplate<Context> {
 
 		if (options.setPage) {
 			const pageTrigger = new RegExp(actionPrefix + 'P:(\\d+)$')
-			this._actions.add(
+			this.#actions.add(
 				pageTrigger,
 				setPageAction(pageTrigger, options.setPage),
 				options.hide,
 			)
 		}
 
-		this._keyboard.addCreator(
+		this.#keyboard.addCreator(
 			generateSelectButtons(actionPrefix, choices, options),
 		)
 	}
@@ -524,12 +524,12 @@ export class MenuTemplate<Context> {
 		}
 
 		const trigger = new RegExp(actionPrefix + ':(\\d+)$')
-		this._actions.add(
+		this.#actions.add(
 			trigger,
 			setPageAction(trigger, options.setPage),
 			options.hide,
 		)
-		this._keyboard.addCreator(
+		this.#keyboard.addCreator(
 			generateChoicesButtons(actionPrefix, false, paginationChoices, {
 				columns: 5,
 				hide: options.hide,
@@ -580,19 +580,19 @@ export class MenuTemplate<Context> {
 			)
 		}
 
-		this._actions.add(
+		this.#actions.add(
 			new RegExp(actionPrefix + ':true$'),
 			async (context, path) => options.set(context, true, path),
 			options.hide,
 		)
 
-		this._actions.add(
+		this.#actions.add(
 			new RegExp(actionPrefix + ':false$'),
 			async (context, path) => options.set(context, false, path),
 			options.hide,
 		)
 
-		this._keyboard.add(
+		this.#keyboard.add(
 			Boolean(options.joinLastRow),
 			generateToggleButton(text, actionPrefix, options),
 		)
