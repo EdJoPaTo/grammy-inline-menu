@@ -4,19 +4,19 @@ This menu library is made to easily create an inline menu for your Telegram bot.
 
 ![Example shown as a gif](media/example-food.gif)
 
-# Installation
+## Installation
 
-```
-$ npm install grammy grammy-inline-menu
+```bash
+npm install grammy grammy-inline-menu
 ```
 
 Consider using TypeScript with this library as it helps with finding some common mistakes faster.
 
 A good starting point for TypeScript and Telegram bots might be this repo: [EdJoPaTo/telegram-typescript-bot-template](https://github.com/EdJoPaTo/telegram-typescript-bot-template)
 
-# Examples
+## Examples
 
-## Basic Example
+### Basic Example
 
 ```ts
 import {Bot} from 'grammy'
@@ -40,13 +40,15 @@ bot.use(menuMiddleware)
 bot.launch()
 ```
 
-## More interesting one
+### More interesting one
 
 ![Example shown as a gif](media/example-food.gif)
 
 Look at the code here: [TypeScript](examples/main-typescript.ts) / [JavaScript (consider using TypeScript)](examples/main-javascript.mjs)
 
-# Migrate from version 4 to 5
+## Version migration
+
+### Migrate from version 4 to 5
 
 If your project still uses version 4 of this library see [v4 documentation](https://github.com/EdJoPaTo/telegraf-inline-menu/blob/v4.0.1/README.md) and consider refactoring to version 5.
 
@@ -54,22 +56,23 @@ List of things to migrate:
 
 - `TelegrafInlineMenu` was split into multiple classes.
   When you used `new TelegrafInlineMenu(text)`, you will use `new MenuTemplate(body)` now.
-- Applying the menu to the bot via `bot.use` changed. This can now be done with the `MenuMiddleware`. Check the [Basic Example](#Basic-Example)
+- Applying the menu to the bot via `bot.use` changed. This can now be done with the `MenuMiddleware`. Check the [Basic Example](#basic-example)
 - `button` and `simpleButton` are combined and renamed into `interact`. See [How can I run a simple method when pressing a button?](#how-can-i-run-a-simple-method-when-pressing-a-button)
 - `selectSubmenu` was renamed to `chooseIntoSubmenu`
-- `select` was split into `choose` and `select`. See [What's the difference between choose and select?](#Whats-the-difference-between-choose-and-select)
-- `question` is moved into a separate library. See [Didn't this menu had a question function?](#Didnt-this-menu-had-a-question-function)
+- `select` was split into `choose` and `select`. See [What's the difference between choose and select?](#whats-the-difference-between-choose-and-select)
+- `question` is moved into a separate library. See [Didn't this menu had a question function?](#didnt-this-menu-had-a-question-function)
 - The menu does not automatically add back and main menu buttons anymore.
   Use `menuTemplate.manualRow(createBackMainMenuButtons())` for that at each menu which should include these buttons.
-- `setCommand` and `replyMenuMiddleware` were replaced by multiple different functions. See [Can I send the menu manually?](#Can-I-send-the-menu-manually)
+- `setCommand` and `replyMenuMiddleware` were replaced by multiple different functions. See [Can I send the menu manually?](#can-i-send-the-menu-manually)
 
-# Migrate from version 5 to 6
+### Migrate from version 5 to 6
 
 Version 6 switched from Telegraf 3.38 to 4.0. See the [Telegraf migration guide for this set of changes](https://github.com/telegraf/telegraf/releases/tag/v4.0.0).
 
 telegraf-inline-menu is relatively unaffected by this.
 The only change required besides the Telegraf changes is the change of `ctx.match`.
 Simply add `match` to your `MyContext` type:
+
 ```ts
 export interface MyContext extends TelegrafContext {
 	readonly match: RegExpExecArray | undefined;
@@ -81,7 +84,7 @@ Telegraf knows when match is available or not.
 The default Context does not have match anymore.
 telegraf-inline-menu should also know this in a future release.
 
-# Migrate from version 6 to 7
+### Migrate from version 6 to 7
 
 Version 7 switches from Telegraf to [grammY](https://github.com/grammyjs/grammY) as a Telegram Bot framework.
 grammY has various benefits over Telegraf as Telegraf is quite old and grammY learned a lot from its mistakes and shortcomings.
@@ -93,7 +96,7 @@ grammY has various benefits over Telegraf as Telegraf is quite old and grammY le
 +import {MenuTemplate, MenuMiddleware} from 'grammy-inline-menu'
 ```
 
-# How does it work
+## How does it work
 
 Telegrams inline keyboards have buttons.
 These buttons have a text and callback data.
@@ -136,7 +139,7 @@ Also try to create a new button and find it within the tree.
 
 If you want to manually send your submenu `/my-submenu/` you have to supply the same path that is used when you press the button in the menu.
 
-## Improve the docs
+### Improve the docs
 
 If you have any questions on how the library works head out to the issues and ask ahead.
 You can also join the [grammY community chat](https://t.me/grammyjs) in order to talk about the questions on your mind.
@@ -146,9 +149,9 @@ I am already stuck in my bubble on how this is working.
 You are the expert on getting the knowledge about this library.
 Let's improve things together!
 
-# FAQ
+## FAQ
 
-## Can I use HTML / MarkdownV2 in the message body?
+### Can I use HTML / MarkdownV2 in the message body?
 
 Maybe this is also useful: [NPM package telegram-format](https://github.com/EdJoPaTo/telegram-format)
 
@@ -159,7 +162,7 @@ const menuTemplate = new MenuTemplate<MyContext>(ctx => {
 })
 ```
 
-## Can the menu body be some media?
+### Can the menu body be some media?
 
 The menu body can be an object containing `media` and `type` for media.
 The `media` and `type` is the same as [Telegrams InputMedia](https://core.telegram.org/bots/api#inputmedia).
@@ -186,7 +189,7 @@ The argument of the `MenuTemplate` can be passed a body or a function returning 
 A body can be a string or an object with options like seen above.
 When using as a function the arguments are the context and the path of the menu when called.
 
-## How can I run a simple method when pressing a button?
+### How can I run a simple method when pressing a button?
 
 ```ts
 menuTemplate.interact('Text', 'unique', {
@@ -197,7 +200,7 @@ menuTemplate.interact('Text', 'unique', {
 })
 ```
 
-## Why do I have to return a boolean or string for the do/set function?
+### Why do I have to return a boolean or string for the do/set function?
 
 You can control if you want to update the menu afterwards or not.
 When the user presses a button which changes something in the menu text, you want the user to see the updated content.
@@ -218,7 +221,7 @@ menuTemplate.interact('Text', 'unique', {
 })
 ```
 
-## How to use a dynamic text of a button?
+### How to use a dynamic text of a button?
 
 This is often required when translating ([i18n](https://grammy.dev/plugins/i18n.html)) your bot.
 
@@ -233,13 +236,13 @@ menuTemplate.interact(ctx => ctx.i18n.t('button'), 'unique', {
 })
 ```
 
-## How can I show a URL button?
+### How can I show a URL button?
 
 ```ts
 menuTemplate.url('Text', 'https://edjopato.de')
 ```
 
-## How can I display two buttons in the same row?
+### How can I display two buttons in the same row?
 
 Use `joinLastRow` in the second button
 
@@ -260,7 +263,7 @@ menuTemplate.interact('Text', 'unique', {
 })
 ```
 
-## How can I toggle a value easily?
+### How can I toggle a value easily?
 
 ```ts
 menuTemplate.toggle('Text', 'unique', {
@@ -272,7 +275,7 @@ menuTemplate.toggle('Text', 'unique', {
 })
 ```
 
-## How can I select one of many values?
+### How can I select one of many values?
 
 ```ts
 menuTemplate.select('unique', ['human', 'bird'], {
@@ -284,7 +287,7 @@ menuTemplate.select('unique', ['human', 'bird'], {
 })
 ```
 
-## How can I toggle many values?
+### How can I toggle many values?
 
 ```ts
 menuTemplate.select('unique', ['has arms', 'has legs', 'has eyes', 'has wings'], {
@@ -297,7 +300,7 @@ menuTemplate.select('unique', ['has arms', 'has legs', 'has eyes', 'has wings'],
 })
 ```
 
-## How can I interact with many values based on the pressed button?
+### How can I interact with many values based on the pressed button?
 
 ```ts
 menuTemplate.choose('unique', ['walk', 'swim'], {
@@ -309,7 +312,7 @@ menuTemplate.choose('unique', ['walk', 'swim'], {
 })
 ```
 
-## What's the difference between choose and select?
+### What's the difference between choose and select?
 
 If you want to do something based on the choice, use `menuTemplate.choose(…)`.
 If you want to change the state of something, select one out of many options for example, use `menuTemplate.select(…)`.
@@ -317,7 +320,7 @@ If you want to change the state of something, select one out of many options for
 `menuTemplate.select(…)` automatically updates the menu on pressing the button and shows what it currently selected.
 `menuTemplate.choose(…)` runs the method you want to run.
 
-## How can I use dynamic text for many values with choose or select?
+### How can I use dynamic text for many values with choose or select?
 
 One way of doing so is via `Record<string, string>` as input for the choices:
 
@@ -342,7 +345,7 @@ menuTemplate.choose('unique', ['a', 'b'], {
 })
 ```
 
-## I have too much content for one message. Can I use a pagination?
+### I have too much content for one message. Can I use a pagination?
 
 `menuTemplate.pagination` is basically a glorified `choose`.
 You can supply the amount of pages you have and what's your current page is, and it tells you which page the user what's to see.
@@ -359,7 +362,7 @@ menuTemplate.pagination('unique', {
 })
 ```
 
-## My choose/select has too many choices. Can I use a pagination?
+### My choose/select has too many choices. Can I use a pagination?
 
 When you don't use a pagination, you might have noticed that not all of your choices are displayed.
 Per default only the first page is shown.
@@ -377,7 +380,7 @@ menuTemplate.choose('eat', ['cheese', 'bread', 'salad', 'tree', …], {
 })
 ```
 
-## How can I use a submenu?
+### How can I use a submenu?
 
 ```ts
 const submenuTemplate = new MenuTemplate<MyContext>('I am a submenu')
@@ -389,7 +392,7 @@ submenuTemplate.manualRow(createBackMainMenuButtons())
 menuTemplate.submenu('Text', 'unique', submenuTemplate)
 ```
 
-## How can I use a submenu with many choices?
+### How can I use a submenu with many choices?
 
 ```ts
 const submenuTemplate = new MenuTemplate<MyContext>(ctx => `You chose city ${ctx.match[1]}`)
@@ -405,7 +408,7 @@ submenuTemplate.manualRow(createBackMainMenuButtons())
 menuTemplate.chooseIntoSubmenu('unique', ['Gotham', 'Mos Eisley', 'Springfield'], submenuTemplate)
 ```
 
-## Can I close the menu?
+### Can I close the menu?
 
 You can delete the message like you would do with grammY: `ctx.deleteMessage()`.
 Keep in mind: You can not delete messages which are older than 48 hours.
@@ -424,7 +427,7 @@ menuTemplate.interact('Delete the menu', 'unique', {
 })
 ```
 
-## Can I send the menu manually?
+### Can I send the menu manually?
 
 If you want to send the root menu use `ctx => menuMiddleware.replyToContext(ctx)`
 
@@ -449,7 +452,7 @@ const settingsMenu = new MenuTemplate('Settings')
 bot.command('settings', async ctx => replyMenuToContext(settingsMenu, ctx, '/settings/'))
 ```
 
-## Can I send the menu from external events?
+### Can I send the menu from external events?
 
 When sending from external events you still have to supply the context to the message or some parts of your menu might not work as expected!
 
@@ -463,7 +466,7 @@ async function externalEventOccured() {
 }
 ```
 
-## Didn't this menu had a question function?
+### Didn't this menu had a question function?
 
 Yes. It was moved into a separate library with version 5 as it made the source code overly complicated.
 
@@ -490,7 +493,7 @@ menuTemplate.interact('Question', 'unique', {
 })
 ```
 
-# Documentation
+## Documentation
 
 The methods should have explaining documentation by itself.
 Also, there should be multiple @example entries in the docs to see different ways of using the method.
