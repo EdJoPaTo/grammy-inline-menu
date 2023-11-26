@@ -1,6 +1,10 @@
 export const DEFAULT_BUTTON_COLUMNS = 6
 export const DEFAULT_BUTTON_ROWS = 10
 
+export function clamp(value: number, min: number, max: number): number {
+	return Math.min(Math.max(value, min), max)
+}
+
 export function getRowsOfButtons<T>(
 	buttons: readonly T[],
 	columns = DEFAULT_BUTTON_COLUMNS,
@@ -19,7 +23,7 @@ export function getButtonsOfPage<T>(
 ): T[] {
 	const buttonsPerPage = maximumButtonsPerPage(columns, maxRows)
 	const totalPages = Math.ceil(buttons.length / buttonsPerPage)
-	const selectedPage = Math.max(Math.min(page, totalPages), 1)
+	const selectedPage = clamp(page, 1, totalPages)
 
 	const pageOffset = (selectedPage - 1) * buttonsPerPage
 	return buttons.slice(pageOffset, pageOffset + buttonsPerPage)

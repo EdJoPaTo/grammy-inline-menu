@@ -1,4 +1,5 @@
 import type {ConstOrPromise, ContextFunc} from '../generic-types.js'
+import {clamp} from './align.js'
 import type {BasicOptions} from './basic.js'
 
 export type SetPageFunction<Context> = (
@@ -57,7 +58,7 @@ export function createPaginationChoices(
 	// currentPage in [1..totalPages]
 	const totalPagesFixed = Math.ceil(totalPages)
 	const currentPageFinite = (typeof currentPage === 'number' && Number.isFinite(currentPage)) ? currentPage : 1
-	const currentPageFixed = Math.max(1, Math.min(totalPagesFixed, Math.floor(currentPageFinite)))
+	const currentPageFixed = clamp(currentPageFinite, 1, totalPagesFixed)
 
 	const buttons: Record<number, string> = {}
 	if (
