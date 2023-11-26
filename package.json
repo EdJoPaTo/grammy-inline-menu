@@ -46,7 +46,7 @@
 		"grammy": "^1.10.1"
 	},
 	"devDependencies": {
-		"@sindresorhus/tsconfig": "^4.0.0",
+		"@sindresorhus/tsconfig": "^5.0.0",
 		"@types/node": "^18.17.12",
 		"ava": "^5.0.1",
 		"c8": "^8.0.1",

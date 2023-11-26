@@ -6,7 +6,9 @@
 		"test"
 	],
 	"compilerOptions": {
-		"outDir": "dist",
-		"sourceMap": true
+		"sourceMap": true,
+		"lib": ["ES2022"],
+		"target": "ES2022", // Node.js 18
+		"outDir": "dist"
 	}
 }
