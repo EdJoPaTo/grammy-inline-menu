@@ -43,14 +43,14 @@
 		"type-fest": "^4.0.0"
 	},
 	"peerDependencies": {
-		"grammy": "^1.10.1"
+		"grammy": "^1.19.2"
 	},
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^5.0.0",
 		"@types/node": "^18.17.12",
 		"c8": "^8.0.1",
 		"del-cli": "^5.0.0",
-		"grammy": "^1.10.1",
+		"grammy": "^1.19.2",
 		"typescript": "^5.0.2",
 		"xo": "^0.56.0"
 	},

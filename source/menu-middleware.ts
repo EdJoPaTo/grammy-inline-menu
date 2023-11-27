@@ -103,11 +103,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 			this.#responder.trigger.flags,
 		)
 		// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-		composer.callbackQuery(trigger, async (context, next) => {
-			if (!('data' in context.callbackQuery)) {
-				return next()
-			}
-
+		composer.callbackQuery(trigger, async context => {
 			const path = context.callbackQuery.data
 
 			let target: string | undefined = path
