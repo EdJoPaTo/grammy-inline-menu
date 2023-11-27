@@ -22,10 +22,10 @@ export type PrefixOptions = {
 	 * Do not show the prefix when false.
 	 */
 	readonly hideFalseEmoji?: boolean;
-}
+};
 
-export const emojiTrue = '✅'
-export const emojiFalse = '🚫'
+export const emojiTrue = '✅';
+export const emojiFalse = '🚫';
 
 /**
  * Prefixes the text with a true / false emoji.
@@ -43,10 +43,10 @@ export function prefixEmoji(
 		...options,
 		prefixTrue: options.prefixTrue ?? emojiTrue,
 		prefixFalse: options.prefixFalse ?? emojiFalse,
-	}
+	};
 
-	const prefixContent = applyOptionsToPrefix(prefix, internalOptions)
-	return prefixText(text, prefixContent)
+	const prefixContent = applyOptionsToPrefix(prefix, internalOptions);
+	return prefixText(text, prefixContent);
 }
 
 function applyOptionsToPrefix(
@@ -58,25 +58,25 @@ function applyOptionsToPrefix(
 		prefixTrue,
 		hideFalseEmoji,
 		hideTrueEmoji,
-	} = options
+	} = options;
 
 	if (prefix === true) {
 		if (hideTrueEmoji) {
-			return undefined
+			return undefined;
 		}
 
-		return prefixTrue
+		return prefixTrue;
 	}
 
 	if (prefix === false) {
 		if (hideFalseEmoji) {
-			return undefined
+			return undefined;
 		}
 
-		return prefixFalse
+		return prefixFalse;
 	}
 
-	return prefix
+	return prefix;
 }
 
 /**
@@ -87,8 +87,8 @@ function applyOptionsToPrefix(
  */
 export function prefixText(text: string, prefix: string | undefined): string {
 	if (!prefix) {
-		return text
+		return text;
 	}
 
-	return `${prefix} ${text}`
+	return `${prefix} ${text}`;
 }

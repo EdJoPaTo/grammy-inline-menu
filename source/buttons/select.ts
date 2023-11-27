@@ -3,31 +3,31 @@ import {
 	createChoiceTextFunction,
 	generateChoicesPaginationButtons,
 	type ManyChoicesOptions,
-} from '../choices/index.js'
+} from '../choices/index.js';
 import {
 	ensureCorrectChoiceKeys,
 	getChoiceKeysFromChoices,
-} from '../choices/understand-choices.js'
-import type {ConstOrContextFunc, ConstOrPromise} from '../generic-types.js'
-import type {CallbackButtonTemplate} from '../keyboard.js'
-import {prefixEmoji} from '../prefix.js'
-import {getButtonsAsRows, getButtonsOfPage} from './align.js'
+} from '../choices/understand-choices.js';
+import type {ConstOrContextFunc, ConstOrPromise} from '../generic-types.js';
+import type {CallbackButtonTemplate} from '../keyboard.js';
+import {prefixEmoji} from '../prefix.js';
+import {getButtonsAsRows, getButtonsOfPage} from './align.js';
 
 export type IsSetFunction<Context> = (
 	context: Context,
 	key: string,
-) => ConstOrPromise<boolean>
+) => ConstOrPromise<boolean>;
 export type SetFunction<Context> = (
 	context: Context,
 	key: string,
 	newState: boolean,
-) => ConstOrPromise<string | boolean>
+) => ConstOrPromise<string | boolean>;
 export type FormatStateFunction<Context> = (
 	context: Context,
 	textResult: string,
 	state: boolean,
 	key: string,
-) => ConstOrPromise<string>
+) => ConstOrPromise<string>;
 
 export interface SelectOptions<Context> extends ManyChoicesOptions<Context> {
 	/**
@@ -60,41 +60,41 @@ export function generateSelectButtons<Context>(
 ): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
 	return async (context, path) => {
 		if (await options.hide?.(context, path)) {
-			return []
+			return [];
 		}
 
 		const choicesConstant = typeof choices === 'function'
 			? await choices(context)
-			: choices
-		const choiceKeys = getChoiceKeysFromChoices(choicesConstant)
-		ensureCorrectChoiceKeys(actionPrefix, path, choiceKeys)
+			: choices;
+		const choiceKeys = getChoiceKeysFromChoices(choicesConstant);
+		ensureCorrectChoiceKeys(actionPrefix, path, choiceKeys);
 		const textFunction = createChoiceTextFunction(
 			choicesConstant,
 			options.buttonText,
-		)
+		);
 		const formatFunction: FormatStateFunction<Context> = options.formatState
 			?? ((_, textResult, state) =>
 				prefixEmoji(textResult, state, {
 					hideFalseEmoji: !options.showFalseEmoji,
-				}))
-		const currentPage = await options.getCurrentPage?.(context)
+				}));
+		const currentPage = await options.getCurrentPage?.(context);
 		const keysOfPage = getButtonsOfPage(
 			choiceKeys,
 			options.columns,
 			options.maxRows,
 			currentPage,
-		)
+		);
 		const buttonsOfPage = await Promise.all(keysOfPage
 			.map(async key => {
-				const textResult = await textFunction(context, key)
-				const state = await options.isSet(context, key)
-				const text = await formatFunction(context, textResult, state, key)
+				const textResult = await textFunction(context, key);
+				const state = await options.isSet(context, key);
+				const text = await formatFunction(context, textResult, state, key);
 
-				const dropinLetter = state ? 'F' : 'T'
-				const relativePath = actionPrefix + dropinLetter + ':' + key
-				return {text, relativePath}
-			}))
-		const rows = getButtonsAsRows(buttonsOfPage, options.columns)
+				const dropinLetter = state ? 'F' : 'T';
+				const relativePath = actionPrefix + dropinLetter + ':' + key;
+				return {text, relativePath};
+			}));
+		const rows = getButtonsAsRows(buttonsOfPage, options.columns);
 
 		if (options.setPage) {
 			rows.push(generateChoicesPaginationButtons(
@@ -102,9 +102,9 @@ export function generateSelectButtons<Context>(
 				choiceKeys.length,
 				currentPage,
 				options,
-			))
+			));
 		}
 
-		return rows
-	}
+		return rows;
+	};
 }

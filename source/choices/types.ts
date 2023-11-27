@@ -1,18 +1,18 @@
-import type {BasicOptions} from '../buttons/basic.js'
-import type {GenericPaginationOptions} from '../buttons/pagination.js'
-import type {ConstOrPromise} from '../generic-types.js'
+import type {BasicOptions} from '../buttons/basic.js';
+import type {GenericPaginationOptions} from '../buttons/pagination.js';
+import type {ConstOrPromise} from '../generic-types.js';
 
-export type Choice = string | number
-export type ChoiceText = string
-export type ChoicesArray = readonly Choice[]
-export type ChoicesRecord = Readonly<Record<Choice, ChoiceText>>
-export type ChoicesMap = Readonly<ReadonlyMap<Choice, ChoiceText>>
-export type Choices = ChoicesArray | ChoicesRecord | ChoicesMap
+export type Choice = string | number;
+export type ChoiceText = string;
+export type ChoicesArray = readonly Choice[];
+export type ChoicesRecord = Readonly<Record<Choice, ChoiceText>>;
+export type ChoicesMap = Readonly<ReadonlyMap<Choice, ChoiceText>>;
+export type Choices = ChoicesArray | ChoicesRecord | ChoicesMap;
 
 export type ChoiceTextFunc<Context> = (
 	context: Context,
 	key: string,
-) => ConstOrPromise<string>
+) => ConstOrPromise<string>;
 
 export interface ManyChoicesOptions<Context>
 	extends BasicOptions<Context>, Partial<GenericPaginationOptions<Context>> {

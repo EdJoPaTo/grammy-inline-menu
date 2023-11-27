@@ -1,13 +1,13 @@
-import type {ConstOrPromise, ContextFunc} from '../generic-types.js'
-import {clamp} from './align.js'
-import type {BasicOptions} from './basic.js'
+import type {ConstOrPromise, ContextFunc} from '../generic-types.js';
+import {clamp} from './align.js';
+import type {BasicOptions} from './basic.js';
 
 export type SetPageFunction<Context> = (
 	context: Context,
 	page: number,
-) => ConstOrPromise<void>
-export type GetCurrentPageFunction<Context> = ContextFunc<Context, number | undefined>
-export type GetTotalPagesFunction<Context> = ContextFunc<Context, number>
+) => ConstOrPromise<void>;
+export type GetCurrentPageFunction<Context> = ContextFunc<Context, number | undefined>;
+export type GetTotalPagesFunction<Context> = ContextFunc<Context, number>;
 
 export interface GenericPaginationOptions<Context> {
 	/**
@@ -56,39 +56,39 @@ export function createPaginationChoices(
 ): Record<number, string> {
 	// Numbers have to be within
 	// currentPage in [1..totalPages]
-	const totalPagesFixed = Math.ceil(totalPages)
-	const currentPageFinite = (typeof currentPage === 'number' && Number.isFinite(currentPage)) ? currentPage : 1
-	const currentPageFixed = clamp(currentPageFinite, 1, totalPagesFixed)
+	const totalPagesFixed = Math.ceil(totalPages);
+	const currentPageFinite = (typeof currentPage === 'number' && Number.isFinite(currentPage)) ? currentPage : 1;
+	const currentPageFixed = clamp(currentPageFinite, 1, totalPagesFixed);
 
-	const buttons: Record<number, string> = {}
+	const buttons: Record<number, string> = {};
 	if (
 		!Number.isFinite(totalPagesFixed)
 		|| !Number.isFinite(currentPageFixed)
 		|| totalPagesFixed < 2
 	) {
-		return buttons
+		return buttons;
 	}
 
-	const before = currentPageFixed - 1
-	const after = currentPageFixed + 1
+	const before = currentPageFixed - 1;
+	const after = currentPageFixed + 1;
 
 	if (currentPageFixed > 1) {
 		if (before > 1) {
-			buttons[1] = '1 ⏪'
+			buttons[1] = '1 ⏪';
 		}
 
-		buttons[before] = `${before} ◀️`
+		buttons[before] = `${before} ◀️`;
 	}
 
-	buttons[currentPageFixed] = String(currentPageFixed)
+	buttons[currentPageFixed] = String(currentPageFixed);
 
 	if (currentPageFixed < totalPagesFixed) {
-		buttons[after] = `▶️ ${after}`
+		buttons[after] = `▶️ ${after}`;
 
 		if (after < totalPagesFixed) {
-			buttons[totalPagesFixed] = `⏩ ${totalPagesFixed}`
+			buttons[totalPagesFixed] = `⏩ ${totalPagesFixed}`;
 		}
 	}
 
-	return buttons
+	return buttons;
 }

@@ -1,7 +1,7 @@
-import type {InputFile} from 'grammy'
-import type {LabeledPrice, Location, ParseMode, Venue} from 'grammy/types'
-import type {ReadonlyDeep} from 'type-fest'
-import {hasTruthyKey, isObject} from './generic-types.js'
+import type {InputFile} from 'grammy';
+import type {LabeledPrice, Location, ParseMode, Venue} from 'grammy/types';
+import type {ReadonlyDeep} from 'type-fest';
+import {hasTruthyKey, isObject} from './generic-types.js';
 
 export type Body =
 	| string
@@ -9,7 +9,7 @@ export type Body =
 	| MediaBody
 	| LocationBody
 	| VenueBody
-	| InvoiceBody
+	| InvoiceBody;
 
 export const MEDIA_TYPES = [
 	'animation',
@@ -17,14 +17,14 @@ export const MEDIA_TYPES = [
 	'document',
 	'photo',
 	'video',
-] as const
-export type MediaType = typeof MEDIA_TYPES[number]
+] as const;
+export type MediaType = typeof MEDIA_TYPES[number];
 
 export type TextBody = {
 	readonly text: string;
 	readonly parse_mode?: ParseMode;
 	readonly disable_web_page_preview?: boolean;
-}
+};
 
 export type MediaBody = {
 	readonly type: MediaType;
@@ -33,16 +33,16 @@ export type MediaBody = {
 	/** Caption */
 	readonly text?: string;
 	readonly parse_mode?: ParseMode;
-}
+};
 
 export type LocationBody = {
 	readonly location: Readonly<Location>;
 	readonly live_period?: number;
-}
+};
 
 export type VenueBody = {
 	readonly venue: ReadonlyDeep<Venue>;
-}
+};
 
 export type InvoiceBody = {
 	readonly invoice: {
@@ -53,112 +53,112 @@ export type InvoiceBody = {
 		readonly currency: string;
 		readonly prices: ReadonlyArray<Readonly<LabeledPrice>>;
 	};
-}
+};
 
 function isKnownMediaType(type: unknown): type is MediaType {
 	if (typeof type !== 'string') {
-		return false
+		return false;
 	}
 
-	return (MEDIA_TYPES as readonly string[]).includes(type)
+	return (MEDIA_TYPES as readonly string[]).includes(type);
 }
 
 export function isTextBody(body: unknown): body is string | TextBody {
 	if (!body) {
-		return false
+		return false;
 	}
 
 	if (typeof body === 'string') {
-		return true
+		return true;
 	}
 
 	if (!isObject(body)) {
-		return false
+		return false;
 	}
 
 	if (body['type'] !== undefined) {
-		return false
+		return false;
 	}
 
 	if (body['location'] !== undefined) {
-		return false
+		return false;
 	}
 
 	if (body['venue'] !== undefined) {
-		return false
+		return false;
 	}
 
 	if (body['invoice'] !== undefined) {
-		return false
+		return false;
 	}
 
-	return hasTruthyKey(body, 'text')
+	return hasTruthyKey(body, 'text');
 }
 
 export function isMediaBody(body: unknown): body is MediaBody {
 	if (!isObject(body)) {
-		return false
+		return false;
 	}
 
 	if (!isKnownMediaType(body['type'])) {
-		return false
+		return false;
 	}
 
-	return hasTruthyKey(body, 'media')
+	return hasTruthyKey(body, 'media');
 }
 
 function isValidLocation(location: Readonly<Location>): boolean {
 	return typeof location.latitude === 'number'
-		&& typeof location.longitude === 'number'
+		&& typeof location.longitude === 'number';
 }
 
 export function isLocationBody(body: unknown): body is LocationBody {
 	if (!hasTruthyKey(body, 'location')) {
-		return false
+		return false;
 	}
 
 	// Locations can't have text
 	if (hasTruthyKey(body, 'text')) {
-		return false
+		return false;
 	}
 
-	const {location} = body as LocationBody
-	return isValidLocation(location)
+	const {location} = body as LocationBody;
+	return isValidLocation(location);
 }
 
 export function isVenueBody(body: unknown): body is VenueBody {
 	if (!hasTruthyKey(body, 'venue')) {
-		return false
+		return false;
 	}
 
 	// Locations can't have text
 	if (hasTruthyKey(body, 'text')) {
-		return false
+		return false;
 	}
 
-	const {venue} = body as VenueBody
+	const {venue} = body as VenueBody;
 	if (!isValidLocation(venue.location)) {
-		return false
+		return false;
 	}
 
-	return typeof venue.title === 'string' && typeof venue.address === 'string'
+	return typeof venue.title === 'string' && typeof venue.address === 'string';
 }
 
 export function isInvoiceBody(body: unknown): body is InvoiceBody {
 	if (!hasTruthyKey(body, 'invoice')) {
-		return false
+		return false;
 	}
 
 	// Invoices can't have text
 	if (hasTruthyKey(body, 'text')) {
-		return false
+		return false;
 	}
 
-	const {invoice} = body as InvoiceBody
+	const {invoice} = body as InvoiceBody;
 	return typeof invoice.title === 'string'
-		&& typeof invoice.description === 'string'
+		&& typeof invoice.description === 'string';
 }
 
 export function getBodyText(body: TextBody | string): string {
-	return typeof body === 'string' ? body : body.text
+	return typeof body === 'string' ? body : body.text;
 }

@@ -1,15 +1,15 @@
-import {Composer, type Context as BaseContext} from 'grammy'
-import type {ActionFunc} from './action-hive.js'
-import type {ContextPathFunc, RegExpLike} from './generic-types.js'
-import type {MenuLike} from './menu-like.js'
-import {combinePath, combineTrigger, createRootMenuTrigger} from './path.js'
+import {Composer, type Context as BaseContext} from 'grammy';
+import type {ActionFunc} from './action-hive.js';
+import type {ContextPathFunc, RegExpLike} from './generic-types.js';
+import type {MenuLike} from './menu-like.js';
+import {combinePath, combineTrigger, createRootMenuTrigger} from './path.js';
 import {
 	editMenuOnContext,
 	replyMenuToContext,
 	type SendMenuFunc,
-} from './send-menu.js'
+} from './send-menu.js';
 
-type Responder<Context> = MenuResponder<Context> | ActionResponder<Context>
+type Responder<Context> = MenuResponder<Context> | ActionResponder<Context>;
 
 type MenuResponder<Context> = {
 	readonly type: 'menu';
@@ -18,13 +18,13 @@ type MenuResponder<Context> = {
 	readonly menu: MenuLike<Context>;
 	readonly submenuResponders: ReadonlyArray<MenuResponder<Context>>;
 	readonly actionResponders: ReadonlyArray<ActionResponder<Context>>;
-}
+};
 
 type ActionResponder<Context> = {
 	readonly type: 'action';
 	readonly trigger: RegExpLike;
 	readonly do: ActionFunc<Context>;
-}
+};
 
 export type Options<Context> = {
 	/**
@@ -33,21 +33,21 @@ export type Options<Context> = {
 	 * Defaults to `editMenuOnContext`
 	 */
 	readonly sendMenu?: SendMenuFunc<Context>;
-}
+};
 
 export class MenuMiddleware<Context extends BaseContext> {
-	readonly #sendMenu: SendMenuFunc<Context>
-	readonly #responder: MenuResponder<Context>
+	readonly #sendMenu: SendMenuFunc<Context>;
+	readonly #responder: MenuResponder<Context>;
 
 	constructor(
 		public readonly rootTrigger: string | RegExpLike,
 		readonly rootMenu: MenuLike<Context>,
 		readonly options: Options<Context> = {},
 	) {
-		const rootTriggerRegex = createRootMenuTrigger(rootTrigger)
-		this.#responder = createResponder(rootTriggerRegex, () => true, rootMenu)
+		const rootTriggerRegex = createRootMenuTrigger(rootTrigger);
+		this.#responder = createResponder(rootTriggerRegex, () => true, rootMenu);
 
-		this.#sendMenu = options.sendMenu ?? editMenuOnContext
+		this.#sendMenu = options.sendMenu ?? editMenuOnContext;
 	}
 
 	/**
@@ -63,28 +63,28 @@ export class MenuMiddleware<Context extends BaseContext> {
 			// ctx.command('start', menuMiddleware.replyToContext)
 			throw new TypeError(
 				'Do not supply this as a middleware directly. Supply it as a function `ctx => menuMiddleware.replyToContext(ctx)`',
-			)
+			);
 		}
 
 		if (typeof path !== 'string') {
 			// Happens when the rootTrigger is a RegExp
 			throw new TypeError(
 				'You have to specify an absolute path explicitly as a string in the second argument.',
-			)
+			);
 		}
 
 		const {match, responder} = await getLongestMatchMenuResponder(
 			context,
 			path,
 			this.#responder,
-		)
+		);
 		if (!match) {
 			throw new Error(
 				'There is no menu which works with your supplied path: ' + path,
-			)
+			);
 		}
 
-		return replyMenuToContext(responder.menu, context, path)
+		return replyMenuToContext(responder.menu, context, path);
 	}
 
 	/**
@@ -92,43 +92,43 @@ export class MenuMiddleware<Context extends BaseContext> {
 	 * You can take a look on the menu you created.
 	 */
 	tree(): string {
-		return 'Menu Tree\n' + responderTree(this.#responder)
+		return 'Menu Tree\n' + responderTree(this.#responder);
 	}
 
 	middleware(): (context: Context, next: () => Promise<void>) => void {
-		const composer = new Composer<Context>()
+		const composer = new Composer<Context>();
 
 		const trigger = new RegExp(
 			this.#responder.trigger.source,
 			this.#responder.trigger.flags,
-		)
+		);
 		// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 		composer.callbackQuery(trigger, async context => {
-			const path = context.callbackQuery.data
+			const path = context.callbackQuery.data;
 
-			let target: string | undefined = path
+			let target: string | undefined = path;
 
 			if (!path.endsWith('/')) {
 				const {match, responder} = await getLongestMatchActionResponder(
 					context,
 					path,
 					this.#responder,
-				)
+				);
 				if (match?.[0] && responder.type === 'action') {
 					// @ts-expect-error grammy has some more specific type there
-					context.match = match
-					const afterwardsTarget = await responder.do(context, match[0])
+					context.match = match;
+					const afterwardsTarget = await responder.do(context, match[0]);
 
 					if (typeof afterwardsTarget === 'string' && afterwardsTarget) {
-						target = combinePath(path, afterwardsTarget)
+						target = combinePath(path, afterwardsTarget);
 					} else if (afterwardsTarget === true) {
-						target = combinePath(path, '.')
+						target = combinePath(path, '.');
 					} else if (afterwardsTarget === false) {
-						target = undefined
+						target = undefined;
 					} else {
 						throw new Error(
 							'You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.',
-						)
+						);
 					}
 				}
 			}
@@ -138,25 +138,25 @@ export class MenuMiddleware<Context extends BaseContext> {
 					context,
 					target,
 					this.#responder,
-				)
+				);
 				if (!match?.[0]) {
 					// TODO: think about using next() in this case?
 					throw new Error(
 						`There is no menu "${target}" which can be reached in this menu`,
-					)
+					);
 				}
 
 				// @ts-expect-error grammy has some more specific type there
-				context.match = match
-				const targetPath = match[0]
+				context.match = match;
+				const targetPath = match[0];
 				// @ts-expect-error menu context is not exactly the context type (callback query context vs base context)
-				await this.#sendMenu(responder.menu, context, targetPath)
+				await this.#sendMenu(responder.menu, context, targetPath);
 				await context.answerCallbackQuery()
-					.catch(catchCallbackOld)
+					.catch(catchCallbackOld);
 			}
-		})
+		});
 
-		return composer.middleware()
+		return composer.middleware();
 	}
 }
 
@@ -166,10 +166,10 @@ function catchCallbackOld(error: unknown): void {
 		&& error.message.includes('query is too old and response timeout expired')
 	) {
 		// ignore
-		return
+		return;
 	}
 
-	throw error
+	throw error;
 }
 
 function responderMatch<Context>(
@@ -177,7 +177,7 @@ function responderMatch<Context>(
 	path: string,
 ): RegExpExecArray | undefined {
 	return new RegExp(responder.trigger.source, responder.trigger.flags)
-		.exec(path) ?? undefined
+		.exec(path) ?? undefined;
 }
 
 async function getLongestMatchMenuResponder<Context extends BaseContext>(
@@ -186,22 +186,22 @@ async function getLongestMatchMenuResponder<Context extends BaseContext>(
 	current: MenuResponder<Context>,
 ): Promise<{match?: RegExpExecArray; responder: MenuResponder<Context>}> {
 	for (const sub of current.submenuResponders) {
-		const match = responderMatch(sub, path)
+		const match = responderMatch(sub, path);
 		if (!match?.[0]) {
-			continue
+			continue;
 		}
 
 		// Users expect context.match to contain the relevant match
-		context.match = match
+		context.match = match;
 
 		// eslint-disable-next-line no-await-in-loop
 		if (await sub.canEnter(context, match[0])) {
-			return getLongestMatchMenuResponder(context, path, sub)
+			return getLongestMatchMenuResponder(context, path, sub);
 		}
 	}
 
-	const match = responderMatch(current, path)
-	return {match, responder: current}
+	const match = responderMatch(current, path);
+	return {match, responder: current};
 }
 
 async function getLongestMatchActionResponder<Context extends BaseContext>(
@@ -209,35 +209,35 @@ async function getLongestMatchActionResponder<Context extends BaseContext>(
 	path: string,
 	current: MenuResponder<Context>,
 ): Promise<{match?: RegExpExecArray; responder: Responder<Context>}> {
-	const currentMatch = responderMatch(current, path)
+	const currentMatch = responderMatch(current, path);
 
 	for (const sub of current.submenuResponders) {
-		const match = responderMatch(sub, path)
+		const match = responderMatch(sub, path);
 		if (!match?.[0]) {
-			continue
+			continue;
 		}
 
 		// Users expect context.match to contain the relevant match
-		context.match = match
+		context.match = match;
 
 		// eslint-disable-next-line no-await-in-loop
 		if (await sub.canEnter(context, match[0])) {
-			return getLongestMatchActionResponder(context, path, sub)
+			return getLongestMatchActionResponder(context, path, sub);
 		}
 
-		return {match: currentMatch, responder: current}
+		return {match: currentMatch, responder: current};
 	}
 
 	for (const sub of current.actionResponders) {
-		const match = responderMatch(sub, path)
+		const match = responderMatch(sub, path);
 		if (!match) {
-			continue
+			continue;
 		}
 
-		return {match, responder: sub}
+		return {match, responder: sub};
 	}
 
-	return {match: currentMatch, responder: current}
+	return {match: currentMatch, responder: current};
 }
 
 function createResponder<Context extends BaseContext>(
@@ -250,25 +250,25 @@ function createResponder<Context extends BaseContext>(
 			type: 'action',
 			trigger,
 			do: doFunction,
-		}))
+		}));
 
 	const submenuResponders = [...menu.listSubmenus()]
 		.map((submenu): MenuResponder<Context> => {
-			const submenuTrigger = combineTrigger(menuTrigger, submenu.action)
+			const submenuTrigger = combineTrigger(menuTrigger, submenu.action);
 
 			const canEnterSubmenu: ContextPathFunc<Context, boolean> = async (
 				context,
 				path,
 			) => {
 				if (await submenu.hide?.(context, path)) {
-					return false
+					return false;
 				}
 
-				return true
-			}
+				return true;
+			};
 
-			return createResponder(submenuTrigger, canEnterSubmenu, submenu.menu)
-		})
+			return createResponder(submenuTrigger, canEnterSubmenu, submenu.menu);
+		});
 
 	return {
 		type: 'menu',
@@ -277,26 +277,26 @@ function createResponder<Context extends BaseContext>(
 		menu,
 		actionResponders,
 		submenuResponders,
-	}
+	};
 }
 
 function responderTree<Context>(
 	responder: MenuResponder<Context>,
 	indention = '',
 ): string {
-	let text = treeLine(indention, responder.type, responder.trigger.source)
+	let text = treeLine(indention, responder.type, responder.trigger.source);
 
-	const subIndention = '  ' + indention
+	const subIndention = '  ' + indention;
 
 	for (const action of responder.actionResponders) {
-		text += treeLine(subIndention, action.type, action.trigger.source)
+		text += treeLine(subIndention, action.type, action.trigger.source);
 	}
 
 	for (const submenu of responder.submenuResponders) {
-		text += responderTree(submenu, subIndention)
+		text += responderTree(submenu, subIndention);
 	}
 
-	return text
+	return text;
 }
 
 function treeLine(
@@ -304,17 +304,17 @@ function treeLine(
 	type: string,
 	regexSource: string,
 ): string {
-	let text = indention + type
+	let text = indention + type;
 
-	const offset = Math.max(1, 30 - text.length)
+	const offset = Math.max(1, 30 - text.length);
 	for (let i = 0; i < offset; i++) {
-		text += ' '
+		text += ' ';
 	}
 
 	text += regexSource
 		.replaceAll('\\/', '/')
 		.replace(/^\^/, '')
-		.replace(/\$$/, '')
-	text += '\n'
-	return text
+		.replace(/\$$/, '');
+	text += '\n';
+	return text;
 }

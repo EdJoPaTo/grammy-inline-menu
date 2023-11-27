@@ -1,40 +1,40 @@
-import {deepStrictEqual, strictEqual} from 'node:assert'
-import {test} from 'node:test'
-import {generateChoicesButtons} from './buttons.js'
+import {deepStrictEqual, strictEqual} from 'node:assert';
+import {test} from 'node:test';
+import {generateChoicesButtons} from './buttons.js';
 
 await test('choice buttons empty choices no buttons', async () => {
-	const func = generateChoicesButtons('pre', false, [], {})
-	const buttons = await func(undefined, '/')
-	deepStrictEqual(buttons, [])
-})
+	const func = generateChoicesButtons('pre', false, [], {});
+	const buttons = await func(undefined, '/');
+	deepStrictEqual(buttons, []);
+});
 
 await test('choice buttons single choice one button', async () => {
-	const func = generateChoicesButtons('pre', false, ['a'], {})
-	const buttons = await func(undefined, '/')
+	const func = generateChoicesButtons('pre', false, ['a'], {});
+	const buttons = await func(undefined, '/');
 	deepStrictEqual(buttons, [[{
 		text: 'a',
 		relativePath: 'pre:a',
-	}]])
-})
+	}]]);
+});
 
 await test('choice buttons single choice into submenu', async () => {
-	const func = generateChoicesButtons('pre', true, ['a'], {})
-	const buttons = await func(undefined, '/')
+	const func = generateChoicesButtons('pre', true, ['a'], {});
+	const buttons = await func(undefined, '/');
 	deepStrictEqual(buttons, [[{
 		text: 'a',
 		relativePath: 'pre:a/',
-	}]])
-})
+	}]]);
+});
 
 await test('choice buttons creates pagination buttons', async () => {
 	const func = generateChoicesButtons('pre', false, ['a', 'b', 'c'], {
 		columns: 1,
 		maxRows: 1,
 		setPage() {
-			throw new Error('no need to call setPage on keyboard creation')
+			throw new Error('no need to call setPage on keyboard creation');
 		},
-	})
-	const buttons = await func(undefined, '/')
+	});
+	const buttons = await func(undefined, '/');
 	deepStrictEqual(buttons, [
 		[{
 			text: 'a',
@@ -50,68 +50,68 @@ await test('choice buttons creates pagination buttons', async () => {
 			text: '⏩ 3',
 			relativePath: 'preP:3',
 		}],
-	])
-})
+	]);
+});
 
 await test('choice buttons show keys of page 2', async () => {
 	const func = generateChoicesButtons('pre', false, ['a', 'b', 'c'], {
 		columns: 1,
 		maxRows: 1,
 		getCurrentPage: () => 2,
-	})
-	const buttons = await func(undefined, '/')
+	});
+	const buttons = await func(undefined, '/');
 	deepStrictEqual(buttons, [[{
 		text: 'b',
 		relativePath: 'pre:b',
-	}]])
-})
+	}]]);
+});
 
 await test('choice buttons choice function is run', async t => {
-	const choiceFunction = t.mock.fn((context: string) => [context])
-	const func = generateChoicesButtons('pre', false, choiceFunction, {})
+	const choiceFunction = t.mock.fn((context: string) => [context]);
+	const func = generateChoicesButtons('pre', false, choiceFunction, {});
 	deepStrictEqual(await func('a', '/'), [[{
 		text: 'a',
 		relativePath: 'pre:a',
-	}]])
+	}]]);
 	deepStrictEqual(await func('b', '/'), [[{
 		text: 'b',
 		relativePath: 'pre:b',
-	}]])
-	strictEqual(choiceFunction.mock.callCount(), 2)
-})
+	}]]);
+	strictEqual(choiceFunction.mock.callCount(), 2);
+});
 
 await test('choice buttons choice can have text by itself', async () => {
-	const func = generateChoicesButtons('pre', false, {a: 'Aaa'}, {})
-	const buttons = await func(undefined, '/')
+	const func = generateChoicesButtons('pre', false, {a: 'Aaa'}, {});
+	const buttons = await func(undefined, '/');
 	deepStrictEqual(buttons, [[{
 		text: 'Aaa',
 		relativePath: 'pre:a',
-	}]])
-})
+	}]]);
+});
 
 await test('choice buttons choice buttonText is used', async () => {
 	const func = generateChoicesButtons('pre', false, ['a'], {
 		buttonText: () => 'Aaa',
-	})
-	const buttons = await func(undefined, '/')
+	});
+	const buttons = await func(undefined, '/');
 	deepStrictEqual(buttons, [[{
 		text: 'Aaa',
 		relativePath: 'pre:a',
-	}]])
-})
+	}]]);
+});
 
 await test('choice buttons hidden does not render any buttons', async () => {
 	const choiceFunction = (): never => {
-		throw new Error('hidden -> dont call choices')
-	}
+		throw new Error('hidden -> dont call choices');
+	};
 
 	const func = generateChoicesButtons('pre', false, choiceFunction, {
 		hide(context, path) {
-			strictEqual(context, undefined)
-			strictEqual(path, '/')
-			return true
+			strictEqual(context, undefined);
+			strictEqual(path, '/');
+			return true;
 		},
-	})
-	const buttons = await func(undefined, '/')
-	deepStrictEqual(buttons, [])
-})
+	});
+	const buttons = await func(undefined, '/');
+	deepStrictEqual(buttons, []);
+});

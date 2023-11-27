@@ -1,6 +1,6 @@
-import type {ConstOrContextFunc, ContextPathFunc} from '../generic-types.js'
-import type {Choices} from './types.js'
-import {getChoiceKeysFromChoices} from './understand-choices.js'
+import type {ConstOrContextFunc, ContextPathFunc} from '../generic-types.js';
+import type {Choices} from './types.js';
+import {getChoiceKeysFromChoices} from './understand-choices.js';
 
 export function combineHideAndChoices<Context>(
 	actionPrefix: string,
@@ -9,24 +9,24 @@ export function combineHideAndChoices<Context>(
 ): ContextPathFunc<Context, boolean> {
 	return async (context, path) => {
 		if (await hide?.(context, path)) {
-			return true
+			return true;
 		}
 
-		const match = new RegExp('/' + actionPrefix + ':([^/]+)/?$').exec(path)
-		const toBeFound = match?.[1]
+		const match = new RegExp('/' + actionPrefix + ':([^/]+)/?$').exec(path);
+		const toBeFound = match?.[1];
 		if (!toBeFound) {
-			throw new TypeError('could not read choice from path')
+			throw new TypeError('could not read choice from path');
 		}
 
 		const choicesConstant = typeof choices === 'function'
 			? await choices(context)
-			: choices
-		const choiceKeys = getChoiceKeysFromChoices(choicesConstant)
-		const keyExists = choiceKeys.includes(toBeFound)
+			: choices;
+		const choiceKeys = getChoiceKeysFromChoices(choicesConstant);
+		const keyExists = choiceKeys.includes(toBeFound);
 		if (!keyExists) {
-			return true
+			return true;
 		}
 
-		return false
-	}
+		return false;
+	};
 }

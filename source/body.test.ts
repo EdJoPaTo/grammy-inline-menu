@@ -1,5 +1,5 @@
-import {strictEqual} from 'node:assert'
-import {test} from 'node:test'
+import {strictEqual} from 'node:assert';
+import {test} from 'node:test';
 import {
 	type Body,
 	getBodyText,
@@ -13,14 +13,14 @@ import {
 	type MediaBody,
 	type TextBody,
 	type VenueBody,
-} from './body.js'
+} from './body.js';
 
 function mehToString(something: unknown): string {
 	if (typeof something === 'object' || !something) {
-		return JSON.stringify(something)
+		return JSON.stringify(something);
 	}
 
-	return String(something)
+	return String(something);
 }
 
 // Fake JS user fails
@@ -97,7 +97,7 @@ const EXAMPLE_WRONGS: readonly unknown[] = [
 		},
 		text: 'Invoice cant have text',
 	},
-]
+];
 
 const EXAMPLE_TEXTS: ReadonlyArray<string | TextBody> = [
 	'Hello World',
@@ -112,7 +112,7 @@ const EXAMPLE_TEXTS: ReadonlyArray<string | TextBody> = [
 		text: 'Hello World',
 		disable_web_page_preview: true,
 	},
-]
+];
 
 const EXAMPLE_MEDIA: readonly MediaBody[] = [
 	{
@@ -130,7 +130,7 @@ const EXAMPLE_MEDIA: readonly MediaBody[] = [
 		text: 'whatever',
 		parse_mode: 'Markdown',
 	},
-]
+];
 
 const EXAMPLE_LOCATION: readonly LocationBody[] = [
 	{
@@ -146,7 +146,7 @@ const EXAMPLE_LOCATION: readonly LocationBody[] = [
 		},
 		live_period: 600,
 	},
-]
+];
 
 const EXAMPLE_VENUE: VenueBody = {
 	venue: {
@@ -157,7 +157,7 @@ const EXAMPLE_VENUE: VenueBody = {
 		title: 'A',
 		address: 'B',
 	},
-}
+};
 
 const EXAMPLE_INVOICE: InvoiceBody = {
 	invoice: {
@@ -168,7 +168,7 @@ const EXAMPLE_INVOICE: InvoiceBody = {
 		provider_token: 'E',
 		prices: [],
 	},
-}
+};
 
 async function macro(
 	fn: (input: unknown) => boolean,
@@ -179,16 +179,16 @@ async function macro(
 		await t.test('works', async t =>
 			Promise.all(works.map(async item =>
 				t.test(mehToString(item), () => {
-					strictEqual(fn(item), true)
+					strictEqual(fn(item), true);
 				}),
-			)))
+			)));
 		await t.test('wrongs', async t =>
 			Promise.all(wrongs.map(async item =>
 				t.test(mehToString(item), () => {
-					strictEqual(fn(item), false)
+					strictEqual(fn(item), false);
 				}),
-			)))
-	})
+			)));
+	});
 }
 
 await macro(isTextBody, EXAMPLE_TEXTS, [
@@ -197,7 +197,7 @@ await macro(isTextBody, EXAMPLE_TEXTS, [
 	...EXAMPLE_LOCATION,
 	EXAMPLE_VENUE,
 	EXAMPLE_INVOICE,
-])
+]);
 
 await macro(isMediaBody, EXAMPLE_MEDIA, [
 	...EXAMPLE_WRONGS,
@@ -205,7 +205,7 @@ await macro(isMediaBody, EXAMPLE_MEDIA, [
 	...EXAMPLE_LOCATION,
 	EXAMPLE_VENUE,
 	EXAMPLE_INVOICE,
-])
+]);
 
 await macro(isLocationBody, EXAMPLE_LOCATION, [
 	...EXAMPLE_WRONGS,
@@ -213,7 +213,7 @@ await macro(isLocationBody, EXAMPLE_LOCATION, [
 	...EXAMPLE_MEDIA,
 	EXAMPLE_VENUE,
 	EXAMPLE_INVOICE,
-])
+]);
 
 await macro(isVenueBody, [EXAMPLE_VENUE], [
 	...EXAMPLE_WRONGS,
@@ -221,7 +221,7 @@ await macro(isVenueBody, [EXAMPLE_VENUE], [
 	...EXAMPLE_MEDIA,
 	...EXAMPLE_LOCATION,
 	EXAMPLE_INVOICE,
-])
+]);
 
 await macro(isInvoiceBody, [EXAMPLE_INVOICE], [
 	...EXAMPLE_WRONGS,
@@ -229,16 +229,16 @@ await macro(isInvoiceBody, [EXAMPLE_INVOICE], [
 	...EXAMPLE_MEDIA,
 	...EXAMPLE_LOCATION,
 	EXAMPLE_VENUE,
-])
+]);
 
 await test('getBodyText string', () => {
-	const body: Body = 'foo'
-	strictEqual(getBodyText(body), 'foo')
-})
+	const body: Body = 'foo';
+	strictEqual(getBodyText(body), 'foo');
+});
 
 await test('getBodyText TextBody', () => {
 	const body: Body = {
 		text: 'foo',
-	}
-	strictEqual(getBodyText(body), 'foo')
-})
+	};
+	strictEqual(getBodyText(body), 'foo');
+});

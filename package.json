@@ -61,7 +61,6 @@
 	"main": "./dist/source/index.js",
 	"types": "./dist/source/index.d.ts",
 	"xo": {
-		"semicolon": false,
 		"rules": {
 			"@typescript-eslint/consistent-type-definitions": "off",
 			"@typescript-eslint/naming-convention": "off",

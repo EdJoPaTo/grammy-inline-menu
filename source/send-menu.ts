@@ -1,5 +1,5 @@
-import type {Api, Context as BaseContext} from 'grammy'
-import type {Message} from 'grammy/types'
+import type {Api, Context as BaseContext} from 'grammy';
+import type {Message} from 'grammy/types';
 import {
 	type Body,
 	getBodyText,
@@ -12,10 +12,10 @@ import {
 	type MediaBody,
 	type TextBody,
 	type VenueBody,
-} from './body.js'
-import type {InlineKeyboard} from './keyboard.js'
-import type {MenuLike} from './menu-like.js'
-import {ensurePathMenu} from './path.js'
+} from './body.js';
+import type {InlineKeyboard} from './keyboard.js';
+import type {MenuLike} from './menu-like.js';
+import {ensurePathMenu} from './path.js';
 
 /**
  * Generic Method which is able to send a menu to a context (given a path where it is)
@@ -24,7 +24,7 @@ export type SendMenuFunc<Context> = (
 	menu: MenuLike<Context>,
 	context: Context,
 	path: string,
-) => Promise<unknown>
+) => Promise<unknown>;
 
 /**
  * Method which is able to send a menu to a chat.
@@ -34,7 +34,7 @@ export type SendMenuToChatFunction<Context> = (
 	chatId: string | number,
 	context: Context,
 	other?: Readonly<Record<string, unknown>>,
-) => Promise<Message>
+) => Promise<Message>;
 
 /**
  * Method which is able to edit a message in a chat into a menu.
@@ -45,7 +45,7 @@ export type EditMessageIntoMenuFunction<Context> = (
 	messageId: number,
 	context: Context,
 	other?: Readonly<Record<string, unknown>>,
-) => Promise<Message | true>
+) => Promise<Message | true>;
 
 /**
  * Reply a menu to a context as a new message
@@ -60,10 +60,10 @@ export async function replyMenuToContext<Context extends BaseContext>(
 	path: string,
 	other?: Readonly<Record<string, unknown>>,
 ) {
-	ensurePathMenu(path)
-	const body = await menu.renderBody(context, path)
-	const keyboard = await menu.renderKeyboard(context, path)
-	return replyRenderedMenuPartsToContext(body, keyboard, context, other)
+	ensurePathMenu(path);
+	const body = await menu.renderBody(context, path);
+	const keyboard = await menu.renderKeyboard(context, path);
+	return replyRenderedMenuPartsToContext(body, keyboard, context, other);
 }
 
 /**
@@ -79,13 +79,13 @@ export async function editMenuOnContext<Context extends BaseContext>(
 	path: string,
 	other: Readonly<Record<string, unknown>> = {},
 ) {
-	ensurePathMenu(path)
-	const body = await menu.renderBody(context, path)
-	const keyboard = await menu.renderKeyboard(context, path)
+	ensurePathMenu(path);
+	const body = await menu.renderBody(context, path);
+	const keyboard = await menu.renderKeyboard(context, path);
 
-	const message = context.callbackQuery?.message
+	const message = context.callbackQuery?.message;
 	if (!message) {
-		return replyRenderedMenuPartsToContext(body, keyboard, context, other)
+		return replyRenderedMenuPartsToContext(body, keyboard, context, other);
 	}
 
 	if (isMediaBody(body)) {
@@ -105,7 +105,7 @@ export async function editMenuOnContext<Context extends BaseContext>(
 				},
 				createGenericOther(keyboard, other),
 			)
-				.catch(catchMessageNotModified)
+				.catch(catchMessageNotModified);
 		}
 	} else if (isLocationBody(body) || isVenueBody(body) || isInvoiceBody(body)) {
 		// Dont edit the message, just recreate it.
@@ -115,20 +115,20 @@ export async function editMenuOnContext<Context extends BaseContext>(
 				getBodyText(body),
 				createTextOther(body, keyboard, other),
 			)
-				.catch(catchMessageNotModified)
+				.catch(catchMessageNotModified);
 		}
 	} else {
 		throw new TypeError(
 			'The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.',
-		)
+		);
 	}
 
 	// The current menu is incompatible: delete and reply new one
 	const [repliedMessage] = await Promise.all([
 		replyRenderedMenuPartsToContext(body, keyboard, context, other),
 		deleteMenuFromContext(context),
-	])
-	return repliedMessage
+	]);
+	return repliedMessage;
 }
 
 /**
@@ -140,9 +140,9 @@ export async function deleteMenuFromContext<Context extends BaseContext>(
 	context: Context,
 ): Promise<void> {
 	try {
-		await context.deleteMessage()
+		await context.deleteMessage();
 	} catch {
-		await context.editMessageReplyMarkup(undefined)
+		await context.editMessageReplyMarkup(undefined);
 	}
 }
 
@@ -162,8 +162,8 @@ export async function resendMenuToContext<Context extends BaseContext>(
 	const [menuMessage] = await Promise.all([
 		replyMenuToContext(menu, context, path, other),
 		deleteMenuFromContext(context),
-	])
-	return menuMessage
+	]);
+	return menuMessage;
 }
 
 function catchMessageNotModified(error: unknown): false {
@@ -172,10 +172,10 @@ function catchMessageNotModified(error: unknown): false {
 		&& error.message.includes('message is not modified')
 	) {
 		// ignore
-		return false
+		return false;
 	}
 
-	throw error
+	throw error;
 }
 
 async function replyRenderedMenuPartsToContext<Context extends BaseContext>(
@@ -186,28 +186,28 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(
 	other: Readonly<Record<string, unknown>> = {},
 ) {
 	if (isMediaBody(body)) {
-		const mediaOther = createSendMediaOther(body, keyboard, other)
+		const mediaOther = createSendMediaOther(body, keyboard, other);
 
 		// eslint-disable-next-line default-case
 		switch (body.type) {
 			case 'animation': {
-				return context.replyWithAnimation(body.media, mediaOther)
+				return context.replyWithAnimation(body.media, mediaOther);
 			}
 
 			case 'audio': {
-				return context.replyWithAudio(body.media, mediaOther)
+				return context.replyWithAudio(body.media, mediaOther);
 			}
 
 			case 'document': {
-				return context.replyWithDocument(body.media, mediaOther)
+				return context.replyWithDocument(body.media, mediaOther);
 			}
 
 			case 'photo': {
-				return context.replyWithPhoto(body.media, mediaOther)
+				return context.replyWithPhoto(body.media, mediaOther);
 			}
 
 			case 'video': {
-				return context.replyWithVideo(body.media, mediaOther)
+				return context.replyWithVideo(body.media, mediaOther);
 			}
 		}
 	}
@@ -217,7 +217,7 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(
 			body.location.latitude,
 			body.location.longitude,
 			createLocationOther(body, keyboard, other),
-		)
+		);
 	}
 
 	if (isVenueBody(body)) {
@@ -227,7 +227,7 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(
 			body.venue.title,
 			body.venue.address,
 			createVenueOther(body, keyboard, other),
-		)
+		);
 	}
 
 	if (isInvoiceBody(body)) {
@@ -239,17 +239,17 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(
 			body.invoice.currency,
 			body.invoice.prices,
 			createGenericOther(keyboard, other),
-		)
+		);
 	}
 
 	if (isTextBody(body)) {
-		const text = getBodyText(body)
-		return context.reply(text, createTextOther(body, keyboard, other))
+		const text = getBodyText(body);
+		return context.reply(text, createTextOther(body, keyboard, other));
 	}
 
 	throw new Error(
 		'The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.',
-	)
+	);
 }
 
 /**
@@ -265,32 +265,32 @@ export function generateSendMenuToChatFunction<Context>(
 	path: string,
 ): SendMenuToChatFunction<Context> {
 	return async (chatId, context, other = {}) => {
-		const body = await menu.renderBody(context, path)
-		const keyboard = await menu.renderKeyboard(context, path)
+		const body = await menu.renderBody(context, path);
+		const keyboard = await menu.renderKeyboard(context, path);
 
 		if (isMediaBody(body)) {
-			const mediaOther = createSendMediaOther(body, keyboard, other)
+			const mediaOther = createSendMediaOther(body, keyboard, other);
 
 			// eslint-disable-next-line default-case
 			switch (body.type) {
 				case 'animation': {
-					return telegram.sendAnimation(chatId, body.media, mediaOther)
+					return telegram.sendAnimation(chatId, body.media, mediaOther);
 				}
 
 				case 'audio': {
-					return telegram.sendAudio(chatId, body.media, mediaOther)
+					return telegram.sendAudio(chatId, body.media, mediaOther);
 				}
 
 				case 'document': {
-					return telegram.sendDocument(chatId, body.media, mediaOther)
+					return telegram.sendDocument(chatId, body.media, mediaOther);
 				}
 
 				case 'photo': {
-					return telegram.sendPhoto(chatId, body.media, mediaOther)
+					return telegram.sendPhoto(chatId, body.media, mediaOther);
 				}
 
 				case 'video': {
-					return telegram.sendVideo(chatId, body.media, mediaOther)
+					return telegram.sendVideo(chatId, body.media, mediaOther);
 				}
 			}
 		}
@@ -301,7 +301,7 @@ export function generateSendMenuToChatFunction<Context>(
 				body.location.latitude,
 				body.location.longitude,
 				createLocationOther(body, keyboard, other),
-			)
+			);
 		}
 
 		if (isVenueBody(body)) {
@@ -312,7 +312,7 @@ export function generateSendMenuToChatFunction<Context>(
 				body.venue.title,
 				body.venue.address,
 				createVenueOther(body, keyboard, other),
-			)
+			);
 		}
 
 		if (isInvoiceBody(body)) {
@@ -325,7 +325,7 @@ export function generateSendMenuToChatFunction<Context>(
 				body.invoice.currency,
 				body.invoice.prices,
 				createGenericOther(keyboard, other),
-			)
+			);
 		}
 
 		if (isTextBody(body)) {
@@ -333,13 +333,13 @@ export function generateSendMenuToChatFunction<Context>(
 				chatId,
 				getBodyText(body),
 				createTextOther(body, keyboard, other),
-			)
+			);
 		}
 
 		throw new Error(
 			'The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.',
-		)
-	}
+		);
+	};
 }
 
 /**
@@ -356,8 +356,8 @@ export function generateEditMessageIntoMenuFunction<Context>(
 	path: string,
 ): EditMessageIntoMenuFunction<Context> {
 	return async (chatId, messageId, context, other = {}) => {
-		const body = await menu.renderBody(context, path)
-		const keyboard = await menu.renderKeyboard(context, path)
+		const body = await menu.renderBody(context, path);
+		const keyboard = await menu.renderKeyboard(context, path);
 
 		if (isMediaBody(body)) {
 			return telegram.editMessageMedia(
@@ -370,25 +370,25 @@ export function generateEditMessageIntoMenuFunction<Context>(
 					parse_mode: body.parse_mode,
 				},
 				createGenericOther(keyboard, other),
-			)
+			);
 		}
 
 		if (isLocationBody(body)) {
 			throw new Error(
 				'You can not edit into a location body. You have to send the menu as a new message.',
-			)
+			);
 		}
 
 		if (isVenueBody(body)) {
 			throw new Error(
 				'You can not edit into a venue body. You have to send the menu as a new message.',
-			)
+			);
 		}
 
 		if (isInvoiceBody(body)) {
 			throw new Error(
 				'You can not edit into an invoice body. You have to send the menu as a new message.',
-			)
+			);
 		}
 
 		if (isTextBody(body)) {
@@ -397,13 +397,13 @@ export function generateEditMessageIntoMenuFunction<Context>(
 				messageId,
 				getBodyText(body),
 				createTextOther(body, keyboard, other),
-			)
+			);
 		}
 
 		throw new Error(
 			'The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.',
-		)
-	}
+		);
+	};
 }
 
 function createTextOther(
@@ -419,7 +419,7 @@ function createTextOther(
 		reply_markup: {
 			inline_keyboard: keyboard.map(o => [...o]),
 		},
-	}
+	};
 }
 
 function createSendMediaOther(
@@ -435,7 +435,7 @@ function createSendMediaOther(
 		reply_markup: {
 			inline_keyboard: keyboard.map(o => [...o]),
 		},
-	}
+	};
 }
 
 function createLocationOther(
@@ -449,7 +449,7 @@ function createLocationOther(
 		reply_markup: {
 			inline_keyboard: keyboard.map(o => [...o]),
 		},
-	}
+	};
 }
 
 function createVenueOther(
@@ -464,7 +464,7 @@ function createVenueOther(
 		reply_markup: {
 			inline_keyboard: keyboard.map(o => [...o]),
 		},
-	}
+	};
 }
 
 function createGenericOther(
@@ -476,5 +476,5 @@ function createGenericOther(
 		reply_markup: {
 			inline_keyboard: keyboard.map(o => [...o]),
 		},
-	}
+	};
 }

@@ -1,9 +1,9 @@
-import {deepStrictEqual, strictEqual} from 'node:assert'
-import {test} from 'node:test'
-import type {Context as BaseContext} from 'grammy'
-import {MEDIA_TYPES} from '../../source/body.js'
-import {MenuTemplate} from '../../source/index.js'
-import {replyMenuToContext} from '../../source/send-menu.js'
+import {deepStrictEqual, strictEqual} from 'node:assert';
+import {test} from 'node:test';
+import type {Context as BaseContext} from 'grammy';
+import {MEDIA_TYPES} from '../../source/body.js';
+import {MenuTemplate} from '../../source/index.js';
+import {replyMenuToContext} from '../../source/send-menu.js';
 
 await test('context-reply media', async t => {
 	await Promise.all(
@@ -12,21 +12,21 @@ await test('context-reply media', async t => {
 				const menu = new MenuTemplate<BaseContext>({
 					media: 'whatever',
 					type: mediaType,
-				})
+				});
 
 				const replyFunction = t.mock.fn(
 					async (media: unknown, other: unknown) => {
-						strictEqual(media, 'whatever')
+						strictEqual(media, 'whatever');
 						deepStrictEqual(other, {
 							caption: undefined,
 							parse_mode: undefined,
 							reply_markup: {
 								inline_keyboard: [],
 							},
-						})
-						return undefined as any
+						});
+						return undefined as any;
 					},
-				)
+				);
 
 				const fakeContext: Partial<BaseContext> = {
 					callbackQuery: {
@@ -40,11 +40,11 @@ await test('context-reply media', async t => {
 					replyWithDocument: replyFunction,
 					replyWithPhoto: replyFunction,
 					replyWithVideo: replyFunction,
-				}
+				};
 
-				await replyMenuToContext(menu, fakeContext as any, '/')
-				strictEqual(replyFunction.mock.callCount(), 1)
+				await replyMenuToContext(menu, fakeContext as any, '/');
+				strictEqual(replyFunction.mock.callCount(), 1);
 			}),
 		),
-	)
-})
+	);
+});
