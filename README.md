@@ -19,25 +19,27 @@ A good starting point for TypeScript and Telegram bots might be this repo: [EdJo
 ### Basic Example
 
 ```ts
-import {Bot} from 'grammy'
-import {MenuTemplate, MenuMiddleware} from 'grammy-inline-menu'
+import { Bot } from 'grammy';
+import { MenuMiddleware, MenuTemplate } from 'grammy-inline-menu';
 
-const menuTemplate = new MenuTemplate<MyContext>(ctx => `Hey ${ctx.from.first_name}!`)
+const menuTemplate = new MenuTemplate<MyContext>((ctx) =>
+	`Hey ${ctx.from.first_name}!`
+);
 
 menuTemplate.interact('I am excited!', 'a', {
-	do: async ctx => {
-		await ctx.reply('As am I!')
-		return false
-	}
-})
+	do: async (ctx) => {
+		await ctx.reply('As am I!');
+		return false;
+	},
+});
 
-const bot = new Bot(process.env.BOT_TOKEN)
+const bot = new Bot(process.env.BOT_TOKEN);
 
-const menuMiddleware = new MenuMiddleware('/', menuTemplate)
-bot.command('start', ctx => menuMiddleware.replyToContext(ctx))
-bot.use(menuMiddleware)
+const menuMiddleware = new MenuMiddleware('/', menuTemplate);
+bot.command('start', (ctx) => menuMiddleware.replyToContext(ctx));
+bot.use(menuMiddleware);
 
-bot.launch()
+bot.launch();
 ```
 
 ### More interesting one
@@ -123,13 +125,13 @@ You can use a middleware in order to see which callback data is used when you hi
 ```ts
 bot.use((ctx, next) => {
 	if (ctx.callbackQuery) {
-		console.log('callback data just happened', ctx.callbackQuery.data)
+		console.log('callback data just happened', ctx.callbackQuery.data);
 	}
 
-	return next()
-})
+	return next();
+});
 
-bot.use(menuMiddleware)
+bot.use(menuMiddleware);
 ```
 
 You can also take a look on all the regular expressions the menu middleware is using to notice a button click with `console.log(menuMiddleware.tree())`.
@@ -156,10 +158,10 @@ Let's improve things together!
 Maybe this is also useful: [NPM package telegram-format](https://github.com/EdJoPaTo/telegram-format)
 
 ```ts
-const menuTemplate = new MenuTemplate<MyContext>(ctx => {
-	const text = '_Hey_ *there*!'
-	return {text, parse_mode: 'Markdown'}
-})
+const menuTemplate = new MenuTemplate<MyContext>((ctx) => {
+	const text = '_Hey_ *there*!';
+	return { text, parse_mode: 'Markdown' };
+});
 ```
 
 ### Can the menu body be some media?
@@ -177,12 +179,12 @@ const menuTemplate = new MenuTemplate<MyContext>((ctx, path) => {
 	return {
 		type: 'photo',
 		media: {
-			source: `./${ctx.from.id}.jpg`
+			source: `./${ctx.from.id}.jpg`,
 		},
 		text: 'Some *caption*',
-		parse_mode: 'Markdown'
-	}
-})
+		parse_mode: 'Markdown',
+	};
+});
 ```
 
 The argument of the `MenuTemplate` can be passed a body or a function returning a body.
@@ -193,11 +195,11 @@ When using as a function the arguments are the context and the path of the menu 
 
 ```ts
 menuTemplate.interact('Text', 'unique', {
-	do: async ctx => {
-		await ctx.answerCallbackQuery('yaay')
-		return false
-	}
-})
+	do: async (ctx) => {
+		await ctx.answerCallbackQuery('yaay');
+		return false;
+	},
+});
 ```
 
 ### Why do I have to return a boolean or string for the do/set function?
@@ -214,11 +216,11 @@ If you just want to navigate without doing logic, you should prefer `.navigate(â
 
 ```ts
 menuTemplate.interact('Text', 'unique', {
-	do: async ctx => {
-		await ctx.answerCallbackQuery('go to parent menu after doing some logic')
-		return '..'
-	}
-})
+	do: async (ctx) => {
+		await ctx.answerCallbackQuery('go to parent menu after doing some logic');
+		return '..';
+	},
+});
 ```
 
 ### How to use a dynamic text of a button?
@@ -228,18 +230,18 @@ This is often required when translating ([i18n](https://grammy.dev/plugins/i18n.
 Also check out other buttons like [toggle](#how-can-i-toggle-a-value-easily) as they do some formatting of the button text for you.
 
 ```ts
-menuTemplate.interact(ctx => ctx.i18n.t('button'), 'unique', {
-	do: async ctx => {
-		await ctx.answerCallbackQuery(ctx.i18n.t('reponse'))
-		return '.'
-	}
-})
+menuTemplate.interact((ctx) => ctx.i18n.t('button'), 'unique', {
+	do: async (ctx) => {
+		await ctx.answerCallbackQuery(ctx.i18n.t('reponse'));
+		return '.';
+	},
+});
 ```
 
 ### How can I show a URL button?
 
 ```ts
-menuTemplate.url('Text', 'https://edjopato.de')
+menuTemplate.url('Text', 'https://edjopato.de');
 ```
 
 ### How can I display two buttons in the same row?
@@ -248,31 +250,31 @@ Use `joinLastRow` in the second button
 
 ```ts
 menuTemplate.interact('Text', 'unique', {
-	do: async ctx => {
-		await ctx.answerCallbackQuery('yaay')
-		return false
-	}
-})
+	do: async (ctx) => {
+		await ctx.answerCallbackQuery('yaay');
+		return false;
+	},
+});
 
 menuTemplate.interact('Text', 'unique', {
 	joinLastRow: true,
-	do: async ctx => {
-		await ctx.answerCallbackQuery('yaay')
-		return false
-	}
-})
+	do: async (ctx) => {
+		await ctx.answerCallbackQuery('yaay');
+		return false;
+	},
+});
 ```
 
 ### How can I toggle a value easily?
 
 ```ts
 menuTemplate.toggle('Text', 'unique', {
-	isSet: ctx => ctx.session.isFunny,
+	isSet: (ctx) => ctx.session.isFunny,
 	set: (ctx, newState) => {
-		ctx.session.isFunny = newState
-		return true
-	}
-})
+		ctx.session.isFunny = newState;
+		return true;
+	},
+});
 ```
 
 ### How can I select one of many values?
@@ -281,10 +283,10 @@ menuTemplate.toggle('Text', 'unique', {
 menuTemplate.select('unique', ['human', 'bird'], {
 	isSet: (ctx, key) => ctx.session.choice === key,
 	set: (ctx, key) => {
-		ctx.session.choice = key
-		return true
-	}
-})
+		ctx.session.choice = key;
+		return true;
+	},
+});
 ```
 
 ### How can I toggle many values?
@@ -294,10 +296,10 @@ menuTemplate.select('unique', ['has arms', 'has legs', 'has eyes', 'has wings'],
 	showFalseEmoji: true,
 	isSet: (ctx, key) => Boolean(ctx.session.bodyparts[key]),
 	set: (ctx, key, newState) => {
-		ctx.session.bodyparts[key] = newState
-		return true
-	}
-})
+		ctx.session.bodyparts[key] = newState;
+		return true;
+	},
+});
 ```
 
 ### How can I interact with many values based on the pressed button?
@@ -305,11 +307,11 @@ menuTemplate.select('unique', ['has arms', 'has legs', 'has eyes', 'has wings'],
 ```ts
 menuTemplate.choose('unique', ['walk', 'swim'], {
 	do: async (ctx, key) => {
-		await ctx.answerCallbackQuery(`Lets ${key}`)
+		await ctx.answerCallbackQuery(`Lets ${key}`);
 		// You can also go back to the parent menu afterwards for some 'quick' interactions in submenus
-		return '..'
-	}
-})
+		return '..';
+	},
+});
 ```
 
 ### What's the difference between choose and select?
@@ -355,11 +357,11 @@ This allows you for all kinds of variations on your side.
 ```ts
 menuTemplate.pagination('unique', {
 	getTotalPages: () => 42,
-	getCurrentPage: context => context.session.page,
+	getCurrentPage: (context) => context.session.page,
 	setPage: (context, page) => {
-		context.session.page = page
-	}
-})
+		context.session.page = page;
+	},
+});
 ```
 
 ### My choose/select has too many choices. Can I use a pagination?
@@ -383,29 +385,38 @@ menuTemplate.choose('eat', ['cheese', 'bread', 'salad', 'tree', â€¦], {
 ### How can I use a submenu?
 
 ```ts
-const submenuTemplate = new MenuTemplate<MyContext>('I am a submenu')
+const submenuTemplate = new MenuTemplate<MyContext>('I am a submenu');
 submenuTemplate.interact('Text', 'unique', {
-	do: async ctx => ctx.answerCallbackQuery('You hit a button in a submenu')
-})
-submenuTemplate.manualRow(createBackMainMenuButtons())
+	do: async (ctx) => ctx.answerCallbackQuery('You hit a button in a submenu'),
+});
+submenuTemplate.manualRow(createBackMainMenuButtons());
 
-menuTemplate.submenu('Text', 'unique', submenuTemplate)
+menuTemplate.submenu('Text', 'unique', submenuTemplate);
 ```
 
 ### How can I use a submenu with many choices?
 
 ```ts
-const submenuTemplate = new MenuTemplate<MyContext>(ctx => `You chose city ${ctx.match[1]}`)
+const submenuTemplate = new MenuTemplate<MyContext>((ctx) =>
+	`You chose city ${ctx.match[1]}`
+);
 submenuTemplate.interact('Text', 'unique', {
-	do: async ctx => {
-		console.log('Take a look at ctx.match. It contains the chosen city', ctx.match)
-		await ctx.answerCallbackQuery('You hit a button in a submenu')
-		return false
-	}
-})
-submenuTemplate.manualRow(createBackMainMenuButtons())
+	do: async (ctx) => {
+		console.log(
+			'Take a look at ctx.match. It contains the chosen city',
+			ctx.match,
+		);
+		await ctx.answerCallbackQuery('You hit a button in a submenu');
+		return false;
+	},
+});
+submenuTemplate.manualRow(createBackMainMenuButtons());
 
-menuTemplate.chooseIntoSubmenu('unique', ['Gotham', 'Mos Eisley', 'Springfield'], submenuTemplate)
+menuTemplate.chooseIntoSubmenu('unique', [
+	'Gotham',
+	'Mos Eisley',
+	'Springfield',
+], submenuTemplate);
 ```
 
 ### Can I close the menu?
@@ -419,12 +430,12 @@ If that does not work the keyboard is removed from the message, so the user will
 
 ```ts
 menuTemplate.interact('Delete the menu', 'unique', {
-	do: async context => {
-		await deleteMenuFromContext(context)
+	do: async (context) => {
+		await deleteMenuFromContext(context);
 		// Make sure not to try to update the menu afterwards. You just deleted it and it would just fail to update a missing message.
-		return false
-	}
-})
+		return false;
+	},
+});
 ```
 
 ### Can I send the menu manually?
@@ -432,24 +443,27 @@ menuTemplate.interact('Delete the menu', 'unique', {
 If you want to send the root menu use `ctx => menuMiddleware.replyToContext(ctx)`
 
 ```ts
-const menuMiddleware = new MenuMiddleware('/', menuTemplate)
-bot.command('start', ctx => menuMiddleware.replyToContext(ctx))
+const menuMiddleware = new MenuMiddleware('/', menuTemplate);
+bot.command('start', (ctx) => menuMiddleware.replyToContext(ctx));
 ```
 
 You can also specify a path to the `replyToContext` function for the specific submenu you want to open.
 See [How does it work](#how-does-it-work) to understand which path you have to supply as the last argument.
 
 ```ts
-const menuMiddleware = new MenuMiddleware('/', menuTemplate)
-bot.command('start', ctx => menuMiddleware.replyToContext(ctx, path))
+const menuMiddleware = new MenuMiddleware('/', menuTemplate);
+bot.command('start', (ctx) => menuMiddleware.replyToContext(ctx, path));
 ```
 
 You can also use sendMenu functions like `replyMenuToContext` to send a menu manually.
 
 ```ts
-import {MenuTemplate, replyMenuToContext} from 'grammy-inline-menu'
-const settingsMenu = new MenuTemplate('Settings')
-bot.command('settings', async ctx => replyMenuToContext(settingsMenu, ctx, '/settings/'))
+import { MenuTemplate, replyMenuToContext } from 'grammy-inline-menu';
+const settingsMenu = new MenuTemplate('Settings');
+bot.command(
+	'settings',
+	async (ctx) => replyMenuToContext(settingsMenu, ctx, '/settings/'),
+);
 ```
 
 ### Can I send the menu from external events?
@@ -459,10 +473,14 @@ When sending from external events you still have to supply the context to the me
 See [How does it work](#how-does-it-work) to understand which path you have to supply as the last argument of `generateSendMenuToChatFunction`.
 
 ```ts
-const sendMenuFunction = generateSendMenuToChatFunction(bot.telegram, menu, '/settings/')
+const sendMenuFunction = generateSendMenuToChatFunction(
+	bot.telegram,
+	menu,
+	'/settings/',
+);
 
 async function externalEventOccured() {
-	await sendMenuFunction(userId, context)
+	await sendMenuFunction(userId, context);
 }
 ```
 
@@ -473,24 +491,27 @@ Yes. It was moved into a separate library with version 5 as it made the source c
 When you want to use it check [grammy-stateless-question](https://github.com/grammyjs/stateless-question).
 
 ```ts
-import {getMenuOfPath} from 'grammy-inline-menu'
+import { getMenuOfPath } from 'grammy-inline-menu';
 
-const myQuestion = new TelegrafStatelessQuestion<MyContext>('unique', async (context, additionalState) => {
-	const answer = context.message.text
-	console.log('user responded with', answer)
-	await replyMenuToContext(menuTemplate, context, additionalState)
-})
+const myQuestion = new TelegrafStatelessQuestion<MyContext>(
+	'unique',
+	async (context, additionalState) => {
+		const answer = context.message.text;
+		console.log('user responded with', answer);
+		await replyMenuToContext(menuTemplate, context, additionalState);
+	},
+);
 
-bot.use(myQuestion.middleware())
+bot.use(myQuestion.middleware());
 
 menuTemplate.interact('Question', 'unique', {
 	do: async (context, path) => {
-		const text = 'Tell me the answer to the world and everything.'
-		const additionalState = getMenuOfPath(path)
-		await myQuestion.replyWithMarkdown(context, text, additionalState)
-		return false
-	}
-})
+		const text = 'Tell me the answer to the world and everything.';
+		const additionalState = getMenuOfPath(path);
+		await myQuestion.replyWithMarkdown(context, text, additionalState);
+		return false;
+	},
+});
 ```
 
 ## Documentation
