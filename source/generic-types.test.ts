@@ -1,4 +1,5 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {
 	filterNonNullable,
 	hasTruthyKey,
@@ -6,52 +7,85 @@ import {
 	isRegExpExecArray,
 } from './generic-types.js'
 
-test('filterNonNullable', t => {
+await test('filterNonNullable', () => {
 	const input = ['bla', undefined, 'blubb', null]
 	const output = input.filter(filterNonNullable())
-	t.deepEqual(output, ['bla', 'blubb'])
+	deepStrictEqual(output, ['bla', 'blubb'])
 })
 
-test('isRegExpExecArray true', t => {
-	t.true(isRegExpExecArray(/bla/.exec('bla')))
-	t.true(isRegExpExecArray(/b(la)/.exec('bla')))
+await test('isRegExpExecArray true', async t => {
+	const macro = async (regex: RegExp) =>
+		t.test(regex.source, () => {
+			strictEqual(isRegExpExecArray(regex.exec('bla')), true)
+		})
+	await macro(/bla/)
+	await macro(/b(la)/)
 })
 
-test('isRegExpExecArray null', t => {
-	t.false(isRegExpExecArray(null))
-	t.false(isRegExpExecArray(/bla/.exec('blubb')))
+await test('isRegExpExecArray null', async t => {
+	const macro = async (title: string, input: unknown) =>
+		t.test(title, () => {
+			strictEqual(isRegExpExecArray(input), false)
+		})
+	await macro('null', null)
+	await macro('regex', /bla/.exec('blubb'))
 })
 
-test('isRegExpExecArray array without string entry', t => {
-	t.false(isRegExpExecArray([]))
-	t.false(isRegExpExecArray([42]))
+await test('isRegExpExecArray array without string entry', async t => {
+	const macro = async (input: unknown) =>
+		t.test(JSON.stringify(input), () => {
+			strictEqual(isRegExpExecArray(input), false)
+		})
+	await macro([])
+	await macro([42])
 })
 
-test('isRegExpExecArray normal string array', t => {
-	t.false(isRegExpExecArray(['bla']))
-	t.false(isRegExpExecArray(['bla', 'la']))
+await test('isRegExpExecArray normal string array', async t => {
+	const macro = async (input: unknown) =>
+		t.test(JSON.stringify(input), () => {
+			strictEqual(isRegExpExecArray(input), false)
+		})
+	await macro(['bla'])
+	await macro(['bla', 'la'])
 })
 
-test('isObject examples', t => {
-	t.true(isObject({}))
-	t.true(isObject(t))
-	t.false(isObject('bla'))
-	t.false(isObject(() => 'bla'))
-	t.false(isObject(5))
-	t.false(isObject(null))
-	t.false(isObject(true))
-	t.false(isObject(undefined))
+await test('isObject examples', async ctx => {
+	const t = async (input: unknown) =>
+		ctx.test(JSON.stringify(input), async () => {
+			strictEqual(isObject(input), true)
+		})
+	const f = async (input: unknown) =>
+		ctx.test(JSON.stringify(input), async () => {
+			strictEqual(isObject(input), false)
+		})
+
+	await t({})
+	await t(ctx)
+	await f('bla')
+	await f(() => 'bla')
+	await f(5)
+	await f(null)
+	await f(true)
+	await f(undefined)
 })
 
-test('hasTruthyKey examples', t => {
-	t.false(hasTruthyKey(undefined, 'stuff'))
-	t.false(hasTruthyKey('undefined', 'stuff'))
-	t.false(hasTruthyKey([], 'stuff'))
-	t.false(hasTruthyKey({}, 'stuff'))
-	t.false(hasTruthyKey({stuffy: 'bla'}, 'stuff'))
-	t.true(hasTruthyKey({stuff: 'bla'}, 'stuff'))
-	t.true(hasTruthyKey({stuff: true}, 'stuff'))
-	t.false(hasTruthyKey({stuff: false}, 'stuff'))
-	t.false(hasTruthyKey({stuff: undefined}, 'stuff'))
-	t.false(hasTruthyKey({stuff: null}, 'stuff'))
+await test('hasTruthyKey examples', async ctx => {
+	const t = async (input: unknown) =>
+		ctx.test(JSON.stringify(input), async () => {
+			strictEqual(hasTruthyKey(input, 'stuff'), true)
+		})
+	const f = async (input: unknown) =>
+		ctx.test(JSON.stringify(input), async () => {
+			strictEqual(hasTruthyKey(input, 'stuff'), false)
+		})
+	await f(undefined)
+	await f('undefined')
+	await f([])
+	await f({})
+	await f({stuffy: 'bla'})
+	await t({stuff: 'bla'})
+	await t({stuff: true})
+	await f({stuff: false})
+	await f({stuff: undefined})
+	await f({stuff: null})
 })

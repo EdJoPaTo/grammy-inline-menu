@@ -1,4 +1,5 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {
 	getButtonsAsRows,
 	getButtonsOfPage,
@@ -18,70 +19,70 @@ function generateCharArray(charA: string, charZ: string): string[] {
 	return a
 }
 
-test('getRowsOfButtons example', t => {
+await test('getRowsOfButtons example', () => {
 	const result = getRowsOfButtons(
 		generateCharArray('A', 'Z'),
 		2,
 		3,
 		2,
 	)
-	t.deepEqual(result, [
+	deepStrictEqual(result, [
 		['G', 'H'],
 		['I', 'J'],
 		['K', 'L'],
 	])
 })
 
-test('getRowsOfButtons example with defaults', t => {
+await test('getRowsOfButtons example with defaults', () => {
 	const result = getRowsOfButtons(
 		generateCharArray('A', 'E'),
 	)
-	t.deepEqual(result, [
+	deepStrictEqual(result, [
 		['A', 'B', 'C', 'D', 'E'],
 	])
 })
 
-test('getButtonsAsRows less buttons than columns', t => {
+await test('getButtonsAsRows less buttons than columns', () => {
 	const result = getButtonsAsRows(generateCharArray('A', 'E'), 6)
-	t.deepEqual(result, [
+	deepStrictEqual(result, [
 		['A', 'B', 'C', 'D', 'E'],
 	])
 })
 
-test('getButtonsAsRows buttons for three colums', t => {
+await test('getButtonsAsRows buttons for three colums', () => {
 	const result = getButtonsAsRows(generateCharArray('A', 'F'), 2)
-	t.deepEqual(result, [
+	deepStrictEqual(result, [
 		['A', 'B'],
 		['C', 'D'],
 		['E', 'F'],
 	])
 })
 
-test('getButtonsAsRows buttons for three colums but last not full', t => {
+await test('getButtonsAsRows buttons for three colums but last not full', () => {
 	const result = getButtonsAsRows(generateCharArray('A', 'E'), 2)
-	t.deepEqual(result, [
+	deepStrictEqual(result, [
 		['A', 'B'],
 		['C', 'D'],
 		['E'],
 	])
 })
 
-test('getButtonsAsRows default columns', t => {
+await test('getButtonsAsRows default columns', () => {
 	const result = getButtonsAsRows(generateCharArray('A', 'H'))
-	t.deepEqual(result, [
+	deepStrictEqual(result, [
 		['A', 'B', 'C', 'D', 'E', 'F'],
 		['G', 'H'],
 	])
 })
 
-test('getButtonsAsRows without buttons', t => {
+await test('getButtonsAsRows without buttons', () => {
 	const result = getButtonsAsRows([])
-	t.deepEqual(result, [])
+	deepStrictEqual(result, [])
 })
 
-test('getButtonsOfPage default args', t => {
+await test('getButtonsOfPage default args', () => {
 	const result = getButtonsOfPage(generateCharArray('A', 'E'))
-	t.deepEqual(result, [
+	deepStrictEqual(result, [
 		'A',
 		'B',
 		'C',
@@ -90,14 +91,14 @@ test('getButtonsOfPage default args', t => {
 	])
 })
 
-test('getButtonsOfPage without buttons', t => {
+await test('getButtonsOfPage without buttons', () => {
 	const result = getButtonsOfPage([])
-	t.deepEqual(result, [])
+	deepStrictEqual(result, [])
 })
 
-test('getButtonsOfPage trim by maxRows', t => {
+await test('getButtonsOfPage trim by maxRows', () => {
 	const result = getButtonsOfPage(generateCharArray('A', 'Z'), 1, 5)
-	t.deepEqual(result, [
+	deepStrictEqual(result, [
 		'A',
 		'B',
 		'C',
@@ -106,37 +107,37 @@ test('getButtonsOfPage trim by maxRows', t => {
 	])
 })
 
-test('getButtonsOfPage second page', t => {
+await test('getButtonsOfPage second page', () => {
 	const result = getButtonsOfPage(generateCharArray('A', 'Z'), 1, 3, 2)
-	t.deepEqual(result, [
+	deepStrictEqual(result, [
 		'D',
 		'E',
 		'F',
 	])
 })
 
-test('getButtonsOfPage partial last page', t => {
+await test('getButtonsOfPage partial last page', () => {
 	const result = getButtonsOfPage(generateCharArray('A', 'E'), 1, 3, 2)
-	t.deepEqual(result, [
+	deepStrictEqual(result, [
 		'D',
 		'E',
 	])
 })
 
-test('getButtonsOfPage last possible page instead of wanted', t => {
+await test('getButtonsOfPage last possible page instead of wanted', () => {
 	const result = getButtonsOfPage(generateCharArray('A', 'F'), 1, 3, 3)
-	t.deepEqual(result, [
+	deepStrictEqual(result, [
 		'D',
 		'E',
 		'F',
 	])
 })
 
-test('maximumButtonsPerPage example', t => {
-	t.is(maximumButtonsPerPage(2, 3), 6)
-	t.is(maximumButtonsPerPage(4, 4), 16)
+await test('maximumButtonsPerPage example', () => {
+	strictEqual(maximumButtonsPerPage(2, 3), 6)
+	strictEqual(maximumButtonsPerPage(4, 4), 16)
 })
 
-test('maximumButtonsPerPage default', t => {
-	t.is(maximumButtonsPerPage(), 60)
+await test('maximumButtonsPerPage default', () => {
+	strictEqual(maximumButtonsPerPage(), 60)
 })

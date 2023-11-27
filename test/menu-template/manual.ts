@@ -1,111 +1,112 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {MenuTemplate} from '../../source/menu-template.js'
 
-test('manual', async t => {
+await test('menu-template manual', async () => {
 	const menu = new MenuTemplate('whatever')
 	menu.manual({text: 'Button', url: 'https://edjopato.de'})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: 'Button',
 		url: 'https://edjopato.de',
 	}]])
 })
 
-test('manual function', async t => {
+await test('menu-template manual function', async () => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.manual((context, path) => {
-		t.is(context, 'foo')
-		t.is(path, '/')
+		strictEqual(context, 'foo')
+		strictEqual(path, '/')
 		return {text: 'Button', url: 'https://edjopato.de'}
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: 'Button',
 		url: 'https://edjopato.de',
 	}]])
 })
 
-test('manual hidden', async t => {
+await test('menu-template manual hidden', async () => {
 	const menu = new MenuTemplate('whatever')
 	menu.manual({text: 'Button', url: 'https://edjopato.de'}, {
 		hide: () => true,
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [])
+	deepStrictEqual(keyboard, [])
 })
 
-test('manual hidden false', async t => {
-	// This is the default but somehow it is not understood correctly by the coverage analyse
+await test('menu-template manual hidden false', async () => {
 	const menu = new MenuTemplate('whatever')
 	menu.manual({text: 'Button', url: 'https://edjopato.de'}, {
 		hide: () => false,
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: 'Button',
 		url: 'https://edjopato.de',
 	}]])
 })
 
-test('manual hidden false function', async t => {
-	// This is the default but somehow it is not understood correctly by the coverage analyse
+await test('menu-template manual hidden false function', async () => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.manual((context, path) => {
-		t.is(context, 'foo')
-		t.is(path, '/')
+		strictEqual(context, 'foo')
+		strictEqual(path, '/')
 		return {text: 'Button', url: 'https://edjopato.de'}
 	}, {
 		hide: () => false,
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: 'Button',
 		url: 'https://edjopato.de',
 	}]])
 })
 
-test('manualRow empty input no button', async t => {
+await test('menu-template manualRow empty input no button', async () => {
 	const menu = new MenuTemplate('whatever')
 	menu.manualRow(() => [])
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [])
+	deepStrictEqual(keyboard, [])
 })
 
-test('manualRow buttons end up in keyboard', async t => {
+await test('menu-template manualRow buttons end up in keyboard', async () => {
 	const menu = new MenuTemplate('whatever')
 	menu.manualRow(() => [[
 		{text: 'Button1', url: 'https://edjopato.de'},
 		{text: 'Button2', relativePath: 'foo'},
 	]])
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [[
+	deepStrictEqual(keyboard, [[
 		{text: 'Button1', url: 'https://edjopato.de'},
 		{text: 'Button2', callback_data: '/foo'},
 	]])
 })
 
-test('manualAction trigger', t => {
+await test('menu-template manualAction trigger', () => {
 	const menu = new MenuTemplate('whatever')
 	menu.manualAction(/unique:(\d+)$/, () => {
 		throw new Error('do not call this function')
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]
-	t.is(actions.length, 1)
+	strictEqual(actions.length, 1)
 
-	t.is(actions[0]!.trigger.source, '^\\/unique:(\\d+)$')
+	strictEqual(actions[0]!.trigger.source, '^\\/unique:(\\d+)$')
 })
 
-test('manualAction is triggered', async t => {
-	t.plan(4)
+await test('menu-template manualAction is triggered', async t => {
 	const menu = new MenuTemplate<string>('whatever')
-	menu.manualAction(/unique:(\d+)$/, (context, path) => {
-		t.is(context, 'foo')
-		t.is(path, '/unique:2')
+
+	const action = t.mock.fn((context: string, path: string) => {
+		strictEqual(context, 'foo')
+		strictEqual(path, '/unique:2')
 		return '.'
 	})
+	menu.manualAction(/unique:(\d+)$/, action)
 	const actions = [...menu.renderActionHandlers(/^\//)]
-	t.is(actions.length, 1)
+	strictEqual(actions.length, 1)
 
 	const result = await actions[0]!.doFunction('foo', '/unique:2')
-	t.is(result, '.')
+	strictEqual(result, '.')
+	strictEqual(action.mock.callCount(), 1)
 })

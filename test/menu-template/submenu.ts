@@ -1,42 +1,43 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual, throws} from 'node:assert'
+import {test} from 'node:test'
 import {MenuTemplate} from '../../source/menu-template.js'
 
-test('submenu is listed', t => {
+await test('menu-template submenu is listed', () => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.submenu('Button', 'unique', submenu)
 	const submenus = [...menu.listSubmenus()]
-	t.is(submenus.length, 1)
-	t.is(submenus[0]!.action.source, 'unique\\/')
+	strictEqual(submenus.length, 1)
+	strictEqual(submenus[0]!.action.source, 'unique\\/')
 })
 
-test('button hidden', async t => {
+await test('menu-template submenu button hidden', async () => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.submenu('Button', 'unique', submenu, {
 		hide: () => true,
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [])
+	deepStrictEqual(keyboard, [])
 })
 
-test('button', async t => {
+await test('menu-template submenu button', async () => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.submenu('Button', 'unique', submenu)
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: 'Button',
 		callback_data: '/unique/',
 	}]])
 })
 
-test('two same action codes throws', t => {
+await test('menu-template submenu two same action codes throws', () => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.submenu('Button', 'unique', submenu)
 	menu.submenu('Button', 'different', submenu)
-	t.throws(() => {
+	throws(() => {
 		menu.submenu('Button', 'unique', submenu)
 	}, {
 		message: /already a submenu with the action/,

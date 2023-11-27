@@ -1,10 +1,10 @@
-import test from 'ava'
+import {deepStrictEqual, rejects, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import type {Context as BaseContext} from 'grammy'
 import type {MenuLike, Submenu} from '../../source/menu-like.js'
 import {MenuMiddleware} from '../../source/menu-middleware.js'
 
-test('replies main menu', async t => {
-	t.plan(2)
+await test('menu-middleware reply-to-context replies main menu', async t => {
 	const submenuMenu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -25,25 +25,24 @@ test('replies main menu', async t => {
 
 	const mm = new MenuMiddleware('/', menu)
 
-	const fakeContext: Partial<BaseContext> = {
-		async reply(text, other) {
-			t.is(text, 'whatever')
-			t.deepEqual(other, {
-				disable_web_page_preview: false,
-				parse_mode: undefined,
-				reply_markup: {
-					inline_keyboard: [],
-				},
-			})
-			return {} as any
-		},
-	}
+	const reply = t.mock.fn<BaseContext['reply']>(async (text, other) => {
+		strictEqual(text, 'whatever')
+		deepStrictEqual(other, {
+			disable_web_page_preview: false,
+			parse_mode: undefined,
+			reply_markup: {
+				inline_keyboard: [],
+			},
+		})
+		return {} as any
+	})
+	const fakeContext: Partial<BaseContext> = {reply}
 
 	await mm.replyToContext(fakeContext as any)
+	strictEqual(reply.mock.callCount(), 1)
 })
 
-test('replies main menu explicitly', async t => {
-	t.plan(2)
+await test('menu-middleware reply-to-context replies main menu explicitly', async t => {
 	const submenuMenu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -64,25 +63,24 @@ test('replies main menu explicitly', async t => {
 
 	const mm = new MenuMiddleware('/', menu)
 
-	const fakeContext: Partial<BaseContext> = {
-		async reply(text, other) {
-			t.is(text, 'whatever')
-			t.deepEqual(other, {
-				disable_web_page_preview: false,
-				parse_mode: undefined,
-				reply_markup: {
-					inline_keyboard: [],
-				},
-			})
-			return {} as any
-		},
-	}
+	const reply = t.mock.fn<BaseContext['reply']>(async (text, other) => {
+		strictEqual(text, 'whatever')
+		deepStrictEqual(other, {
+			disable_web_page_preview: false,
+			parse_mode: undefined,
+			reply_markup: {
+				inline_keyboard: [],
+			},
+		})
+		return {} as any
+	})
+	const fakeContext: Partial<BaseContext> = {reply}
 
 	await mm.replyToContext(fakeContext as any, '/')
+	strictEqual(reply.mock.callCount(), 1)
 })
 
-test('replies submenu', async t => {
-	t.plan(2)
+await test('menu-middleware reply-to-context replies submenu', async t => {
 	const submenuMenu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -103,24 +101,24 @@ test('replies submenu', async t => {
 
 	const mm = new MenuMiddleware('/', menu)
 
-	const fakeContext: Partial<BaseContext> = {
-		async reply(text, other) {
-			t.is(text, 'submenu')
-			t.deepEqual(other, {
-				disable_web_page_preview: false,
-				parse_mode: undefined,
-				reply_markup: {
-					inline_keyboard: [],
-				},
-			})
-			return {} as any
-		},
-	}
+	const reply = t.mock.fn<BaseContext['reply']>(async (text, other) => {
+		strictEqual(text, 'submenu')
+		deepStrictEqual(other, {
+			disable_web_page_preview: false,
+			parse_mode: undefined,
+			reply_markup: {
+				inline_keyboard: [],
+			},
+		})
+		return {} as any
+	})
+	const fakeContext: Partial<BaseContext> = {reply}
 
 	await mm.replyToContext(fakeContext as any, '/submenu/')
+	strictEqual(reply.mock.callCount(), 1)
 })
 
-test('fails with out of scope path', async t => {
+await test('menu-middleware reply-to-context fails with out of scope path', async () => {
 	const submenuMenu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -141,13 +139,12 @@ test('fails with out of scope path', async t => {
 
 	const mm = new MenuMiddleware('/', menu)
 
-	await t.throwsAsync(
-		async () => mm.replyToContext({} as any, 'foo/'),
-		{message: 'There is no menu which works with your supplied path: foo/'},
-	)
+	await rejects(async () => mm.replyToContext({} as any, 'foo/'), {
+		message: 'There is no menu which works with your supplied path: foo/',
+	})
 })
 
-test('fails when rootTrigger is a regex and path is not explicit', async t => {
+await test('menu-middleware reply-to-context fails when rootTrigger is a regex and path is not explicit', async () => {
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -157,12 +154,7 @@ test('fails when rootTrigger is a regex and path is not explicit', async t => {
 
 	const mm = new MenuMiddleware(/^tree(\d+)\//, menu)
 
-	await t.throwsAsync(
-		async () => {
-			await mm.replyToContext({} as any)
-		},
-		{
-			message: /absolute path explicitly as a string/,
-		},
-	)
+	await rejects(async () => {
+		await mm.replyToContext({} as any)
+	}, {message: /absolute path explicitly as a string/})
 })

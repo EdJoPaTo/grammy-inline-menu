@@ -1,7 +1,8 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {MenuTemplate} from '../../source/menu-template.js'
 
-test('buttons hidden', async t => {
+await test('menu-template select buttons hidden', async () => {
 	const menu = new MenuTemplate('whatever')
 	menu.select('unique', ['Button'], {
 		hide: () => true,
@@ -13,71 +14,74 @@ test('buttons hidden', async t => {
 		},
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [])
+	deepStrictEqual(keyboard, [])
 })
 
-test('button true', async t => {
-	t.plan(3)
+await test('menu-template select button true', async t => {
 	const menu = new MenuTemplate<string>('whatever')
+	const isSet = t.mock.fn((context: string, key: string) => {
+		strictEqual(context, 'foo')
+		strictEqual(key, 'Button')
+		return true
+	})
 	menu.select('unique', ['Button'], {
-		isSet(context, key) {
-			t.is(context, 'foo')
-			t.is(key, 'Button')
-			return true
-		},
+		isSet,
 		set() {
 			throw new Error('do not call this function')
 		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: '✅ Button',
 		callback_data: '/uniqueF:Button',
 	}]])
+	strictEqual(isSet.mock.callCount(), 1)
 })
 
-test('button false', async t => {
-	t.plan(3)
+await test('menu-template select button false', async t => {
 	const menu = new MenuTemplate<string>('whatever')
+	const isSet = t.mock.fn((context: string, key: string) => {
+		strictEqual(context, 'foo')
+		strictEqual(key, 'Button')
+		return false
+	})
 	menu.select('unique', ['Button'], {
-		isSet(context, key) {
-			t.is(context, 'foo')
-			t.is(key, 'Button')
-			return false
-		},
+		isSet,
 		set() {
 			throw new Error('do not call this function')
 		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: 'Button',
 		callback_data: '/uniqueT:Button',
 	}]])
+	strictEqual(isSet.mock.callCount(), 1)
 })
 
-test('button false with emoji', async t => {
-	t.plan(3)
+await test('menu-template select button false with emoji', async t => {
 	const menu = new MenuTemplate<string>('whatever')
+	const isSet = t.mock.fn((context: string, key: string) => {
+		strictEqual(context, 'foo')
+		strictEqual(key, 'Button')
+		return false
+	})
 	menu.select('unique', ['Button'], {
 		showFalseEmoji: true,
-		isSet(context, key) {
-			t.is(context, 'foo')
-			t.is(key, 'Button')
-			return false
-		},
+		isSet,
 		set() {
 			throw new Error('do not call this function')
 		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: '🚫 Button',
 		callback_data: '/uniqueT:Button',
 	}]])
+	strictEqual(isSet.mock.callCount(), 1)
 })
 
-test('action triggers', t => {
+await test('menu-template select action triggers', () => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
 		isSet() {
@@ -89,15 +93,14 @@ test('action triggers', t => {
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
-	t.log(actions)
-	t.is(actions.length, 2)
+	strictEqual(actions.length, 2)
 
 	const triggers = new Set(actions.map(o => o.trigger.source))
-	t.true(triggers.has('^\\/uniqueT:(.+)$'))
-	t.true(triggers.has('^\\/uniqueF:(.+)$'))
+	strictEqual(triggers.has('^\\/uniqueT:(.+)$'), true)
+	strictEqual(triggers.has('^\\/uniqueF:(.+)$'), true)
 })
 
-test('action hidden', async t => {
+await test('menu-template select action hidden', async () => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
 		hide: () => true,
@@ -112,13 +115,13 @@ test('action hidden', async t => {
 	const actions = [...menu.renderActionHandlers(/^\//)]
 
 	const result0 = await actions[0]?.doFunction('foo', '/uniqueT:Button')
-	t.is(result0, '.')
+	strictEqual(result0, '.')
 
 	const result1 = await actions[1]?.doFunction('foo', '/uniqueF:Button')
-	t.is(result1, '.')
+	strictEqual(result1, '.')
 })
 
-test('action skipped when not existing', async t => {
+await test('menu-template select action skipped when not existing', async () => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.select('unique', ['Button'], {
 		isSet() {
@@ -132,77 +135,80 @@ test('action skipped when not existing', async t => {
 	const actions = [...menu.renderActionHandlers(/^\//)]
 
 	const result0 = await actions[0]?.doFunction('foo', '/uniqueT:Tree')
-	t.is(result0, '.')
+	strictEqual(result0, '.')
 
 	const result1 = await actions[1]?.doFunction('foo', '/uniqueF:Tree')
-	t.is(result1, '.')
+	strictEqual(result1, '.')
 })
 
-test('action true', async t => {
-	t.plan(4)
+await test('menu-template select action true', async t => {
 	const menu = new MenuTemplate<string>('whatever')
+	const set = t.mock.fn((context: string, key: string, newState: boolean) => {
+		strictEqual(context, 'foo')
+		strictEqual(key, 'Button')
+		strictEqual(newState, true)
+		return 'wow'
+	})
 	menu.select('unique', ['Button'], {
 		isSet() {
 			throw new Error('do not call this function')
 		},
-		set(context, key, newState) {
-			t.is(context, 'foo')
-			t.is(key, 'Button')
-			t.is(newState, true)
-			return 'wow'
-		},
+		set,
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	const action = actions.find(o => o.trigger.source.includes('uniqueT'))!
 	const result = await action.doFunction('foo', '/uniqueT:Button')
-	t.is(result, 'wow')
+	strictEqual(result, 'wow')
+	strictEqual(set.mock.callCount(), 1)
 })
 
-test('action false', async t => {
-	t.plan(4)
+await test('menu-template select action false', async t => {
 	const menu = new MenuTemplate<string>('whatever')
+	const set = t.mock.fn((context: string, key: string, newState: boolean) => {
+		strictEqual(context, 'foo')
+		strictEqual(key, 'Button')
+		strictEqual(newState, false)
+		return 'wow'
+	})
 	menu.select('unique', ['Button'], {
 		isSet() {
 			throw new Error('do not call this function')
 		},
-		set(context, key, newState) {
-			t.is(context, 'foo')
-			t.is(key, 'Button')
-			t.is(newState, false)
-			return 'wow'
-		},
+		set,
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	const action = actions.find(o => o.trigger.source.includes('uniqueF'))!
 	const result = await action.doFunction('foo', '/uniqueF:Button')
-	t.is(result, 'wow')
+	strictEqual(result, 'wow')
+	strictEqual(set.mock.callCount(), 1)
 })
 
-test('action true not existing check disabled', async t => {
-	t.plan(4)
+await test('menu-template select action true not existing check disabled', async t => {
 	const menu = new MenuTemplate<string>('whatever')
+	const set = t.mock.fn((context: string, key: string, newState: boolean) => {
+		strictEqual(context, 'foo')
+		strictEqual(key, 'Tree')
+		strictEqual(newState, true)
+		return 'wow'
+	})
 	menu.select('unique', ['Button'], {
 		disableChoiceExistsCheck: true,
 		isSet() {
 			throw new Error('do not call this function')
 		},
-		set(context, key, newState) {
-			t.is(context, 'foo')
-			t.is(key, 'Tree')
-			t.is(newState, true)
-			return 'wow'
-		},
+		set,
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	const action = actions.find(o => o.trigger.source.includes('uniqueT'))!
 	const result = await action.doFunction('foo', '/uniqueT:Tree')
-	t.is(result, 'wow')
+	strictEqual(result, 'wow')
+	strictEqual(set.mock.callCount(), 1)
 })
 
-test('with pagnination buttons', async t => {
+await test('menu-template select with pagnination buttons', async () => {
 	const menu = new MenuTemplate<string>('foo')
 	menu.select('unique', ['Button', 'Tree'], {
 		columns: 1,
@@ -211,8 +217,8 @@ test('with pagnination buttons', async t => {
 			throw new Error('dont set the page on rendering buttons')
 		},
 		isSet(context, key) {
-			t.is(context, 'foo')
-			t.is(key, 'Button')
+			strictEqual(context, 'foo')
+			strictEqual(key, 'Button')
 			return false
 		},
 		set() {
@@ -220,7 +226,7 @@ test('with pagnination buttons', async t => {
 		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
-	t.deepEqual(keyboard, [
+	deepStrictEqual(keyboard, [
 		[{
 			text: 'Button',
 			callback_data: '/uniqueT:Button',
@@ -238,16 +244,16 @@ test('with pagnination buttons', async t => {
 	])
 })
 
-test('set page action', async t => {
-	t.plan(4)
+await test('menu-template select set page action', async t => {
 	const menu = new MenuTemplate('foo')
+	const setPage = t.mock.fn((context: unknown, page: number) => {
+		strictEqual(context, 'bla')
+		strictEqual(page, 2)
+	})
 	menu.select('unique', ['Button', 'Tree'], {
 		columns: 1,
 		maxRows: 1,
-		setPage(context, page) {
-			t.is(context, 'bla')
-			t.is(page, 2)
-		},
+		setPage,
 		isSet() {
 			throw new Error('do not call this function')
 		},
@@ -256,8 +262,9 @@ test('set page action', async t => {
 		},
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]
-	t.is(actions.length, 3)
+	strictEqual(actions.length, 3)
 	const pageAction = actions.find(o => o.trigger.source.includes('uniqueP:'))!
 	const result = await pageAction.doFunction('bla', '/uniqueP:2')
-	t.is(result, '.')
+	strictEqual(result, '.')
+	strictEqual(setPage.mock.callCount(), 1)
 })

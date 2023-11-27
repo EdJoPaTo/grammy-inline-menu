@@ -1,12 +1,13 @@
-import test from 'ava'
+import {strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {prefixText} from './prefix.js'
 
-test('no prefix', t => {
+await test('prefixText no prefix', () => {
 	const result = prefixText('42', undefined)
-	t.is(result, '42')
+	strictEqual(result, '42')
 })
 
-test('value text & prefix', t => {
+await test('prefixText value text & prefix', () => {
 	const result = prefixText('42', '6')
-	t.is(result, '6 42')
+	strictEqual(result, '6 42')
 })

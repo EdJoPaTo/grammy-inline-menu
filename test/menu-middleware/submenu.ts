@@ -1,4 +1,5 @@
-import test from 'ava'
+import {strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {Bot, type Context as BaseContext} from 'grammy'
 import type {MenuLike, Submenu} from '../../source/menu-like.js'
 import {MenuMiddleware} from '../../source/menu-middleware.js'
@@ -6,7 +7,7 @@ import {MenuMiddleware} from '../../source/menu-middleware.js'
 // TODO: Ugly workaround. This library should know better...
 type MyContext = BaseContext & {match: RegExpExecArray | undefined}
 
-test('root path responds main menu', async t => {
+await test('menu-middleware submenu respond with main menu on root path', async () => {
 	const submenuMenu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -27,8 +28,8 @@ test('root path responds main menu', async t => {
 
 	const mm = new MenuMiddleware('/', menu, {
 		async sendMenu(menu, _context, path) {
-			t.is(menu.listSubmenus().size, 1)
-			t.is(path, '/')
+			strictEqual(menu.listSubmenus().size, 1)
+			strictEqual(path, '/')
 		},
 	})
 
@@ -39,18 +40,12 @@ test('root path responds main menu', async t => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
+		ctx.answerCallbackQuery = async () => true
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -64,7 +59,7 @@ test('root path responds main menu', async t => {
 	})
 })
 
-test('submenu path responds submenu when not hidden', async t => {
+await test('menu-middleware submenu respond with submenu when not hidden', async () => {
 	const submenuMenu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -85,8 +80,8 @@ test('submenu path responds submenu when not hidden', async t => {
 
 	const mm = new MenuMiddleware('/', menu, {
 		async sendMenu(menu, _context, path) {
-			t.is(menu.listSubmenus().size, 0)
-			t.is(path, '/submenu/')
+			strictEqual(menu.listSubmenus().size, 0)
+			strictEqual(path, '/submenu/')
 		},
 	})
 
@@ -97,18 +92,13 @@ test('submenu path responds submenu when not hidden', async t => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
+		ctx.answerCallbackQuery = async () => true
 
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -122,7 +112,7 @@ test('submenu path responds submenu when not hidden', async t => {
 	})
 })
 
-test('submenu path responds submenu when no hide function', async t => {
+await test('menu-middleware submenu respond with submenu when no hide function', async () => {
 	const submenuMenu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -143,8 +133,8 @@ test('submenu path responds submenu when no hide function', async t => {
 
 	const mm = new MenuMiddleware('/', menu, {
 		async sendMenu(menu, _context, path) {
-			t.is(menu.listSubmenus().size, 0)
-			t.is(path, '/submenu/')
+			strictEqual(menu.listSubmenus().size, 0)
+			strictEqual(path, '/submenu/')
 		},
 	})
 
@@ -155,18 +145,13 @@ test('submenu path responds submenu when no hide function', async t => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
+		ctx.answerCallbackQuery = async () => true
 
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -180,7 +165,7 @@ test('submenu path responds submenu when no hide function', async t => {
 	})
 })
 
-test('submenu path responds main menu when hidden', async t => {
+await test('menu-middleware submenu respond with main menu when submenu hidden', async () => {
 	const submenuMenu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -201,8 +186,8 @@ test('submenu path responds main menu when hidden', async t => {
 
 	const mm = new MenuMiddleware('/', menu, {
 		async sendMenu(menu, _context, path) {
-			t.is(menu.listSubmenus().size, 1)
-			t.is(path, '/')
+			strictEqual(menu.listSubmenus().size, 1)
+			strictEqual(path, '/')
 		},
 	})
 
@@ -213,18 +198,13 @@ test('submenu path responds main menu when hidden', async t => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
+		ctx.answerCallbackQuery = async () => true
 
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({

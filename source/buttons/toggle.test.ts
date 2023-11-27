@@ -1,7 +1,8 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {generateToggleButton} from './toggle.js'
 
-test('hidden does not render any button', async t => {
+await test('toggle hidden does not render any button', async () => {
 	const func = generateToggleButton('text', 'pre', {
 		hide: () => true,
 		isSet() {
@@ -13,10 +14,10 @@ test('hidden does not render any button', async t => {
 	})
 
 	const button = await func(undefined, 'wow/')
-	t.is(button, undefined)
+	strictEqual(button, undefined)
 })
 
-test('is true button', async t => {
+await test('toggle is true button', async () => {
 	const func = generateToggleButton('text', 'pre', {
 		isSet: () => true,
 		set() {
@@ -25,13 +26,13 @@ test('is true button', async t => {
 	})
 
 	const button = await func(undefined, 'wow/')
-	t.deepEqual(button, {
+	deepStrictEqual(button, {
 		text: '✅ text',
 		relativePath: 'pre:false',
 	})
 })
 
-test('is false button', async t => {
+await test('toggle is false button', async () => {
 	const func = generateToggleButton('text', 'pre', {
 		isSet: () => false,
 		set() {
@@ -40,33 +41,33 @@ test('is false button', async t => {
 	})
 
 	const button = await func(undefined, 'wow/')
-	t.deepEqual(button, {
+	deepStrictEqual(button, {
 		text: '🚫 text',
 		relativePath: 'pre:true',
 	})
 })
 
-test('own format', async t => {
+await test('toggle own format', async () => {
 	const func = generateToggleButton('text', 'pre', {
 		isSet: () => true,
 		set() {
 			throw new Error('do not call as the button is not hit')
 		},
 		formatState(_context, text, state) {
-			t.is(text, 'text')
-			t.is(state, true)
+			strictEqual(text, 'text')
+			strictEqual(state, true)
 			return 'lalala'
 		},
 	})
 
 	const button = await func(undefined, 'wow/')
-	t.deepEqual(button, {
+	deepStrictEqual(button, {
 		text: 'lalala',
 		relativePath: 'pre:false',
 	})
 })
 
-test('async text', async t => {
+await test('toggle async text', async () => {
 	const func = generateToggleButton(() => 'text', 'pre', {
 		isSet: () => true,
 		set() {
@@ -75,7 +76,7 @@ test('async text', async t => {
 	})
 
 	const button = await func(undefined, 'wow/')
-	t.deepEqual(button, {
+	deepStrictEqual(button, {
 		text: '✅ text',
 		relativePath: 'pre:false',
 	})

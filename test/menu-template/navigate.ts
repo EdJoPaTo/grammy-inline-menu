@@ -1,30 +1,31 @@
-import test from 'ava'
+import {deepStrictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {MenuTemplate} from '../../source/menu-template.js'
 
-test('hidden', async t => {
+await test('menu-template navigate hidden', async () => {
 	const menu = new MenuTemplate('whatever')
 	menu.navigate('Button', '..', {
 		hide: () => true,
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/foo/bar/')
-	t.deepEqual(keyboard, [])
+	deepStrictEqual(keyboard, [])
 })
 
-test('parent menu', async t => {
+await test('menu-template navigate parent menu', async () => {
 	const menu = new MenuTemplate('whatever')
 	menu.navigate('Button', '..')
 	const keyboard = await menu.renderKeyboard(undefined, '/foo/bar/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: 'Button',
 		callback_data: '/foo/',
 	}]])
 })
 
-test('root menu', async t => {
+await test('menu-template navigate root menu', async () => {
 	const menu = new MenuTemplate('whatever')
 	menu.navigate('Button', '/')
 	const keyboard = await menu.renderKeyboard(undefined, '/foo/bar/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: 'Button',
 		callback_data: '/',
 	}]])

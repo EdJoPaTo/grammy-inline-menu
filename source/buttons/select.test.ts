@@ -1,49 +1,47 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {generateSelectButtons} from './select.js'
 
-test('empty choices no buttons', async t => {
+await test('generateSelectButtons empty choices no buttons', async () => {
 	const func = generateSelectButtons('pre', [], {
 		isSet: () => false,
 		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
 	})
-
 	const buttons = await func(undefined, '/')
-	t.deepEqual(buttons, [])
+	deepStrictEqual(buttons, [])
 })
 
-test('is set creates false button', async t => {
+await test('generateSelectButtons is set creates false button', async () => {
 	const func = generateSelectButtons('pre', ['a'], {
 		isSet: () => true,
 		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
 	})
-
 	const buttons = await func(undefined, '/')
-	t.deepEqual(buttons, [[{
+	deepStrictEqual(buttons, [[{
 		text: '✅ a',
 		relativePath: 'preF:a',
 	}]])
 })
 
-test('is not set creates true button', async t => {
+await test('generateSelectButtons is not set creates true button', async () => {
 	const func = generateSelectButtons('pre', ['a'], {
 		isSet: () => false,
 		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
 	})
-
 	const buttons = await func(undefined, '/')
-	t.deepEqual(buttons, [[{
+	deepStrictEqual(buttons, [[{
 		text: 'a',
 		relativePath: 'preT:a',
 	}]])
 })
 
-test('showFalseEmoji also prefixes currently false buttons', async t => {
+await test('generateSelectButtons showFalseEmoji also prefixes currently false buttons', async () => {
 	const func = generateSelectButtons('pre', ['a'], {
 		showFalseEmoji: true,
 		isSet: () => false,
@@ -51,15 +49,14 @@ test('showFalseEmoji also prefixes currently false buttons', async t => {
 			throw new Error('no need to call set on keyboard creation')
 		},
 	})
-
 	const buttons = await func(undefined, '/')
-	t.deepEqual(buttons, [[{
+	deepStrictEqual(buttons, [[{
 		text: '🚫 a',
 		relativePath: 'preT:a',
 	}]])
 })
 
-test('creates pagination buttons', async t => {
+await test('generateSelectButtons creates pagination buttons', async () => {
 	const func = generateSelectButtons('pre', ['a', 'b', 'c'], {
 		columns: 1,
 		maxRows: 1,
@@ -72,7 +69,7 @@ test('creates pagination buttons', async t => {
 		},
 	})
 	const buttons = await func(undefined, '/')
-	t.deepEqual(buttons, [
+	deepStrictEqual(buttons, [
 		[{
 			text: 'a',
 			relativePath: 'preT:a',
@@ -90,7 +87,7 @@ test('creates pagination buttons', async t => {
 	])
 })
 
-test('show keys of page 2', async t => {
+await test('generateSelectButtons show keys of page 2', async () => {
 	const func = generateSelectButtons('pre', ['a', 'b', 'c'], {
 		columns: 1,
 		maxRows: 1,
@@ -101,37 +98,32 @@ test('show keys of page 2', async t => {
 		},
 	})
 	const buttons = await func(undefined, '/')
-	t.deepEqual(buttons, [[{
+	deepStrictEqual(buttons, [[{
 		text: 'b',
 		relativePath: 'preT:b',
 	}]])
 })
 
-test('choice function is run', async t => {
-	t.plan(4)
-	const choiceFunction = (context: string): string[] => {
-		t.pass()
-		return [context]
-	}
-
+await test('generateSelectButtons choice function is run', async t => {
+	const choiceFunction = t.mock.fn((context: string) => [context])
 	const func = generateSelectButtons('pre', choiceFunction, {
 		isSet: () => false,
 		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
 	})
-
-	t.deepEqual(await func('a', '/'), [[{
+	deepStrictEqual(await func('a', '/'), [[{
 		text: 'a',
 		relativePath: 'preT:a',
 	}]])
-	t.deepEqual(await func('b', '/'), [[{
+	deepStrictEqual(await func('b', '/'), [[{
 		text: 'b',
 		relativePath: 'preT:b',
 	}]])
+	strictEqual(choiceFunction.mock.callCount(), 2)
 })
 
-test('hidden does not render any buttons', async t => {
+await test('generateSelectButtons hidden does not render any buttons', async () => {
 	const choiceFunction = (): never => {
 		throw new Error('hidden -> dont call choices')
 	}
@@ -146,25 +138,25 @@ test('hidden does not render any buttons', async t => {
 		},
 	})
 	const buttons = await func(undefined, '/')
-	t.deepEqual(buttons, [])
+	deepStrictEqual(buttons, [])
 })
 
-test('format state', async t => {
+await test('generateSelectButtons format state', async () => {
 	const func = generateSelectButtons('pre', ['a'], {
 		isSet: () => true,
 		set() {
 			throw new Error('no need to call set on keyboard creation')
 		},
 		formatState(_context, textResult, state, key) {
-			t.is(textResult, 'a')
-			t.is(state, true)
-			t.is(key, 'a')
+			strictEqual(textResult, 'a')
+			strictEqual(state, true)
+			strictEqual(key, 'a')
 			return 'lalala'
 		},
 	})
 
 	const buttons = await func(undefined, '/')
-	t.deepEqual(buttons, [[{
+	deepStrictEqual(buttons, [[{
 		text: 'lalala',
 		relativePath: 'preF:a',
 	}]])

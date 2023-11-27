@@ -1,78 +1,75 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual, throws} from 'node:assert'
+import {test} from 'node:test'
 import {
 	ensureCorrectChoiceKeys,
 	getChoiceKeysFromChoices,
 	getChoiceTextByKey,
 } from './understand-choices.js'
 
-test('getChoiceKeysFromChoices from array', t => {
+await test('getChoiceKeysFromChoices from array', () => {
 	const choices = ['A', 'B', 1]
 	const keys = getChoiceKeysFromChoices(choices)
-	t.deepEqual(keys, ['A', 'B', '1'])
+	deepStrictEqual(keys, ['A', 'B', '1'])
 })
 
-test('getChoiceKeysFromChoices from record', t => {
+await test('getChoiceKeysFromChoices from record', () => {
 	const choices = {A: 'Aaa', B: 'Bbb', 1: '111'}
 	const keys = getChoiceKeysFromChoices(choices)
 	// A Record is not ordered. Numbers are always before text keys
-	t.deepEqual(keys, ['1', 'A', 'B'])
+	deepStrictEqual(keys, ['1', 'A', 'B'])
 })
 
-test('getChoiceKeysFromChoices from map', t => {
+await test('getChoiceKeysFromChoices from map', () => {
 	const choices = new Map<string | number, string>()
 	choices.set('A', 'Aaa')
 	choices.set('B', 'Bbb')
 	choices.set(1, '111')
 	const keys = getChoiceKeysFromChoices(choices)
-	t.deepEqual(keys, ['A', 'B', '1'])
+	deepStrictEqual(keys, ['A', 'B', '1'])
 })
 
-test('getChoiceTextByKey from array', t => {
+await test('getChoiceTextByKey from array', () => {
 	const choices = ['A', 'B']
 	const text = getChoiceTextByKey(choices, 'A')
-	t.is(text, 'A')
+	strictEqual(text, 'A')
 })
 
-test('getChoiceTextByKey from record', t => {
+await test('getChoiceTextByKey from record', () => {
 	const choices = {A: 'Aaa', B: 'Bbb'}
 	const text = getChoiceTextByKey(choices, 'A')
-	t.is(text, 'Aaa')
+	strictEqual(text, 'Aaa')
 })
 
-test('getChoiceTextByKey from map', t => {
+await test('getChoiceTextByKey from map', () => {
 	const choices = new Map<string, string>()
 	choices.set('A', 'Aaa')
 	choices.set('B', 'Bbb')
 	const text = getChoiceTextByKey(choices, 'A')
-	t.is(text, 'Aaa')
+	strictEqual(text, 'Aaa')
 })
 
-test('getChoiceTextByKey from record but undefined', t => {
+await test('getChoiceTextByKey from record but undefined', () => {
 	const choices = {A: 'Aaa', B: 'Bbb'}
 	const text = getChoiceTextByKey(choices, 'C')
-	t.is(text, 'C')
+	strictEqual(text, 'C')
 })
 
-test('getChoiceTextByKey from map but undefined', t => {
+await test('getChoiceTextByKey from map but undefined', () => {
 	const choices = new Map<string, string>()
 	choices.set('A', 'Aaa')
 	choices.set('B', 'Bbb')
 	const text = getChoiceTextByKey(choices, 'C')
-	t.is(text, 'C')
+	strictEqual(text, 'C')
 })
 
-test('ensureCorrectChoiceKeys correct keys are not a problem', t => {
+await test('ensureCorrectChoiceKeys correct keys are not a problem', () => {
 	const choiceKeys = ['a', 'A', 'a:A', 'aaaaaaaaaaa']
 	ensureCorrectChoiceKeys('', '/', choiceKeys)
-	t.pass()
 })
 
-test('ensureCorrectChoiceKeys slash throws', t => {
+await test('ensureCorrectChoiceKeys slash throws', () => {
 	const choiceKeys = ['a/a']
-	t.throws(
-		() => {
-			ensureCorrectChoiceKeys('prefix', '/path/', choiceKeys)
-		},
-		{message: /can not contain '\/'.+prefix.+\/path\//},
-	)
+	throws(() => {
+		ensureCorrectChoiceKeys('prefix', '/path/', choiceKeys)
+	}, {message: /can not contain '\/'.+prefix.+\/path\//})
 })

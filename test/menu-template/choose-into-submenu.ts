@@ -1,80 +1,86 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual, throws} from 'node:assert'
+import {test} from 'node:test'
 import {MenuTemplate} from '../../source/menu-template.js'
 
-test('submenu is listed', t => {
+await test('menu-template choose-into-submenu submenu is listed', () => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', [], submenu)
 	const submenus = [...menu.listSubmenus()]
-	t.is(submenus.length, 1)
-	t.is(submenus[0]!.action.source, 'unique:([^/]+)\\/')
+	strictEqual(submenus.length, 1)
+	strictEqual(submenus[0]!.action.source, 'unique:([^/]+)\\/')
 })
 
-test('submenu hidden', async t => {
+await test('menu-template choose-into-submenu submenu hidden', async () => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', ['Button'], submenu, {
 		hide: () => true,
 	})
 	const submenus = [...menu.listSubmenus()]
-	const isHidden = await submenus[0]?.hide?.(undefined, '/unique:Button/')
-	t.true(isHidden)
+	strictEqual(submenus.length, 1)
+	const isHidden = await submenus[0]!.hide?.(undefined, '/unique:Button/')
+	strictEqual(isHidden, true)
 })
 
-test('submenu not existing hides', async t => {
+await test('menu-template choose-into-submenu submenu not existing hides', async () => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', ['Button'], submenu)
 	const submenus = [...menu.listSubmenus()]
-	const isHidden = await submenus[0]?.hide?.(undefined, '/unique:Tree/')
-	t.true(isHidden)
+	strictEqual(submenus.length, 1)
+	const isHidden = await submenus[0]!.hide?.(undefined, '/unique:Tree/')
+	strictEqual(isHidden, true)
 })
 
-test('submenu not existing check disabled does not hide', async t => {
+await test('menu-template choose-into-submenu submenu not existing check disabled does not hide', async () => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', ['Button'], submenu, {
 		disableChoiceExistsCheck: true,
 	})
 	const submenus = [...menu.listSubmenus()]
-	const isHidden = await submenus[0]?.hide?.(undefined, '/unique:Button/')
-	t.falsy(isHidden)
+	strictEqual(submenus.length, 1)
+	const isHidden = await submenus[0]!.hide?.(undefined, '/unique:Button/')
+	strictEqual(Boolean(isHidden), false)
+	strictEqual(isHidden, undefined)
+	strictEqual(submenus[0]!.hide, undefined)
 })
 
-test('button hidden', async t => {
+await test('menu-template choose-into-submenu button hidden', async () => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', ['Button'], submenu, {
 		hide: () => true,
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [])
+	deepStrictEqual(keyboard, [])
 })
 
-test('button', async t => {
+await test('menu-template choose-into-submenu button', async () => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', ['Button'], submenu)
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: 'Button',
 		callback_data: '/unique:Button/',
 	}]])
 })
 
-test('two same action codes throws', t => {
+await test('menu-template choose-into-submenu two same action codes throws', () => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', [], submenu)
 	menu.chooseIntoSubmenu('different', [], submenu)
-	t.throws(() => {
+	throws(() => {
 		menu.chooseIntoSubmenu('unique', [], submenu)
 	}, {
 		message: /already a submenu with the action/,
 	})
 })
 
-test('with pagnination buttons', async t => {
+await test('menu-template choose-into-submenu with pagnination buttons', async () => {
 	const menu = new MenuTemplate('foo')
 	const submenu = new MenuTemplate('bar')
 	menu.chooseIntoSubmenu('unique', ['Button', 'Tree'], submenu, {
@@ -85,7 +91,7 @@ test('with pagnination buttons', async t => {
 		},
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [
+	deepStrictEqual(keyboard, [
 		[{
 			text: 'Button',
 			callback_data: '/unique:Button/',
@@ -103,21 +109,22 @@ test('with pagnination buttons', async t => {
 	])
 })
 
-test('set page action', async t => {
-	t.plan(4)
-	const menu = new MenuTemplate('foo')
+await test('menu-template choose-into-submenu set page action', async t => {
+	const menu = new MenuTemplate<string>('foo')
 	const submenu = new MenuTemplate('bar')
+	const setPage = t.mock.fn((context: string, page: number) => {
+		strictEqual(context, 'bla')
+		strictEqual(page, 2)
+	})
 	menu.chooseIntoSubmenu('unique', ['Button', 'Tree'], submenu, {
 		columns: 1,
 		maxRows: 1,
-		setPage(context, page) {
-			t.is(context, 'bla')
-			t.is(page, 2)
-		},
+		setPage,
 	})
 	const actions = [...menu.renderActionHandlers(/^\//)]
-	t.is(actions.length, 1)
+	strictEqual(actions.length, 1)
 	const pageAction = actions[0]!
 	const result = await pageAction.doFunction('bla', '/uniqueP:2')
-	t.is(result, '.')
+	strictEqual(result, '.')
+	strictEqual(setPage.mock.callCount(), 1)
 })

@@ -1,7 +1,8 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {MenuTemplate} from '../../source/menu-template.js'
 
-test('button hidden', async t => {
+await test('menu-template toggle button hidden', async () => {
 	const menu = new MenuTemplate('whatever')
 	menu.toggle('Button', 'unique', {
 		hide: () => true,
@@ -13,15 +14,15 @@ test('button hidden', async t => {
 		},
 	})
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [])
+	deepStrictEqual(keyboard, [])
 })
 
-test('button true', async t => {
+await test('menu-template toggle button true', async () => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
 		isSet(context, path) {
-			t.is(context, 'foo')
-			t.is(path, '/')
+			strictEqual(context, 'foo')
+			strictEqual(path, '/')
 			return true
 		},
 		set() {
@@ -29,18 +30,18 @@ test('button true', async t => {
 		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: '✅ Button',
 		callback_data: '/unique:false',
 	}]])
 })
 
-test('button false', async t => {
+await test('menu-template toggle button false', async () => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
 		isSet(context, path) {
-			t.is(context, 'foo')
-			t.is(path, '/')
+			strictEqual(context, 'foo')
+			strictEqual(path, '/')
 			return false
 		},
 		set() {
@@ -48,13 +49,13 @@ test('button false', async t => {
 		},
 	})
 	const keyboard = await menu.renderKeyboard('foo', '/')
-	t.deepEqual(keyboard, [[{
+	deepStrictEqual(keyboard, [[{
 		text: '🚫 Button',
 		callback_data: '/unique:true',
 	}]])
 })
 
-test('action triggers', t => {
+await test('menu-template toggle action triggers', () => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
 		hide: () => true,
@@ -67,15 +68,14 @@ test('action triggers', t => {
 	})
 
 	const actions = [...menu.renderActionHandlers(/^\//)]
-	t.log(actions)
-	t.is(actions.length, 2)
+	strictEqual(actions.length, 2)
 
 	const triggers = new Set(actions.map(o => o.trigger.source))
-	t.true(triggers.has('^\\/unique:true$'))
-	t.true(triggers.has('^\\/unique:false$'))
+	strictEqual(triggers.has('^\\/unique:true$'), true)
+	strictEqual(triggers.has('^\\/unique:false$'), true)
 })
 
-test('action hidden', async t => {
+await test('menu-template toggle action hidden', async () => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
 		hide: () => true,
@@ -90,22 +90,22 @@ test('action hidden', async t => {
 	const actions = [...menu.renderActionHandlers(/^\//)]
 
 	const result0 = await actions[0]?.doFunction('foo', '/unique:true')
-	t.is(result0, '.')
+	strictEqual(result0, '.')
 
 	const result1 = await actions[1]?.doFunction('foo', '/unique:true')
-	t.is(result1, '.')
+	strictEqual(result1, '.')
 })
 
-test('action true', async t => {
+await test('menu-template toggle action true', async () => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
 		isSet() {
 			throw new Error('do not call this function')
 		},
 		set(context, newState, path) {
-			t.is(context, 'foo')
-			t.is(newState, true)
-			t.is(path, '/unique:true')
+			strictEqual(context, 'foo')
+			strictEqual(newState, true)
+			strictEqual(path, '/unique:true')
 			return 'wow'
 		},
 	})
@@ -113,19 +113,19 @@ test('action true', async t => {
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	const action = actions.find(o => o.trigger.source.includes('true'))!
 	const result = await action.doFunction('foo', '/unique:true')
-	t.is(result, 'wow')
+	strictEqual(result, 'wow')
 })
 
-test('action false', async t => {
+await test('menu-template toggle action false', async () => {
 	const menu = new MenuTemplate<string>('whatever')
 	menu.toggle('Button', 'unique', {
 		isSet() {
 			throw new Error('do not call this function')
 		},
 		set(context, newState, path) {
-			t.is(context, 'foo')
-			t.is(newState, false)
-			t.is(path, '/unique:false')
+			strictEqual(context, 'foo')
+			strictEqual(newState, false)
+			strictEqual(path, '/unique:false')
 			return 'wow'
 		},
 	})
@@ -133,5 +133,5 @@ test('action false', async t => {
 	const actions = [...menu.renderActionHandlers(/^\//)]
 	const action = actions.find(o => o.trigger.source.includes('false'))!
 	const result = await action.doFunction('foo', '/unique:false')
-	t.is(result, 'wow')
+	strictEqual(result, 'wow')
 })

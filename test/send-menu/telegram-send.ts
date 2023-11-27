@@ -1,17 +1,18 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import type {Api, Context as BaseContext} from 'grammy'
 import {MEDIA_TYPES} from '../../source/body.js'
 import {MenuTemplate} from '../../source/index.js'
 import {generateSendMenuToChatFunction} from '../../source/send-menu.js'
 
-test('text', async t => {
+await test('telegram-send text', async () => {
 	const menu = new MenuTemplate<BaseContext>('whatever')
 
 	const fakeTelegram: Partial<Api> = {
 		async sendMessage(chatId, text, other) {
-			t.is(chatId, 666)
-			t.is(text, 'whatever')
-			t.deepEqual(other, {
+			strictEqual(chatId, 666)
+			strictEqual(text, 'whatever')
+			deepStrictEqual(other, {
 				disable_web_page_preview: false,
 				parse_mode: undefined,
 				reply_markup: {
@@ -40,58 +41,62 @@ test('text', async t => {
 	await sendMenu(666, fakeContext as any)
 })
 
-for (const mediaType of MEDIA_TYPES) {
-	test('media ' + mediaType, async t => {
-		const menu = new MenuTemplate<BaseContext>({
-			media: 'whatever',
-			type: mediaType,
-		})
+await test('telegram-send media', async t => {
+	await Promise.all(
+		MEDIA_TYPES.map(async mediaType =>
+			t.test(mediaType, async () => {
+				const menu = new MenuTemplate<BaseContext>({
+					media: 'whatever',
+					type: mediaType,
+				})
 
-		const sendFunction = async (
-			chatId: unknown,
-			media: unknown,
-			other: unknown,
-		) => {
-			t.is(chatId, 666)
-			t.is(media, 'whatever')
-			t.deepEqual(other, {
-				caption: undefined,
-				parse_mode: undefined,
-				reply_markup: {
-					inline_keyboard: [],
-				},
-			})
-			return {} as any
-		}
+				const sendFunction = async (
+					chatId: unknown,
+					media: unknown,
+					other: unknown,
+				) => {
+					strictEqual(chatId, 666)
+					strictEqual(media, 'whatever')
+					deepStrictEqual(other, {
+						caption: undefined,
+						parse_mode: undefined,
+						reply_markup: {
+							inline_keyboard: [],
+						},
+					})
+					return {} as any
+				}
 
-		const fakeTelegram: Partial<Api> = {
-			sendAnimation: sendFunction,
-			sendAudio: sendFunction,
-			sendDocument: sendFunction,
-			sendPhoto: sendFunction,
-			sendVideo: sendFunction,
-		}
+				const fakeTelegram: Partial<Api> = {
+					sendAnimation: sendFunction,
+					sendAudio: sendFunction,
+					sendDocument: sendFunction,
+					sendPhoto: sendFunction,
+					sendVideo: sendFunction,
+				}
 
-		const sendMenu = generateSendMenuToChatFunction(
-			fakeTelegram as any,
-			menu,
-			'/',
-		)
+				const sendMenu = generateSendMenuToChatFunction(
+					fakeTelegram as any,
+					menu,
+					'/',
+				)
 
-		const fakeContext: Partial<BaseContext> = {
-			callbackQuery: {
-				id: '666',
-				from: undefined as any,
-				chat_instance: '666',
-				data: '666',
-			},
-		}
+				const fakeContext: Partial<BaseContext> = {
+					callbackQuery: {
+						id: '666',
+						from: undefined as any,
+						chat_instance: '666',
+						data: '666',
+					},
+				}
 
-		await sendMenu(666, fakeContext as any)
-	})
-}
+				await sendMenu(666, fakeContext as any)
+			}),
+		),
+	)
+})
 
-test('location', async t => {
+await test('telegram-send location', async () => {
 	const menu = new MenuTemplate<BaseContext>({
 		location: {latitude: 53.5, longitude: 10},
 		live_period: 666,
@@ -99,10 +104,10 @@ test('location', async t => {
 
 	const fakeTelegram: Partial<Api> = {
 		async sendLocation(chatId, latitude, longitude, other) {
-			t.is(chatId, 666)
-			t.is(latitude, 53.5)
-			t.is(longitude, 10)
-			t.deepEqual(other, {
+			strictEqual(chatId, 666)
+			strictEqual(latitude, 53.5)
+			strictEqual(longitude, 10)
+			deepStrictEqual(other, {
 				live_period: 666,
 				reply_markup: {
 					inline_keyboard: [],
@@ -130,7 +135,7 @@ test('location', async t => {
 	await sendMenu(666, fakeContext as any)
 })
 
-test('venue', async t => {
+await test('telegram-send venue', async () => {
 	const menu = new MenuTemplate<BaseContext>({
 		venue: {
 			location: {latitude: 53.5, longitude: 10},
@@ -141,12 +146,12 @@ test('venue', async t => {
 
 	const fakeTelegram: Partial<Api> = {
 		async sendVenue(chatId, latitude, longitude, title, address, other) {
-			t.is(chatId, 666)
-			t.is(latitude, 53.5)
-			t.is(longitude, 10)
-			t.is(title, 'A')
-			t.is(address, 'B')
-			t.deepEqual(other, {
+			strictEqual(chatId, 666)
+			strictEqual(latitude, 53.5)
+			strictEqual(longitude, 10)
+			strictEqual(title, 'A')
+			strictEqual(address, 'B')
+			deepStrictEqual(other, {
 				foursquare_id: undefined,
 				foursquare_type: undefined,
 				reply_markup: {
@@ -175,7 +180,7 @@ test('venue', async t => {
 	await sendMenu(666, fakeContext as any)
 })
 
-test('invoice', async t => {
+await test('telegram-send invoice', async () => {
 	const menu = new MenuTemplate<BaseContext>({
 		invoice: {
 			title: 'A',
@@ -198,14 +203,14 @@ test('invoice', async t => {
 			prices,
 			other,
 		) {
-			t.is(chatId, 666)
-			t.is(title, 'A')
-			t.is(description, 'B')
-			t.is(currency, 'EUR')
-			t.is(payload, 'D')
-			t.is(provider_token, 'E')
-			t.deepEqual(prices, [])
-			t.deepEqual(other, {
+			strictEqual(chatId, 666)
+			strictEqual(title, 'A')
+			strictEqual(description, 'B')
+			strictEqual(currency, 'EUR')
+			strictEqual(payload, 'D')
+			strictEqual(provider_token, 'E')
+			deepStrictEqual(prices, [])
+			deepStrictEqual(other, {
 				reply_markup: {
 					inline_keyboard: [],
 				},

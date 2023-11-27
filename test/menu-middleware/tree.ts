@@ -1,4 +1,5 @@
-import test from 'ava'
+import {strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import type {ButtonAction} from '../../source/action-hive.js'
 import type {MenuLike, Submenu} from '../../source/menu-like.js'
 import {MenuMiddleware} from '../../source/menu-middleware.js'
@@ -10,15 +11,15 @@ const EMPTY_MENU: MenuLike<unknown> = {
 	renderKeyboard: () => [],
 }
 
-test('empty tree', t => {
+await test('menu-middleware tree empty', () => {
 	const tree = new MenuMiddleware('/', EMPTY_MENU).tree()
 	const expected = `Menu Tree
 menu                          /
 `
-	t.is(tree, expected)
+	strictEqual(tree, expected)
 })
 
-test('action', t => {
+await test('menu-middleware tree action', () => {
 	const action: ButtonAction<unknown> = {
 		trigger: /^\/what$/,
 		doFunction() {
@@ -36,10 +37,10 @@ test('action', t => {
 menu                          /
   action                      /what
 `
-	t.is(tree, expected)
+	strictEqual(tree, expected)
 })
 
-test('submenu', t => {
+await test('menu-middleware tree submenu', () => {
 	const submenu: Submenu<unknown> = {
 		action: /submenu\//,
 		hide: () => false,
@@ -56,10 +57,10 @@ test('submenu', t => {
 menu                          /
   menu                        /submenu/
 `
-	t.is(tree, expected)
+	strictEqual(tree, expected)
 })
 
-test('subsubmenu', t => {
+await test('menu-middleware tree subsubmenu', () => {
 	const subsubmenu: Submenu<unknown> = {
 		action: /deep\//,
 		hide: () => false,
@@ -88,10 +89,10 @@ menu                          /
   menu                        /submenu/
     menu                      /submenu/deep/
 `
-	t.is(tree, expected)
+	strictEqual(tree, expected)
 })
 
-test('action in submenu', t => {
+await test('menu-middleware tree action in submenu', () => {
 	const action: ButtonAction<unknown> = {
 		trigger: /^\/submenu\/what$/,
 		doFunction() {
@@ -121,5 +122,5 @@ menu                          /
   menu                        /submenu/
     action                    /submenu/what
 `
-	t.is(tree, expected)
+	strictEqual(tree, expected)
 })

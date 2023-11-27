@@ -1,20 +1,21 @@
-import test from 'ava'
+import {deepStrictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {MenuTemplate} from '../../source/menu-template.js'
 
-test('has no buttons', async t => {
+await test('menu-template empty-menu has no buttons', async () => {
 	const menu = new MenuTemplate('whatever')
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [])
+	deepStrictEqual(keyboard, [])
 })
 
-test('has no actions', t => {
+await test('menu-template empty-menu has no actions', () => {
 	const menu = new MenuTemplate('whatever')
 	const actions = menu.renderActionHandlers(/^\//)
-	t.deepEqual(actions, new Set() as any)
+	deepStrictEqual(actions, new Set() as any)
 })
 
-test('has no submenus', t => {
+await test('menu-template empty-menu has no submenus', () => {
 	const menu = new MenuTemplate('whatever')
 	const submenus = menu.listSubmenus()
-	t.deepEqual(submenus, new Set() as any)
+	deepStrictEqual(submenus, new Set() as any)
 })

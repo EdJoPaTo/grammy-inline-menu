@@ -1,7 +1,8 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {MenuTemplate} from '../../source/menu-template.js'
 
-test('button is added to keyboard', async t => {
+await test('menu-template interact button is added to keyboard', async () => {
 	const menu = new MenuTemplate('whatever')
 
 	menu.interact('Button', 'unique', {
@@ -11,7 +12,7 @@ test('button is added to keyboard', async t => {
 	})
 
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [
+	deepStrictEqual(keyboard, [
 		[
 			{
 				text: 'Button',
@@ -21,7 +22,7 @@ test('button is added to keyboard', async t => {
 	])
 })
 
-test('button is added to keyboard with text function', async t => {
+await test('menu-template interact button is added to keyboard with text function', async () => {
 	const menu = new MenuTemplate('whatever')
 
 	menu.interact(() => 'Button', 'unique', {
@@ -31,7 +32,7 @@ test('button is added to keyboard with text function', async t => {
 	})
 
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [
+	deepStrictEqual(keyboard, [
 		[
 			{
 				text: 'Button',
@@ -41,7 +42,7 @@ test('button is added to keyboard with text function', async t => {
 	])
 })
 
-test('hidden button is not shown on keyboard', async t => {
+await test('menu-template interact hidden button is not shown on keyboard', async () => {
 	const menu = new MenuTemplate('whatever')
 
 	menu.interact(() => 'Button', 'unique', {
@@ -52,10 +53,10 @@ test('hidden button is not shown on keyboard', async t => {
 	})
 
 	const keyboard = await menu.renderKeyboard(undefined, '/')
-	t.deepEqual(keyboard, [])
+	deepStrictEqual(keyboard, [])
 })
 
-test('action is added with correct trigger', t => {
+await test('menu-template interact action is added with correct trigger', () => {
 	const menu = new MenuTemplate('whatever')
 
 	menu.interact('Button', 'unique', {
@@ -65,33 +66,34 @@ test('action is added with correct trigger', t => {
 	})
 
 	const actions = menu.renderActionHandlers(/^\//)
-	t.is(actions.size, 1)
+	strictEqual(actions.size, 1)
 
 	const action = [...actions][0]!
-	t.is(action.trigger.source, '^\\/unique$')
+	strictEqual(action.trigger.source, '^\\/unique$')
 })
 
-test('action can be called', async t => {
-	t.plan(4)
+await test('menu-template interact action can be called', async t => {
 	const menu = new MenuTemplate('whatever')
 
+	const doFunction = t.mock.fn((context: unknown, path: string) => {
+		strictEqual(context, undefined)
+		strictEqual(path, '/unique')
+		return 'wow'
+	})
 	menu.interact('Button', 'unique', {
-		do(context, path) {
-			t.is(context, undefined)
-			t.is(path, '/unique')
-			return 'wow'
-		},
+		do: doFunction,
 	})
 
 	const actions = menu.renderActionHandlers(/^\//)
-	t.is(actions.size, 1)
+	strictEqual(actions.size, 1)
 
 	const action = [...actions][0]!
 	const result = await action.doFunction(undefined, '/unique')
-	t.is(result, 'wow')
+	strictEqual(result, 'wow')
+	strictEqual(doFunction.mock.callCount(), 1)
 })
 
-test('action can not be called when hidden', async t => {
+await test('menu-template interact action can not be called when hidden', async () => {
 	const menu = new MenuTemplate('whatever')
 
 	menu.interact('Button', 'unique', {
@@ -102,9 +104,9 @@ test('action can not be called when hidden', async t => {
 	})
 
 	const actions = menu.renderActionHandlers(/^\//)
-	t.is(actions.size, 1)
+	strictEqual(actions.size, 1)
 
 	const action = [...actions][0]!
 	const result = await action.doFunction(undefined, '/unique')
-	t.is(result, '.')
+	strictEqual(result, '.')
 })

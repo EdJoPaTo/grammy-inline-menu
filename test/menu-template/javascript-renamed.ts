@@ -1,9 +1,10 @@
-import test from 'ava'
+import {throws} from 'node:assert'
+import {test} from 'node:test'
 import {MenuTemplate} from '../../source/menu-template.js'
 
-test('interaction doFunc', t => {
+await test('menu-template javascript-renamed interaction doFunc', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		menu.interact('Button', 'unique', {
 			// @ts-expect-error
 			doFunc() {
@@ -15,9 +16,9 @@ test('interaction doFunc', t => {
 	})
 })
 
-test('select set', t => {
+await test('menu-template javascript-renamed select set', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		menu.select('unique', [], {
 			// @ts-expect-error
 			setFunc() {
@@ -27,9 +28,9 @@ test('select set', t => {
 	}, {message: /renamed to/})
 })
 
-test('choose do', t => {
+await test('menu-template javascript-renamed choose do', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		menu.choose('unique', [], {
 			// @ts-expect-error
 			doFunc() {
@@ -39,9 +40,9 @@ test('choose do', t => {
 	}, {message: /renamed to/})
 })
 
-test('select isSet', t => {
+await test('menu-template javascript-renamed selecthisSet', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		menu.select('unique', [], {
 			// @ts-expect-error
 			isSetFunc() {
@@ -51,9 +52,9 @@ test('select isSet', t => {
 	}, {message: /renamed to/})
 })
 
-test('toggle set', t => {
+await test('menu-template javascript-renamed toggle set', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		menu.toggle('Button', 'unique', {
 			// @ts-expect-error
 			setFunc() {
@@ -63,9 +64,9 @@ test('toggle set', t => {
 	}, {message: /renamed to/})
 })
 
-test('toggle isSet', t => {
+await test('menu-template javascript-renamed toggle isSet', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		menu.toggle('Button', 'unique', {
 			// @ts-expect-error
 			isSetFunc() {

@@ -1,25 +1,26 @@
-import test from 'ava'
+import {throws} from 'node:assert'
+import {test} from 'node:test'
 import {MenuTemplate} from '../../source/menu-template.js'
 
-test('interact do', t => {
+await test('menu-template javascript-forgot interact do', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		// @ts-expect-error
 		menu.interact('Button', 'unique', {})
 	}, {message: /You have to specify/})
 })
 
-test('choose do', t => {
+await test('menu-template javascript-forgot choose do', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		// @ts-expect-error
 		menu.choose('unique', [], {})
 	}, {message: /You have to specify/})
 })
 
-test('select set', t => {
+await test('menu-template javascript-forgot select set', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		// @ts-expect-error
 		menu.select('unique', [], {
 			isSet() {
@@ -29,9 +30,9 @@ test('select set', t => {
 	}, {message: /You have to specify/})
 })
 
-test('select isSet', t => {
+await test('menu-template javascript-forgot select isSet', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		// @ts-expect-error
 		menu.select('unique', [], {
 			set() {
@@ -41,9 +42,9 @@ test('select isSet', t => {
 	}, {message: /You have to specify/})
 })
 
-test('toggle set', t => {
+await test('menu-template javascript-forgot toggle set', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		// @ts-expect-error
 		menu.toggle('Button', 'unique', {
 			isSet() {
@@ -53,9 +54,9 @@ test('toggle set', t => {
 	}, {message: /You have to specify/})
 })
 
-test('toggle isSet', t => {
+await test('menu-template javascript-forgot toggle isSet', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		// @ts-expect-error
 		menu.toggle('Button', 'unique', {
 			set() {
@@ -65,9 +66,9 @@ test('toggle isSet', t => {
 	}, {message: /You have to specify/})
 })
 
-test('pagination getCurrentPage', t => {
+await test('menu-template javascript-forgot pagination getCurrentPage', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		// @ts-expect-error
 		menu.pagination('unique', {
 			getTotalPages() {
@@ -80,9 +81,9 @@ test('pagination getCurrentPage', t => {
 	}, {message: /You have to specify/})
 })
 
-test('pagination getTotalPages', t => {
+await test('menu-template javascript-forgot pagination getTotalPages', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		// @ts-expect-error
 		menu.pagination('unique', {
 			getCurrentPage() {
@@ -95,9 +96,9 @@ test('pagination getTotalPages', t => {
 	}, {message: /You have to specify/})
 })
 
-test('pagination setPage', t => {
+await test('menu-template javascript-forgot pagination setPage', () => {
 	const menu = new MenuTemplate('whatever')
-	t.throws(() => {
+	throws(() => {
 		// @ts-expect-error
 		menu.pagination('unique', {
 			getCurrentPage() {

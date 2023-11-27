@@ -1,14 +1,15 @@
-import test from 'ava'
+import {ok, strictEqual, throws} from 'node:assert'
+import {test} from 'node:test'
 import {type ActionFunc, ActionHive} from './action-hive.js'
 
-test('add nothing is empty', t => {
+await test('ActionHive add nothing is empty', () => {
 	const a = new ActionHive()
 
 	const result = a.list(/^foo\//)
-	t.is(result.size, 0)
+	strictEqual(result.size, 0)
 })
 
-test('add simple doFunction', t => {
+await test('ActionHive add simple doFunction', () => {
 	const a = new ActionHive()
 
 	const doFunction = (): never => {
@@ -18,26 +19,25 @@ test('add simple doFunction', t => {
 	a.add(/bar$/, doFunction, undefined)
 
 	const resultSet = a.list(/^foo\//)
-	t.is(resultSet.size, 1)
+	strictEqual(resultSet.size, 1)
 	const result = [...resultSet][0]!
 
-	t.truthy(
+	ok(
 		new RegExp(result.trigger.source, result.trigger.flags).exec('foo/bar'),
 	)
 
-	t.is(result.trigger.source, '^foo\\/bar$')
-	t.is(result.trigger.flags, '')
+	strictEqual(result.trigger.source, '^foo\\/bar$')
+	strictEqual(result.trigger.flags, '')
 })
 
-test('doFunction without hide runs doFunction', async t => {
-	t.plan(3)
+await test('ActionHive doFunction without hide runs doFunction', async t => {
 	const a = new ActionHive<string>()
 
-	const doFunction: ActionFunc<string> = (context, path) => {
-		t.is(context, 'bob')
-		t.is(path, 'foo/bar')
+	const doFunction = t.mock.fn<ActionFunc<string>>((context, path) => {
+		strictEqual(context, 'bob')
+		strictEqual(path, 'foo/bar')
 		return 'wow'
-	}
+	})
 
 	a.add(/bar$/, doFunction, undefined)
 
@@ -45,18 +45,18 @@ test('doFunction without hide runs doFunction', async t => {
 	const result = [...resultSet][0]
 
 	const target = await result?.doFunction('bob', 'foo/bar')
-	t.is(target, 'wow')
+	strictEqual(target, 'wow')
+	strictEqual(doFunction.mock.callCount(), 1)
 })
 
-test('doFunction with hide false runs doFunction', async t => {
-	t.plan(3)
+await test('ActionHive doFunction with hide false runs doFunction', async t => {
 	const a = new ActionHive<string>()
 
-	const doFunction: ActionFunc<string> = (context, path) => {
-		t.is(context, 'bob')
-		t.is(path, 'foo/bar')
+	const doFunction = t.mock.fn<ActionFunc<string>>((context, path) => {
+		strictEqual(context, 'bob')
+		strictEqual(path, 'foo/bar')
 		return 'wow'
-	}
+	})
 
 	a.add(/bar$/, doFunction, () => false)
 
@@ -64,18 +64,16 @@ test('doFunction with hide false runs doFunction', async t => {
 	const result = [...resultSet][0]
 
 	const target = await result?.doFunction('bob', 'foo/bar')
-	t.is(target, 'wow')
+	strictEqual(target, 'wow')
+	strictEqual(doFunction.mock.callCount(), 1)
 })
 
-test('doFunction with hide true skips doFunction and returns update menu path .', async t => {
-	t.plan(1)
+await test('ActionHive doFunction with hide true skips doFunction and returns update menu path .', async t => {
 	const a = new ActionHive<string>()
 
-	const doFunction: ActionFunc<string> = (context, path) => {
-		t.is(context, 'bob')
-		t.is(path, 'foo/bar')
-		return 'wow'
-	}
+	const doFunction = t.mock.fn<ActionFunc<string>>(() => {
+		throw new Error('shouldnt be called')
+	})
 
 	a.add(/bar$/, doFunction, () => true)
 
@@ -83,10 +81,11 @@ test('doFunction with hide true skips doFunction and returns update menu path .'
 	const result = [...resultSet][0]
 
 	const target = await result?.doFunction('bob', 'foo/bar')
-	t.is(target, '.')
+	strictEqual(target, '.')
+	strictEqual(doFunction.mock.callCount(), 0)
 })
 
-test('adding two times the same trigger throws', t => {
+await test('ActionHive adding two times the same trigger throws', () => {
 	const a = new ActionHive()
 
 	const doFunction: ActionFunc<unknown> = () => {
@@ -94,7 +93,7 @@ test('adding two times the same trigger throws', t => {
 	}
 
 	a.add(/foo$/, doFunction, undefined)
-	t.throws(() => {
+	throws(() => {
 		a.add(/foo$/, doFunction, undefined)
 	}, {
 		message: /already added.+action/,

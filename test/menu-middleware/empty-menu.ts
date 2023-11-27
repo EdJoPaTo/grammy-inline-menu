@@ -1,9 +1,11 @@
-import test from 'ava'
+import {strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {Bot, type Context as BaseContext} from 'grammy'
 import type {MenuLike} from '../../source/menu-like.js'
 import {MenuMiddleware} from '../../source/menu-middleware.js'
+import type {SendMenuFunc} from '../../source/send-menu.js'
 
-test('non callback queries are passing through', async t => {
+await test('menu-middleware empty-menu non callback queries are passing through', async t => {
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -17,9 +19,8 @@ test('non callback queries are passing through', async t => {
 	(bot as any).botInfo = {}
 	bot.use(mm.middleware())
 
-	bot.use(() => {
-		t.pass()
-	})
+	const passes = t.mock.fn()
+	bot.use(passes)
 
 	await bot.handleUpdate({
 		update_id: 666,
@@ -31,9 +32,10 @@ test('non callback queries are passing through', async t => {
 			date: 666,
 		},
 	})
+	strictEqual(passes.mock.callCount(), 1)
 })
 
-test('irrelevant callback queries are passing through', async t => {
+await test('menu-middleware empty-menu irrelevant callback queries are passing through', async t => {
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -47,9 +49,8 @@ test('irrelevant callback queries are passing through', async t => {
 	(bot as any).botInfo = {}
 	bot.use(mm.middleware())
 
-	bot.use(() => {
-		t.pass()
-	})
+	const passes = t.mock.fn()
+	bot.use(passes)
 
 	await bot.handleUpdate({
 		update_id: 666,
@@ -60,10 +61,10 @@ test('irrelevant callback queries are passing through', async t => {
 			data: '666',
 		},
 	})
+	strictEqual(passes.mock.callCount(), 1)
 })
 
-test('default root path is responded', async t => {
-	t.plan(2)
+await test('menu-middleware empty-menu default root path is responded', async t => {
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -71,31 +72,29 @@ test('default root path is responded', async t => {
 		renderKeyboard: () => [],
 	}
 
-	const mm = new MenuMiddleware('/', menu, {
-		async sendMenu(_menu, _context, path) {
-			t.is(path, '/')
+	const sendMenu = t.mock.fn<SendMenuFunc<BaseContext>>(
+		async (_menu, _context, path) => {
+			strictEqual(path, '/')
 		},
-	})
+	)
+	const mm = new MenuMiddleware('/', menu, {sendMenu})
 
 	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {}
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
+		async () => true,
+	)
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
+		ctx.answerCallbackQuery = answerCallbackQuery
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -107,10 +106,11 @@ test('default root path is responded', async t => {
 			data: '/',
 		},
 	})
+	strictEqual(answerCallbackQuery.mock.callCount(), 1)
+	strictEqual(sendMenu.mock.callCount(), 1)
 })
 
-test('custom root path is responded', async t => {
-	t.plan(2)
+await test('menu-middleware empty-menu custom root path is responded', async t => {
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -118,31 +118,29 @@ test('custom root path is responded', async t => {
 		renderKeyboard: () => [],
 	}
 
-	const mm = new MenuMiddleware('custom/', menu, {
-		async sendMenu(_menu, _context, path) {
-			t.is(path, 'custom/')
+	const sendMenu = t.mock.fn<SendMenuFunc<BaseContext>>(
+		async (_menu, _context, path) => {
+			strictEqual(path, 'custom/')
 		},
-	})
+	)
+	const mm = new MenuMiddleware('custom/', menu, {sendMenu})
 
 	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {}
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
+		async () => true,
+	)
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
+		ctx.answerCallbackQuery = answerCallbackQuery
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -154,10 +152,11 @@ test('custom root path is responded', async t => {
 			data: 'custom/',
 		},
 	})
+	strictEqual(answerCallbackQuery.mock.callCount(), 1)
+	strictEqual(sendMenu.mock.callCount(), 1)
 })
 
-test('custom regex root path is responded', async t => {
-	t.plan(2)
+await test('menu-middleware empty-menu custom regex root path is responded', async t => {
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -165,31 +164,29 @@ test('custom regex root path is responded', async t => {
 		renderKeyboard: () => [],
 	}
 
-	const mm = new MenuMiddleware(/^tree(\d+)\//, menu, {
-		async sendMenu(_menu, _context, path) {
-			t.is(path, 'tree42/')
+	const sendMenu = t.mock.fn<SendMenuFunc<BaseContext>>(
+		async (_menu, _context, path) => {
+			strictEqual(path, 'tree42/')
 		},
-	})
+	)
+	const mm = new MenuMiddleware(/^tree(\d+)\//, menu, {sendMenu})
 
 	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {}
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
+		async () => true,
+	)
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
+		ctx.answerCallbackQuery = answerCallbackQuery
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -201,9 +198,11 @@ test('custom regex root path is responded', async t => {
 			data: 'tree42/',
 		},
 	})
+	strictEqual(answerCallbackQuery.mock.callCount(), 1)
+	strictEqual(sendMenu.mock.callCount(), 1)
 })
 
-test('default root path does not trigger custom root path', async t => {
+await test('menu-middleware empty-menu default root path does not trigger custom root path', async t => {
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -217,9 +216,8 @@ test('default root path does not trigger custom root path', async t => {
 	(bot as any).botInfo = {}
 	bot.use(mm.middleware())
 
-	bot.use(() => {
-		t.pass()
-	})
+	const passes = t.mock.fn()
+	bot.use(passes)
 
 	await bot.handleUpdate({
 		update_id: 666,
@@ -230,10 +228,10 @@ test('default root path does not trigger custom root path', async t => {
 			data: '/',
 		},
 	})
+	strictEqual(passes.mock.callCount(), 1)
 })
 
-test('not existing path below is responded with root menu', async t => {
-	t.plan(2)
+await test('menu-middleware empty-menu not existing path below is responded with root menu', async t => {
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -241,31 +239,29 @@ test('not existing path below is responded with root menu', async t => {
 		renderKeyboard: () => [],
 	}
 
-	const mm = new MenuMiddleware('/', menu, {
-		async sendMenu(_menu, _context, path) {
-			t.is(path, '/')
+	const sendMenu = t.mock.fn<SendMenuFunc<BaseContext>>(
+		async (_menu, _context, path) => {
+			strictEqual(path, '/')
 		},
-	})
+	)
+	const mm = new MenuMiddleware('/', menu, {sendMenu})
 
 	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {}
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
+		async () => true,
+	)
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
+		ctx.answerCallbackQuery = answerCallbackQuery
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -277,4 +273,6 @@ test('not existing path below is responded with root menu', async t => {
 			data: '/what',
 		},
 	})
+	strictEqual(answerCallbackQuery.mock.callCount(), 1)
+	strictEqual(sendMenu.mock.callCount(), 1)
 })

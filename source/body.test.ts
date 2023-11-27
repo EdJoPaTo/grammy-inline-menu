@@ -1,4 +1,5 @@
-import test from 'ava'
+import {strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {
 	type Body,
 	getBodyText,
@@ -169,99 +170,75 @@ const EXAMPLE_INVOICE: InvoiceBody = {
 	},
 }
 
-const isTextBodyMacro = test.macro({
-	exec(t, expected: boolean, maybeBody: unknown) {
-		t.is(isTextBody(maybeBody), expected)
-	},
-	title(_providedTitle, expected, maybeBody) {
-		return `isTextBody ${String(expected)} ${mehToString(maybeBody)}`
-	},
-})
-
-for (const body of EXAMPLE_TEXTS) {
-	test(isTextBodyMacro, true, body)
+async function macro(
+	fn: (input: unknown) => boolean,
+	works: readonly unknown[],
+	wrongs: readonly unknown[],
+): Promise<void> {
+	await test(fn.name, async t => {
+		await t.test('works', async t =>
+			Promise.all(works.map(async item =>
+				t.test(mehToString(item), () => {
+					strictEqual(fn(item), true)
+				}),
+			)))
+		await t.test('wrongs', async t =>
+			Promise.all(wrongs.map(async item =>
+				t.test(mehToString(item), () => {
+					strictEqual(fn(item), false)
+				}),
+			)))
+	})
 }
 
-for (const body of [...EXAMPLE_MEDIA, ...EXAMPLE_LOCATION, EXAMPLE_VENUE, EXAMPLE_INVOICE, ...EXAMPLE_WRONGS]) {
-	test(isTextBodyMacro, false, body)
-}
+await macro(isTextBody, EXAMPLE_TEXTS, [
+	...EXAMPLE_WRONGS,
+	...EXAMPLE_MEDIA,
+	...EXAMPLE_LOCATION,
+	EXAMPLE_VENUE,
+	EXAMPLE_INVOICE,
+])
 
-const isMediaBodyMacro = test.macro({
-	exec(t, expected: boolean, maybeBody: unknown) {
-		t.is(isMediaBody(maybeBody), expected)
-	},
-	title(_providedTitle, expected, maybeBody) {
-		return `isMediaBody ${String(expected)} ${mehToString(maybeBody)}`
-	},
-})
+await macro(isMediaBody, EXAMPLE_MEDIA, [
+	...EXAMPLE_WRONGS,
+	...EXAMPLE_TEXTS,
+	...EXAMPLE_LOCATION,
+	EXAMPLE_VENUE,
+	EXAMPLE_INVOICE,
+])
 
-for (const body of EXAMPLE_MEDIA) {
-	test(isMediaBodyMacro, true, body)
-}
+await macro(isLocationBody, EXAMPLE_LOCATION, [
+	...EXAMPLE_WRONGS,
+	...EXAMPLE_TEXTS,
+	...EXAMPLE_MEDIA,
+	EXAMPLE_VENUE,
+	EXAMPLE_INVOICE,
+])
 
-for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_LOCATION, EXAMPLE_VENUE, EXAMPLE_INVOICE, ...EXAMPLE_WRONGS]) {
-	test(isMediaBodyMacro, false, body)
-}
+await macro(isVenueBody, [EXAMPLE_VENUE], [
+	...EXAMPLE_WRONGS,
+	...EXAMPLE_TEXTS,
+	...EXAMPLE_MEDIA,
+	...EXAMPLE_LOCATION,
+	EXAMPLE_INVOICE,
+])
 
-const isLocationBodyMacro = test.macro({
-	exec(t, expected: boolean, maybeBody: unknown) {
-		t.is(isLocationBody(maybeBody), expected)
-	},
-	title(_providedTitle, expected, maybeBody) {
-		return `isLocationBody ${String(expected)} ${mehToString(maybeBody)}`
-	},
-})
+await macro(isInvoiceBody, [EXAMPLE_INVOICE], [
+	...EXAMPLE_WRONGS,
+	...EXAMPLE_TEXTS,
+	...EXAMPLE_MEDIA,
+	...EXAMPLE_LOCATION,
+	EXAMPLE_VENUE,
+])
 
-for (const body of EXAMPLE_LOCATION) {
-	test(isLocationBodyMacro, true, body)
-}
-
-for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_MEDIA, EXAMPLE_VENUE, EXAMPLE_INVOICE, ...EXAMPLE_WRONGS]) {
-	test(isLocationBodyMacro, false, body)
-}
-
-const isVenueBodyMacro = test.macro({
-	exec(t, expected: boolean, maybeBody: unknown) {
-		t.is(isVenueBody(maybeBody), expected)
-	},
-	title(_providedTitle, expected, maybeBody) {
-		return `isVenueBody ${String(expected)} ${mehToString(maybeBody)}`
-	},
-})
-
-for (const body of [EXAMPLE_VENUE]) {
-	test(isVenueBodyMacro, true, body)
-}
-
-for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_MEDIA, ...EXAMPLE_LOCATION, ...EXAMPLE_WRONGS]) {
-	test(isVenueBodyMacro, false, body)
-}
-
-const isInvoiceBodyMacro = test.macro({
-	exec(t, expected: boolean, maybeBody: unknown) {
-		t.is(isInvoiceBody(maybeBody), expected)
-	},
-	title(_providedTitle, expected, maybeBody) {
-		return `isInvoiceBody ${String(expected)} ${mehToString(maybeBody)}`
-	},
-})
-
-for (const body of [EXAMPLE_INVOICE]) {
-	test(isInvoiceBodyMacro, true, body)
-}
-
-for (const body of [...EXAMPLE_TEXTS, ...EXAMPLE_MEDIA, ...EXAMPLE_LOCATION, EXAMPLE_VENUE, ...EXAMPLE_WRONGS]) {
-	test(isInvoiceBodyMacro, false, body)
-}
-
-test('getBodyText string', t => {
+await test('getBodyText string', () => {
 	const body: Body = 'foo'
-	t.is(getBodyText(body), 'foo')
+	strictEqual(getBodyText(body), 'foo')
 })
 
-test('getBodyText TextBody', t => {
+await test('getBodyText TextBody', () => {
 	const body: Body = {
 		text: 'foo',
 	}
-	t.is(getBodyText(body), 'foo')
+	strictEqual(getBodyText(body), 'foo')
 })

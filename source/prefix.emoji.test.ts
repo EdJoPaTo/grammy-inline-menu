@@ -1,46 +1,47 @@
-import test from 'ava'
+import {strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {emojiFalse, emojiTrue, prefixEmoji} from './prefix.js'
 
-test('no prefix', t => {
+await test('prefixEmoji no prefix', () => {
 	const result = prefixEmoji('42', undefined)
-	t.is(result, '42')
+	strictEqual(result, '42')
 })
 
-test('value text & prefix truthy still passthrough', t => {
+await test('prefixEmoji value text & prefix truthy still passthrough', () => {
 	const result = prefixEmoji('42', '6')
-	t.is(result, '6 42')
+	strictEqual(result, '6 42')
 })
 
-test('value text & prefix true', t => {
+await test('prefixEmoji value text & prefix true', () => {
 	const result = prefixEmoji('42', true)
-	t.is(result, emojiTrue + ' 42')
+	strictEqual(result, emojiTrue + ' 42')
 })
 
-test('value text & prefix false', t => {
+await test('prefixEmoji value text & prefix false', () => {
 	const result = prefixEmoji('42', false)
-	t.is(result, emojiFalse + ' 42')
+	strictEqual(result, emojiFalse + ' 42')
 })
 
-test('value text & prefix true hidden', t => {
+await test('prefixEmoji value text & prefix true hidden', () => {
 	const result = prefixEmoji('42', true, {hideTrueEmoji: true})
-	t.is(result, '42')
+	strictEqual(result, '42')
 })
 
-test('value text & prefix false hidden', t => {
+await test('prefixEmoji value text & prefix false hidden', () => {
 	const result = prefixEmoji('42', false, {hideFalseEmoji: true})
-	t.is(result, '42')
+	strictEqual(result, '42')
 })
 
-test('own true prefix', t => {
+await test('prefixEmoji own true prefix', () => {
 	const result = prefixEmoji('42', true, {
 		prefixTrue: 'foo',
 	})
-	t.is(result, 'foo 42')
+	strictEqual(result, 'foo 42')
 })
 
-test('own false prefix', t => {
+await test('prefixEmoji own false prefix', () => {
 	const result = prefixEmoji('42', false, {
 		prefixFalse: 'bar',
 	})
-	t.is(result, 'bar 42')
+	strictEqual(result, 'bar 42')
 })

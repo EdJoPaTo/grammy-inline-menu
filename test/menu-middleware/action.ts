@@ -1,23 +1,25 @@
-import test from 'ava'
+import {rejects, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {Bot, type Context as BaseContext} from 'grammy'
 import type {ButtonAction} from '../../source/action-hive.js'
 import type {MenuLike, Submenu} from '../../source/menu-like.js'
 import {MenuMiddleware} from '../../source/menu-middleware.js'
+import type {SendMenuFunc} from '../../source/send-menu.js'
 
 // TODO: Ugly workaround. This library should know better...
 type MyContext = BaseContext & {match: RegExpExecArray | undefined}
 
-test('action is run without updating menu afterwards', async t => {
-	t.plan(3)
+await test('menu-middleware action is run without updating menu afterwards', async t => {
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
 		doFunction(context, path) {
-			t.is(context.match![0], '/what')
-			t.is(context.match![1], undefined)
-			t.is(path, '/what')
+			strictEqual(context.match![0], '/what')
+			strictEqual(context.match![1], undefined)
+			strictEqual(path, '/what')
 			return false
 		},
 	}
+	const mock = t.mock.method(action, 'doFunction')
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
@@ -32,23 +34,9 @@ test('action is run without updating menu afterwards', async t => {
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
-	bot.use(async (ctx, next) => {
-		ctx.reply = () => {
-			throw new Error('Use sendMenu instead')
-		}
-
-		ctx.answerCallbackQuery = async () => {
-			t.fail()
-			return true
-		}
-
-		return next()
-	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -60,50 +48,49 @@ test('action is run without updating menu afterwards', async t => {
 			data: '/what',
 		},
 	})
+	strictEqual(mock.mock.callCount(), 1)
 })
 
-test('action is run and updating menu afterwards with path', async t => {
-	t.plan(5)
+await test('menu-middleware action is run and updating menu afterwards with path', async t => {
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
 		doFunction(context, path) {
-			t.is(context.match![0], '/what')
-			t.is(context.match![1], undefined)
-			t.is(path, '/what')
+			strictEqual(context.match![0], '/what')
+			strictEqual(context.match![1], undefined)
+			strictEqual(path, '/what')
 			return '.'
 		},
 	}
+	const mock = t.mock.method(action, 'doFunction')
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
 	}
-	const mm = new MenuMiddleware('/', menu, {
-		async sendMenu(_menu, _context, path) {
-			t.is(path, '/')
+	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(
+		async (_menu, _context, path) => {
+			strictEqual(path, '/')
 		},
-	})
+	)
+	const mm = new MenuMiddleware('/', menu, {sendMenu})
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
+		async () => true,
+	)
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
+		ctx.answerCallbackQuery = answerCallbackQuery
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -115,50 +102,51 @@ test('action is run and updating menu afterwards with path', async t => {
 			data: '/what',
 		},
 	})
+	strictEqual(answerCallbackQuery.mock.callCount(), 1)
+	strictEqual(sendMenu.mock.callCount(), 1)
+	strictEqual(mock.mock.callCount(), 1)
 })
 
-test('action is run and updating menu afterwards with true', async t => {
-	t.plan(5)
+await test('menu-middleware action is run and updating menu afterwards with true', async t => {
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
 		doFunction(context, path) {
-			t.is(context.match![0], '/what')
-			t.is(context.match![1], undefined)
-			t.is(path, '/what')
+			strictEqual(context.match![0], '/what')
+			strictEqual(context.match![1], undefined)
+			strictEqual(path, '/what')
 			return true
 		},
 	}
+	const mock = t.mock.method(action, 'doFunction')
 	const menu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set([]),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
 	}
-	const mm = new MenuMiddleware('/', menu, {
-		async sendMenu(_menu, _context, path) {
-			t.is(path, '/')
+	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(
+		async (_menu, _context, path) => {
+			strictEqual(path, '/')
 		},
-	})
+	)
+	const mm = new MenuMiddleware('/', menu, {sendMenu})
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
+		async () => true,
+	)
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
+		ctx.answerCallbackQuery = answerCallbackQuery
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -170,10 +158,12 @@ test('action is run and updating menu afterwards with true', async t => {
 			data: '/what',
 		},
 	})
+	strictEqual(answerCallbackQuery.mock.callCount(), 1)
+	strictEqual(sendMenu.mock.callCount(), 1)
+	strictEqual(mock.mock.callCount(), 1)
 })
 
-test.skip('action returns non existing path afterwards throws Error', async t => {
-	t.plan(1)
+await test('menu-middleware action returns non existing path afterwards throws Error', async () => {
 	const action: ButtonAction<MyContext> = {
 		trigger: /^custom\/what$/,
 		doFunction: () => '/foo/',
@@ -192,49 +182,26 @@ test.skip('action returns non existing path afterwards throws Error', async t =>
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
-	bot.use(async (ctx, next) => {
-		ctx.reply = () => {
-			throw new Error('Use sendMenu instead')
-		}
-
-		ctx.answerCallbackQuery = async () => {
-			t.fail()
-			return true
-		}
-
-		return next()
-	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
-	bot.catch(error => {
-		if (error instanceof Error) {
-			t.is(
-				error.message,
-				'There is no menu "/foo/" which can be reached in this menu',
-			)
-		} else {
-			t.fail()
-		}
-	})
-
-	await bot.handleUpdate({
-		update_id: 666,
-		callback_query: {
-			id: '666',
-			from: {} as any,
-			chat_instance: '666',
-			data: 'custom/what',
-		},
+	await rejects(async () =>
+		bot.handleUpdate({
+			update_id: 666,
+			callback_query: {
+				id: '666',
+				from: {} as any,
+				chat_instance: '666',
+				data: 'custom/what',
+			},
+		}), {
+		message: /There is no menu "\/foo\/" which can be reached in this menu$/,
 	})
 })
 
-test('not existing action updates menu', async t => {
-	t.plan(2)
+await test('menu-middleware action not existing action updates menu', async t => {
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
 		doFunction() {
@@ -247,31 +214,29 @@ test('not existing action updates menu', async t => {
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
 	}
-	const mm = new MenuMiddleware('/', menu, {
-		async sendMenu(_menu, _context, path) {
-			t.is(path, '/')
+	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(
+		async (_menu, _context, path) => {
+			strictEqual(path, '/')
 		},
-	})
+	)
+	const mm = new MenuMiddleware('/', menu, {sendMenu})
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
+		async () => true,
+	)
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
+		ctx.answerCallbackQuery = answerCallbackQuery
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -283,19 +248,21 @@ test('not existing action updates menu', async t => {
 			data: '/where',
 		},
 	})
+	strictEqual(answerCallbackQuery.mock.callCount(), 1)
+	strictEqual(sendMenu.mock.callCount(), 1)
 })
 
-test('action in submenu is run', async t => {
-	t.plan(3)
+await test('menu-middleware action in submenu is run', async t => {
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/submenu\/what$/,
 		doFunction(context, path) {
-			t.is(context.match![0], '/submenu/what')
-			t.is(context.match![1], undefined)
-			t.is(path, '/submenu/what')
+			strictEqual(context.match![0], '/submenu/what')
+			strictEqual(context.match![1], undefined)
+			strictEqual(path, '/submenu/what')
 			return false
 		},
 	}
+	const mock = t.mock.method(action, 'doFunction')
 	const submenuMenu: MenuLike<MyContext> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
@@ -321,23 +288,9 @@ test('action in submenu is run', async t => {
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
-	bot.use(async (ctx, next) => {
-		ctx.reply = () => {
-			throw new Error('Use sendMenu instead')
-		}
-
-		ctx.answerCallbackQuery = async () => {
-			t.fail()
-			return true
-		}
-
-		return next()
-	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -349,10 +302,10 @@ test('action in submenu is run', async t => {
 			data: '/submenu/what',
 		},
 	})
+	strictEqual(mock.mock.callCount(), 1)
 })
 
-test('not existing action in submenu updates submenu', async t => {
-	t.plan(2)
+await test('menu-middleware action not existing action in submenu updates submenu', async t => {
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/submenu\/what$/,
 		doFunction() {
@@ -376,31 +329,29 @@ test('not existing action in submenu updates submenu', async t => {
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
 	}
-	const mm = new MenuMiddleware('/', menu, {
-		async sendMenu(_menu, _context, path) {
-			t.is(path, '/submenu/')
+	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(
+		async (_menu, _context, path) => {
+			strictEqual(path, '/submenu/')
 		},
-	})
+	)
+	const mm = new MenuMiddleware('/', menu, {sendMenu})
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
+		async () => true,
+	)
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
+		ctx.answerCallbackQuery = answerCallbackQuery
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -412,10 +363,11 @@ test('not existing action in submenu updates submenu', async t => {
 			data: '/submenu/where',
 		},
 	})
+	strictEqual(answerCallbackQuery.mock.callCount(), 1)
+	strictEqual(sendMenu.mock.callCount(), 1)
 })
 
-test('action in hidden submenu updates main menu', async t => {
-	t.plan(2)
+await test('menu-middleware action in hidden submenu updates main menu', async t => {
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/submenu\/what$/,
 		doFunction() {
@@ -439,31 +391,29 @@ test('action in hidden submenu updates main menu', async t => {
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
 	}
-	const mm = new MenuMiddleware('/', menu, {
-		async sendMenu(_menu, _context, path) {
-			t.is(path, '/')
+	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(
+		async (_menu, _context, path) => {
+			strictEqual(path, '/')
 		},
-	})
+	)
+	const mm = new MenuMiddleware('/', menu, {sendMenu})
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
+		async () => true,
+	)
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
+		ctx.answerCallbackQuery = answerCallbackQuery
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -475,10 +425,11 @@ test('action in hidden submenu updates main menu', async t => {
 			data: '/submenu/what',
 		},
 	})
+	strictEqual(answerCallbackQuery.mock.callCount(), 1)
+	strictEqual(sendMenu.mock.callCount(), 1)
 })
 
-test('action in non existing submenu updates main menu', async t => {
-	t.plan(2)
+await test('menu-middleware action in non existing submenu updates main menu', async t => {
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/submenu\/what$/,
 		doFunction() {
@@ -502,31 +453,29 @@ test('action in non existing submenu updates main menu', async t => {
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
 	}
-	const mm = new MenuMiddleware('/', menu, {
-		async sendMenu(_menu, _context, path) {
-			t.is(path, '/')
+	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(
+		async (_menu, _context, path) => {
+			strictEqual(path, '/')
 		},
-	})
+	)
+	const mm = new MenuMiddleware('/', menu, {sendMenu})
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
+		async () => true,
+	)
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
+		ctx.answerCallbackQuery = answerCallbackQuery
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -538,10 +487,11 @@ test('action in non existing submenu updates main menu', async t => {
 			data: '/foo/bar',
 		},
 	})
+	strictEqual(answerCallbackQuery.mock.callCount(), 1)
+	strictEqual(sendMenu.mock.callCount(), 1)
 })
 
-test('action run took too long and updating menu afterwards tries to answerCallbackQuery and fails as being old but does not throw', async t => {
-	t.plan(2)
+await test('menu-middleware action run took too long and updating menu afterwards tries to answerCallbackQuery and fails as being old but does not throw', async t => {
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
 		doFunction: () => '.',
@@ -558,25 +508,22 @@ test('action run took too long and updating menu afterwards tries to answerCallb
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {}
+	const answerCallbackQuery = t.mock.fn(async () => {
+		throw new Error(
+			'Bad Request: query is too old and response timeout expired or query ID is invalid',
+		)
+	})
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead')
 		}
 
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			throw new Error(
-				'Bad Request: query is too old and response timeout expired or query ID is invalid',
-			)
-		}
-
+		ctx.answerCallbackQuery = answerCallbackQuery
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
 	await bot.handleUpdate({
@@ -588,11 +535,10 @@ test('action run took too long and updating menu afterwards tries to answerCallb
 			data: '/what',
 		},
 	})
-	t.pass()
+	strictEqual(answerCallbackQuery.mock.callCount(), 1)
 })
 
-test.skip('updating menu still throws unknown error from answerCallbackQuery', async t => {
-	t.plan(2)
+await test('menu-middleware action updating menu still throws unknown error from answerCallbackQuery', async () => {
 	const action: ButtonAction<MyContext> = {
 		trigger: /^\/what$/,
 		doFunction: () => '.',
@@ -615,34 +561,24 @@ test.skip('updating menu still throws unknown error from answerCallbackQuery', a
 		}
 
 		ctx.answerCallbackQuery = async () => {
-			t.pass()
 			throw new Error('Whatever went wrong here for the test')
 		}
 
 		return next()
 	})
-
 	bot.use(mm.middleware())
-
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
-	bot.catch(error => {
-		if (error instanceof Error) {
-			t.is(error.message, 'Whatever went wrong here for the test')
-		} else {
-			t.fail('not an error?')
-		}
-	})
-
-	await bot.handleUpdate({
-		update_id: 666,
-		callback_query: {
-			id: '666',
-			from: {} as any,
-			chat_instance: '666',
-			data: '/what',
-		},
-	})
+	await rejects(async () =>
+		bot.handleUpdate({
+			update_id: 666,
+			callback_query: {
+				id: '666',
+				from: {} as any,
+				chat_instance: '666',
+				data: '/what',
+			},
+		}), {message: /Whatever went wrong here for the test$/})
 })

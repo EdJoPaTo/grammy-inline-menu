@@ -1,40 +1,41 @@
-import test from 'ava'
+import {deepStrictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {createBackMainMenuButtons} from './back-main-buttons.js'
 
-test('creates no buttons in root menu', async t => {
+await test('createBackMainMenuButtons creates no buttons in root menu', async () => {
 	const func = createBackMainMenuButtons()
 	const buttons = await func(undefined, '/')
-	t.deepEqual(buttons, [[]])
+	deepStrictEqual(buttons, [[]])
 })
 
-test('creates no buttons in topmost menu', async t => {
+await test('createBackMainMenuButtons creates no buttons in topmost menu', async () => {
 	const func = createBackMainMenuButtons()
 	const buttons = await func(undefined, 'foo/')
-	t.deepEqual(buttons, [[]])
+	deepStrictEqual(buttons, [[]])
 })
 
-test('creates only main menu button when one deep', async t => {
+await test('createBackMainMenuButtons creates only main menu button when one deep', async () => {
 	const func = createBackMainMenuButtons('back', 'main')
 	const buttons = await func(undefined, '/foo/')
-	t.deepEqual(buttons, [[{
+	deepStrictEqual(buttons, [[{
 		text: 'main',
 		relativePath: '/',
 	}]])
 })
 
-test('creates back button when when one deep but without main menu', async t => {
+await test('createBackMainMenuButtons creates back button when when one deep but without main menu', async () => {
 	const func = createBackMainMenuButtons('back', 'main')
 	const buttons = await func(undefined, 'foo/bar/')
-	t.deepEqual(buttons, [[{
+	deepStrictEqual(buttons, [[{
 		text: 'back',
 		relativePath: '..',
 	}]])
 })
 
-test('creates back and main button when when two deep', async t => {
+await test('createBackMainMenuButtons creates back and main button when when two deep', async () => {
 	const func = createBackMainMenuButtons('back', 'main')
 	const buttons = await func(undefined, '/foo/bar/')
-	t.deepEqual(buttons, [[{
+	deepStrictEqual(buttons, [[{
 		text: 'back',
 		relativePath: '..',
 	}, {
@@ -43,19 +44,19 @@ test('creates back and main button when when two deep', async t => {
 	}]])
 })
 
-test('creates only back button when when two deep but without main menu', async t => {
+await test('createBackMainMenuButtons creates only back button when when two deep but without main menu', async () => {
 	const func = createBackMainMenuButtons('back', 'main')
 	const buttons = await func(undefined, 'foo/bar/deep/')
-	t.deepEqual(buttons, [[{
+	deepStrictEqual(buttons, [[{
 		text: 'back',
 		relativePath: '..',
 	}]])
 })
 
-test('creates button texts in function', async t => {
+await test('createBackMainMenuButtons creates button texts in function', async () => {
 	const func = createBackMainMenuButtons(() => 'back', () => 'main')
 	const buttons = await func(undefined, '/foo/bar/')
-	t.deepEqual(buttons, [[{
+	deepStrictEqual(buttons, [[{
 		text: 'back',
 		relativePath: '..',
 	}, {

@@ -1,4 +1,5 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual, throws} from 'node:assert'
+import {test} from 'node:test'
 import type {RegExpLike} from './generic-types.js'
 import {
 	combinePath,
@@ -10,174 +11,178 @@ import {
 	getMenuOfPath,
 } from './path.js'
 
-const combinePathMacro = test.macro({
-	exec(t, parent: string, relativePath: string, expected: string) {
-		t.is(combinePath(parent, relativePath), expected)
-	},
-	title(
-		_providedTitle,
+await test('combinePath', async t => {
+	const macro = async (
 		parent: string,
 		relativePath: string,
 		expected: string,
-	) {
-		return `combinePath(${parent}, ${relativePath}) is ${expected}`
-	},
+	) =>
+		t.test(
+			`combinePath(${parent}, ${relativePath}) is ${expected}`,
+			() => {
+				strictEqual(combinePath(parent, relativePath), expected)
+			},
+		)
+	await macro('/', 'wow', '/wow')
+	await macro('/', 'foo/bar', '/foo/bar')
+	await macro('/foo/', 'bar', '/foo/bar')
+	await macro('foo/', 'bar', 'foo/bar')
+	await macro('/foo/', '/', '/')
+	await macro('/foo/', '/bar', '/bar')
+	await macro('/foo/', '..', '/')
+	await macro('/foo/bar', '..', '/')
+	await macro('/foo/bar/', '../..', '/')
+	await macro('/foo/bar/stuff', '../..', '/')
+	await macro('/foo/bar/stuff/', '../..', '/foo/')
+	await macro('/foo/', '../bar', '/bar')
+	await macro('/foo/', '.', '/foo/')
+	await macro('/foo/bar', '.', '/foo/')
+	await macro('/foo', 'bar', '/bar')
 })
 
-test(combinePathMacro, '/', 'wow', '/wow')
-test(combinePathMacro, '/', 'foo/bar', '/foo/bar')
-test(combinePathMacro, '/foo/', 'bar', '/foo/bar')
-test(combinePathMacro, 'foo/', 'bar', 'foo/bar')
-test(combinePathMacro, '/foo/', '/', '/')
-test(combinePathMacro, '/foo/', '/bar', '/bar')
-test(combinePathMacro, '/foo/', '..', '/')
-test(combinePathMacro, '/foo/bar', '..', '/')
-test(combinePathMacro, '/foo/bar/', '../..', '/')
-test(combinePathMacro, '/foo/bar/stuff', '../..', '/')
-test(combinePathMacro, '/foo/bar/stuff/', '../..', '/foo/')
-test(combinePathMacro, '/foo/', '../bar', '/bar')
-test(combinePathMacro, '/foo/', '.', '/foo/')
-test(combinePathMacro, '/foo/bar', '.', '/foo/')
-test(combinePathMacro, '/foo', 'bar', '/bar')
-
-test('combinePath fails on relative ./', t => {
-	t.throws(() => combinePath('/whatever/', './'), {message: /\.\//})
+await test('combinePath fails on relative ./', () => {
+	throws(() => combinePath('/whatever/', './'), {message: /\.\//})
 })
 
-test('combinePath fails on empty relative', t => {
-	t.throws(() => combinePath('/whatever/', ''), {
+await test('combinePath fails on empty relative', () => {
+	throws(() => combinePath('/whatever/', ''), {
 		message: /empty string is not a relative path/,
 	})
 })
 
-test('getMenuOfPath with already menu', t => {
-	t.is(getMenuOfPath('/'), '/')
-	t.is(getMenuOfPath('/foo/'), '/foo/')
-	t.is(getMenuOfPath('/foo/bar/'), '/foo/bar/')
+await test('getMenuOfPath with already menu', () => {
+	strictEqual(getMenuOfPath('/'), '/')
+	strictEqual(getMenuOfPath('/foo/'), '/foo/')
+	strictEqual(getMenuOfPath('/foo/bar/'), '/foo/bar/')
 })
 
-test('getMenuOfPath with child', t => {
-	t.is(getMenuOfPath('/foo'), '/')
-	t.is(getMenuOfPath('/foo/bar'), '/foo/')
+await test('getMenuOfPath with child', () => {
+	strictEqual(getMenuOfPath('/foo'), '/')
+	strictEqual(getMenuOfPath('/foo/bar'), '/foo/')
 })
 
-test('getMenuOfPath throws when not a path', t => {
-	t.throws(() => getMenuOfPath('foo'), {message: /not .+ a path/})
+await test('getMenuOfPath throws when not a path', () => {
+	throws(() => getMenuOfPath('foo'), {message: /not .+ a path/})
 })
 
-test('createRootMenuTrigger does not throw on good trigger', t => {
-	createRootMenuTrigger(/^blubb\//)
-	t.pass()
+await test('createRootMenuTrigger does not throw on good trigger', async t => {
+	const macro = async (trigger: string | RegExpLike) =>
+		t.test(String(trigger), () => createRootMenuTrigger(trigger))
+	await macro(/^blubb\//)
+	await macro('blubb/')
+	await macro(/^\//)
+	await macro('/')
 })
 
-test('createRootMenuTrigger throws when not ending with /', t => {
-	t.throws(() => {
+await test('createRootMenuTrigger throws when not ending with /', () => {
+	throws(() => {
 		createRootMenuTrigger(/^blubb/)
 	}, {message: /root menu trigger.+\//})
 })
 
-test('createRootMenuTrigger throws when not starting with ^', t => {
-	t.throws(() => {
+await test('createRootMenuTrigger throws when not starting with ^', () => {
+	throws(() => {
 		createRootMenuTrigger(/blubb\//)
 	}, {message: /root menu trigger.+\^/})
 })
 
-test('createRootMenuTrigger throws when raw string contains multiple slashes /', t => {
-	t.throws(() => {
+await test('createRootMenuTrigger throws when raw string contains multiple slashes /', () => {
+	throws(() => {
 		createRootMenuTrigger('some/stuff/')
 	}, {message: /root menu trigger.+exactly one slash/})
 })
 
-test('createRootMenuTrigger throws when it matches multiple slashes /', t => {
-	t.throws(() => {
+await test('createRootMenuTrigger throws when it matches multiple slashes /', () => {
+	throws(() => {
 		createRootMenuTrigger(/^.+\//)
 	}, {message: /root menu trigger.+exactly one slash/})
 })
 
-const combineTriggerMacro = test.macro({
-	exec(t, parent: RegExp, child: string | RegExpLike, expected: RegExp) {
-		t.deepEqual(combineTrigger(parent, child), expected)
-	},
-	title(_providedTitle, parent, child, expected) {
-		return `combineTrigger ${String(parent)} with ${String(child)} is ${String(expected)}`
-	},
+await test('combineTrigger', async t => {
+	const macro = async (
+		parent: RegExp,
+		child: string | RegExpLike,
+		expected: RegExp,
+	) =>
+		t.test(`combineTrigger ${String(parent)} with ${String(child)} is ${String(expected)}`, () => {
+			deepStrictEqual(combineTrigger(parent, child), expected)
+		})
+
+	await macro(/^\//, 'foo', /^\/foo/)
+	await macro(/^\//, /foo/, /^\/foo/)
+	await macro(/^\//, /foo\//, /^\/foo\//)
+	await macro(/^\//, /[^/]+/, /^\/[^/]+/)
+
+	await macro(/^\//i, 'foo', /^\/foo/i)
+	await macro(/^\//i, /foo/, /^\/foo/i)
 })
 
-test(combineTriggerMacro, /^\//, 'foo', /^\/foo/)
-test(combineTriggerMacro, /^\//, /foo/, /^\/foo/)
-test(combineTriggerMacro, /^\//, /foo\//, /^\/foo\//)
-test(combineTriggerMacro, /^\//, /[^/]+/, /^\/[^/]+/)
-
-test(combineTriggerMacro, /^\//i, 'foo', /^\/foo/i)
-test(combineTriggerMacro, /^\//i, /foo/, /^\/foo/i)
-
-test('combineTrigger fails when not beginning with ^', t => {
-	t.throws(() => combineTrigger(/\/whatever\//, /whatever/), {
+await test('combineTrigger fails when not beginning with ^', () => {
+	throws(() => combineTrigger(/\/whatever\//, /whatever/), {
 		message: /begin from start/,
 	})
 })
 
-test('combineTrigger fails when parent is not ending with /', t => {
-	t.throws(() => combineTrigger(/^\/whatever/, /whatever/), {
+await test('combineTrigger fails when parent is not ending with /', () => {
+	throws(() => combineTrigger(/^\/whatever/, /whatever/), {
 		message: /end with \//,
 	})
 })
 
-test('combineTrigger fails when child has flags/', t => {
-	t.throws(() => combineTrigger(/^\/whatever\//, /whatever/i), {
-		message: /flags/,
-	})
-	t.throws(
-		() => combineTrigger(/^\/whatever\//, {source: 'whatever', flags: 'i'}),
-		{message: /flags/},
-	)
+await test('combineTrigger fails when child has flags/', async t => {
+	const macro = async (child: string | RegExpLike) =>
+		t.test(
+			typeof child === 'string' ? child : (`${child.source} ${child.flags}`),
+			() => {
+				throws(() => {
+					combineTrigger(/^\/whatever\//, child)
+				}, {message: /flags/})
+			},
+		)
+	await macro(/whatever/i)
+	await macro(/whatever/g)
+	await macro(/whatever/gi)
+	await macro({source: 'whatever', flags: 'i'})
 })
 
-test('ensureTriggerLastChild throws when not ending with $', t => {
-	t.throws(() => {
+await test('ensureTriggerLastChild throws when not ending with $', () => {
+	throws(() => {
 		ensureTriggerLastChild(/blubb/)
 	})
-	t.throws(() => {
+	throws(() => {
 		ensureTriggerLastChild('blubb')
 	})
 	ensureTriggerLastChild(/blubb$/)
 	ensureTriggerLastChild('blubb$')
 })
 
-test('ensureTriggerChild throws when being somewhat relative', t => {
-	t.throws(() => {
-		ensureTriggerChild(/..$/)
-	})
-	t.throws(() => {
-		ensureTriggerChild('..$')
-	})
-	t.throws(() => {
-		ensureTriggerChild(/more than\/one deep$/)
-	})
-	t.throws(() => {
-		ensureTriggerChild('more than/one deep$')
-	})
-	t.throws(() => {
-		ensureTriggerChild(/\/relative to root$/)
-	})
-	t.throws(() => {
-		ensureTriggerChild('/relative to root$')
-	})
+await test('ensureTriggerChild throws when being somewhat relative', async t => {
+	const macro = async (trigger: string | RegExpLike) =>
+		t.test(typeof trigger === 'string' ? trigger : trigger.source, () => {
+			throws(() => {
+				ensureTriggerChild(trigger)
+			})
+		})
+	await macro(/..$/)
+	await macro('..$')
+	await macro(/more than\/one deep$/)
+	await macro('more than/one deep$')
+	await macro(/\/relative to root$/)
+	await macro('/relative to root$')
 })
 
-test('ensurePathMenu accepts correct paths', t => {
+await test('ensurePathMenu accepts correct paths', () => {
 	ensurePathMenu('path/')
-	t.pass()
 })
 
-test('ensurePathMenu throws when empty', t => {
-	t.throws(() => {
+await test('ensurePathMenu throws when empty', () => {
+	throws(() => {
 		ensurePathMenu('')
 	}, {message: /empty string/})
 })
 
-test('ensurePathMenu throws when not ending with slash', t => {
-	t.throws(() => {
+await test('ensurePathMenu throws when not ending with slash', () => {
+	throws(() => {
 		ensurePathMenu('path')
 	}, {message: /end with \//})
 })

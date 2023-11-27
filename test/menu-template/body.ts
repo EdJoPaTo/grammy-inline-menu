@@ -1,20 +1,21 @@
-import test from 'ava'
+import {deepStrictEqual, strictEqual} from 'node:assert'
+import {test} from 'node:test'
 import {MenuTemplate} from '../../source/menu-template.js'
 
-test('string body is passed through', async t => {
+await test('menu-template body string body is passed through', async () => {
 	const menu = new MenuTemplate('foobar')
 	const body = await menu.renderBody(undefined, '/')
-	t.is(body, 'foobar')
+	strictEqual(body, 'foobar')
 })
 
-test('string function body is passed through', async t => {
+await test('menu-template body string function body is passed through', async () => {
 	const menu = new MenuTemplate(() => 'foobar')
 	const body = await menu.renderBody(undefined, '/')
-	t.is(body, 'foobar')
+	strictEqual(body, 'foobar')
 })
 
-test('complex body is passed through', async t => {
+await test('menu-template body complex body is passed through', async () => {
 	const menu = new MenuTemplate({text: 'foobar', parse_mode: 'Markdown'})
 	const body = await menu.renderBody(undefined, '/')
-	t.deepEqual(body, {text: 'foobar', parse_mode: 'Markdown'})
+	deepStrictEqual(body, {text: 'foobar', parse_mode: 'Markdown'})
 })

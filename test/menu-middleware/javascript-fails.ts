@@ -1,10 +1,11 @@
-import test from 'ava'
+import {rejects} from 'node:assert'
+import {test} from 'node:test'
 import {Bot, type Context as BaseContext} from 'grammy'
 import type {ButtonAction} from '../../source/action-hive.js'
 import type {MenuLike} from '../../source/menu-like.js'
 import {MenuMiddleware} from '../../source/menu-middleware.js'
 
-test('not supply reply as a middleware directly', async t => {
+await test('menu-middleware javascript-fails not supply reply as a middleware directly', async () => {
 	const menu: MenuLike<unknown> = {
 		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set(),
@@ -19,26 +20,17 @@ test('not supply reply as a middleware directly', async t => {
 
 	const next = async () => {}
 
-	await t.throwsAsync(
-		async () => {
-			// @ts-expect-error
-			await mm.replyToContext({} as any, next)
-		},
-		{
-			message: /not supply this as a middleware directly/,
-		},
-	)
+	await rejects(async () => {
+		// @ts-expect-error
+		await mm.replyToContext({} as any, next)
+	}, {message: /not supply this as a middleware directly/})
 })
 
-test.skip('action is run and no path to update afterwards is returned', async t => {
-	t.plan(2)
+await test('menu-middleware javascript-fails action is run and no path to update afterwards is returned', async () => {
 	const action: ButtonAction<BaseContext> = {
 		trigger: /^\/what$/,
-		// @ts-expect-error
-		doFunction() {
-			t.pass()
-			// Not returning something is the issue here
-		},
+		// @ts-expect-error function does not return anything which is the issue here
+		doFunction() {},
 	}
 	const menu: MenuLike<BaseContext> = {
 		listSubmenus: () => new Set([]),
@@ -54,53 +46,31 @@ test.skip('action is run and no path to update afterwards is returned', async t 
 
 	const bot = new Bot('123:ABC');
 	(bot as any).botInfo = {}
-	bot.use(async (ctx, next) => {
-		ctx.reply = () => {
-			throw new Error('Use sendMenu instead')
-		}
-
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
-		return next()
-	})
-
 	bot.use(mm.middleware())
 
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
-	bot.catch(error => {
-		if (error instanceof Error) {
-			t.is(
-				error.message,
-				'You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.',
-			)
-		} else {
-			t.fail('error is not of instance Error')
-		}
-	})
-
-	await bot.handleUpdate({
-		update_id: 666,
-		callback_query: {
-			id: '666',
-			from: {} as any,
-			chat_instance: '666',
-			data: '/what',
-		},
+	await rejects(async () =>
+		bot.handleUpdate({
+			update_id: 666,
+			callback_query: {
+				id: '666',
+				from: {} as any,
+				chat_instance: '666',
+				data: '/what',
+			},
+		}), {
+		message:
+			/You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.$/,
 	})
 })
 
-test.skip('action is run and an empty path to update afterwards is returned throws', async t => {
-	t.plan(2)
+await test('menu-middleware javascript-fails action is run and an empty path to update afterwards is returned throws', async () => {
 	const action: ButtonAction<BaseContext> = {
 		trigger: /^\/what$/,
 		doFunction() {
-			t.pass()
 			return ''
 		},
 	}
@@ -118,43 +88,23 @@ test.skip('action is run and an empty path to update afterwards is returned thro
 
 	const bot = new Bot('123:ABC');
 	(bot as any).botInfo = {}
-	bot.use(async (ctx, next) => {
-		ctx.reply = () => {
-			throw new Error('Use sendMenu instead')
-		}
-
-		ctx.answerCallbackQuery = async () => {
-			t.pass()
-			return true
-		}
-
-		return next()
-	})
-
 	bot.use(mm.middleware())
 
 	bot.use(() => {
-		t.fail()
+		throw new Error('dont call this function')
 	})
 
-	bot.catch(error => {
-		if (error instanceof Error) {
-			t.is(
-				error.message,
-				'You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.',
-			)
-		} else {
-			t.fail('error is not of instance Error')
-		}
-	})
-
-	await bot.handleUpdate({
-		update_id: 666,
-		callback_query: {
-			id: '666',
-			from: {} as any,
-			chat_instance: '666',
-			data: '/what',
-		},
+	await rejects(async () =>
+		bot.handleUpdate({
+			update_id: 666,
+			callback_query: {
+				id: '666',
+				from: {} as any,
+				chat_instance: '666',
+				data: '/what',
+			},
+		}), {
+		message:
+			/You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.$/,
 	})
 })
