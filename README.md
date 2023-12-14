@@ -39,7 +39,7 @@ const menuMiddleware = new MenuMiddleware('/', menuTemplate);
 bot.command('start', (ctx) => menuMiddleware.replyToContext(ctx));
 bot.use(menuMiddleware);
 
-bot.launch();
+bot.start();
 ```
 
 ### More interesting one
