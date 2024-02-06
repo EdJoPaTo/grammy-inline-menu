@@ -40,8 +40,6 @@ export interface ManyChoicesOptions<Context>
 	 */
 	readonly disableChoiceExistsCheck?: boolean;
 
-	/**
-	 * Function which has to return the text the user will see on the button of a given choice
-	 */
+	/** Function which has to return the text the user will see on the button of a given choice */
 	readonly buttonText?: ChoiceTextFunc<Context>;
 }

@@ -17,9 +17,7 @@ import type {InlineKeyboard} from './keyboard.js';
 import type {MenuLike} from './menu-like.js';
 import {ensurePathMenu} from './path.js';
 
-/**
- * Generic Method which is able to send a menu to a context (given a path where it is)
- */
+/** Generic Method which is able to send a menu to a context (given a path where it is) */
 export type SendMenuFunc<Context> = (
 	menu: MenuLike<Context>,
 	context: Context,

@@ -13,14 +13,10 @@ export type PrefixOptions = {
 	 */
 	readonly prefixFalse?: string;
 
-	/**
-	 * Do not show the prefix when true.
-	 */
+	/** Do not show the prefix when true. */
 	readonly hideTrueEmoji?: boolean;
 
-	/**
-	 * Do not show the prefix when false.
-	 */
+	/** Do not show the prefix when false. */
 	readonly hideFalseEmoji?: boolean;
 };
 

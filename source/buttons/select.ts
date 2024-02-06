@@ -36,9 +36,7 @@ export interface SelectOptions<Context> extends ManyChoicesOptions<Context> {
 	 */
 	readonly showFalseEmoji?: boolean;
 
-	/**
-	 * Function returning the current state of a given choice.
-	 */
+	/** Function returning the current state of a given choice. */
 	readonly isSet: IsSetFunction<Context>;
 
 	/**
@@ -47,9 +45,7 @@ export interface SelectOptions<Context> extends ManyChoicesOptions<Context> {
 	 */
 	readonly set: SetFunction<Context>;
 
-	/**
-	 * Format the button text which is visible to the user.
-	 */
+	/** Format the button text which is visible to the user. */
 	readonly formatState?: FormatStateFunction<Context>;
 }
 

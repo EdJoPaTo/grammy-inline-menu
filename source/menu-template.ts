@@ -84,9 +84,7 @@ export class MenuTemplate<Context> {
 		return this.#actions.list(path);
 	}
 
-	/**
-	 * Lists the submenus used in this menu template. Usage only recommended for advanced usage of this library.
-	 */
+	/** Lists the submenus used in this menu template. Usage only recommended for advanced usage of this library. */
 	listSubmenus(): ReadonlySet<Submenu<Context>> {
 		return this.#submenus;
 	}

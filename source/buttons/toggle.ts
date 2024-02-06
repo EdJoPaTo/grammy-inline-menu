@@ -15,23 +15,17 @@ export type FormatStateFunction<Context> = (
 ) => ConstOrPromise<string>;
 
 export interface ToggleOptions<Context> extends SingleButtonOptions<Context> {
-	/**
-	 * Function returning the current state.
-	 */
+	/** Function returning the current state. */
 	readonly isSet: ContextPathFunc<Context, boolean>;
 
-	/**
-	 * Function which is called when a user presses the button.
-	 */
+	/** Function which is called when a user presses the button. */
 	readonly set: (
 		context: Context,
 		newState: boolean,
 		path: string,
 	) => ConstOrPromise<string | boolean>;
 
-	/**
-	 * Format the button text which is visible to the user.
-	 */
+	/** Format the button text which is visible to the user. */
 	readonly formatState?: FormatStateFunction<Context>;
 }
 
