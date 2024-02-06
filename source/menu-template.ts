@@ -4,7 +4,10 @@ import {
 	type ButtonAction,
 } from './action-hive.js';
 import type {Body} from './body.js';
-import type {SingleButtonOptions} from './buttons/basic.js';
+import type {
+	InteractionOptions,
+	SingleButtonOptions,
+} from './buttons/basic.js';
 import type {ChooseOptions} from './buttons/choose.js';
 import {
 	createPaginationChoices,
@@ -39,14 +42,6 @@ import {
 } from './keyboard.js';
 import type {MenuLike, Submenu} from './menu-like.js';
 import {ensureTriggerChild} from './path.js';
-
-export interface InteractionOptions<Context>
-	extends SingleButtonOptions<Context> {
-	/**
-	 * Function which is called when the button is pressed
-	 */
-	readonly do: ActionFunc<Context>;
-}
 
 export class MenuTemplate<Context> {
 	readonly #body: ContextPathFunc<Context, Body>;
