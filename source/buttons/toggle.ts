@@ -1,8 +1,4 @@
-import type {
-	ConstOrContextPathFunc,
-	ConstOrPromise,
-	ContextPathFunc,
-} from '../generic-types.js';
+import type {ConstOrPromise, ContextPathFunc} from '../generic-types.js';
 import type {CallbackButtonTemplate} from '../keyboard.js';
 import {prefixEmoji} from '../prefix.js';
 import type {SingleButtonOptions} from './basic.js';
@@ -30,7 +26,6 @@ export interface ToggleOptions<Context> extends SingleButtonOptions<Context> {
 }
 
 export function generateToggleButton<Context>(
-	text: ConstOrContextPathFunc<Context, string>,
 	actionPrefix: string,
 	options: ToggleOptions<Context>,
 ): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
@@ -41,9 +36,9 @@ export function generateToggleButton<Context>(
 			return undefined;
 		}
 
-		const textResult = typeof text === 'function'
-			? await text(context, path)
-			: text;
+		const textResult = typeof options.text === 'function'
+			? await options.text(context, path)
+			: options.text;
 		const state = await options.isSet(context, path);
 		return {
 			text: await formatFunction(context, textResult, state, path),

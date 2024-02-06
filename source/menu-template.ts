@@ -6,7 +6,10 @@ import {
 import type {Body} from './body.js';
 import type {
 	InteractionOptions,
+	ManualButtonOptions,
 	SingleButtonOptions,
+	SwitchToChatOptions,
+	UrlButtonOptions,
 } from './buttons/basic.js';
 import type {ChooseOptions} from './buttons/choose.js';
 import {
@@ -21,13 +24,11 @@ import type {
 } from './buttons/submenu.js';
 import {generateToggleButton, type ToggleOptions} from './buttons/toggle.js';
 import {
-	type Choices,
 	type ChoicesRecord,
 	combineHideAndChoices,
 	generateChoicesButtons,
 } from './choices/index.js';
 import type {
-	ConstOrContextFunc,
 	ConstOrContextPathFunc,
 	ContextFunc,
 	ContextPathFunc,
@@ -92,11 +93,10 @@ export class MenuTemplate<Context> {
 	/**
 	 * Allows for manual creation of a button in a very raw way of doing. Less user friendly but very customizable.
 	 * @param button constant or function returning a button representation to be added to the keyboard
-	 * @param options additional options
 	 */
 	manual(
 		button: ConstOrContextPathFunc<Context, ButtonTemplate>,
-		options: SingleButtonOptions<Context> = {},
+		options: ManualButtonOptions<Context> = {},
 	): void {
 		const {hide} = options;
 		if (hide) {
@@ -139,34 +139,30 @@ export class MenuTemplate<Context> {
 		this.#actions.add(trigger, action, undefined);
 	}
 
-	/**
-	 * Add an url button to the keyboard
-	 * @param text text to be displayed on the button
-	 * @param url url where this button should be heading
-	 * @param options additional options
+	/** Add an url button to the keyboard
+	 * @example
+	 * menuTemplate.url({
+	 *   text: 'Homepage',
+	 *   url: 'https://edjopato.de/',
+	 * });
 	 */
-	url(
-		text: ConstOrContextPathFunc<Context, string>,
-		url: ConstOrContextPathFunc<Context, string>,
-		options: SingleButtonOptions<Context> = {},
-	): void {
+	url(options: UrlButtonOptions<Context>): void {
+		const {text, url} = options;
 		this.manual(async (context, path) => ({
 			text: typeof text === 'function' ? await text(context, path) : text,
 			url: typeof url === 'function' ? await url(context, path) : url,
 		}), options);
 	}
 
-	/**
-	 * Add a switch_inline_query button to the keyboard
-	 * @param text text to be displayed on the button
-	 * @param query query that is shown next to the bot username. Can be empty ('')
-	 * @param options additional options
+	/** Add a switch_inline_query button to the keyboard
+	 * @example
+	 * menuTemplate.switchToChat({
+	 *   text: 'Use the inline mode',
+	 *   query: 'prefilled',
+	 * });
 	 */
-	switchToChat(
-		text: ConstOrContextPathFunc<Context, string>,
-		query: ConstOrContextPathFunc<Context, string>,
-		options: SingleButtonOptions<Context> = {},
-	): void {
+	switchToChat(options: SwitchToChatOptions<Context>): void {
+		const {text, query} = options;
 		this.manual(async (context, path) => ({
 			text: typeof text === 'function' ? await text(context, path) : text,
 			switch_inline_query: typeof query === 'function'
@@ -175,17 +171,15 @@ export class MenuTemplate<Context> {
 		}), options);
 	}
 
-	/**
-	 * Add a switch_inline_query_current_chat button to the keyboard
-	 * @param text text to be displayed on the button
-	 * @param query query that is shown next to the bot username. Can be empty ('')
-	 * @param options additional options
+	/** Add a switch_inline_query_current_chat button to the keyboard
+	 * @example
+	 * menuTemplate.switchToCurrentChat({
+	 *   text: 'Try out the inline mode in this chat',
+	 *   query: 'prefilled',
+	 * });
 	 */
-	switchToCurrentChat(
-		text: ConstOrContextPathFunc<Context, string>,
-		query: ConstOrContextPathFunc<Context, string>,
-		options: SingleButtonOptions<Context> = {},
-	): void {
+	switchToCurrentChat(options: SwitchToChatOptions<Context>): void {
+		const {text, query} = options;
 		this.manual(async (context, path) => ({
 			text: typeof text === 'function' ? await text(context, path) : text,
 			switch_inline_query_current_chat: typeof query === 'function'
@@ -201,40 +195,36 @@ export class MenuTemplate<Context> {
 	 * Button which only purpose is to move around the menu on click.
 	 * The relative path is inspired by the cd command.
 	 * If you want to execute a function on click use `menuTemplate.interact(…)` instead.
-	 * @param text text to be displayed on the button
 	 * @param relativePath relative target path like 'child/', '..' or '../sibling/
-	 * @param options additional options
-	 *
-	 * @example menuTemplate.navigate('back to parent menu', '..')
-	 * @example menuTemplate.navigate('to the root menu', '/')
-	 * @example menuTemplate.navigate('to a sibling menu', '../sibling/')
+	 * @example menuTemplate.navigate('..', {text: 'back to parent menu'})
+	 * @example menuTemplate.navigate('/', {text: 'to the root menu'})
+	 * @example menuTemplate.navigate('../sibling/', {text: 'to a sibling menu'})
 	 */
 	navigate(
-		text: ConstOrContextPathFunc<Context, string>,
 		relativePath: string,
-		options: SingleButtonOptions<Context> = {},
+		options: SingleButtonOptions<Context>,
 	): void {
 		this.#keyboard.add(
 			Boolean(options.joinLastRow),
-			generateCallbackButtonTemplate(text, relativePath, options.hide),
+			generateCallbackButtonTemplate(options.text, relativePath, options.hide),
 		);
 	}
 
 	/**
 	 * Add a button to which a function is executed on click.
 	 * You can update the menu afterwards by returning a relative path. If you only want to update the menu or move around use `menuTemplate.navigate(…)` instead.
-	 * @param text text to be displayed on the button
 	 * @param action unique identifier for this button within the menu template
-	 * @param options additional options. Requires `do` as you want to do something when the user pressed the button.
 	 * @example
-	 * menuTemplate.interact('Knock Knock', 'unique', {
+	 * menuTemplate.interact('unique', {
+	 *   text: 'Knock Knock',
 	 *   do: async context => {
 	 *     await context.answerCallbackQuery('Who is there?')
 	 *     return false // Do not update the menu afterwards
 	 *   }
 	 * })
 	 * @example
-	 * menuTemplate.interact('Update the current menu afterwards', 'unique', {
+	 * menuTemplate.interact('unique', {
+	 *   text: 'Update the current menu afterwards',
 	 *   do: async context => {
 	 *     // do what you want to do
 	 *     return '.' // . like the current one -> this menu
@@ -242,7 +232,6 @@ export class MenuTemplate<Context> {
 	 * })
 	 */
 	interact(
-		text: ConstOrContextPathFunc<Context, string>,
 		action: string,
 		options: InteractionOptions<Context>,
 	): void {
@@ -255,19 +244,18 @@ export class MenuTemplate<Context> {
 		this.#actions.add(new RegExp(action + '$'), options.do, options.hide);
 		this.#keyboard.add(
 			Boolean(options.joinLastRow),
-			generateCallbackButtonTemplate(text, action, options.hide),
+			generateCallbackButtonTemplate(options.text, action, options.hide),
 		);
 	}
 
 	/**
 	 * Add a button to a submenu
-	 * @param text text to be displayed on the button
 	 * @param action unique identifier for this button within the menu template
 	 * @param submenu submenu to be entered on click
-	 * @param options additional options
 	 * @example
 	 * const submenuTemplate = new MenuTemplate('I am a submenu')
-	 * submenuTemplate.interact('Text', 'unique', {
+	 * submenuTemplate.interact('unique', {
+	 *   text: 'Text',
 	 *   do: async ctx => ctx.answerCallbackQuery('You hit a button in a submenu')
 	 * })
 	 * submenuTemplate.manualRow(createBackMainMenuButtons())
@@ -275,10 +263,9 @@ export class MenuTemplate<Context> {
 	 * menuTemplate.submenu('enter submenu', 'unique', submenuTemplate)
 	 */
 	submenu(
-		text: ConstOrContextPathFunc<Context, string>,
 		action: string,
 		submenu: MenuLike<Context>,
-		options: SubmenuOptions<Context> = {},
+		options: SubmenuOptions<Context>,
 	): void {
 		ensureTriggerChild(action);
 		const actionRegex = new RegExp(action + '/');
@@ -299,24 +286,29 @@ export class MenuTemplate<Context> {
 		});
 		this.#keyboard.add(
 			Boolean(options.joinLastRow),
-			generateCallbackButtonTemplate(text, action + '/', options.hide),
+			generateCallbackButtonTemplate(options.text, action + '/', options.hide),
 		);
 	}
 
 	/**
 	 * Let the user choose one of many options and execute a function for the one the user picked
 	 * @param actionPrefix prefix which is used to create a unique identifier for each of the resulting buttons
-	 * @param choices choices the user can pick from
-	 * @param options additional options. Requires `do` as you want to do something when the user pressed a button.
+	 * @example
+	 * menuTemplate.choose('unique', {
+	 *   choices: ['walk', 'swim'],
+	 *   async do(ctx, key) {
+	 *     await ctx.answerCallbackQuery(`Lets ${key}`);
+	 *     return '..';
+	 *   }
+	 * });
 	 */
 	choose(
 		actionPrefix: string,
-		choices: ConstOrContextFunc<Context, Choices>,
 		options: ChooseOptions<Context>,
 	): void {
-		if (typeof options.do !== 'function') {
+		if (!options.choices || typeof options.do !== 'function') {
 			throw new TypeError(
-				'You have to specify `do` in order to have an interaction for the buttons.',
+				'You have to specify `choices` and `do` for choose to work.',
 			);
 		}
 
@@ -327,7 +319,7 @@ export class MenuTemplate<Context> {
 				options.do(context, getKeyFromPath(trigger, path)),
 			options.disableChoiceExistsCheck
 				? options.hide
-				: combineHideAndChoices(actionPrefix, choices, options.hide),
+				: combineHideAndChoices(actionPrefix, options.choices, options.hide),
 		);
 
 		if (options.setPage) {
@@ -340,19 +332,18 @@ export class MenuTemplate<Context> {
 		}
 
 		this.#keyboard.addCreator(
-			generateChoicesButtons(actionPrefix, false, choices, options),
+			generateChoicesButtons(actionPrefix, false, options),
 		);
 	}
 
 	/**
 	 * Submenu which is entered when a user picks one of many choices
 	 * @param actionPrefix prefix which is used to create a unique identifier for each of the resulting buttons
-	 * @param choices choices the user can pick from. Also see `menuTemplate.choose(…)` for examples on choices
 	 * @param submenu submenu to be entered when one of the choices is picked
-	 * @param options additional options
 	 * @example
 	 * const submenu = new MenuTemplate<MyContext>(ctx => `Welcome to ${ctx.match[1]}`)
-	 * submenu.interact('Text', 'unique', {
+	 * submenu.interact('unique', {
+	 *   text: 'Text',
 	 *   do: async ctx => {
 	 *     console.log('Take a look at ctx.match. It contains the chosen city', ctx.match)
 	 *     await ctx.answerCallbackQuery('You hit a button in a submenu')
@@ -365,9 +356,8 @@ export class MenuTemplate<Context> {
 	 */
 	chooseIntoSubmenu(
 		actionPrefix: string,
-		choices: ConstOrContextFunc<Context, Choices>,
 		submenu: MenuLike<Context>,
-		options: ChooseIntoSubmenuOptions<Context> = {},
+		options: ChooseIntoSubmenuOptions<Context>,
 	): void {
 		ensureTriggerChild(actionPrefix);
 		const actionRegex = new RegExp(actionPrefix + ':([^/]+)/');
@@ -385,7 +375,7 @@ export class MenuTemplate<Context> {
 			action: actionRegex,
 			hide: options.disableChoiceExistsCheck
 				? options.hide
-				: combineHideAndChoices(actionPrefix, choices, options.hide),
+				: combineHideAndChoices(actionPrefix, options.choices, options.hide),
 			menu: submenu,
 		});
 
@@ -399,18 +389,17 @@ export class MenuTemplate<Context> {
 		}
 
 		this.#keyboard.addCreator(
-			generateChoicesButtons(actionPrefix, true, choices, options),
+			generateChoicesButtons(actionPrefix, true, options),
 		);
 	}
 
 	/**
 	 * Let the user select one (or multiple) options from a set of choices
 	 * @param actionPrefix prefix which is used to create a unique identifier for each of the resulting buttons
-	 * @param choices choices the user can pick from. Also see `menuTemplate.choose(…)` for examples on choices
-	 * @param options additional options. Requires `set` and `isSet`.
 	 * @example
 	 * // User can select exactly one
-	 * menuTemplate.select('unique', ['at home', 'at work', 'somewhere else'], {
+	 * menuTemplate.select('unique', {
+	 *   choices: ['at home', 'at work', 'somewhere else'],
 	 *   isSet: (context, key) => context.session.currentLocation === key,
 	 *   set: (context, key) => {
 	 *     context.session.currentLocation = key
@@ -419,8 +408,9 @@ export class MenuTemplate<Context> {
 	 * })
 	 * @example
 	 * // User can select one of multiple options
-	 * menuTemplate.select('unique', ['has arms', 'has legs', 'has eyes', 'has wings'], {
+	 * menuTemplate.select('unique', {
 	 *   showFalseEmoji: true,
+	 *   choices: ['has arms', 'has legs', 'has eyes', 'has wings'],
 	 *   isSet: (context, key) => Boolean(context.session.bodyparts[key]),
 	 *   set: (context, key, newState) => {
 	 *     context.session.bodyparts[key] = newState
@@ -430,15 +420,15 @@ export class MenuTemplate<Context> {
 	 */
 	select(
 		actionPrefix: string,
-		choices: ConstOrContextFunc<Context, Choices>,
 		options: SelectOptions<Context>,
 	): void {
 		if (
-			typeof options.set !== 'function'
+			!options.choices
+			|| typeof options.set !== 'function'
 			|| typeof options.isSet !== 'function'
 		) {
 			throw new TypeError(
-				'You have to specify `set` and `isSet` in order to work with select. If you just want to let the user choose between multiple options use `menuTemplate.choose(…)` instead.',
+				'You have to specify `choices`, `set` and `isSet` in order to work with select. If you just want to let the user choose between multiple options use `menuTemplate.choose(…)` instead.',
 			);
 		}
 
@@ -449,9 +439,11 @@ export class MenuTemplate<Context> {
 				const key = getKeyFromPath(trueTrigger, path);
 				return options.set(context, key, true);
 			},
-			options.disableChoiceExistsCheck
-				? options.hide
-				: combineHideAndChoices(actionPrefix + 'T', choices, options.hide),
+			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(
+				actionPrefix + 'T',
+				options.choices,
+				options.hide,
+			),
 		);
 
 		const falseTrigger = new RegExp(actionPrefix + 'F:(.+)$');
@@ -461,9 +453,11 @@ export class MenuTemplate<Context> {
 				const key = getKeyFromPath(falseTrigger, path);
 				return options.set(context, key, false);
 			},
-			options.disableChoiceExistsCheck
-				? options.hide
-				: combineHideAndChoices(actionPrefix + 'F', choices, options.hide),
+			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(
+				actionPrefix + 'F',
+				options.choices,
+				options.hide,
+			),
 		);
 
 		if (options.setPage) {
@@ -476,7 +470,7 @@ export class MenuTemplate<Context> {
 		}
 
 		this.#keyboard.addCreator(
-			generateSelectButtons(actionPrefix, choices, options),
+			generateSelectButtons(actionPrefix, options),
 		);
 	}
 
@@ -485,7 +479,6 @@ export class MenuTemplate<Context> {
 	 * When the user presses one of the buttons `setPage` is called with the specified button.
 	 * In order to determine which is the current page and how many pages there are `getCurrentPage` and `getTotalPages` are called to which you have to return the current value
 	 * @param actionPrefix prefix which is used to create a unique identifier for each of the resulting buttons
-	 * @param options additional options. Requires `getCurrentPage`, `getTotalPages` and `setPage`.
 	 */
 	pagination(actionPrefix: string, options: PaginationOptions<Context>): void {
 		if (
@@ -511,8 +504,9 @@ export class MenuTemplate<Context> {
 			options.hide,
 		);
 		this.#keyboard.addCreator(
-			generateChoicesButtons(actionPrefix, false, paginationChoices, {
+			generateChoicesButtons(actionPrefix, false, {
 				columns: 5,
+				choices: paginationChoices,
 				hide: options.hide,
 			}),
 		);
@@ -521,11 +515,10 @@ export class MenuTemplate<Context> {
 	/**
 	 * Toogle a value when the button is pressed.
 	 * If you want to toggle multiple values use `menuTemplate.select(…)`
-	 * @param text text to be displayed on the button
 	 * @param actionPrefix unique identifier for this button within the menu template
-	 * @param options additional options. Requires `set` and `isSet`.
 	 * @example
-	 * menuTemplate.toggle('Text', 'unique', {
+	 * menuTemplate.toggle('unique', {
+	 *   text: 'Text',
 	 *   isSet: context => Boolean(context.session.isFunny),
 	 *   set: (context, newState) => {
 	 *     context.session.isFunny = newState
@@ -534,7 +527,8 @@ export class MenuTemplate<Context> {
 	 * })
 	 * @example
 	 * // You can use a custom format for the state instead of the default emoji
-	 * menuTemplate.toggle('Lamp', 'unique', {
+	 * menuTemplate.toggle('unique', {
+	 *   text: 'Lamp',
 	 *   formatState: (context, text, state) => `${text}: ${state ? 'on' : 'off'}`,
 	 *   isSet: context => Boolean(context.session.lamp),
 	 *   set: (context, newState) => {
@@ -544,16 +538,16 @@ export class MenuTemplate<Context> {
 	 * })
 	 */
 	toggle(
-		text: ConstOrContextPathFunc<Context, string>,
 		actionPrefix: string,
 		options: ToggleOptions<Context>,
 	): void {
 		if (
-			typeof options.set !== 'function'
+			!options.text
+			|| typeof options.set !== 'function'
 			|| typeof options.isSet !== 'function'
 		) {
 			throw new TypeError(
-				'You have to specify `set` and `isSet` in order to work with toggle. If you just want to implement something more generic use `interact`',
+				'You have to specify `text`, `set` and `isSet` in order to work with toggle. If you just want to implement something more generic use `interact`',
 			);
 		}
 
@@ -571,7 +565,7 @@ export class MenuTemplate<Context> {
 
 		this.#keyboard.add(
 			Boolean(options.joinLastRow),
-			generateToggleButton(text, actionPrefix, options),
+			generateToggleButton(actionPrefix, options),
 		);
 	}
 }
@@ -581,6 +575,12 @@ function generateCallbackButtonTemplate<Context>(
 	relativePath: string,
 	hide: undefined | ContextPathFunc<Context, boolean>,
 ): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
+	if (!text) {
+		throw new TypeError(
+			'you have to specify `text` in order to show a button label',
+		);
+	}
+
 	return async (context, path) => {
 		if (await hide?.(context, path)) {
 			return undefined;

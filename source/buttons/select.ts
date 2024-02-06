@@ -1,5 +1,4 @@
 import {
-	type Choices,
 	createChoiceTextFunction,
 	generateChoicesPaginationButtons,
 	type ManyChoicesOptions,
@@ -8,7 +7,7 @@ import {
 	ensureCorrectChoiceKeys,
 	getChoiceKeysFromChoices,
 } from '../choices/understand-choices.js';
-import type {ConstOrContextFunc, ConstOrPromise} from '../generic-types.js';
+import type {ConstOrPromise} from '../generic-types.js';
 import type {CallbackButtonTemplate} from '../keyboard.js';
 import {prefixEmoji} from '../prefix.js';
 import {getButtonsAsRows, getButtonsOfPage} from './align.js';
@@ -51,7 +50,6 @@ export interface SelectOptions<Context> extends ManyChoicesOptions<Context> {
 
 export function generateSelectButtons<Context>(
 	actionPrefix: string,
-	choices: ConstOrContextFunc<Context, Choices>,
 	options: SelectOptions<Context>,
 ): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
 	return async (context, path) => {
@@ -59,9 +57,9 @@ export function generateSelectButtons<Context>(
 			return [];
 		}
 
-		const choicesConstant = typeof choices === 'function'
-			? await choices(context)
-			: choices;
+		const choicesConstant = typeof options.choices === 'function'
+			? await options.choices(context)
+			: options.choices;
 		const choiceKeys = getChoiceKeysFromChoices(choicesConstant);
 		ensureCorrectChoiceKeys(actionPrefix, path, choiceKeys);
 		const textFunction = createChoiceTextFunction(

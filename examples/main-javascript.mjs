@@ -14,10 +14,11 @@ import {
 
 const menu = new MenuTemplate(() => 'Main Menu\n' + new Date().toISOString());
 
-menu.url('EdJoPaTo.de', 'https://edjopato.de');
+menu.url({text: 'EdJoPaTo.de', url: 'https://edjopato.de'});
 
 let mainMenuToggle = false;
-menu.toggle('toggle me', 'toggle me', {
+menu.toggle('toggle me', {
+	text: 'toggle me',
 	set(_, newState) {
 		mainMenuToggle = newState;
 		// Update the menu afterwards
@@ -26,7 +27,8 @@ menu.toggle('toggle me', 'toggle me', {
 	isSet: () => mainMenuToggle,
 });
 
-menu.interact('interaction', 'interact', {
+menu.interact('interact', {
+	text: 'interaction',
 	hide: () => mainMenuToggle,
 	async do(ctx) {
 		await ctx.answerCallbackQuery({text: 'you clicked me!'});
@@ -35,8 +37,9 @@ menu.interact('interaction', 'interact', {
 	},
 });
 
-menu.interact('update after action', 'update afterwards', {
+menu.interact('update afterwards', {
 	joinLastRow: true,
+	text: 'update after action',
 	hide: () => mainMenuToggle,
 	async do(ctx) {
 		await ctx.answerCallbackQuery({text: 'I will update the menu now…'});
@@ -50,7 +53,8 @@ menu.interact('update after action', 'update afterwards', {
 });
 
 let selectedKey = 'b';
-menu.select('select', ['A', 'B', 'C'], {
+menu.select('select', {
+	choices: ['A', 'B', 'C'],
 	async set(ctx, key) {
 		selectedKey = key;
 		await ctx.answerCallbackQuery({text: `you selected ${key}`});
@@ -64,16 +68,6 @@ const foodMenu = new MenuTemplate(
 );
 
 const people = {Mark: {}, Paul: {}};
-const FOOD = ['bread', 'cake', 'bananas'];
-
-function personButtonText(_, key) {
-	const entry = people[key];
-	if (entry?.food) {
-		return `${key} (${entry.food})`;
-	}
-
-	return key;
-}
 
 const foodSelectSubmenu = new MenuTemplate(ctx => {
 	const person = ctx.match[1];
@@ -84,7 +78,8 @@ const foodSelectSubmenu = new MenuTemplate(ctx => {
 
 	return `${person} likes ${hisChoice} currently.`;
 });
-foodSelectSubmenu.toggle('Prefer tea', 'tea', {
+foodSelectSubmenu.toggle('tea', {
+	text: 'Prefer tea',
 	set(ctx, choice) {
 		const person = ctx.match[1];
 		people[person].tee = choice;
@@ -95,7 +90,8 @@ foodSelectSubmenu.toggle('Prefer tea', 'tea', {
 		return people[person].tee === true;
 	},
 });
-foodSelectSubmenu.select('food', FOOD, {
+foodSelectSubmenu.select('food', {
+	choices: ['bread', 'cake', 'bananas'],
 	set(ctx, key) {
 		const person = ctx.match[1];
 		people[person].food = key;
@@ -108,13 +104,22 @@ foodSelectSubmenu.select('food', FOOD, {
 });
 foodSelectSubmenu.manualRow(createBackMainMenuButtons());
 
-foodMenu.chooseIntoSubmenu('person', () => Object.keys(people), foodSelectSubmenu, {
-	buttonText: personButtonText,
+foodMenu.chooseIntoSubmenu('person', foodSelectSubmenu, {
 	columns: 2,
+	choices: () => Object.keys(people),
+	buttonText(_ctx, key) {
+		const entry = people[key];
+		if (entry?.food) {
+			return `${key} (${entry.food})`;
+		}
+
+		return key;
+	},
 });
 foodMenu.manualRow(createBackMainMenuButtons());
 
-menu.submenu('Food menu', 'food', foodMenu, {
+menu.submenu('food', foodMenu, {
+	text: 'Food menu',
 	hide: () => mainMenuToggle,
 });
 
@@ -200,14 +205,16 @@ const mediaMenu = new MenuTemplate(() => {
 		media: 'https://telegram.org/img/SiteiOs.jpg',
 	};
 });
-mediaMenu.interact('Just a button', 'randomButton', {
+mediaMenu.interact('randomButton', {
+	text: 'Just a button',
 	async do(ctx) {
 		await ctx.answerCallbackQuery({text: 'Just a callback query answer'});
 		return false;
 	},
 });
-mediaMenu.select('type', MEDIA_OPTIONS, {
+mediaMenu.select('type', {
 	columns: 2,
+	choices: MEDIA_OPTIONS,
 	isSet: (_, key) => mediaOption === key,
 	set(_, key) {
 		mediaOption = key;
@@ -216,7 +223,9 @@ mediaMenu.select('type', MEDIA_OPTIONS, {
 });
 mediaMenu.manualRow(createBackMainMenuButtons());
 
-menu.submenu('Media Menu', 'media', mediaMenu);
+menu.submenu('media', mediaMenu, {
+	text: 'Media Menu',
+});
 
 const menuMiddleware = new MenuMiddleware('/', menu);
 console.log(menuMiddleware.tree());

@@ -4,7 +4,8 @@ import {MenuTemplate} from '../../source/menu-template.js';
 
 await test('menu-template toggle button hidden', async () => {
 	const menu = new MenuTemplate('whatever');
-	menu.toggle('Button', 'unique', {
+	menu.toggle('unique', {
+		text: 'Button',
 		hide: () => true,
 		isSet() {
 			throw new Error('do not call this function when hidden');
@@ -19,7 +20,8 @@ await test('menu-template toggle button hidden', async () => {
 
 await test('menu-template toggle button true', async () => {
 	const menu = new MenuTemplate<string>('whatever');
-	menu.toggle('Button', 'unique', {
+	menu.toggle('unique', {
+		text: 'Button',
 		isSet(context, path) {
 			strictEqual(context, 'foo');
 			strictEqual(path, '/');
@@ -38,7 +40,8 @@ await test('menu-template toggle button true', async () => {
 
 await test('menu-template toggle button false', async () => {
 	const menu = new MenuTemplate<string>('whatever');
-	menu.toggle('Button', 'unique', {
+	menu.toggle('unique', {
+		text: 'Button',
 		isSet(context, path) {
 			strictEqual(context, 'foo');
 			strictEqual(path, '/');
@@ -57,7 +60,8 @@ await test('menu-template toggle button false', async () => {
 
 await test('menu-template toggle action triggers', () => {
 	const menu = new MenuTemplate<string>('whatever');
-	menu.toggle('Button', 'unique', {
+	menu.toggle('unique', {
+		text: 'Button',
 		hide: () => true,
 		isSet() {
 			throw new Error('do not call this function');
@@ -77,7 +81,8 @@ await test('menu-template toggle action triggers', () => {
 
 await test('menu-template toggle action hidden', async () => {
 	const menu = new MenuTemplate<string>('whatever');
-	menu.toggle('Button', 'unique', {
+	menu.toggle('unique', {
+		text: 'Button',
 		hide: () => true,
 		isSet() {
 			throw new Error('do not call this function');
@@ -98,7 +103,8 @@ await test('menu-template toggle action hidden', async () => {
 
 await test('menu-template toggle action true', async () => {
 	const menu = new MenuTemplate<string>('whatever');
-	menu.toggle('Button', 'unique', {
+	menu.toggle('unique', {
+		text: 'Button',
 		isSet() {
 			throw new Error('do not call this function');
 		},
@@ -118,7 +124,8 @@ await test('menu-template toggle action true', async () => {
 
 await test('menu-template toggle action false', async () => {
 	const menu = new MenuTemplate<string>('whatever');
-	menu.toggle('Button', 'unique', {
+	menu.toggle('unique', {
+		text: 'Button',
 		isSet() {
 			throw new Error('do not call this function');
 		},

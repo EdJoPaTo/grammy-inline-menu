@@ -26,7 +26,8 @@ const menuTemplate = new MenuTemplate<MyContext>((ctx) =>
 	`Hey ${ctx.from.first_name}!`
 );
 
-menuTemplate.interact('I am excited!', 'a', {
+menuTemplate.interact('unique', {
+	text: 'I am excited!',
 	do: async (ctx) => {
 		await ctx.reply('As am I!');
 		return false;
@@ -50,42 +51,6 @@ Look at the code here: [TypeScript](examples/main-typescript.ts) / [JavaScript (
 
 ## Version migration
 
-### Migrate from version 4 to 5
-
-If your project still uses version 4 of this library see [v4 documentation](https://github.com/EdJoPaTo/telegraf-inline-menu/blob/v4.0.1/README.md) and consider refactoring to version 5.
-
-List of things to migrate:
-
-- `TelegrafInlineMenu` was split into multiple classes.
-  When you used `new TelegrafInlineMenu(text)`, you will use `new MenuTemplate(body)` now.
-- Applying the menu to the bot via `bot.use` changed. This can now be done with the `MenuMiddleware`. Check the [Basic Example](#basic-example)
-- `button` and `simpleButton` are combined and renamed into `interact`. See [How can I run a simple method when pressing a button?](#how-can-i-run-a-simple-method-when-pressing-a-button)
-- `selectSubmenu` was renamed to `chooseIntoSubmenu`
-- `select` was split into `choose` and `select`. See [What's the difference between choose and select?](#whats-the-difference-between-choose-and-select)
-- `question` is moved into a separate library. See [Didn't this menu had a question function?](#didnt-this-menu-had-a-question-function)
-- The menu does not automatically add back and main menu buttons anymore.
-  Use `menuTemplate.manualRow(createBackMainMenuButtons())` for that at each menu which should include these buttons.
-- `setCommand` and `replyMenuMiddleware` were replaced by multiple different functions. See [Can I send the menu manually?](#can-i-send-the-menu-manually)
-
-### Migrate from version 5 to 6
-
-Version 6 switched from Telegraf 3.38 to 4.0. See the [Telegraf migration guide for this set of changes](https://github.com/telegraf/telegraf/releases/tag/v4.0.0).
-
-telegraf-inline-menu is relatively unaffected by this.
-The only change required besides the Telegraf changes is the change of `ctx.match`.
-Simply add `match` to your `MyContext` type:
-
-```ts
-export interface MyContext extends TelegrafContext {
-	readonly match: RegExpExecArray | undefined;
-	…
-}
-```
-
-Telegraf knows when match is available or not.
-The default Context does not have match anymore.
-telegraf-inline-menu should also know this in a future release.
-
 ### Migrate from version 6 to 7
 
 Version 7 switches from Telegraf to [grammY](https://github.com/grammyjs/grammY) as a Telegram Bot framework.
@@ -96,6 +61,37 @@ grammY has various benefits over Telegraf as Telegraf is quite old and grammY le
 -import {MenuTemplate, MenuMiddleware} from 'telegraf-inline-menu'
 +import {Bot} from 'grammy'
 +import {MenuTemplate, MenuMiddleware} from 'grammy-inline-menu'
+```
+
+### Migrate from version 8 to 9
+
+Version 9 moves `MenuTemplate` arguments into the options object.
+This results in shorter lines and easier code readability.
+It also allows to inline methods easier.
+
+```diff
+-menuTemplate.interact((ctx) => ctx.i18n.t('button'), 'unique', {
++menuTemplate.interact('unique', {
++  text: (ctx) => ctx.i18n.t('button'),
+   do: async (ctx) => {
+     …
+   }
+}
+```
+
+```diff
+-menuTemplate.url('Text', 'https://edjopato.de', { joinLastRow: true });
++menuTemplate.url({ text: 'Text', url: 'https://edjopato.de', joinLastRow: true });
+```
+
+```diff
+-menuTemplate.choose('unique', ['walk', 'swim'], {
++menuTemplate.choose('unique', {
++  choices: ['walk', 'swim'],
+   do: async (ctx, key) => {
+     …
+	 }
+ }
 ```
 
 ## How does it work
@@ -194,7 +190,8 @@ When using as a function the arguments are the context and the path of the menu 
 ### How can I run a simple method when pressing a button?
 
 ```ts
-menuTemplate.interact('Text', 'unique', {
+menuTemplate.interact('unique', {
+	text: 'Text',
 	do: async (ctx) => {
 		await ctx.answerCallbackQuery('yaay');
 		return false;
@@ -215,7 +212,8 @@ Or to a sibling menu with `../sibling`.
 If you just want to navigate without doing logic, you should prefer `.navigate(…)`.
 
 ```ts
-menuTemplate.interact('Text', 'unique', {
+menuTemplate.interact('unique', {
+	text: 'Text',
 	do: async (ctx) => {
 		await ctx.answerCallbackQuery('go to parent menu after doing some logic');
 		return '..';
@@ -230,7 +228,8 @@ This is often required when translating ([i18n](https://grammy.dev/plugins/i18n.
 Also check out other buttons like [toggle](#how-can-i-toggle-a-value-easily) as they do some formatting of the button text for you.
 
 ```ts
-menuTemplate.interact((ctx) => ctx.i18n.t('button'), 'unique', {
+menuTemplate.interact('unique', {
+	text: (ctx) => ctx.i18n.t('button'),
 	do: async (ctx) => {
 		await ctx.answerCallbackQuery(ctx.i18n.t('reponse'));
 		return '.';
@@ -241,7 +240,7 @@ menuTemplate.interact((ctx) => ctx.i18n.t('button'), 'unique', {
 ### How can I show a URL button?
 
 ```ts
-menuTemplate.url('Text', 'https://edjopato.de');
+menuTemplate.url({ text: 'Text', url: 'https://edjopato.de' });
 ```
 
 ### How can I display two buttons in the same row?
@@ -249,15 +248,17 @@ menuTemplate.url('Text', 'https://edjopato.de');
 Use `joinLastRow` in the second button
 
 ```ts
-menuTemplate.interact('Text', 'unique', {
+menuTemplate.interact('unique', {
+	text: 'First',
 	do: async (ctx) => {
 		await ctx.answerCallbackQuery('yaay');
 		return false;
 	},
 });
 
-menuTemplate.interact('Text', 'unique', {
+menuTemplate.interact('unique', {
 	joinLastRow: true,
+	text: 'Second',
 	do: async (ctx) => {
 		await ctx.answerCallbackQuery('yaay');
 		return false;
@@ -268,7 +269,8 @@ menuTemplate.interact('Text', 'unique', {
 ### How can I toggle a value easily?
 
 ```ts
-menuTemplate.toggle('Text', 'unique', {
+menuTemplate.toggle('unique', {
+	text: 'Text',
 	isSet: (ctx) => ctx.session.isFunny,
 	set: (ctx, newState) => {
 		ctx.session.isFunny = newState;
@@ -280,7 +282,8 @@ menuTemplate.toggle('Text', 'unique', {
 ### How can I select one of many values?
 
 ```ts
-menuTemplate.select('unique', ['human', 'bird'], {
+menuTemplate.select('unique', {
+	choices: ['human', 'bird'],
 	isSet: (ctx, key) => ctx.session.choice === key,
 	set: (ctx, key) => {
 		ctx.session.choice = key;
@@ -292,8 +295,9 @@ menuTemplate.select('unique', ['human', 'bird'], {
 ### How can I toggle many values?
 
 ```ts
-menuTemplate.select('unique', ['has arms', 'has legs', 'has eyes', 'has wings'], {
+menuTemplate.select('unique', {
 	showFalseEmoji: true,
+	choices: ['has arms', 'has legs', 'has eyes', 'has wings'],
 	isSet: (ctx, key) => Boolean(ctx.session.bodyparts[key]),
 	set: (ctx, key, newState) => {
 		ctx.session.bodyparts[key] = newState;
@@ -305,7 +309,8 @@ menuTemplate.select('unique', ['has arms', 'has legs', 'has eyes', 'has wings'],
 ### How can I interact with many values based on the pressed button?
 
 ```ts
-menuTemplate.choose('unique', ['walk', 'swim'], {
+menuTemplate.choose('unique', {
+	choices: ['walk', 'swim'],
 	do: async (ctx, key) => {
 		await ctx.answerCallbackQuery(`Lets ${key}`);
 		// You can also go back to the parent menu afterwards for some 'quick' interactions in submenus
@@ -333,13 +338,14 @@ const choices: Record<string, string> = {
 	c: 'Canada'
 }
 
-menuTemplate.choose('unique', choices, …)
+menuTemplate.choose('unique', {choices, …})
 ```
 
 You can also use the `buttonText` function for `.choose(…)` or `formatState` for `.select(…)` (and `.toggle(…)`)
 
 ```ts
-menuTemplate.choose('unique', ['a', 'b'], {
+menuTemplate.choose('unique', {
+	choices: ['a', 'b'],
 	do: …,
 	buttonText: (context, text) => {
 		return text.toUpperCase()
@@ -372,9 +378,10 @@ You can select the amount of rows and columns via `maxRows` and `columns`.
 The pagination works similar to `menuTemplate.pagination`, but you do not need to supply the amount of total pages as this is calculated from your choices.
 
 ```ts
-menuTemplate.choose('eat', ['cheese', 'bread', 'salad', 'tree', …], {
+menuTemplate.choose('eat', {
 	columns: 1,
 	maxRows: 2,
+	choices: ['cheese', 'bread', 'salad', 'tree', …],
 	getCurrentPage: context => context.session.page,
 	setPage: (context, page) => {
 		context.session.page = page
@@ -386,12 +393,13 @@ menuTemplate.choose('eat', ['cheese', 'bread', 'salad', 'tree', …], {
 
 ```ts
 const submenuTemplate = new MenuTemplate<MyContext>('I am a submenu');
-submenuTemplate.interact('Text', 'unique', {
+submenuTemplate.interact('unique', {
+	text: 'Text',
 	do: async (ctx) => ctx.answerCallbackQuery('You hit a button in a submenu'),
 });
 submenuTemplate.manualRow(createBackMainMenuButtons());
 
-menuTemplate.submenu('Text', 'unique', submenuTemplate);
+menuTemplate.submenu('unique', submenuTemplate, { text: 'Text' });
 ```
 
 ### How can I use a submenu with many choices?
@@ -400,7 +408,8 @@ menuTemplate.submenu('Text', 'unique', submenuTemplate);
 const submenuTemplate = new MenuTemplate<MyContext>((ctx) =>
 	`You chose city ${ctx.match[1]}`
 );
-submenuTemplate.interact('Text', 'unique', {
+submenuTemplate.interact('unique', {
+	text: 'Text',
 	do: async (ctx) => {
 		console.log(
 			'Take a look at ctx.match. It contains the chosen city',
@@ -412,11 +421,9 @@ submenuTemplate.interact('Text', 'unique', {
 });
 submenuTemplate.manualRow(createBackMainMenuButtons());
 
-menuTemplate.chooseIntoSubmenu('unique', [
-	'Gotham',
-	'Mos Eisley',
-	'Springfield',
-], submenuTemplate);
+menuTemplate.chooseIntoSubmenu('unique', submenuTemplate, {
+	choices: ['Gotham', 'Mos Eisley', 'Springfield'],
+});
 ```
 
 ### Can I close the menu?
@@ -429,7 +436,8 @@ It tries to delete the menu.
 If that does not work the keyboard is removed from the message, so the user will not accidentally press something.
 
 ```ts
-menuTemplate.interact('Delete the menu', 'unique', {
+menuTemplate.interact('unique', {
+	text: 'Delete the menu',
 	do: async (context) => {
 		await deleteMenuFromContext(context);
 		// Make sure not to try to update the menu afterwards. You just deleted it and it would just fail to update a missing message.
@@ -504,7 +512,8 @@ const myQuestion = new TelegrafStatelessQuestion<MyContext>(
 
 bot.use(myQuestion.middleware());
 
-menuTemplate.interact('Question', 'unique', {
+menuTemplate.interact('unique', {
+	text: 'Question',
 	do: async (context, path) => {
 		const text = 'Tell me the answer to the world and everything.';
 		const additionalState = getMenuOfPath(path);

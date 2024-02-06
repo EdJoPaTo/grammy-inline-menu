@@ -1,6 +1,6 @@
 import type {BasicOptions} from '../buttons/basic.js';
 import type {GenericPaginationOptions} from '../buttons/pagination.js';
-import type {ConstOrPromise} from '../generic-types.js';
+import type {ConstOrContextFunc, ConstOrPromise} from '../generic-types.js';
 
 export type Choice = string | number;
 export type ChoiceText = string;
@@ -39,6 +39,10 @@ export interface ManyChoicesOptions<Context>
 	 * Sometimes this behaviour is not helpful and can be disabled.
 	 */
 	readonly disableChoiceExistsCheck?: boolean;
+
+	/** Choices the user can pick from */
+	// TODO: generic manyChoices over key of choices?
+	readonly choices: ConstOrContextFunc<Context, Choices>;
 
 	/** Function which has to return the text the user will see on the button of a given choice */
 	readonly buttonText?: ChoiceTextFunc<Context>;

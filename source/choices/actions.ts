@@ -7,6 +7,10 @@ export function combineHideAndChoices<Context>(
 	choices: ConstOrContextFunc<Context, Choices>,
 	hide: undefined | ContextPathFunc<Context, boolean>,
 ): ContextPathFunc<Context, boolean> {
+	if (!choices) {
+		throw new TypeError('You have to specify `choices`');
+	}
+
 	return async (context, path) => {
 		if (await hide?.(context, path)) {
 			return true;

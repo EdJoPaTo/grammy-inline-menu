@@ -4,7 +4,8 @@ import {MenuTemplate} from '../../source/menu-template.js';
 
 await test('menu-template navigate hidden', async () => {
 	const menu = new MenuTemplate('whatever');
-	menu.navigate('Button', '..', {
+	menu.navigate('..', {
+		text: 'Button',
 		hide: () => true,
 	});
 	const keyboard = await menu.renderKeyboard(undefined, '/foo/bar/');
@@ -13,7 +14,7 @@ await test('menu-template navigate hidden', async () => {
 
 await test('menu-template navigate parent menu', async () => {
 	const menu = new MenuTemplate('whatever');
-	menu.navigate('Button', '..');
+	menu.navigate('..', {text: 'Button'});
 	const keyboard = await menu.renderKeyboard(undefined, '/foo/bar/');
 	deepStrictEqual(keyboard, [[{
 		text: 'Button',
@@ -23,7 +24,7 @@ await test('menu-template navigate parent menu', async () => {
 
 await test('menu-template navigate root menu', async () => {
 	const menu = new MenuTemplate('whatever');
-	menu.navigate('Button', '/');
+	menu.navigate('/', {text: 'Button'});
 	const keyboard = await menu.renderKeyboard(undefined, '/foo/bar/');
 	deepStrictEqual(keyboard, [[{
 		text: 'Button',

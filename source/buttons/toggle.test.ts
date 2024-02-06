@@ -3,8 +3,9 @@ import {test} from 'node:test';
 import {generateToggleButton} from './toggle.js';
 
 await test('toggle hidden does not render any button', async () => {
-	const func = generateToggleButton('text', 'pre', {
+	const func = generateToggleButton('pre', {
 		hide: () => true,
+		text: 'text',
 		isSet() {
 			throw new Error('do not call as its hidden');
 		},
@@ -18,7 +19,8 @@ await test('toggle hidden does not render any button', async () => {
 });
 
 await test('toggle is true button', async () => {
-	const func = generateToggleButton('text', 'pre', {
+	const func = generateToggleButton('pre', {
+		text: 'text',
 		isSet: () => true,
 		set() {
 			throw new Error('do not call as the button is not hit');
@@ -33,7 +35,8 @@ await test('toggle is true button', async () => {
 });
 
 await test('toggle is false button', async () => {
-	const func = generateToggleButton('text', 'pre', {
+	const func = generateToggleButton('pre', {
+		text: 'text',
 		isSet: () => false,
 		set() {
 			throw new Error('do not call as the button is not hit');
@@ -48,7 +51,8 @@ await test('toggle is false button', async () => {
 });
 
 await test('toggle own format', async () => {
-	const func = generateToggleButton('text', 'pre', {
+	const func = generateToggleButton('pre', {
+		text: 'text',
 		isSet: () => true,
 		set() {
 			throw new Error('do not call as the button is not hit');
@@ -68,7 +72,8 @@ await test('toggle own format', async () => {
 });
 
 await test('toggle async text', async () => {
-	const func = generateToggleButton(() => 'text', 'pre', {
+	const func = generateToggleButton('pre', {
+		text: () => 'text',
 		isSet: () => true,
 		set() {
 			throw new Error('do not call as the button is not hit');

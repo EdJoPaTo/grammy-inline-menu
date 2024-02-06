@@ -4,7 +4,6 @@ import {
 	maximumButtonsPerPage,
 } from '../buttons/align.js';
 import {createPaginationChoices} from '../buttons/pagination.js';
-import type {ConstOrContextFunc} from '../generic-types.js';
 import type {CallbackButtonTemplate} from '../keyboard.js';
 import type {Choices, ChoiceTextFunc, ManyChoicesOptions} from './types.js';
 import {
@@ -16,7 +15,6 @@ import {
 export function generateChoicesButtons<Context>(
 	actionPrefix: string,
 	isSubmenu: boolean,
-	choices: ConstOrContextFunc<Context, Choices>,
 	options: ManyChoicesOptions<Context>,
 ): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
 	return async (context, path) => {
@@ -24,9 +22,9 @@ export function generateChoicesButtons<Context>(
 			return [];
 		}
 
-		const choicesConstant = typeof choices === 'function'
-			? await choices(context)
-			: choices;
+		const choicesConstant = typeof options.choices === 'function'
+			? await options.choices(context)
+			: options.choices;
 		const choiceKeys = getChoiceKeysFromChoices(choicesConstant);
 		ensureCorrectChoiceKeys(actionPrefix, path, choiceKeys);
 		const textFunction = createChoiceTextFunction(

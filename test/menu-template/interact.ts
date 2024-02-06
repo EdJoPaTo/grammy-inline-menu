@@ -5,7 +5,8 @@ import {MenuTemplate} from '../../source/menu-template.js';
 await test('menu-template interact button is added to keyboard', async () => {
 	const menu = new MenuTemplate('whatever');
 
-	menu.interact('Button', 'unique', {
+	menu.interact('unique', {
+		text: 'Button',
 		do() {
 			throw new Error('do not call this function');
 		},
@@ -25,7 +26,8 @@ await test('menu-template interact button is added to keyboard', async () => {
 await test('menu-template interact button is added to keyboard with text function', async () => {
 	const menu = new MenuTemplate('whatever');
 
-	menu.interact(() => 'Button', 'unique', {
+	menu.interact('unique', {
+		text: () => 'Button',
 		do() {
 			throw new Error('do not call this function');
 		},
@@ -45,7 +47,8 @@ await test('menu-template interact button is added to keyboard with text functio
 await test('menu-template interact hidden button is not shown on keyboard', async () => {
 	const menu = new MenuTemplate('whatever');
 
-	menu.interact(() => 'Button', 'unique', {
+	menu.interact('unique', {
+		text: () => 'Button',
 		hide: () => true,
 		do() {
 			throw new Error('do not call this function');
@@ -59,7 +62,8 @@ await test('menu-template interact hidden button is not shown on keyboard', asyn
 await test('menu-template interact action is added with correct trigger', () => {
 	const menu = new MenuTemplate('whatever');
 
-	menu.interact('Button', 'unique', {
+	menu.interact('unique', {
+		text: 'Button',
 		do() {
 			throw new Error('do not call this function');
 		},
@@ -80,7 +84,8 @@ await test('menu-template interact action can be called', async t => {
 		strictEqual(path, '/unique');
 		return 'wow';
 	});
-	menu.interact('Button', 'unique', {
+	menu.interact('unique', {
+		text: 'Button',
 		do: doFunction,
 	});
 
@@ -96,7 +101,8 @@ await test('menu-template interact action can be called', async t => {
 await test('menu-template interact action can not be called when hidden', async () => {
 	const menu = new MenuTemplate('whatever');
 
-	menu.interact('Button', 'unique', {
+	menu.interact('unique', {
+		text: 'Button',
 		hide: () => true,
 		do() {
 			throw new Error('do not call this function when hidden');

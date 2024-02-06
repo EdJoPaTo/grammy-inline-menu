@@ -4,7 +4,8 @@ import {MenuTemplate} from '../../source/menu-template.js';
 
 await test('menu-template choose buttons hidden', async () => {
 	const menu = new MenuTemplate('whatever');
-	menu.choose('unique', ['Button'], {
+	menu.choose('unique', {
+		choices: ['Button'],
 		hide: () => true,
 		do() {
 			throw new Error('do not call this function');
@@ -16,7 +17,8 @@ await test('menu-template choose buttons hidden', async () => {
 
 await test('menu-template choose buttons', async () => {
 	const menu = new MenuTemplate('whatever');
-	menu.choose('unique', ['Button'], {
+	menu.choose('unique', {
+		choices: ['Button'],
 		do() {
 			throw new Error('do not call this function');
 		},
@@ -30,7 +32,8 @@ await test('menu-template choose buttons', async () => {
 
 await test('menu-template choose action triggers', () => {
 	const menu = new MenuTemplate('whatever');
-	menu.choose('unique', ['Button'], {
+	menu.choose('unique', {
+		choices: ['Button'],
 		do() {
 			throw new Error('do not call this function');
 		},
@@ -43,7 +46,8 @@ await test('menu-template choose action triggers', () => {
 
 await test('menu-template choose action hidden', async () => {
 	const menu = new MenuTemplate('whatever');
-	menu.choose('unique', ['Button'], {
+	menu.choose('unique', {
+		choices: ['Button'],
 		hide: () => true,
 		do() {
 			throw new Error('do not call this function');
@@ -58,7 +62,8 @@ await test('menu-template choose action hidden', async () => {
 
 await test('menu-template choose action existing button', async () => {
 	const menu = new MenuTemplate<string>('whatever');
-	menu.choose('unique', ['Button'], {
+	menu.choose('unique', {
+		choices: ['Button'],
 		do(context, key) {
 			strictEqual(context, 'bla');
 			strictEqual(key, 'Button');
@@ -74,7 +79,8 @@ await test('menu-template choose action existing button', async () => {
 
 await test('menu-template choose action not existing button', async () => {
 	const menu = new MenuTemplate('whatever');
-	menu.choose('unique', ['Button'], {
+	menu.choose('unique', {
+		choices: ['Button'],
 		do() {
 			throw new Error('do not call this function');
 		},
@@ -88,8 +94,9 @@ await test('menu-template choose action not existing button', async () => {
 
 await test('menu-template choose action not existing button check disabled', async () => {
 	const menu = new MenuTemplate<string>('whatever');
-	menu.choose('unique', ['Button'], {
+	menu.choose('unique', {
 		disableChoiceExistsCheck: true,
+		choices: ['Button'],
 		do(context, key) {
 			strictEqual(context, 'bla');
 			strictEqual(key, 'Tree');
@@ -105,9 +112,10 @@ await test('menu-template choose action not existing button check disabled', asy
 
 await test('menu-template choose with pagnination buttons', async () => {
 	const menu = new MenuTemplate('foo');
-	menu.choose('unique', ['Button', 'Tree'], {
+	menu.choose('unique', {
 		columns: 1,
 		maxRows: 1,
+		choices: ['Button', 'Tree'],
 		setPage() {
 			throw new Error('dont set the page on rendering buttons');
 		},
@@ -143,9 +151,10 @@ await test('menu-template choose set page action', async t => {
 	});
 
 	const menu = new MenuTemplate('foo');
-	menu.choose('unique', ['Button', 'Tree'], {
+	menu.choose('unique', {
 		columns: 1,
 		maxRows: 1,
+		choices: ['Button', 'Tree'],
 		setPage,
 		do() {
 			throw new Error(

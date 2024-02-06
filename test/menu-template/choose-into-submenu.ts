@@ -5,7 +5,7 @@ import {MenuTemplate} from '../../source/menu-template.js';
 await test('menu-template choose-into-submenu submenu is listed', () => {
 	const menu = new MenuTemplate('foo');
 	const submenu = new MenuTemplate('bar');
-	menu.chooseIntoSubmenu('unique', [], submenu);
+	menu.chooseIntoSubmenu('unique', submenu, {choices: []});
 	const submenus = [...menu.listSubmenus()];
 	strictEqual(submenus.length, 1);
 	strictEqual(submenus[0]!.action.source, 'unique:([^/]+)\\/');
@@ -14,7 +14,8 @@ await test('menu-template choose-into-submenu submenu is listed', () => {
 await test('menu-template choose-into-submenu submenu hidden', async () => {
 	const menu = new MenuTemplate('foo');
 	const submenu = new MenuTemplate('bar');
-	menu.chooseIntoSubmenu('unique', ['Button'], submenu, {
+	menu.chooseIntoSubmenu('unique', submenu, {
+		choices: ['Button'],
 		hide: () => true,
 	});
 	const submenus = [...menu.listSubmenus()];
@@ -26,7 +27,7 @@ await test('menu-template choose-into-submenu submenu hidden', async () => {
 await test('menu-template choose-into-submenu submenu not existing hides', async () => {
 	const menu = new MenuTemplate('foo');
 	const submenu = new MenuTemplate('bar');
-	menu.chooseIntoSubmenu('unique', ['Button'], submenu);
+	menu.chooseIntoSubmenu('unique', submenu, {choices: ['Button']});
 	const submenus = [...menu.listSubmenus()];
 	strictEqual(submenus.length, 1);
 	const isHidden = await submenus[0]!.hide?.(undefined, '/unique:Tree/');
@@ -36,7 +37,8 @@ await test('menu-template choose-into-submenu submenu not existing hides', async
 await test('menu-template choose-into-submenu submenu not existing check disabled does not hide', async () => {
 	const menu = new MenuTemplate('foo');
 	const submenu = new MenuTemplate('bar');
-	menu.chooseIntoSubmenu('unique', ['Button'], submenu, {
+	menu.chooseIntoSubmenu('unique', submenu, {
+		choices: ['Button'],
 		disableChoiceExistsCheck: true,
 	});
 	const submenus = [...menu.listSubmenus()];
@@ -50,7 +52,8 @@ await test('menu-template choose-into-submenu submenu not existing check disable
 await test('menu-template choose-into-submenu button hidden', async () => {
 	const menu = new MenuTemplate('foo');
 	const submenu = new MenuTemplate('bar');
-	menu.chooseIntoSubmenu('unique', ['Button'], submenu, {
+	menu.chooseIntoSubmenu('unique', submenu, {
+		choices: ['Button'],
 		hide: () => true,
 	});
 	const keyboard = await menu.renderKeyboard(undefined, '/');
@@ -60,7 +63,9 @@ await test('menu-template choose-into-submenu button hidden', async () => {
 await test('menu-template choose-into-submenu button', async () => {
 	const menu = new MenuTemplate('foo');
 	const submenu = new MenuTemplate('bar');
-	menu.chooseIntoSubmenu('unique', ['Button'], submenu);
+	menu.chooseIntoSubmenu('unique', submenu, {
+		choices: ['Button'],
+	});
 	const keyboard = await menu.renderKeyboard(undefined, '/');
 	deepStrictEqual(keyboard, [[{
 		text: 'Button',
@@ -71,10 +76,10 @@ await test('menu-template choose-into-submenu button', async () => {
 await test('menu-template choose-into-submenu two same action codes throws', () => {
 	const menu = new MenuTemplate('foo');
 	const submenu = new MenuTemplate('bar');
-	menu.chooseIntoSubmenu('unique', [], submenu);
-	menu.chooseIntoSubmenu('different', [], submenu);
+	menu.chooseIntoSubmenu('unique', submenu, {choices: []});
+	menu.chooseIntoSubmenu('different', submenu, {choices: []});
 	throws(() => {
-		menu.chooseIntoSubmenu('unique', [], submenu);
+		menu.chooseIntoSubmenu('unique', submenu, {choices: []});
 	}, {
 		message: /already a submenu with the action/,
 	});
@@ -83,9 +88,10 @@ await test('menu-template choose-into-submenu two same action codes throws', () 
 await test('menu-template choose-into-submenu with pagnination buttons', async () => {
 	const menu = new MenuTemplate('foo');
 	const submenu = new MenuTemplate('bar');
-	menu.chooseIntoSubmenu('unique', ['Button', 'Tree'], submenu, {
+	menu.chooseIntoSubmenu('unique', submenu, {
 		columns: 1,
 		maxRows: 1,
+		choices: ['Button', 'Tree'],
 		setPage() {
 			throw new Error('dont set the page on rendering buttons');
 		},
@@ -116,9 +122,10 @@ await test('menu-template choose-into-submenu set page action', async t => {
 		strictEqual(context, 'bla');
 		strictEqual(page, 2);
 	});
-	menu.chooseIntoSubmenu('unique', ['Button', 'Tree'], submenu, {
+	menu.chooseIntoSubmenu('unique', submenu, {
 		columns: 1,
 		maxRows: 1,
+		choices: ['Button', 'Tree'],
 		setPage,
 	});
 	const actions = [...menu.renderActionHandlers(/^\//)];
