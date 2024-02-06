@@ -1,14 +1,7 @@
-import type {
-	ConstOrPromise,
-	ContextPathFunc,
-	RegExpLike,
-} from './generic-types.js';
+import type {ContextPathFunc, RegExpLike} from './generic-types.js';
 import {combineTrigger, ensureTriggerChild} from './path.js';
 
-export type ActionFunc<Context> = (
-	context: Context,
-	path: string,
-) => ConstOrPromise<string | boolean>;
+export type ActionFunc<Context> = ContextPathFunc<Context, string | boolean>;
 
 export type ButtonAction<Context> = {
 	readonly trigger: RegExpLike;
