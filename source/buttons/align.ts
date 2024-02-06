@@ -1,5 +1,5 @@
-export const DEFAULT_BUTTON_COLUMNS = 6;
-export const DEFAULT_BUTTON_ROWS = 10;
+const DEFAULT_BUTTON_COLUMNS = 6;
+const DEFAULT_BUTTON_ROWS = 10;
 
 export function clamp(value: number, min: number, max: number): number {
 	return Math.min(Math.max(value, min), max);

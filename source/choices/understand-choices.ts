@@ -1,10 +1,10 @@
 import type {Choices, ChoicesArray, ChoicesMap} from './types.js';
 
-export function choicesIsArray(choices: Choices): choices is ChoicesArray {
+function choicesIsArray(choices: Choices): choices is ChoicesArray {
 	return Array.isArray(choices);
 }
 
-export function choicesIsMap(choices: Choices): choices is ChoicesMap {
+function choicesIsMap(choices: Choices): choices is ChoicesMap {
 	return choices instanceof Map;
 }
 
