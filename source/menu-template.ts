@@ -246,10 +246,6 @@ export class MenuTemplate<Context> {
 		action: string,
 		options: InteractionOptions<Context>,
 	): void {
-		if ('doFunc' in options) {
-			throw new TypeError('doFunc was renamed to do');
-		}
-
 		if (typeof options.do !== 'function') {
 			throw new TypeError(
 				'You have to specify `do` in order to have an interaction for this button. If you only want to navigate use `menuTemplate.navigate(…)` instead.',
@@ -318,10 +314,6 @@ export class MenuTemplate<Context> {
 		choices: ConstOrContextFunc<Context, Choices>,
 		options: ChooseOptions<Context>,
 	): void {
-		if ('doFunc' in options) {
-			throw new TypeError('doFunc was renamed to do');
-		}
-
 		if (typeof options.do !== 'function') {
 			throw new TypeError(
 				'You have to specify `do` in order to have an interaction for the buttons.',
@@ -441,12 +433,6 @@ export class MenuTemplate<Context> {
 		choices: ConstOrContextFunc<Context, Choices>,
 		options: SelectOptions<Context>,
 	): void {
-		if ('setFunc' in options || 'isSetFunc' in options) {
-			throw new TypeError(
-				'setFunc and isSetFunc were renamed to set and isSet',
-			);
-		}
-
 		if (
 			typeof options.set !== 'function'
 			|| typeof options.isSet !== 'function'
@@ -562,12 +548,6 @@ export class MenuTemplate<Context> {
 		actionPrefix: string,
 		options: ToggleOptions<Context>,
 	): void {
-		if ('setFunc' in options || 'isSetFunc' in options) {
-			throw new TypeError(
-				'setFunc and isSetFunc were renamed to set and isSet',
-			);
-		}
-
 		if (
 			typeof options.set !== 'function'
 			|| typeof options.isSet !== 'function'
