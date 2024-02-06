@@ -52,7 +52,7 @@
 		"del-cli": "^5.0.0",
 		"grammy": "^1.19.2",
 		"typescript": "^5.0.2",
-		"xo": "^0.56.0"
+		"xo": "^0.57.0"
 	},
 	"files": [
 		"dist/source",
@@ -64,7 +64,8 @@
 		"rules": {
 			"@typescript-eslint/consistent-type-definitions": "off",
 			"@typescript-eslint/naming-convention": "off",
-			"@typescript-eslint/prefer-readonly-parameter-types": "error"
+			"@typescript-eslint/prefer-readonly-parameter-types": "error",
+			"unicorn/prevent-abbreviations": "off"
 		},
 		"overrides": [
 			{
