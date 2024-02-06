@@ -31,6 +31,12 @@ await test('pagination', async t => {
 		9,
 		10,
 	]);
+	await macro(
+		'currentPage Infinity is max page',
+		10,
+		Number.POSITIVE_INFINITY,
+		[1, 9, 10],
+	);
 
 	// When there are 19 items / 2 per page there are... 9.5 pages -> 10
 	await macro('when totalPages is float use ceil', 9.5, 10, [1, 9, 10]);

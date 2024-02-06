@@ -54,24 +54,19 @@ export function createPaginationChoices(
 	totalPages: number,
 	currentPage: number | undefined,
 ): Record<number, string> {
-	// Numbers have to be within
-	// currentPage in [1..totalPages]
-	const totalPagesFixed = Math.ceil(totalPages);
-	const currentPageFinite = (typeof currentPage === 'number' && Number.isFinite(currentPage)) ? currentPage : 1;
-	const currentPageFixed = clamp(currentPageFinite, 1, totalPagesFixed);
-
 	const buttons: Record<number, string> = {};
-	if (
-		!Number.isFinite(totalPagesFixed)
-		|| !Number.isFinite(currentPageFixed)
-		|| totalPagesFixed < 2
-	) {
+
+	const totalPagesFixed = Math.ceil(totalPages);
+	if (!Number.isFinite(totalPagesFixed) || totalPagesFixed < 2) {
 		return buttons;
 	}
 
-	const before = currentPageFixed - 1;
-	const after = currentPageFixed + 1;
+	const currentPageFixed
+		= (typeof currentPage === 'number' && !Number.isNaN(currentPage))
+			? clamp(currentPage, 1, totalPagesFixed)
+			: 1;
 
+	const before = currentPageFixed - 1;
 	if (currentPageFixed > 1) {
 		if (before > 1) {
 			buttons[1] = '1 ⏪';
@@ -82,6 +77,7 @@ export function createPaginationChoices(
 
 	buttons[currentPageFixed] = String(currentPageFixed);
 
+	const after = currentPageFixed + 1;
 	if (currentPageFixed < totalPagesFixed) {
 		buttons[after] = `▶️ ${after}`;
 
