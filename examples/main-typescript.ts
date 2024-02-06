@@ -62,13 +62,13 @@ const foodMenu = new MenuTemplate<MyContext>(
 	'People like food. What do they like?',
 );
 
-type FoodChoises = {
+type FoodChoices = {
 	food?: string;
 	tee?: boolean;
 };
 
-const people: Record<string, FoodChoises> = {Mark: {}, Paul: {}};
-const food = ['bread', 'cake', 'bananas'];
+const people: Record<string, FoodChoices> = {Mark: {}, Paul: {}};
+const FOOD = ['bread', 'cake', 'bananas'] as const;
 
 function personButtonText(_: MyContext, key: string): string {
 	const entry = people[key];
@@ -101,7 +101,7 @@ foodSelectSubmenu.toggle('Prefer tea', 'tea', {
 		return people[person]!.tee === true;
 	},
 });
-foodSelectSubmenu.select('food', food, {
+foodSelectSubmenu.select('food', FOOD, {
 	set(ctx, key) {
 		const person = ctx.match![1]!;
 		people[person]!.food = key;
@@ -124,6 +124,16 @@ menu.submenu('Food menu', 'food', foodMenu, {
 	hide: () => mainMenuToggle,
 });
 
+const MEDIA_OPTIONS = [
+	'animation',
+	'document',
+	'photo1',
+	'photo2',
+	'video',
+	'location',
+	'venue',
+	'just text',
+] as const;
 let mediaOption = 'photo1';
 const mediaMenu = new MenuTemplate<MyContext>(() => {
 	if (mediaOption === 'video') {
@@ -154,7 +164,8 @@ const mediaMenu = new MenuTemplate<MyContext>(() => {
 	if (mediaOption === 'document') {
 		return {
 			type: 'document',
-			media: 'https://telegram.org/file/464001088/1/bI7AJLo7oX4.287931.zip/374fe3b0a59dc60005',
+			media:
+				'https://telegram.org/file/464001088/1/bI7AJLo7oX4.287931.zip/374fe3b0a59dc60005',
 			text: 'Just a caption for a <b>document</b>',
 			parse_mode: 'HTML',
 		};
@@ -201,7 +212,7 @@ mediaMenu.interact('Just a button', 'randomButton', {
 		return false;
 	},
 });
-mediaMenu.select('type', ['animation', 'document', 'photo1', 'photo2', 'video', 'location', 'venue', 'just text'], {
+mediaMenu.select('type', MEDIA_OPTIONS, {
 	columns: 2,
 	isSet: (_, key) => mediaOption === key,
 	set(_, key) {
@@ -234,13 +245,8 @@ bot.catch(error => {
 	console.log('bot error', error);
 });
 
-async function startup() {
-	await bot.start({
-		onStart(botInfo) {
-			console.log(new Date(), 'Bot starts as', botInfo.username);
-		},
-	});
-}
-
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-startup();
+await bot.start({
+	onStart(botInfo) {
+		console.log(new Date(), 'Bot starts as', botInfo.username);
+	},
+});
