@@ -16,7 +16,7 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/EdJoPaTo/grammy-inline-menu.git"
+		"url": "git+https://github.com/EdJoPaTo/grammy-inline-menu.git"
 	},
 	"bugs": {
 		"url": "https://github.com/EdJoPaTo/grammy-inline-menu/issues"
