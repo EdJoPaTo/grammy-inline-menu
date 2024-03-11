@@ -185,8 +185,6 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(
 ) {
 	if (isMediaBody(body)) {
 		const mediaOther = createSendMediaOther(body, keyboard, other);
-
-		// eslint-disable-next-line default-case
 		switch (body.type) {
 			case 'animation': {
 				return context.replyWithAnimation(body.media, mediaOther);
@@ -268,8 +266,6 @@ export function generateSendMenuToChatFunction<Context>(
 
 		if (isMediaBody(body)) {
 			const mediaOther = createSendMediaOther(body, keyboard, other);
-
-			// eslint-disable-next-line default-case
 			switch (body.type) {
 				case 'animation': {
 					return telegram.sendAnimation(chatId, body.media, mediaOther);
