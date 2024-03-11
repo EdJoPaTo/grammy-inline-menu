@@ -56,7 +56,8 @@
 	},
 	"files": [
 		"dist/source",
-		"!*.test.*"
+		"!*.test.*",
+		"!test.*"
 	],
 	"main": "./dist/source/index.js",
 	"types": "./dist/source/index.d.ts",
@@ -81,6 +82,7 @@
 				"files": [
 					"examples/**/*.*",
 					"**/*.test.*",
+					"**/test.*",
 					"test/**/*.*"
 				],
 				"rules": {
