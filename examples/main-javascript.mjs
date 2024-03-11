@@ -75,7 +75,7 @@ function personButtonText(_, key) {
 	return key;
 }
 
-function foodSelectText(ctx) {
+const foodSelectSubmenu = new MenuTemplate(ctx => {
 	const person = ctx.match[1];
 	const hisChoice = people[person].food;
 	if (!hisChoice) {
@@ -83,9 +83,7 @@ function foodSelectText(ctx) {
 	}
 
 	return `${person} likes ${hisChoice} currently.`;
-}
-
-const foodSelectSubmenu = new MenuTemplate(foodSelectText);
+});
 foodSelectSubmenu.toggle('Prefer tea', 'tea', {
 	set(ctx, choice) {
 		const person = ctx.match[1];
