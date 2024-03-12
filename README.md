@@ -2,7 +2,7 @@
 
 This menu library is made to easily create an inline menu for your Telegram bot.
 
-![Example shown as a gif](media/example-food.gif)
+![Example shown as a GIF](media/example-food.gif)
 
 ## Installation
 
@@ -44,7 +44,7 @@ await bot.start();
 
 ### More interesting one
 
-![Example shown as a gif](media/example-food.gif)
+![Example shown as a GIF](media/example-food.gif)
 
 Look at the code here: [TypeScript](examples/main-typescript.ts) / [JavaScript (consider using TypeScript)](examples/main-javascript.mjs)
 
@@ -159,15 +159,15 @@ Maybe this is also useful: [NPM package telegram-format](https://github.com/EdJo
 
 ```ts
 const menuTemplate = new MenuTemplate<MyContext>((ctx) => {
-	const text = '_Hey_ *there*!';
-	return { text, parse_mode: 'Markdown' };
+	const text = '<i>Hey</i> <b>there</b>!';
+	return { text, parse_mode: 'HTML' };
 });
 ```
 
 ### Can the menu body be some media?
 
 The menu body can be an object containing `media` and `type` for media.
-The `media` and `type` is the same as [Telegrams InputMedia](https://core.telegram.org/bots/api#inputmedia).
+The `media` and `type` is the same as [Telegrams `InputMedia`](https://core.telegram.org/bots/api#inputmedia).
 The media is just passed to grammY so check its documentation on [how to work with files](https://grammy.dev/guide/files.html).
 
 The [example](examples/main-typescript.ts) features a media submenu with all currently supported media types.
@@ -369,7 +369,7 @@ menuTemplate.pagination('unique', {
 When you don't use a pagination, you might have noticed that not all of your choices are displayed.
 Per default only the first page is shown.
 You can select the amount of rows and columns via `maxRows` and `columns`.
-The pagination works similar to `menuTemplate.pagination` but you do not need to supply the amount of total pages as this is calculated from your choices.
+The pagination works similar to `menuTemplate.pagination`, but you do not need to supply the amount of total pages as this is calculated from your choices.
 
 ```ts
 menuTemplate.choose('eat', ['cheese', 'bread', 'salad', 'tree', …], {
@@ -455,7 +455,7 @@ const menuMiddleware = new MenuMiddleware('/', menuTemplate);
 bot.command('start', (ctx) => menuMiddleware.replyToContext(ctx, path));
 ```
 
-You can also use sendMenu functions like `replyMenuToContext` to send a menu manually.
+You can also use `sendMenu` functions like `replyMenuToContext` to send a menu manually.
 
 ```ts
 import { MenuTemplate, replyMenuToContext } from 'grammy-inline-menu';
@@ -488,7 +488,7 @@ async function externalEventOccured() {
 
 Yes. It was moved into a separate library with version 5 as it made the source code overly complicated.
 
-When you want to use it check [grammy-stateless-question](https://github.com/grammyjs/stateless-question).
+When you want to use it check [`grammy-stateless-question`](https://github.com/grammyjs/stateless-question).
 
 ```ts
 import { getMenuOfPath } from 'grammy-inline-menu';
@@ -517,7 +517,7 @@ menuTemplate.interact('Question', 'unique', {
 ## Documentation
 
 The methods should have explaining documentation by itself.
-Also, there should be multiple @example entries in the docs to see different ways of using the method.
+Also, there should be multiple `@example` entries in the docs to see different ways of using the method.
 
-If you think the jsdoc / README can be improved just go ahead and create a Pull Request.
+If you think the JSDoc / README can be improved just go ahead and create a Pull Request.
 Let's improve things together!
