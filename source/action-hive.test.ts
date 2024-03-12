@@ -96,6 +96,6 @@ await test('ActionHive adding two times the same trigger throws', () => {
 	throws(() => {
 		a.add(/foo$/, doFunction, undefined);
 	}, {
-		message: /already added.+action/,
+		message: /already added.+unique identifier/,
 	});
 });

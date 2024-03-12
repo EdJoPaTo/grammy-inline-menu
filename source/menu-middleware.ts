@@ -254,7 +254,7 @@ function createResponder<Context extends BaseContext>(
 
 	const submenuResponders = [...menu.listSubmenus()]
 		.map((submenu): MenuResponder<Context> => {
-			const submenuTrigger = combineTrigger(menuTrigger, submenu.action);
+			const submenuTrigger = combineTrigger(menuTrigger, submenu.trigger);
 
 			const canEnterSubmenu: ContextPathFunc<Context, boolean> = async (
 				context,

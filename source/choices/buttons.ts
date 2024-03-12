@@ -13,7 +13,7 @@ import {
 } from './understand-choices.js';
 
 export function generateChoicesButtons<Context>(
-	actionPrefix: string,
+	uniqueIdentifierPrefix: string,
 	isSubmenu: boolean,
 	options: ManyChoicesOptions<Context>,
 ): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
@@ -26,7 +26,7 @@ export function generateChoicesButtons<Context>(
 			? await options.choices(context)
 			: options.choices;
 		const choiceKeys = getChoiceKeysFromChoices(choicesConstant);
-		ensureCorrectChoiceKeys(actionPrefix, path, choiceKeys);
+		ensureCorrectChoiceKeys(uniqueIdentifierPrefix, path, choiceKeys);
 		const textFunction = createChoiceTextFunction(
 			choicesConstant,
 			options.buttonText,
@@ -40,14 +40,15 @@ export function generateChoicesButtons<Context>(
 		);
 		const buttonsOfPage = await Promise.all(keysOfPage.map(async key => {
 			const text = await textFunction(context, key);
-			const relativePath = actionPrefix + ':' + key + (isSubmenu ? '/' : '');
+			const relativePath = uniqueIdentifierPrefix + ':' + key
+				+ (isSubmenu ? '/' : '');
 			return {text, relativePath};
 		}));
 		const rows = getButtonsAsRows(buttonsOfPage, options.columns);
 
 		if (options.setPage) {
 			rows.push(generateChoicesPaginationButtons(
-				actionPrefix,
+				uniqueIdentifierPrefix,
 				choiceKeys.length,
 				currentPage,
 				options,
@@ -59,7 +60,7 @@ export function generateChoicesButtons<Context>(
 }
 
 export function generateChoicesPaginationButtons<Context>(
-	actionPrefix: string,
+	uniqueIdentifierPrefix: string,
 	choiceKeys: number,
 	currentPage: number | undefined,
 	options: ManyChoicesOptions<Context>,
@@ -73,7 +74,7 @@ export function generateChoicesPaginationButtons<Context>(
 	const pageKeys = Object.keys(pageRecord).map(Number);
 	const pageButtons = pageKeys
 		.map((page): CallbackButtonTemplate => ({
-			relativePath: `${actionPrefix}P:${page}`,
+			relativePath: `${uniqueIdentifierPrefix}P:${page}`,
 			text: pageRecord[page]!,
 		}));
 

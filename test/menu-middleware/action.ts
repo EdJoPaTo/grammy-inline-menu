@@ -270,7 +270,7 @@ await test('menu-middleware action in submenu is run', async t => {
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<MyContext> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => false,
 		menu: submenuMenu,
 	};
@@ -319,7 +319,7 @@ await test('menu-middleware action not existing action in submenu updates submen
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<MyContext> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => false,
 		menu: submenuMenu,
 	};
@@ -381,7 +381,7 @@ await test('menu-middleware action in hidden submenu updates main menu', async t
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<MyContext> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => true,
 		menu: submenuMenu,
 	};
@@ -443,7 +443,7 @@ await test('menu-middleware action in non existing submenu updates main menu', a
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<MyContext> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => true,
 		menu: submenuMenu,
 	};

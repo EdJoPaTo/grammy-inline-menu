@@ -38,14 +38,14 @@ export function getChoiceTextByKey(choices: Choices, key: string): string {
 }
 
 export function ensureCorrectChoiceKeys(
-	actionPrefix: string,
+	uniqueIdentifierPrefix: string,
 	path: string,
 	choiceKeys: readonly string[],
 ): void {
 	const containSlashExample = choiceKeys.find(o => o.includes('/'));
 	if (containSlashExample) {
 		throw new Error(
-			`Choices can not contain '/'. Found '${containSlashExample}' in action '${actionPrefix}' at path '${path}'.`,
+			`Choices can not contain '/'. Found '${containSlashExample}' in unique identifier '${uniqueIdentifierPrefix}' at path '${path}'.`,
 		);
 	}
 }

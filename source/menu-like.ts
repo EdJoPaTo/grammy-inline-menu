@@ -13,7 +13,8 @@ export type MenuLike<Context> = {
 };
 
 export type Submenu<Context> = {
-	readonly action: RegExpLike;
+	/** Unique within the current menu depth */
+	readonly trigger: RegExpLike;
 	readonly hide: undefined | ContextPathFunc<Context, boolean>;
 	readonly menu: MenuLike<Context>;
 };

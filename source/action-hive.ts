@@ -23,9 +23,9 @@ export class ActionHive<Context> {
 			.includes(trigger.source);
 		if (alreadyExisting) {
 			throw new Error(
-				`The action "${
+				`The unique identifier "${
 					trigger.source.slice(0, -1)
-				}" you wanna add was already added. When you hit the button only the first one will be used and not both. This one can not be accessed then. Change the action code to something different.`,
+				}" you wanna add was already added. When you hit the button only the first one will be used and not both. This one can not be accessed then. Change the unique identifier code to something different.`,
 			);
 		}
 

@@ -15,7 +15,7 @@ await test('menu-middleware submenu respond with main menu on root path', async 
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<unknown> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => false,
 		menu: submenuMenu,
 	};
@@ -67,7 +67,7 @@ await test('menu-middleware submenu respond with submenu when not hidden', async
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<unknown> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => false,
 		menu: submenuMenu,
 	};
@@ -120,7 +120,7 @@ await test('menu-middleware submenu respond with submenu when no hide function',
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<unknown> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: undefined,
 		menu: submenuMenu,
 	};
@@ -173,7 +173,7 @@ await test('menu-middleware submenu respond with main menu when submenu hidden',
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<unknown> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => true,
 		menu: submenuMenu,
 	};

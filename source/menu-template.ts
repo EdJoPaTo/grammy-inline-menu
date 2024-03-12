@@ -213,7 +213,7 @@ export class MenuTemplate<Context> {
 	/**
 	 * Add a button to which a function is executed on click.
 	 * You can update the menu afterwards by returning a relative path. If you only want to update the menu or move around use `menuTemplate.navigate(…)` instead.
-	 * @param action unique identifier for this button within the menu template
+	 * @param uniqueIdentifier unique identifier for this button within the menu template
 	 * @example
 	 * menuTemplate.interact('unique', {
 	 *   text: 'Knock Knock',
@@ -232,7 +232,7 @@ export class MenuTemplate<Context> {
 	 * })
 	 */
 	interact(
-		action: string,
+		uniqueIdentifier: string,
 		options: InteractionOptions<Context>,
 	): void {
 		if (typeof options.do !== 'function') {
@@ -241,16 +241,24 @@ export class MenuTemplate<Context> {
 			);
 		}
 
-		this.#actions.add(new RegExp(action + '$'), options.do, options.hide);
+		this.#actions.add(
+			new RegExp(uniqueIdentifier + '$'),
+			options.do,
+			options.hide,
+		);
 		this.#keyboard.add(
 			Boolean(options.joinLastRow),
-			generateCallbackButtonTemplate(options.text, action, options.hide),
+			generateCallbackButtonTemplate(
+				options.text,
+				uniqueIdentifier,
+				options.hide,
+			),
 		);
 	}
 
 	/**
 	 * Add a button to a submenu
-	 * @param action unique identifier for this button within the menu template
+	 * @param uniqueIdentifier unique identifier for this button within the menu template
 	 * @param submenu submenu to be entered on click
 	 * @example
 	 * const submenuTemplate = new MenuTemplate('I am a submenu')
@@ -263,36 +271,40 @@ export class MenuTemplate<Context> {
 	 * menuTemplate.submenu('enter submenu', 'unique', submenuTemplate)
 	 */
 	submenu(
-		action: string,
+		uniqueIdentifier: string,
 		submenu: MenuLike<Context>,
 		options: SubmenuOptions<Context>,
 	): void {
-		ensureTriggerChild(action);
-		const actionRegex = new RegExp(action + '/');
+		ensureTriggerChild(uniqueIdentifier);
+		const trigger = new RegExp(uniqueIdentifier + '/');
 		if (
 			[...this.#submenus]
-				.map(o => o.action.source)
-				.includes(actionRegex.source)
+				.map(o => o.trigger.source)
+				.includes(trigger.source)
 		) {
 			throw new Error(
-				`There is already a submenu with the action "${action}". Change the action in order to access both menus.`,
+				`There is already a submenu with the unique identifier "${uniqueIdentifier}". Change the unique identifier in order to access both menus.`,
 			);
 		}
 
 		this.#submenus.add({
-			action: actionRegex,
+			trigger,
 			hide: options.hide,
 			menu: submenu,
 		});
 		this.#keyboard.add(
 			Boolean(options.joinLastRow),
-			generateCallbackButtonTemplate(options.text, action + '/', options.hide),
+			generateCallbackButtonTemplate(
+				options.text,
+				uniqueIdentifier + '/',
+				options.hide,
+			),
 		);
 	}
 
 	/**
 	 * Let the user choose one of many options and execute a function for the one the user picked
-	 * @param actionPrefix prefix which is used to create a unique identifier for each of the resulting buttons
+	 * @param uniqueIdentifierPrefix prefix which is used to create a unique identifier for each of the resulting buttons
 	 * @example
 	 * menuTemplate.choose('unique', {
 	 *   choices: ['walk', 'swim'],
@@ -303,7 +315,7 @@ export class MenuTemplate<Context> {
 	 * });
 	 */
 	choose(
-		actionPrefix: string,
+		uniqueIdentifierPrefix: string,
 		options: ChooseOptions<Context>,
 	): void {
 		if (!options.choices || typeof options.do !== 'function') {
@@ -312,18 +324,20 @@ export class MenuTemplate<Context> {
 			);
 		}
 
-		const trigger = new RegExp(actionPrefix + ':(.+)$');
+		const trigger = new RegExp(uniqueIdentifierPrefix + ':(.+)$');
 		this.#actions.add(
 			trigger,
 			async (context, path) =>
 				options.do(context, getKeyFromPath(trigger, path)),
-			options.disableChoiceExistsCheck
-				? options.hide
-				: combineHideAndChoices(actionPrefix, options.choices, options.hide),
+			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(
+				uniqueIdentifierPrefix,
+				options.choices,
+				options.hide,
+			),
 		);
 
 		if (options.setPage) {
-			const pageTrigger = new RegExp(actionPrefix + 'P:(\\d+)$');
+			const pageTrigger = new RegExp(uniqueIdentifierPrefix + 'P:(\\d+)$');
 			this.#actions.add(
 				pageTrigger,
 				setPageAction(pageTrigger, options.setPage),
@@ -332,13 +346,13 @@ export class MenuTemplate<Context> {
 		}
 
 		this.#keyboard.addCreator(
-			generateChoicesButtons(actionPrefix, false, options),
+			generateChoicesButtons(uniqueIdentifierPrefix, false, options),
 		);
 	}
 
 	/**
 	 * Submenu which is entered when a user picks one of many choices
-	 * @param actionPrefix prefix which is used to create a unique identifier for each of the resulting buttons
+	 * @param uniqueIdentifierPrefix prefix which is used to create a unique identifier for each of the resulting buttons
 	 * @param submenu submenu to be entered when one of the choices is picked
 	 * @example
 	 * const submenu = new MenuTemplate<MyContext>(ctx => `Welcome to ${ctx.match[1]}`)
@@ -355,32 +369,36 @@ export class MenuTemplate<Context> {
 	 * menu.chooseIntoSubmenu('unique', ['Gotham', 'Mos Eisley', 'Springfield'], submenu)
 	 */
 	chooseIntoSubmenu(
-		actionPrefix: string,
+		uniqueIdentifierPrefix: string,
 		submenu: MenuLike<Context>,
 		options: ChooseIntoSubmenuOptions<Context>,
 	): void {
-		ensureTriggerChild(actionPrefix);
-		const actionRegex = new RegExp(actionPrefix + ':([^/]+)/');
+		ensureTriggerChild(uniqueIdentifierPrefix);
+		const trigger = new RegExp(uniqueIdentifierPrefix + ':([^/]+)/');
 		if (
 			[...this.#submenus]
-				.map(o => o.action.source)
-				.includes(actionRegex.source)
+				.map(o => o.trigger.source)
+				.includes(trigger.source)
 		) {
 			throw new Error(
-				`There is already a submenu with the action "${actionPrefix}". Change the action in order to access both menus.`,
+				`There is already a submenu with the unique identifier "${uniqueIdentifierPrefix}". Change the unique identifier in order to access both menus.`,
 			);
 		}
 
 		this.#submenus.add({
-			action: actionRegex,
+			trigger,
 			hide: options.disableChoiceExistsCheck
 				? options.hide
-				: combineHideAndChoices(actionPrefix, options.choices, options.hide),
+				: combineHideAndChoices(
+					uniqueIdentifierPrefix,
+					options.choices,
+					options.hide,
+				),
 			menu: submenu,
 		});
 
 		if (options.setPage) {
-			const pageTrigger = new RegExp(actionPrefix + 'P:(\\d+)$');
+			const pageTrigger = new RegExp(uniqueIdentifierPrefix + 'P:(\\d+)$');
 			this.#actions.add(
 				pageTrigger,
 				setPageAction(pageTrigger, options.setPage),
@@ -389,13 +407,13 @@ export class MenuTemplate<Context> {
 		}
 
 		this.#keyboard.addCreator(
-			generateChoicesButtons(actionPrefix, true, options),
+			generateChoicesButtons(uniqueIdentifierPrefix, true, options),
 		);
 	}
 
 	/**
 	 * Let the user select one (or multiple) options from a set of choices
-	 * @param actionPrefix prefix which is used to create a unique identifier for each of the resulting buttons
+	 * @param uniqueIdentifierPrefix prefix which is used to create a unique identifier for each of the resulting buttons
 	 * @example
 	 * // User can select exactly one
 	 * menuTemplate.select('unique', {
@@ -419,7 +437,7 @@ export class MenuTemplate<Context> {
 	 * })
 	 */
 	select(
-		actionPrefix: string,
+		uniqueIdentifierPrefix: string,
 		options: SelectOptions<Context>,
 	): void {
 		if (
@@ -432,7 +450,7 @@ export class MenuTemplate<Context> {
 			);
 		}
 
-		const trueTrigger = new RegExp(actionPrefix + 'T:(.+)$');
+		const trueTrigger = new RegExp(uniqueIdentifierPrefix + 'T:(.+)$');
 		this.#actions.add(
 			trueTrigger,
 			async (context, path) => {
@@ -440,13 +458,13 @@ export class MenuTemplate<Context> {
 				return options.set(context, key, true);
 			},
 			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(
-				actionPrefix + 'T',
+				uniqueIdentifierPrefix + 'T',
 				options.choices,
 				options.hide,
 			),
 		);
 
-		const falseTrigger = new RegExp(actionPrefix + 'F:(.+)$');
+		const falseTrigger = new RegExp(uniqueIdentifierPrefix + 'F:(.+)$');
 		this.#actions.add(
 			falseTrigger,
 			async (context, path) => {
@@ -454,14 +472,14 @@ export class MenuTemplate<Context> {
 				return options.set(context, key, false);
 			},
 			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(
-				actionPrefix + 'F',
+				uniqueIdentifierPrefix + 'F',
 				options.choices,
 				options.hide,
 			),
 		);
 
 		if (options.setPage) {
-			const pageTrigger = new RegExp(actionPrefix + 'P:(\\d+)$');
+			const pageTrigger = new RegExp(uniqueIdentifierPrefix + 'P:(\\d+)$');
 			this.#actions.add(
 				pageTrigger,
 				setPageAction(pageTrigger, options.setPage),
@@ -470,7 +488,7 @@ export class MenuTemplate<Context> {
 		}
 
 		this.#keyboard.addCreator(
-			generateSelectButtons(actionPrefix, options),
+			generateSelectButtons(uniqueIdentifierPrefix, options),
 		);
 	}
 
@@ -478,9 +496,12 @@ export class MenuTemplate<Context> {
 	 * Shows a row of pagination buttons.
 	 * When the user presses one of the buttons `setPage` is called with the specified button.
 	 * In order to determine which is the current page and how many pages there are `getCurrentPage` and `getTotalPages` are called to which you have to return the current value
-	 * @param actionPrefix prefix which is used to create a unique identifier for each of the resulting buttons
+	 * @param uniqueIdentifierPrefix prefix which is used to create a unique identifier for each of the resulting buttons
 	 */
-	pagination(actionPrefix: string, options: PaginationOptions<Context>): void {
+	pagination(
+		uniqueIdentifierPrefix: string,
+		options: PaginationOptions<Context>,
+	): void {
 		if (
 			typeof options.getCurrentPage !== 'function'
 			|| typeof options.getTotalPages !== 'function'
@@ -497,14 +518,14 @@ export class MenuTemplate<Context> {
 			return createPaginationChoices(totalPages, currentPage);
 		};
 
-		const trigger = new RegExp(actionPrefix + ':(\\d+)$');
+		const trigger = new RegExp(uniqueIdentifierPrefix + ':(\\d+)$');
 		this.#actions.add(
 			trigger,
 			setPageAction(trigger, options.setPage),
 			options.hide,
 		);
 		this.#keyboard.addCreator(
-			generateChoicesButtons(actionPrefix, false, {
+			generateChoicesButtons(uniqueIdentifierPrefix, false, {
 				columns: 5,
 				choices: paginationChoices,
 				hide: options.hide,
@@ -515,7 +536,7 @@ export class MenuTemplate<Context> {
 	/**
 	 * Toogle a value when the button is pressed.
 	 * If you want to toggle multiple values use `menuTemplate.select(…)`
-	 * @param actionPrefix unique identifier for this button within the menu template
+	 * @param uniqueIdentifierPrefix unique identifier for this button within the menu template
 	 * @example
 	 * menuTemplate.toggle('unique', {
 	 *   text: 'Text',
@@ -538,7 +559,7 @@ export class MenuTemplate<Context> {
 	 * })
 	 */
 	toggle(
-		actionPrefix: string,
+		uniqueIdentifierPrefix: string,
 		options: ToggleOptions<Context>,
 	): void {
 		if (
@@ -552,20 +573,20 @@ export class MenuTemplate<Context> {
 		}
 
 		this.#actions.add(
-			new RegExp(actionPrefix + ':true$'),
+			new RegExp(uniqueIdentifierPrefix + ':true$'),
 			async (context, path) => options.set(context, true, path),
 			options.hide,
 		);
 
 		this.#actions.add(
-			new RegExp(actionPrefix + ':false$'),
+			new RegExp(uniqueIdentifierPrefix + ':false$'),
 			async (context, path) => options.set(context, false, path),
 			options.hide,
 		);
 
 		this.#keyboard.add(
 			Boolean(options.joinLastRow),
-			generateToggleButton(actionPrefix, options),
+			generateToggleButton(uniqueIdentifierPrefix, options),
 		);
 	}
 }

@@ -3,7 +3,7 @@ import type {Choices} from './types.js';
 import {getChoiceKeysFromChoices} from './understand-choices.js';
 
 export function combineHideAndChoices<Context>(
-	actionPrefix: string,
+	uniqueIdentifierPrefix: string,
 	choices: ConstOrContextFunc<Context, Choices>,
 	hide: undefined | ContextPathFunc<Context, boolean>,
 ): ContextPathFunc<Context, boolean> {
@@ -16,7 +16,8 @@ export function combineHideAndChoices<Context>(
 			return true;
 		}
 
-		const match = new RegExp('/' + actionPrefix + ':([^/]+)/?$').exec(path);
+		const match = new RegExp('/' + uniqueIdentifierPrefix + ':([^/]+)/?$')
+			.exec(path);
 		const toBeFound = match?.[1];
 		if (!toBeFound) {
 			throw new TypeError('could not read choice from path');

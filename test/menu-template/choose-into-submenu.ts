@@ -8,7 +8,7 @@ await test('menu-template choose-into-submenu submenu is listed', () => {
 	menu.chooseIntoSubmenu('unique', submenu, {choices: []});
 	const submenus = [...menu.listSubmenus()];
 	strictEqual(submenus.length, 1);
-	strictEqual(submenus[0]!.action.source, 'unique:([^/]+)\\/');
+	strictEqual(submenus[0]!.trigger.source, 'unique:([^/]+)\\/');
 });
 
 await test('menu-template choose-into-submenu submenu hidden', async () => {
@@ -73,7 +73,7 @@ await test('menu-template choose-into-submenu button', async () => {
 	}]]);
 });
 
-await test('menu-template choose-into-submenu two same action codes throws', () => {
+await test('menu-template choose-into-submenu two same unique identifier codes throws', () => {
 	const menu = new MenuTemplate('foo');
 	const submenu = new MenuTemplate('bar');
 	menu.chooseIntoSubmenu('unique', submenu, {choices: []});
@@ -81,7 +81,7 @@ await test('menu-template choose-into-submenu two same action codes throws', () 
 	throws(() => {
 		menu.chooseIntoSubmenu('unique', submenu, {choices: []});
 	}, {
-		message: /already a submenu with the action/,
+		message: /already a submenu with the unique identifier/,
 	});
 });
 

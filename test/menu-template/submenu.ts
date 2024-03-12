@@ -8,7 +8,7 @@ await test('menu-template submenu is listed', () => {
 	menu.submenu('unique', submenu, {text: 'Button'});
 	const submenus = [...menu.listSubmenus()];
 	strictEqual(submenus.length, 1);
-	strictEqual(submenus[0]!.action.source, 'unique\\/');
+	strictEqual(submenus[0]!.trigger.source, 'unique\\/');
 });
 
 await test('menu-template submenu button hidden', async () => {
@@ -33,7 +33,7 @@ await test('menu-template submenu button', async () => {
 	}]]);
 });
 
-await test('menu-template submenu two same action codes throws', () => {
+await test('menu-template submenu two same unique identifier codes throws', () => {
 	const menu = new MenuTemplate('foo');
 	const submenu = new MenuTemplate('bar');
 	menu.submenu('unique', submenu, {text: 'Button'});
@@ -41,6 +41,6 @@ await test('menu-template submenu two same action codes throws', () => {
 	throws(() => {
 		menu.submenu('unique', submenu, {text: 'Button'});
 	}, {
-		message: /already a submenu with the action/,
+		message: /already a submenu with the unique identifier/,
 	});
 });

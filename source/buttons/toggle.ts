@@ -26,7 +26,7 @@ export interface ToggleOptions<Context> extends SingleButtonOptions<Context> {
 }
 
 export function generateToggleButton<Context>(
-	actionPrefix: string,
+	uniqueIdentifierPrefix: string,
 	options: ToggleOptions<Context>,
 ): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
 	const formatFunction: FormatStateFunction<Context> = options.formatState
@@ -42,7 +42,7 @@ export function generateToggleButton<Context>(
 		const state = await options.isSet(context, path);
 		return {
 			text: await formatFunction(context, textResult, state, path),
-			relativePath: actionPrefix + ':' + (state ? 'false' : 'true'),
+			relativePath: uniqueIdentifierPrefix + ':' + (state ? 'false' : 'true'),
 		};
 	};
 }

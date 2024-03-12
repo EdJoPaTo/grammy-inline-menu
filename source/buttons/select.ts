@@ -49,7 +49,7 @@ export interface SelectOptions<Context> extends ManyChoicesOptions<Context> {
 }
 
 export function generateSelectButtons<Context>(
-	actionPrefix: string,
+	uniqueIdentifierPrefix: string,
 	options: SelectOptions<Context>,
 ): (context: Context, path: string) => Promise<CallbackButtonTemplate[][]> {
 	return async (context, path) => {
@@ -61,7 +61,7 @@ export function generateSelectButtons<Context>(
 			? await options.choices(context)
 			: options.choices;
 		const choiceKeys = getChoiceKeysFromChoices(choicesConstant);
-		ensureCorrectChoiceKeys(actionPrefix, path, choiceKeys);
+		ensureCorrectChoiceKeys(uniqueIdentifierPrefix, path, choiceKeys);
 		const textFunction = createChoiceTextFunction(
 			choicesConstant,
 			options.buttonText,
@@ -85,14 +85,14 @@ export function generateSelectButtons<Context>(
 				const text = await formatFunction(context, textResult, state, key);
 
 				const dropinLetter = state ? 'F' : 'T';
-				const relativePath = actionPrefix + dropinLetter + ':' + key;
+				const relativePath = uniqueIdentifierPrefix + dropinLetter + ':' + key;
 				return {text, relativePath};
 			}));
 		const rows = getButtonsAsRows(buttonsOfPage, options.columns);
 
 		if (options.setPage) {
 			rows.push(generateChoicesPaginationButtons(
-				actionPrefix,
+				uniqueIdentifierPrefix,
 				choiceKeys.length,
 				currentPage,
 				options,

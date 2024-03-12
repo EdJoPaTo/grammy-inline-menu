@@ -42,7 +42,7 @@ menu                          /
 
 await test('menu-middleware tree submenu', () => {
 	const submenu: Submenu<unknown> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => false,
 		menu: EMPTY_MENU,
 	};
@@ -62,7 +62,7 @@ menu                          /
 
 await test('menu-middleware tree subsubmenu', () => {
 	const subsubmenu: Submenu<unknown> = {
-		action: /deep\//,
+		trigger: /deep\//,
 		hide: () => false,
 		menu: EMPTY_MENU,
 	};
@@ -73,7 +73,7 @@ await test('menu-middleware tree subsubmenu', () => {
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<unknown> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => false,
 		menu: submenuMenu,
 	};
@@ -106,7 +106,7 @@ await test('menu-middleware tree action in submenu', () => {
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<unknown> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => false,
 		menu: submenuMenu,
 	};

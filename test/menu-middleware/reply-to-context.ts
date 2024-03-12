@@ -12,7 +12,7 @@ await test('menu-middleware reply-to-context replies main menu', async t => {
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<unknown> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => false,
 		menu: submenuMenu,
 	};
@@ -50,7 +50,7 @@ await test('menu-middleware reply-to-context replies main menu explicitly', asyn
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<unknown> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => false,
 		menu: submenuMenu,
 	};
@@ -88,7 +88,7 @@ await test('menu-middleware reply-to-context replies submenu', async t => {
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<unknown> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => false,
 		menu: submenuMenu,
 	};
@@ -126,7 +126,7 @@ await test('menu-middleware reply-to-context fails with out of scope path', asyn
 		renderKeyboard: () => [],
 	};
 	const submenu: Submenu<unknown> = {
-		action: /submenu\//,
+		trigger: /submenu\//,
 		hide: () => false,
 		menu: submenuMenu,
 	};
