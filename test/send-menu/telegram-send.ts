@@ -187,7 +187,6 @@ await test('telegram-send invoice', async () => {
 			description: 'B',
 			currency: 'EUR',
 			payload: 'D',
-			provider_token: 'E',
 			prices: [],
 		},
 	});
@@ -198,7 +197,6 @@ await test('telegram-send invoice', async () => {
 			title,
 			description,
 			payload,
-			provider_token,
 			currency,
 			prices,
 			other,
@@ -208,7 +206,6 @@ await test('telegram-send invoice', async () => {
 			strictEqual(description, 'B');
 			strictEqual(currency, 'EUR');
 			strictEqual(payload, 'D');
-			strictEqual(provider_token, 'E');
 			deepStrictEqual(prices, []);
 			deepStrictEqual(other, {
 				reply_markup: {

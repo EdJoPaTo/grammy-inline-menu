@@ -51,7 +51,6 @@ export type InvoiceBody = {
 		readonly title: string;
 		readonly description: string;
 		readonly payload: string;
-		readonly provider_token: string;
 		readonly currency: string;
 		readonly prices: ReadonlyArray<Readonly<LabeledPrice>>;
 	};

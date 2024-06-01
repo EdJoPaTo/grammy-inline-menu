@@ -165,7 +165,6 @@ const EXAMPLE_INVOICE: InvoiceBody = {
 		description: 'B',
 		currency: 'EUR',
 		payload: 'D',
-		provider_token: 'E',
 		prices: [],
 	},
 };

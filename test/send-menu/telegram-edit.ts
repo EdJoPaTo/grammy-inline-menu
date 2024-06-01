@@ -157,7 +157,6 @@ await test('telegram-edit invoice', async () => {
 			description: 'B',
 			currency: 'EUR',
 			payload: 'D',
-			provider_token: 'E',
 			prices: [],
 		},
 	});
