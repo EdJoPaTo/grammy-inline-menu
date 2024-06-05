@@ -268,7 +268,7 @@ export class MenuTemplate<Context> {
 	 * })
 	 * submenuTemplate.manualRow(createBackMainMenuButtons())
 	 *
-	 * menuTemplate.submenu('unique', submenuTemplate, { text: 'Text' })
+	 * menuTemplate.submenu('unique', submenuTemplate, { text: 'enter submenu' })
 	 */
 	submenu(
 		uniqueIdentifier: string,
