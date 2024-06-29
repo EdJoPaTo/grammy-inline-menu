@@ -1,5 +1,5 @@
 {
-	"extends": "@sindresorhus/tsconfig/tsconfig.json",
+	"extends": "@sindresorhus/tsconfig",
 	"include": [
 		"examples",
 		"source",
