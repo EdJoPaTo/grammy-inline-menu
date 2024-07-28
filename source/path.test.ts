@@ -67,7 +67,9 @@ await test('getMenuOfPath throws when not a path', () => {
 
 await test('createRootMenuTrigger does not throw on good trigger', async t => {
 	const macro = async (trigger: string | RegExpLike) =>
-		t.test(String(trigger), () => createRootMenuTrigger(trigger));
+		t.test(String(trigger), () => {
+			createRootMenuTrigger(trigger);
+		});
 	await macro(/^blubb\//);
 	await macro('blubb/');
 	await macro(/^\//);

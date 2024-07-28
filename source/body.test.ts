@@ -175,18 +175,24 @@ async function macro(
 	wrongs: readonly unknown[],
 ): Promise<void> {
 	await test(fn.name, async t => {
-		await t.test('works', async t =>
-			Promise.all(works.map(async item =>
-				t.test(mehToString(item), () => {
-					strictEqual(fn(item), true);
-				}),
-			)));
-		await t.test('wrongs', async t =>
-			Promise.all(wrongs.map(async item =>
-				t.test(mehToString(item), () => {
-					strictEqual(fn(item), false);
-				}),
-			)));
+		await t.test('works', async t => {
+			await Promise.all(
+				works.map(async item =>
+					t.test(mehToString(item), () => {
+						strictEqual(fn(item), true);
+					}),
+				),
+			);
+		});
+		await t.test('wrongs', async t => {
+			await Promise.all(
+				wrongs.map(async item =>
+					t.test(mehToString(item), () => {
+						strictEqual(fn(item), false);
+					}),
+				),
+			);
+		});
 	});
 }
 
