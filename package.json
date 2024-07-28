@@ -52,7 +52,7 @@
 		"del-cli": "^5.0.0",
 		"grammy": "^1.19.2",
 		"typescript": "^5.5.2",
-		"xo": "^0.58.0"
+		"xo": "^0.59.3"
 	},
 	"files": [
 		"dist/source",
@@ -93,6 +93,8 @@
 					"@typescript-eslint/no-unsafe-return": "off",
 					"@typescript-eslint/prefer-readonly-parameter-types": "off",
 					"max-params": "off",
+					"n/no-unsupported-features/es-syntax": "off",
+					"n/no-unsupported-features/node-builtins": "off",
 					"unicorn/prefer-top-level-await": "off"
 				}
 			}

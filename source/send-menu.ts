@@ -103,6 +103,7 @@ export async function editMenuOnContext<Context extends BaseContext>(
 				},
 				createGenericOther(keyboard, other),
 			)
+				// eslint-disable-next-line promise/prefer-await-to-then
 				.catch(catchMessageNotModified);
 		}
 	} else if (isLocationBody(body) || isVenueBody(body) || isInvoiceBody(body)) {
@@ -113,6 +114,7 @@ export async function editMenuOnContext<Context extends BaseContext>(
 				getBodyText(body),
 				createTextOther(body, keyboard, other),
 			)
+				// eslint-disable-next-line promise/prefer-await-to-then
 				.catch(catchMessageNotModified);
 		}
 	} else {
