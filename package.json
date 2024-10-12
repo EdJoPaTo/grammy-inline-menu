@@ -49,7 +49,7 @@
 		"@sindresorhus/tsconfig": "^6.0.0",
 		"@types/node": "^18.17.12",
 		"c8": "^10.1.2",
-		"del-cli": "^5.0.0",
+		"del-cli": "^6.0.0",
 		"grammy": "^1.19.2",
 		"typescript": "^5.5.2",
 		"xo": "^0.59.3"
