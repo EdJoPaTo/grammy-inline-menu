@@ -361,6 +361,7 @@ export function generateEditMessageIntoMenuFunction<Context>(
 					type: body.type,
 					media: body.media,
 					caption: body.text,
+					caption_entities: body.entities,
 					parse_mode: body.parse_mode,
 				},
 				createGenericOther(keyboard, other),
@@ -407,6 +408,7 @@ function createTextOther(
 ) {
 	return {
 		...base,
+		entities: typeof body === 'string' ? undefined : body.entities,
 		parse_mode: typeof body === 'string' ? undefined : body.parse_mode,
 		disable_web_page_preview: typeof body !== 'string'
 			&& body.disable_web_page_preview,
@@ -426,6 +428,7 @@ function createSendMediaOther(
 		...base,
 		parse_mode: body.parse_mode,
 		caption: body.text,
+		caption_entities: body.entities,
 		reply_markup: {
 			inline_keyboard: keyboard.map(o => [...o]),
 		},
