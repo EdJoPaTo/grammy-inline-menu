@@ -160,6 +160,23 @@ const menuTemplate = new MenuTemplate<MyContext>((ctx) => {
 });
 ```
 
+### Can I use entities or `grammyjs/parse-mode` in the message body?
+
+Yes, you can pass the option `entities`.
+
+This will be resolved automatically to`caption_entities` if you send a `media` message.
+
+```ts
+const menu = new MenuTemplate<MyContext>(async () => {
+	const message = fmt`${bold(underline('Hello world!'))}`
+
+	return {
+		text: message.text,
+		entities: message.entities,
+	};
+});
+```
+
 ### Can the menu body be some media?
 
 The menu body can be an object containing `media` and `type` for media.
