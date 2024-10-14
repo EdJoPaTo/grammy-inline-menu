@@ -19,6 +19,7 @@ await test('context-reply media', async t => {
 						strictEqual(media, 'whatever');
 						deepStrictEqual(other, {
 							caption: undefined,
+							caption_entities: undefined,
 							parse_mode: undefined,
 							reply_markup: {
 								inline_keyboard: [],

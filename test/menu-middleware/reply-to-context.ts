@@ -29,6 +29,7 @@ await test('menu-middleware reply-to-context replies main menu', async t => {
 		strictEqual(text, 'whatever');
 		deepStrictEqual(other, {
 			disable_web_page_preview: false,
+			entities: undefined,
 			parse_mode: undefined,
 			reply_markup: {
 				inline_keyboard: [],
@@ -67,6 +68,7 @@ await test('menu-middleware reply-to-context replies main menu explicitly', asyn
 		strictEqual(text, 'whatever');
 		deepStrictEqual(other, {
 			disable_web_page_preview: false,
+			entities: undefined,
 			parse_mode: undefined,
 			reply_markup: {
 				inline_keyboard: [],
@@ -105,6 +107,7 @@ await test('menu-middleware reply-to-context replies submenu', async t => {
 		strictEqual(text, 'submenu');
 		deepStrictEqual(other, {
 			disable_web_page_preview: false,
+			entities: undefined,
 			parse_mode: undefined,
 			reply_markup: {
 				inline_keyboard: [],

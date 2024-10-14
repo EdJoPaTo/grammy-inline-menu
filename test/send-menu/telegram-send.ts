@@ -14,6 +14,7 @@ await test('telegram-send text', async () => {
 			strictEqual(text, 'whatever');
 			deepStrictEqual(other, {
 				disable_web_page_preview: false,
+				entities: undefined,
 				parse_mode: undefined,
 				reply_markup: {
 					inline_keyboard: [],
@@ -59,6 +60,7 @@ await test('telegram-send media', async t => {
 					strictEqual(media, 'whatever');
 					deepStrictEqual(other, {
 						caption: undefined,
+						caption_entities: undefined,
 						parse_mode: undefined,
 						reply_markup: {
 							inline_keyboard: [],
