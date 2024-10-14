@@ -162,6 +162,7 @@ export function isInvoiceBody(body: unknown): body is InvoiceBody {
 		&& typeof invoice.description === 'string';
 }
 
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function getBodyText(body: TextBody | string): string {
 	return typeof body === 'string' ? body : body.text;
 }

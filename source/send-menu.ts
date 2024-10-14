@@ -402,6 +402,7 @@ export function generateEditMessageIntoMenuFunction<Context>(
 }
 
 function createTextOther(
+	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 	body: string | TextBody,
 	keyboard: InlineKeyboard,
 	base: Readonly<Record<string, unknown>>,
