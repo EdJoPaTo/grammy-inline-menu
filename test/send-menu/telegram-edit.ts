@@ -43,6 +43,69 @@ await test('telegram-edit text', async () => {
 	await editIntoFunction(13, 37, fakeContext as any);
 });
 
+await test('telegram-edit text with entities', async () => {
+	const menu = new MenuTemplate<BaseContext>({
+		text: 'Hello world!',
+		entities: [
+			{
+				type: 'bold',
+				offset: 0,
+				length: 5,
+			},
+			{
+				type: 'italic',
+				offset: 6,
+				length: 5,
+			},
+		],
+	});
+
+	const fakeTelegram: Partial<Api> = {
+		async editMessageText(chatId, messageId, text, other) {
+			strictEqual(chatId, 13);
+			strictEqual(messageId, 37);
+			strictEqual(text, 'Hello world!');
+			deepStrictEqual(other, {
+				entities: [
+					{
+						type: 'bold',
+						offset: 0,
+						length: 5,
+					},
+					{
+						type: 'italic',
+						offset: 6,
+						length: 5,
+					},
+				],
+				parse_mode: undefined,
+				disable_web_page_preview: undefined,
+				reply_markup: {
+					inline_keyboard: [],
+				},
+			});
+			return true;
+		},
+	};
+
+	const editIntoFunction = generateEditMessageIntoMenuFunction(
+		fakeTelegram as any,
+		menu,
+		'/',
+	);
+
+	const fakeContext: Partial<BaseContext> = {
+		callbackQuery: {
+			id: '666',
+			from: undefined as any,
+			chat_instance: '666',
+			data: '666',
+		},
+	};
+
+	await editIntoFunction(13, 37, fakeContext as any);
+});
+
 await test('telegram-edit media', async t => {
 	await Promise.all(
 		MEDIA_TYPES.map(async mediaType =>
@@ -61,6 +124,84 @@ await test('telegram-edit media', async t => {
 							type: mediaType,
 							caption: undefined,
 							caption_entities: undefined,
+							parse_mode: undefined,
+						});
+						deepStrictEqual(other, {
+							reply_markup: {
+								inline_keyboard: [],
+							},
+						});
+						return true;
+					},
+				};
+
+				const editIntoFunction = generateEditMessageIntoMenuFunction(
+					fakeTelegram as any,
+					menu,
+					'/',
+				);
+
+				const fakeContext: Partial<BaseContext> = {
+					callbackQuery: {
+						id: '666',
+						from: undefined as any,
+						chat_instance: '666',
+						data: '666',
+					},
+				};
+
+				await editIntoFunction(13, 37, fakeContext as any);
+			}),
+		),
+	);
+});
+
+await test('telegram-edit media with caption entities', async t => {
+	await Promise.all(
+		MEDIA_TYPES.map(async mediaType =>
+			t.test(mediaType, async () => {
+				if (!['animation', 'video'].includes(mediaType)) {
+					return;
+				}
+
+				const menu = new MenuTemplate<BaseContext>({
+					media: 'whatever',
+					text: 'Hello world!',
+					entities: [
+						{
+							type: 'bold',
+							offset: 0,
+							length: 5,
+						},
+						{
+							type: 'italic',
+							offset: 6,
+							length: 5,
+						},
+					],
+					type: mediaType,
+				});
+
+				const fakeTelegram: Partial<Api> = {
+					async editMessageMedia(chatId, messageId, media, other) {
+						strictEqual(chatId, 13);
+						strictEqual(messageId, 37);
+						deepStrictEqual(media, {
+							media: 'whatever',
+							type: mediaType,
+							caption: 'Hello world!',
+							caption_entities: [
+								{
+									type: 'bold',
+									offset: 0,
+									length: 5,
+								},
+								{
+									type: 'italic',
+									offset: 6,
+									length: 5,
+								},
+							],
 							parse_mode: undefined,
 						});
 						deepStrictEqual(other, {
