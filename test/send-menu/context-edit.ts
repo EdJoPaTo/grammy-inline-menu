@@ -13,6 +13,7 @@ await test('context-edit text reply when not a callback query', async t => {
 		strictEqual(text, 'whatever');
 		deepStrictEqual(other, {
 			disable_web_page_preview: false,
+			entities: undefined,
 			parse_mode: undefined,
 			reply_markup: {
 				inline_keyboard: [],
@@ -36,6 +37,7 @@ await test('context-edit text reply when no message on callback query', async t 
 		strictEqual(text, 'whatever');
 		deepStrictEqual(other, {
 			disable_web_page_preview: false,
+			entities: undefined,
 			parse_mode: undefined,
 			reply_markup: {
 				inline_keyboard: [],
@@ -65,6 +67,7 @@ await test('context-edit text edit when message is a text message', async t => {
 			strictEqual(text, 'whatever');
 			deepStrictEqual(other, {
 				disable_web_page_preview: false,
+				entities: undefined,
 				parse_mode: undefined,
 				reply_markup: {
 					inline_keyboard: [],
@@ -106,6 +109,7 @@ await test('context-edit text reply when message is a media message', async t =>
 		strictEqual(text, 'whatever');
 		deepStrictEqual(other, {
 			disable_web_page_preview: false,
+			entities: undefined,
 			parse_mode: undefined,
 			reply_markup: {
 				inline_keyboard: [],
@@ -151,6 +155,7 @@ await test('context-edit text reply when message is a media message but fails wi
 		strictEqual(text, 'whatever');
 		deepStrictEqual(other, {
 			disable_web_page_preview: false,
+			entities: undefined,
 			parse_mode: undefined,
 			reply_markup: {
 				inline_keyboard: [],
@@ -193,6 +198,7 @@ await test('context-edit media reply when not a callback query', async t => {
 			strictEqual(photo, 'whatever');
 			deepStrictEqual(other, {
 				caption: undefined,
+				caption_entities: undefined,
 				parse_mode: undefined,
 				reply_markup: {
 					inline_keyboard: [],
@@ -227,6 +233,7 @@ await test('context-edit media reply when text message', async t => {
 			strictEqual(photo, 'whatever');
 			deepStrictEqual(other, {
 				caption: undefined,
+				caption_entities: undefined,
 				parse_mode: undefined,
 				reply_markup: {
 					inline_keyboard: [],
@@ -375,6 +382,7 @@ await test('context-edit text edit without webpage preview', async () => {
 		async editMessageText(_text, other) {
 			deepStrictEqual(other, {
 				disable_web_page_preview: true,
+				entities: undefined,
 				parse_mode: undefined,
 				reply_markup: {
 					inline_keyboard: [],
@@ -409,6 +417,7 @@ await test('context-edit text edit with parse mode', async () => {
 		async editMessageText(_text, other) {
 			deepStrictEqual(other, {
 				disable_web_page_preview: undefined,
+				entities: undefined,
 				parse_mode: 'Markdown',
 				reply_markup: {
 					inline_keyboard: [],

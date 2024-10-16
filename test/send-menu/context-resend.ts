@@ -15,6 +15,7 @@ await test('context-resend on callback query', async t => {
 		strictEqual(text, 'whatever');
 		deepStrictEqual(other, {
 			disable_web_page_preview: false,
+			entities: undefined,
 			parse_mode: undefined,
 			reply_markup: {
 				inline_keyboard: [],
@@ -52,6 +53,7 @@ await test('context-resend on whatever', async t => {
 		strictEqual(text, 'whatever');
 		deepStrictEqual(other, {
 			disable_web_page_preview: false,
+			entities: undefined,
 			parse_mode: undefined,
 			reply_markup: {
 				inline_keyboard: [],

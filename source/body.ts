@@ -1,6 +1,6 @@
 import type {InputFile} from 'grammy';
 import type {
-	LabeledPrice, Location, ParseMode, Venue,
+	LabeledPrice, Location, MessageEntity, ParseMode, Venue,
 } from 'grammy/types';
 import type {ReadonlyDeep} from 'type-fest';
 import {hasTruthyKey, isObject} from './generic-types.js';
@@ -24,6 +24,7 @@ export type MediaType = typeof MEDIA_TYPES[number];
 
 export type TextBody = {
 	readonly text: string;
+	readonly entities?: MessageEntity[];
 	readonly parse_mode?: ParseMode;
 	readonly disable_web_page_preview?: boolean;
 };
@@ -34,6 +35,7 @@ export type MediaBody = {
 
 	/** Caption */
 	readonly text?: string;
+	readonly entities?: MessageEntity[];
 	readonly parse_mode?: ParseMode;
 };
 
@@ -160,6 +162,7 @@ export function isInvoiceBody(body: unknown): body is InvoiceBody {
 		&& typeof invoice.description === 'string';
 }
 
+// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
 export function getBodyText(body: TextBody | string): string {
 	return typeof body === 'string' ? body : body.text;
 }

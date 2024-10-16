@@ -112,6 +112,21 @@ const EXAMPLE_TEXTS: ReadonlyArray<string | TextBody> = [
 		text: 'Hello World',
 		disable_web_page_preview: true,
 	},
+	{
+		text: 'Hello world!',
+		entities: [
+			{
+				type: 'bold',
+				offset: 0,
+				length: 5,
+			},
+			{
+				type: 'italic',
+				offset: 6,
+				length: 5,
+			},
+		],
+	},
 ];
 
 const EXAMPLE_MEDIA: readonly MediaBody[] = [
@@ -129,6 +144,23 @@ const EXAMPLE_MEDIA: readonly MediaBody[] = [
 		type: 'photo',
 		text: 'whatever',
 		parse_mode: 'Markdown',
+	},
+	{
+		media: 'whatever',
+		type: 'photo',
+		text: 'Hello world!',
+		entities: [
+			{
+				type: 'bold',
+				offset: 0,
+				length: 5,
+			},
+			{
+				type: 'italic',
+				offset: 6,
+				length: 5,
+			},
+		],
 	},
 ];
 
