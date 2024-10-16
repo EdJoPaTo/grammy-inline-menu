@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   schedule:
     # Check if it works with current dependencies
-    - cron: '42 2 * * 6' # weekly on Saturday 2:42 UTC
+    - cron: "42 2 * * 6" # weekly on Saturday 2:42 UTC
 
 jobs:
   test:
@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: "lts/*"
       - uses: actions/checkout@v4
       - run: npm install
       - run: npm test
