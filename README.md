@@ -160,15 +160,15 @@ const menuTemplate = new MenuTemplate<MyContext>((ctx) => {
 });
 ```
 
-### Can I use `entities` like with `grammyjs/parse-mode` in the message body?
+### Can I use `entities` in the message body?
 
-Yes, you can pass the option `entities`.
+Also see: [`grammyjs/parse-mode`](https://github.com/grammyjs/parse-mode)
 
 ```ts
 import { bold, fmt, underline } from '@grammyjs/parse-mode';
 
 const menu = new MenuTemplate<MyContext>(async () => {
-	const message = fmt`${bold(underline('Hello world!'))}`
+	const message = fmt`${bold(underline('Hello world!'))}`;
 	return {
 		text: message.text,
 		entities: message.entities,
