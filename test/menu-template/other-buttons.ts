@@ -2,6 +2,48 @@ import {deepStrictEqual, strictEqual} from 'node:assert';
 import {test} from 'node:test';
 import {MenuTemplate} from '../../source/menu-template.js';
 
+await test('menu-template other-buttons copy_text', async () => {
+	const menu = new MenuTemplate('whatever');
+	menu.copyText({text: 'Button', copy_text: {text: 'content to be copied'}});
+	const keyboard = await menu.renderKeyboard(undefined, '/');
+	deepStrictEqual(keyboard, [[{
+		text: 'Button',
+		copy_text: {text: 'content to be copied'},
+	}]]);
+});
+
+await test('menu-template other-buttons copy_text functions', async () => {
+	const menu = new MenuTemplate<string>('whatever');
+	menu.copyText({
+		text(context, path) {
+			strictEqual(context, 'foo');
+			strictEqual(path, '/');
+			return 'Button';
+		},
+		copy_text(context, path) {
+			strictEqual(context, 'foo');
+			strictEqual(path, '/');
+			return {text: 'content to be copied'};
+		},
+	});
+	const keyboard = await menu.renderKeyboard('foo', '/');
+	deepStrictEqual(keyboard, [[{
+		text: 'Button',
+		copy_text: {text: 'content to be copied'},
+	}]]);
+});
+
+await test('menu-template other-buttons copy_text hidden', async () => {
+	const menu = new MenuTemplate('whatever');
+	menu.copyText({
+		text: 'Button',
+		copy_text: {text: 'content to be copied'},
+		hide: () => true,
+	});
+	const keyboard = await menu.renderKeyboard(undefined, '/');
+	deepStrictEqual(keyboard, []);
+});
+
 await test('menu-template other-buttons url', async () => {
 	const menu = new MenuTemplate('whatever');
 	menu.url({text: 'Button', url: 'https://edjopato.de'});

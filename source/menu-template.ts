@@ -5,6 +5,7 @@ import {
 } from './action-hive.js';
 import type {Body} from './body.js';
 import type {
+	CopyTextButtonOptions,
 	InteractionOptions,
 	ManualButtonOptions,
 	SingleButtonOptions,
@@ -137,6 +138,23 @@ export class MenuTemplate<Context> {
 	 */
 	manualAction(trigger: RegExpLike, action: ActionFunc<Context>): void {
 		this.#actions.add(trigger, action, undefined);
+	}
+
+	/** Add a copy_text button to the keyboard
+	 * @example
+	 * menuTemplate.copyText({
+	 *   text: 'Copy this',
+	 *   copy_text: { text: 'content' },
+	 * });
+	 */
+	copyText(options: CopyTextButtonOptions<Context>): void {
+		const {text, copy_text} = options;
+		this.manual(async (context, path) => ({
+			text: typeof text === 'function' ? await text(context, path) : text,
+			copy_text: typeof copy_text === 'function'
+				? await copy_text(context, path)
+				: copy_text,
+		}), options);
 	}
 
 	/** Add an url button to the keyboard

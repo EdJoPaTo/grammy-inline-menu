@@ -1,3 +1,4 @@
+import type {CopyTextButton} from 'grammy/types';
 import type {ActionFunc} from '../action-hive.js';
 import type {
 	ConstOrContextPathFunc,
@@ -23,6 +24,11 @@ export interface SingleButtonOptions<Context>
 export type ManualButtonOptions<Context> =
 	& BasicOptions<Context>
 	& JoinLastRowOption;
+
+export interface CopyTextButtonOptions<Context>
+	extends SingleButtonOptions<Context> {
+	readonly copy_text: ConstOrContextPathFunc<Context, Readonly<CopyTextButton>>;
+}
 
 export interface UrlButtonOptions<Context>
 	extends SingleButtonOptions<Context> {
