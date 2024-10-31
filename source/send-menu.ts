@@ -89,10 +89,11 @@ export async function editMenuOnContext<Context extends BaseContext>(
 	if (isMediaBody(body)) {
 		if (
 			'animation' in message
-			|| 'audio' in message
 			|| 'document' in message
+			|| 'audio' in message
 			|| 'photo' in message
 			|| 'video' in message
+			|| 'text' in message
 		) {
 			return context.editMessageMedia(
 				{

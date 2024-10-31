@@ -216,7 +216,7 @@ await test('context-edit media reply when not a callback query', async t => {
 	strictEqual(replyWithPhoto.mock.callCount(), 1);
 });
 
-await test('context-edit media reply when text message', async t => {
+await test('context-edit media reply when location message', async t => {
 	const menu = new MenuTemplate<BaseContext>({
 		media: 'whatever',
 		type: 'photo',
@@ -252,7 +252,10 @@ await test('context-edit media reply when text message', async t => {
 				message_id: 666,
 				date: 666,
 				chat: undefined as any,
-				text: 'whatever',
+				location: {
+					latitude: 13,
+					longitude: 37,
+				},
 			},
 		},
 		deleteMessage,
@@ -297,6 +300,48 @@ await test('context-edit media edit when media message', async t => {
 				date: 666,
 				chat: undefined as any,
 				photo: [],
+			},
+		},
+		editMessageMedia,
+	};
+
+	await editMenuOnContext(menu, fakeContext as any, '/');
+	strictEqual(editMessageMedia.mock.callCount(), 1);
+});
+
+await test('context-edit media edit when text message', async t => {
+	const menu = new MenuTemplate<BaseContext>({
+		media: 'whatever',
+		type: 'photo',
+	});
+
+	const editMessageMedia = t.mock.fn<BaseContext['editMessageMedia']>(
+		async (media, other) => {
+			deepStrictEqual(media, {
+				media: 'whatever',
+				type: 'photo',
+				caption: undefined,
+				parse_mode: undefined,
+			});
+			deepStrictEqual(other, {
+				reply_markup: {
+					inline_keyboard: [],
+				},
+			});
+			return undefined as any;
+		},
+	);
+	const fakeContext: Partial<BaseContext> = {
+		callbackQuery: {
+			id: '666',
+			from: undefined as any,
+			chat_instance: '666',
+			data: '666',
+			message: {
+				message_id: 666,
+				date: 666,
+				chat: undefined as any,
+				text: 'whatever',
 			},
 		},
 		editMessageMedia,
