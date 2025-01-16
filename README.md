@@ -512,12 +512,13 @@ async function externalEventOccured() {
 
 Yes. It was moved into a separate library with version 5 as it made the source code overly complicated.
 
-When you want to use it check [`grammy-stateless-question`](https://github.com/grammyjs/stateless-question).
+When you want to use it check [`stateless-question`](https://github.com/grammyjs/stateless-question).
 
 ```ts
+import { StatelessQuestion } from '@grammyjs/stateless-question';
 import { getMenuOfPath } from 'grammy-inline-menu';
 
-const myQuestion = new TelegrafStatelessQuestion<MyContext>(
+const myQuestion = new StatelessQuestion<MyContext>(
 	'unique',
 	async (context, additionalState) => {
 		const answer = context.message.text;
