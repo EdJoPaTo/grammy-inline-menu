@@ -52,7 +52,7 @@
 		"del-cli": "^6.0.0",
 		"grammy": "^1.31.0",
 		"typescript": "^5.7.2",
-		"xo": "^0.60.0"
+		"xo": "^1.0.5"
 	},
 	"files": [
 		"dist/source",
