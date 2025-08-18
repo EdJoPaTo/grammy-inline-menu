@@ -36,15 +36,18 @@ export type Options<Context> = {
 };
 
 export class MenuMiddleware<Context extends BaseContext> {
+	public readonly rootTrigger: string | RegExpLike;
 	readonly #sendMenu: SendMenuFunc<Context>;
 	readonly #responder: MenuResponder<Context>;
 
 	constructor(
-		public readonly rootTrigger: string | RegExpLike,
-		readonly rootMenu: MenuLike<Context>,
-		readonly options: Options<Context> = {},
+		rootTrigger: string | RegExpLike,
+		rootMenu: MenuLike<Context>,
+		options: Options<Context> = {},
 	) {
 		const rootTriggerRegex = createRootMenuTrigger(rootTrigger);
+		this.rootTrigger = rootTrigger;
+
 		this.#responder = createResponder(rootTriggerRegex, () => true, rootMenu);
 
 		this.#sendMenu = options.sendMenu ?? editMenuOnContext;
@@ -57,7 +60,10 @@ export class MenuMiddleware<Context extends BaseContext> {
 	 * const menuMiddleware = new MenuMiddleware('/', menuTemplate)
 	 * bot.command('start', async ctx => menuMiddleware.replyToContext(ctx))
 	 */
-	async replyToContext(context: Context, path = this.rootTrigger) {
+	async replyToContext(
+		context: Context,
+		path: string | RegExpLike = this.rootTrigger,
+	) {
 		if (typeof path === 'function') {
 			// Happens when a JS User does this as next is the second argument and not a string:
 			// ctx.command('start', menuMiddleware.replyToContext)

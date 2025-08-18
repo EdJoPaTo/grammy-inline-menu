@@ -1,6 +1,7 @@
 {
 	"compilerOptions": {
 		"declaration": true,
+		"erasableSyntaxOnly": true,
 		"forceConsistentCasingInFileNames": true,
 		"module": "node18",
 		"moduleDetection": "force",
