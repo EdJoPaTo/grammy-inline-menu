@@ -51,8 +51,8 @@
 		"c8": "^10.1.2",
 		"del-cli": "^6.0.0",
 		"grammy": "^1.31.0",
-		"typescript": "^5.7.2",
-		"xo": "^0.60.0"
+		"typescript": "^5.9.2",
+		"xo": "^1.2.2"
 	},
 	"files": [
 		"dist/source",
@@ -61,43 +61,40 @@
 	],
 	"main": "./dist/source/index.js",
 	"types": "./dist/source/index.d.ts",
-	"xo": {
-		"rules": {
-			"@typescript-eslint/consistent-type-definitions": "off",
-			"@typescript-eslint/naming-convention": "off",
-			"@typescript-eslint/prefer-readonly-parameter-types": "error",
-			"unicorn/prevent-abbreviations": "off"
-		},
-		"overrides": [
-			{
-				"files": [
-					"examples/**/*.*js"
-				],
-				"rules": {
-					"camelcase": "off",
-					"dot-notation": "off"
-				}
-			},
-			{
-				"files": [
-					"examples/**/*.*",
-					"**/*.test.*",
-					"**/test.*",
-					"test/**/*.*"
-				],
-				"rules": {
-					"@typescript-eslint/ban-ts-comment": "off",
-					"@typescript-eslint/no-empty-function": "off",
-					"@typescript-eslint/no-unsafe-argument": "off",
-					"@typescript-eslint/no-unsafe-assignment": "off",
-					"@typescript-eslint/no-unsafe-return": "off",
-					"@typescript-eslint/prefer-readonly-parameter-types": "off",
-					"max-params": "off",
-					"n/no-unsupported-features/es-syntax": "off",
-					"n/no-unsupported-features/node-builtins": "off",
-					"unicorn/prefer-top-level-await": "off"
-				}
+	"xo": [
+		{
+			"rules": {
+				"@typescript-eslint/consistent-type-definitions": "off",
+				"@typescript-eslint/naming-convention": "off",
+				"@typescript-eslint/prefer-readonly-parameter-types": "error"
 			}
-		]
-	}
+		},
+		{
+			"files": [
+				"examples/**/*.*js"
+			],
+			"rules": {
+				"camelcase": "off",
+				"dot-notation": "off"
+			}
+		},
+		{
+			"files": [
+				"examples/**/*.*",
+				"**/*.test.*",
+				"**/test.*",
+				"test/**/*.*"
+			],
+			"rules": {
+				"@typescript-eslint/ban-ts-comment": "off",
+				"@typescript-eslint/no-empty-function": "off",
+				"@typescript-eslint/no-unsafe-argument": "off",
+				"@typescript-eslint/no-unsafe-assignment": "off",
+				"@typescript-eslint/no-unsafe-return": "off",
+				"@typescript-eslint/prefer-readonly-parameter-types": "off",
+				"max-params": "off",
+				"unicorn/prefer-top-level-await": "off"
+			}
+		}
+	]
 }

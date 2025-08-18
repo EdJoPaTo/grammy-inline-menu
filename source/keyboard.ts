@@ -19,22 +19,24 @@ export type InlineKeyboard = ReadonlyArray<readonly InlineKeyboardButton[]>;
 export type ButtonTemplate = CallbackButtonTemplate | InlineKeyboardButton;
 export type ButtonTemplateRow = readonly ButtonTemplate[];
 
-type UncreatedTemplate<Context> = ConstOrContextPathFunc<Context, ButtonTemplate | undefined>;
+type UncreatedTemplate<Context> = ConstOrContextPathFunc<
+	Context,
+	ButtonTemplate | undefined
+>;
 type RowOfUncreatedTemplates<Context> = Array<UncreatedTemplate<Context>>;
-type ButtonTemplateRowGenerator<Context> = ContextPathFunc<Context, ButtonTemplateRow[]>;
+type ButtonTemplateRowGenerator<Context> = ContextPathFunc<
+	Context,
+	ButtonTemplateRow[]
+>;
 type KeyboardTemplateEntry<Context> =
 	| RowOfUncreatedTemplates<Context>
 	| ButtonTemplateRowGenerator<Context>;
 
-function isRow<Context>(
-	entry: undefined | ReadonlyDeep<KeyboardTemplateEntry<Context>>,
-): entry is RowOfUncreatedTemplates<Context> {
+function isRow<Context>(entry: undefined | ReadonlyDeep<KeyboardTemplateEntry<Context>>): entry is RowOfUncreatedTemplates<Context> {
 	return Array.isArray(entry);
 }
 
-function isCallbackButtonTemplate(
-	kindOfButton: ButtonTemplate,
-): kindOfButton is CallbackButtonTemplate {
+function isCallbackButtonTemplate(kindOfButton: ButtonTemplate): kindOfButton is CallbackButtonTemplate {
 	return 'text' in kindOfButton && 'relativePath' in kindOfButton;
 }
 
@@ -60,12 +62,10 @@ export class Keyboard<Context> {
 	}
 
 	async render(context: Context, path: string): Promise<InlineKeyboard> {
-		const arrayOfRowArrays = await Promise.all(
-			// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-			this.#entries.map(async o => entryToRows(o, context, path)),
-		);
+		// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+		const arrayOfRowArrays = await Promise.all(this.#entries.map(async o => entryToRows(o, context, path)));
 		const rows = arrayOfRowArrays
-			.flat(1)
+			.flat()
 			.map(row => renderRow(row, path))
 			.filter(o => o.length > 0);
 		return rows;
@@ -81,11 +81,8 @@ async function entryToRows<Context>(
 		return entry(context, path);
 	}
 
-	const buttonsInRow = await Promise.all(
-		entry.map(async button =>
-			typeof button === 'function' ? button(context, path) : button,
-		),
-	);
+	const buttonsInRow = await Promise.all(entry.map(async button =>
+		typeof button === 'function' ? button(context, path) : button));
 	const filtered = buttonsInRow.filter(filterNonNullable());
 	return [filtered];
 }
@@ -97,8 +94,7 @@ function renderRow(
 	return templates.map(template =>
 		isCallbackButtonTemplate(template)
 			? renderCallbackButtonTemplate(template, path)
-			: template,
-	);
+			: template);
 }
 
 function renderCallbackButtonTemplate(
@@ -108,9 +104,7 @@ function renderCallbackButtonTemplate(
 	const absolutePath = combinePath(path, template.relativePath);
 	const absolutePathLength = Buffer.byteLength(absolutePath, 'utf8');
 	if (absolutePathLength > 64) {
-		throw new Error(
-			`callback_data only supports 1-64 bytes. With this button (${template.relativePath}) it would get too long (${absolutePathLength}). Full path: ${absolutePath}`,
-		);
+		throw new Error(`callback_data only supports 1-64 bytes. With this button (${template.relativePath}) it would get too long (${absolutePathLength}). Full path: ${absolutePath}`);
 	}
 
 	return {

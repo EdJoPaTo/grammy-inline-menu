@@ -24,10 +24,14 @@ await test('menu-template choose buttons', async () => {
 		},
 	});
 	const keyboard = await menu.renderKeyboard(undefined, '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		callback_data: '/unique:Button',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				callback_data: '/unique:Button',
+			},
+		],
+	]);
 });
 
 await test('menu-template choose action triggers', () => {
@@ -41,7 +45,7 @@ await test('menu-template choose action triggers', () => {
 
 	const actions = [...menu.renderActionHandlers(/^\//)];
 	strictEqual(actions.length, 1);
-	strictEqual(actions[0]!.trigger.source, '^\\/unique:(.+)$');
+	strictEqual(actions[0]!.trigger.source, String.raw`^\/unique:(.+)$`);
 });
 
 await test('menu-template choose action hidden', async () => {
@@ -120,17 +124,17 @@ await test('menu-template choose with pagnination buttons', async () => {
 			throw new Error('dont set the page on rendering buttons');
 		},
 		do() {
-			throw new Error(
-				'dont run the do function when pagination is of interest',
-			);
+			throw new Error('dont run the do function when pagination is of interest');
 		},
 	});
 	const keyboard = await menu.renderKeyboard(undefined, '/');
 	deepStrictEqual(keyboard, [
-		[{
-			text: 'Button',
-			callback_data: '/unique:Button',
-		}],
+		[
+			{
+				text: 'Button',
+				callback_data: '/unique:Button',
+			},
+		],
 		[
 			{
 				text: '1',
@@ -157,16 +161,13 @@ await test('menu-template choose set page action', async t => {
 		choices: ['Button', 'Tree'],
 		setPage,
 		do() {
-			throw new Error(
-				'dont call the do function when pagination is of interest',
-			);
+			throw new Error('dont call the do function when pagination is of interest');
 		},
 	});
 	const actions = [...menu.renderActionHandlers(/^\//)];
 	strictEqual(actions.length, 2);
 	const pageAction = actions.find(o =>
-		o.trigger.source.includes('uniqueP:'),
-	)!;
+		o.trigger.source.includes('uniqueP:'))!;
 	const result = await pageAction.doFunction('bla', '/uniqueP:2');
 	strictEqual(result, '.');
 	strictEqual(setPage.mock.callCount(), 1);

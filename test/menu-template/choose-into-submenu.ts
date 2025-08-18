@@ -8,7 +8,7 @@ await test('menu-template choose-into-submenu submenu is listed', () => {
 	menu.chooseIntoSubmenu('unique', submenu, {choices: []});
 	const submenus = [...menu.listSubmenus()];
 	strictEqual(submenus.length, 1);
-	strictEqual(submenus[0]!.trigger.source, 'unique:([^/]+)\\/');
+	strictEqual(submenus[0]!.trigger.source, String.raw`unique:([^/]+)\/`);
 });
 
 await test('menu-template choose-into-submenu submenu hidden', async () => {
@@ -67,10 +67,14 @@ await test('menu-template choose-into-submenu button', async () => {
 		choices: ['Button'],
 	});
 	const keyboard = await menu.renderKeyboard(undefined, '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		callback_data: '/unique:Button/',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				callback_data: '/unique:Button/',
+			},
+		],
+	]);
 });
 
 await test('menu-template choose-into-submenu two same unique identifier codes throws', () => {
@@ -78,11 +82,14 @@ await test('menu-template choose-into-submenu two same unique identifier codes t
 	const submenu = new MenuTemplate('bar');
 	menu.chooseIntoSubmenu('unique', submenu, {choices: []});
 	menu.chooseIntoSubmenu('different', submenu, {choices: []});
-	throws(() => {
-		menu.chooseIntoSubmenu('unique', submenu, {choices: []});
-	}, {
-		message: /already a submenu with the unique identifier/,
-	});
+	throws(
+		() => {
+			menu.chooseIntoSubmenu('unique', submenu, {choices: []});
+		},
+		{
+			message: /already a submenu with the unique identifier/,
+		},
+	);
 });
 
 await test('menu-template choose-into-submenu with pagnination buttons', async () => {
@@ -98,10 +105,12 @@ await test('menu-template choose-into-submenu with pagnination buttons', async (
 	});
 	const keyboard = await menu.renderKeyboard(undefined, '/');
 	deepStrictEqual(keyboard, [
-		[{
-			text: 'Button',
-			callback_data: '/unique:Button/',
-		}],
+		[
+			{
+				text: 'Button',
+				callback_data: '/unique:Button/',
+			},
+		],
 		[
 			{
 				text: '1',

@@ -22,11 +22,9 @@ await test('ActionHive add simple doFunction', () => {
 	strictEqual(resultSet.size, 1);
 	const result = [...resultSet][0]!;
 
-	ok(
-		new RegExp(result.trigger.source, result.trigger.flags).exec('foo/bar'),
-	);
+	ok(new RegExp(result.trigger.source, result.trigger.flags).exec('foo/bar'));
 
-	strictEqual(result.trigger.source, '^foo\\/bar$');
+	strictEqual(result.trigger.source, String.raw`^foo\/bar$`);
 	strictEqual(result.trigger.flags, '');
 });
 
@@ -93,9 +91,12 @@ await test('ActionHive adding two times the same trigger throws', () => {
 	};
 
 	a.add(/foo$/, doFunction, undefined);
-	throws(() => {
-		a.add(/foo$/, doFunction, undefined);
-	}, {
-		message: /already added.+unique identifier/,
-	});
+	throws(
+		() => {
+			a.add(/foo$/, doFunction, undefined);
+		},
+		{
+			message: /already added.+unique identifier/,
+		},
+	);
 });

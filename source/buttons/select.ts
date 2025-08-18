@@ -78,16 +78,15 @@ export function generateSelectButtons<Context>(
 			options.maxRows,
 			currentPage,
 		);
-		const buttonsOfPage = await Promise.all(keysOfPage
-			.map(async key => {
-				const textResult = await textFunction(context, key);
-				const state = await options.isSet(context, key);
-				const text = await formatFunction(context, textResult, state, key);
+		const buttonsOfPage = await Promise.all(keysOfPage.map(async key => {
+			const textResult = await textFunction(context, key);
+			const state = await options.isSet(context, key);
+			const text = await formatFunction(context, textResult, state, key);
 
-				const dropinLetter = state ? 'F' : 'T';
-				const relativePath = uniqueIdentifierPrefix + dropinLetter + ':' + key;
-				return {text, relativePath};
-			}));
+			const dropinLetter = state ? 'F' : 'T';
+			const relativePath = uniqueIdentifierPrefix + dropinLetter + ':' + key;
+			return {text, relativePath};
+		}));
 		const rows = getButtonsAsRows(buttonsOfPage, options.columns);
 
 		if (options.setPage) {

@@ -20,6 +20,7 @@ function mehToString(something: unknown): string {
 		return JSON.stringify(something);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-base-to-string
 	return String(something);
 }
 
@@ -208,22 +209,16 @@ async function macro(
 ): Promise<void> {
 	await test(fn.name, async t => {
 		await t.test('works', async t => {
-			await Promise.all(
-				works.map(async item =>
-					t.test(mehToString(item), () => {
-						strictEqual(fn(item), true);
-					}),
-				),
-			);
+			await Promise.all(works.map(async item =>
+				t.test(mehToString(item), () => {
+					strictEqual(fn(item), true);
+				})));
 		});
 		await t.test('wrongs', async t => {
-			await Promise.all(
-				wrongs.map(async item =>
-					t.test(mehToString(item), () => {
-						strictEqual(fn(item), false);
-					}),
-				),
-			);
+			await Promise.all(wrongs.map(async item =>
+				t.test(mehToString(item), () => {
+					strictEqual(fn(item), false);
+				})));
 		});
 	});
 }
@@ -252,21 +247,29 @@ await macro(isLocationBody, EXAMPLE_LOCATION, [
 	EXAMPLE_INVOICE,
 ]);
 
-await macro(isVenueBody, [EXAMPLE_VENUE], [
-	...EXAMPLE_WRONGS,
-	...EXAMPLE_TEXTS,
-	...EXAMPLE_MEDIA,
-	...EXAMPLE_LOCATION,
-	EXAMPLE_INVOICE,
-]);
+await macro(
+	isVenueBody,
+	[EXAMPLE_VENUE],
+	[
+		...EXAMPLE_WRONGS,
+		...EXAMPLE_TEXTS,
+		...EXAMPLE_MEDIA,
+		...EXAMPLE_LOCATION,
+		EXAMPLE_INVOICE,
+	],
+);
 
-await macro(isInvoiceBody, [EXAMPLE_INVOICE], [
-	...EXAMPLE_WRONGS,
-	...EXAMPLE_TEXTS,
-	...EXAMPLE_MEDIA,
-	...EXAMPLE_LOCATION,
-	EXAMPLE_VENUE,
-]);
+await macro(
+	isInvoiceBody,
+	[EXAMPLE_INVOICE],
+	[
+		...EXAMPLE_WRONGS,
+		...EXAMPLE_TEXTS,
+		...EXAMPLE_MEDIA,
+		...EXAMPLE_LOCATION,
+		EXAMPLE_VENUE,
+	],
+);
 
 await test('getBodyText string', () => {
 	const body: Body = 'foo';

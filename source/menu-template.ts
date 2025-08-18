@@ -51,10 +51,8 @@ export class MenuTemplate<Context> {
 	readonly #actions = new ActionHive<Context>();
 	readonly #submenus = new Set<Submenu<Context>>();
 
-	constructor(
-		// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-		body: ConstOrContextPathFunc<Context, Body>,
-	) {
+	// eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+	constructor(body: ConstOrContextPathFunc<Context, Body>) {
 		this.#body = typeof body === 'function' ? body : () => body;
 	}
 
@@ -149,12 +147,15 @@ export class MenuTemplate<Context> {
 	 */
 	copyText(options: CopyTextButtonOptions<Context>): void {
 		const {text, copy_text} = options;
-		this.manual(async (context, path) => ({
-			text: typeof text === 'function' ? await text(context, path) : text,
-			copy_text: typeof copy_text === 'function'
-				? await copy_text(context, path)
-				: copy_text,
-		}), options);
+		this.manual(
+			async (context, path) => ({
+				text: typeof text === 'function' ? await text(context, path) : text,
+				copy_text: typeof copy_text === 'function'
+					? await copy_text(context, path)
+					: copy_text,
+			}),
+			options,
+		);
 	}
 
 	/** Add an url button to the keyboard
@@ -166,10 +167,13 @@ export class MenuTemplate<Context> {
 	 */
 	url(options: UrlButtonOptions<Context>): void {
 		const {text, url} = options;
-		this.manual(async (context, path) => ({
-			text: typeof text === 'function' ? await text(context, path) : text,
-			url: typeof url === 'function' ? await url(context, path) : url,
-		}), options);
+		this.manual(
+			async (context, path) => ({
+				text: typeof text === 'function' ? await text(context, path) : text,
+				url: typeof url === 'function' ? await url(context, path) : url,
+			}),
+			options,
+		);
 	}
 
 	/** Add a switch_inline_query button to the keyboard
@@ -181,12 +185,15 @@ export class MenuTemplate<Context> {
 	 */
 	switchToChat(options: SwitchToChatOptions<Context>): void {
 		const {text, query} = options;
-		this.manual(async (context, path) => ({
-			text: typeof text === 'function' ? await text(context, path) : text,
-			switch_inline_query: typeof query === 'function'
-				? await query(context, path)
-				: query,
-		}), options);
+		this.manual(
+			async (context, path) => ({
+				text: typeof text === 'function' ? await text(context, path) : text,
+				switch_inline_query: typeof query === 'function'
+					? await query(context, path)
+					: query,
+			}),
+			options,
+		);
 	}
 
 	/** Add a switch_inline_query_current_chat button to the keyboard
@@ -198,12 +205,15 @@ export class MenuTemplate<Context> {
 	 */
 	switchToCurrentChat(options: SwitchToChatOptions<Context>): void {
 		const {text, query} = options;
-		this.manual(async (context, path) => ({
-			text: typeof text === 'function' ? await text(context, path) : text,
-			switch_inline_query_current_chat: typeof query === 'function'
-				? await query(context, path)
-				: query,
-		}), options);
+		this.manual(
+			async (context, path) => ({
+				text: typeof text === 'function' ? await text(context, path) : text,
+				switch_inline_query_current_chat: typeof query === 'function'
+					? await query(context, path)
+					: query,
+			}),
+			options,
+		);
 	}
 
 	// TODO: add login_url, callback_game, pay for easier access (like url button)
@@ -218,10 +228,7 @@ export class MenuTemplate<Context> {
 	 * @example menuTemplate.navigate('/', {text: 'to the root menu'})
 	 * @example menuTemplate.navigate('../sibling/', {text: 'to a sibling menu'})
 	 */
-	navigate(
-		relativePath: string,
-		options: SingleButtonOptions<Context>,
-	): void {
+	navigate(relativePath: string, options: SingleButtonOptions<Context>): void {
 		this.#keyboard.add(
 			Boolean(options.joinLastRow),
 			generateCallbackButtonTemplate(options.text, relativePath, options.hide),
@@ -254,9 +261,7 @@ export class MenuTemplate<Context> {
 		options: InteractionOptions<Context>,
 	): void {
 		if (typeof options.do !== 'function') {
-			throw new TypeError(
-				'You have to specify `do` in order to have an interaction for this button. If you only want to navigate use `menuTemplate.navigate(…)` instead.',
-			);
+			throw new TypeError('You have to specify `do` in order to have an interaction for this button. If you only want to navigate use `menuTemplate.navigate(…)` instead.');
 		}
 
 		this.#actions.add(
@@ -296,13 +301,9 @@ export class MenuTemplate<Context> {
 		ensureTriggerChild(uniqueIdentifier);
 		const trigger = new RegExp(uniqueIdentifier + '/');
 		if (
-			[...this.#submenus]
-				.map(o => o.trigger.source)
-				.includes(trigger.source)
+			[...this.#submenus].map(o => o.trigger.source).includes(trigger.source)
 		) {
-			throw new Error(
-				`There is already a submenu with the unique identifier "${uniqueIdentifier}". Change the unique identifier in order to access both menus.`,
-			);
+			throw new Error(`There is already a submenu with the unique identifier "${uniqueIdentifier}". Change the unique identifier in order to access both menus.`);
 		}
 
 		this.#submenus.add({
@@ -337,9 +338,7 @@ export class MenuTemplate<Context> {
 		options: ChooseOptions<Context>,
 	): void {
 		if (!options.choices || typeof options.do !== 'function') {
-			throw new TypeError(
-				'You have to specify `choices` and `do` for choose to work.',
-			);
+			throw new TypeError('You have to specify `choices` and `do` for choose to work.');
 		}
 
 		const trigger = new RegExp(uniqueIdentifierPrefix + ':(.+)$');
@@ -347,15 +346,17 @@ export class MenuTemplate<Context> {
 			trigger,
 			async (context, path) =>
 				options.do(context, getKeyFromPath(trigger, path)),
-			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(
-				uniqueIdentifierPrefix,
-				options.choices,
-				options.hide,
-			),
+			options.disableChoiceExistsCheck
+				? options.hide
+				: combineHideAndChoices(
+					uniqueIdentifierPrefix,
+					options.choices,
+					options.hide,
+				),
 		);
 
 		if (options.setPage) {
-			const pageTrigger = new RegExp(uniqueIdentifierPrefix + 'P:(\\d+)$');
+			const pageTrigger = new RegExp(uniqueIdentifierPrefix + String.raw`P:(\d+)$`);
 			this.#actions.add(
 				pageTrigger,
 				setPageAction(pageTrigger, options.setPage),
@@ -363,9 +364,7 @@ export class MenuTemplate<Context> {
 			);
 		}
 
-		this.#keyboard.addCreator(
-			generateChoicesButtons(uniqueIdentifierPrefix, false, options),
-		);
+		this.#keyboard.addCreator(generateChoicesButtons(uniqueIdentifierPrefix, false, options));
 	}
 
 	/**
@@ -394,13 +393,9 @@ export class MenuTemplate<Context> {
 		ensureTriggerChild(uniqueIdentifierPrefix);
 		const trigger = new RegExp(uniqueIdentifierPrefix + ':([^/]+)/');
 		if (
-			[...this.#submenus]
-				.map(o => o.trigger.source)
-				.includes(trigger.source)
+			[...this.#submenus].map(o => o.trigger.source).includes(trigger.source)
 		) {
-			throw new Error(
-				`There is already a submenu with the unique identifier "${uniqueIdentifierPrefix}". Change the unique identifier in order to access both menus.`,
-			);
+			throw new Error(`There is already a submenu with the unique identifier "${uniqueIdentifierPrefix}". Change the unique identifier in order to access both menus.`);
 		}
 
 		this.#submenus.add({
@@ -416,7 +411,7 @@ export class MenuTemplate<Context> {
 		});
 
 		if (options.setPage) {
-			const pageTrigger = new RegExp(uniqueIdentifierPrefix + 'P:(\\d+)$');
+			const pageTrigger = new RegExp(uniqueIdentifierPrefix + String.raw`P:(\d+)$`);
 			this.#actions.add(
 				pageTrigger,
 				setPageAction(pageTrigger, options.setPage),
@@ -424,9 +419,7 @@ export class MenuTemplate<Context> {
 			);
 		}
 
-		this.#keyboard.addCreator(
-			generateChoicesButtons(uniqueIdentifierPrefix, true, options),
-		);
+		this.#keyboard.addCreator(generateChoicesButtons(uniqueIdentifierPrefix, true, options));
 	}
 
 	/**
@@ -463,9 +456,7 @@ export class MenuTemplate<Context> {
 			|| typeof options.set !== 'function'
 			|| typeof options.isSet !== 'function'
 		) {
-			throw new TypeError(
-				'You have to specify `choices`, `set` and `isSet` in order to work with select. If you just want to let the user choose between multiple options use `menuTemplate.choose(…)` instead.',
-			);
+			throw new TypeError('You have to specify `choices`, `set` and `isSet` in order to work with select. If you just want to let the user choose between multiple options use `menuTemplate.choose(…)` instead.');
 		}
 
 		const trueTrigger = new RegExp(uniqueIdentifierPrefix + 'T:(.+)$');
@@ -475,11 +466,13 @@ export class MenuTemplate<Context> {
 				const key = getKeyFromPath(trueTrigger, path);
 				return options.set(context, key, true);
 			},
-			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(
-				uniqueIdentifierPrefix + 'T',
-				options.choices,
-				options.hide,
-			),
+			options.disableChoiceExistsCheck
+				? options.hide
+				: combineHideAndChoices(
+					uniqueIdentifierPrefix + 'T',
+					options.choices,
+					options.hide,
+				),
 		);
 
 		const falseTrigger = new RegExp(uniqueIdentifierPrefix + 'F:(.+)$');
@@ -489,15 +482,17 @@ export class MenuTemplate<Context> {
 				const key = getKeyFromPath(falseTrigger, path);
 				return options.set(context, key, false);
 			},
-			options.disableChoiceExistsCheck ? options.hide : combineHideAndChoices(
-				uniqueIdentifierPrefix + 'F',
-				options.choices,
-				options.hide,
-			),
+			options.disableChoiceExistsCheck
+				? options.hide
+				: combineHideAndChoices(
+					uniqueIdentifierPrefix + 'F',
+					options.choices,
+					options.hide,
+				),
 		);
 
 		if (options.setPage) {
-			const pageTrigger = new RegExp(uniqueIdentifierPrefix + 'P:(\\d+)$');
+			const pageTrigger = new RegExp(uniqueIdentifierPrefix + String.raw`P:(\d+)$`);
 			this.#actions.add(
 				pageTrigger,
 				setPageAction(pageTrigger, options.setPage),
@@ -505,9 +500,7 @@ export class MenuTemplate<Context> {
 			);
 		}
 
-		this.#keyboard.addCreator(
-			generateSelectButtons(uniqueIdentifierPrefix, options),
-		);
+		this.#keyboard.addCreator(generateSelectButtons(uniqueIdentifierPrefix, options));
 	}
 
 	/**
@@ -525,9 +518,7 @@ export class MenuTemplate<Context> {
 			|| typeof options.getTotalPages !== 'function'
 			|| typeof options.setPage !== 'function'
 		) {
-			throw new TypeError(
-				'You have to specify `getCurrentPage`, `getTotalPages` and `setPage`.',
-			);
+			throw new TypeError('You have to specify `getCurrentPage`, `getTotalPages` and `setPage`.');
 		}
 
 		const paginationChoices: ContextFunc<Context, ChoicesRecord> = async context => {
@@ -536,19 +527,17 @@ export class MenuTemplate<Context> {
 			return createPaginationChoices(totalPages, currentPage);
 		};
 
-		const trigger = new RegExp(uniqueIdentifierPrefix + ':(\\d+)$');
+		const trigger = new RegExp(uniqueIdentifierPrefix + String.raw`:(\d+)$`);
 		this.#actions.add(
 			trigger,
 			setPageAction(trigger, options.setPage),
 			options.hide,
 		);
-		this.#keyboard.addCreator(
-			generateChoicesButtons(uniqueIdentifierPrefix, false, {
-				columns: 5,
-				choices: paginationChoices,
-				hide: options.hide,
-			}),
-		);
+		this.#keyboard.addCreator(generateChoicesButtons(uniqueIdentifierPrefix, false, {
+			columns: 5,
+			choices: paginationChoices,
+			hide: options.hide,
+		}));
 	}
 
 	/**
@@ -585,9 +574,7 @@ export class MenuTemplate<Context> {
 			|| typeof options.set !== 'function'
 			|| typeof options.isSet !== 'function'
 		) {
-			throw new TypeError(
-				'You have to specify `text`, `set` and `isSet` in order to work with toggle. If you just want to implement something more generic use `interact`',
-			);
+			throw new TypeError('You have to specify `text`, `set` and `isSet` in order to work with toggle. If you just want to implement something more generic use `interact`');
 		}
 
 		this.#actions.add(
@@ -615,9 +602,7 @@ function generateCallbackButtonTemplate<Context>(
 	hide: undefined | ContextPathFunc<Context, boolean>,
 ): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
 	if (!text) {
-		throw new TypeError(
-			'you have to specify `text` in order to show a button label',
-		);
+		throw new TypeError('you have to specify `text` in order to show a button label');
 	}
 
 	return async (context, path) => {
@@ -636,9 +621,7 @@ function getKeyFromPath(trigger: RegExpLike, path: string): string {
 	const match = new RegExp(trigger.source, trigger.flags).exec(path);
 	const key = match?.[1];
 	if (!key) {
-		throw new Error(
-			`Could not read key from path '${path}' for trigger '${trigger.source}'`,
-		);
+		throw new Error(`Could not read key from path '${path}' for trigger '${trigger.source}'`);
 	}
 
 	return key;

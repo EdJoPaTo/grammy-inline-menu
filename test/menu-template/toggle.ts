@@ -32,10 +32,14 @@ await test('menu-template toggle button true', async () => {
 		},
 	});
 	const keyboard = await menu.renderKeyboard('foo', '/');
-	deepStrictEqual(keyboard, [[{
-		text: '✅ Button',
-		callback_data: '/unique:false',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: '✅ Button',
+				callback_data: '/unique:false',
+			},
+		],
+	]);
 });
 
 await test('menu-template toggle button false', async () => {
@@ -52,10 +56,14 @@ await test('menu-template toggle button false', async () => {
 		},
 	});
 	const keyboard = await menu.renderKeyboard('foo', '/');
-	deepStrictEqual(keyboard, [[{
-		text: '🚫 Button',
-		callback_data: '/unique:true',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: '🚫 Button',
+				callback_data: '/unique:true',
+			},
+		],
+	]);
 });
 
 await test('menu-template toggle action triggers', () => {
@@ -75,8 +83,8 @@ await test('menu-template toggle action triggers', () => {
 	strictEqual(actions.length, 2);
 
 	const triggers = new Set(actions.map(o => o.trigger.source));
-	strictEqual(triggers.has('^\\/unique:true$'), true);
-	strictEqual(triggers.has('^\\/unique:false$'), true);
+	strictEqual(triggers.has(String.raw`^\/unique:true$`), true);
+	strictEqual(triggers.has(String.raw`^\/unique:false$`), true);
 });
 
 await test('menu-template toggle action hidden', async () => {

@@ -33,10 +33,14 @@ await test('menu-template select button true', async t => {
 		},
 	});
 	const keyboard = await menu.renderKeyboard('foo', '/');
-	deepStrictEqual(keyboard, [[{
-		text: '✅ Button',
-		callback_data: '/uniqueF:Button',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: '✅ Button',
+				callback_data: '/uniqueF:Button',
+			},
+		],
+	]);
 	strictEqual(isSet.mock.callCount(), 1);
 });
 
@@ -55,10 +59,14 @@ await test('menu-template select button false', async t => {
 		},
 	});
 	const keyboard = await menu.renderKeyboard('foo', '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		callback_data: '/uniqueT:Button',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				callback_data: '/uniqueT:Button',
+			},
+		],
+	]);
 	strictEqual(isSet.mock.callCount(), 1);
 });
 
@@ -78,10 +86,14 @@ await test('menu-template select button false with emoji', async t => {
 		},
 	});
 	const keyboard = await menu.renderKeyboard('foo', '/');
-	deepStrictEqual(keyboard, [[{
-		text: '🚫 Button',
-		callback_data: '/uniqueT:Button',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: '🚫 Button',
+				callback_data: '/uniqueT:Button',
+			},
+		],
+	]);
 	strictEqual(isSet.mock.callCount(), 1);
 });
 
@@ -101,8 +113,8 @@ await test('menu-template select action triggers', () => {
 	strictEqual(actions.length, 2);
 
 	const triggers = new Set(actions.map(o => o.trigger.source));
-	strictEqual(triggers.has('^\\/uniqueT:(.+)$'), true);
-	strictEqual(triggers.has('^\\/uniqueF:(.+)$'), true);
+	strictEqual(triggers.has(String.raw`^\/uniqueT:(.+)$`), true);
+	strictEqual(triggers.has(String.raw`^\/uniqueF:(.+)$`), true);
 });
 
 await test('menu-template select action hidden', async () => {
@@ -238,10 +250,12 @@ await test('menu-template select with pagnination buttons', async () => {
 	});
 	const keyboard = await menu.renderKeyboard('foo', '/');
 	deepStrictEqual(keyboard, [
-		[{
-			text: 'Button',
-			callback_data: '/uniqueT:Button',
-		}],
+		[
+			{
+				text: 'Button',
+				callback_data: '/uniqueT:Button',
+			},
+		],
 		[
 			{
 				text: '1',
@@ -276,8 +290,7 @@ await test('menu-template select set page action', async t => {
 	const actions = [...menu.renderActionHandlers(/^\//)];
 	strictEqual(actions.length, 3);
 	const pageAction = actions.find(o =>
-		o.trigger.source.includes('uniqueP:'),
-	)!;
+		o.trigger.source.includes('uniqueP:'))!;
 	const result = await pageAction.doFunction('bla', '/uniqueP:2');
 	strictEqual(result, '.');
 	strictEqual(setPage.mock.callCount(), 1);

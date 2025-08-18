@@ -20,10 +20,13 @@ await test('menu-middleware javascript-fails not supply reply as a middleware di
 
 	const next = async () => {};
 
-	await rejects(async () => {
-		// @ts-expect-error
-		await mm.replyToContext({} as any, next);
-	}, {message: /not supply this as a middleware directly/});
+	await rejects(
+		async () => {
+			// @ts-expect-error
+			await mm.replyToContext({} as any, next);
+		},
+		{message: /not supply this as a middleware directly/},
+	);
 });
 
 await test('menu-middleware javascript-fails action is run and no path to update afterwards is returned', async () => {
@@ -52,19 +55,22 @@ await test('menu-middleware javascript-fails action is run and no path to update
 		throw new Error('dont call this function');
 	});
 
-	await rejects(async () =>
-		bot.handleUpdate({
-			update_id: 666,
-			callback_query: {
-				id: '666',
-				from: {} as any,
-				chat_instance: '666',
-				data: '/what',
-			},
-		}), {
-		message:
-			/You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.$/,
-	});
+	await rejects(
+		async () =>
+			bot.handleUpdate({
+				update_id: 666,
+				callback_query: {
+					id: '666',
+					from: {} as any,
+					chat_instance: '666',
+					data: '/what',
+				},
+			}),
+		{
+			message:
+				/You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.$/,
+		},
+	);
 });
 
 await test('menu-middleware javascript-fails action is run and an empty path to update afterwards is returned throws', async () => {
@@ -94,17 +100,20 @@ await test('menu-middleware javascript-fails action is run and an empty path to 
 		throw new Error('dont call this function');
 	});
 
-	await rejects(async () =>
-		bot.handleUpdate({
-			update_id: 666,
-			callback_query: {
-				id: '666',
-				from: {} as any,
-				chat_instance: '666',
-				data: '/what',
-			},
-		}), {
-		message:
-			/You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.$/,
-	});
+	await rejects(
+		async () =>
+			bot.handleUpdate({
+				update_id: 666,
+				callback_query: {
+					id: '666',
+					from: {} as any,
+					chat_instance: '666',
+					data: '/what',
+				},
+			}),
+		{
+			message:
+				/You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.$/,
+		},
+	);
 });

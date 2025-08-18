@@ -95,33 +95,36 @@ export async function editMenuOnContext<Context extends BaseContext>(
 			|| 'video' in message
 			|| 'text' in message
 		) {
-			return context.editMessageMedia(
-				{
+			try {
+				const media = {
 					type: body.type,
 					media: body.media,
 					caption: body.text,
 					parse_mode: body.parse_mode,
-				},
-				createGenericOther(keyboard, other),
-			)
-				// eslint-disable-next-line promise/prefer-await-to-then
-				.catch(catchMessageNotModified);
+				};
+				return await context.editMessageMedia(
+					media,
+					createGenericOther(keyboard, other),
+				);
+			} catch (error) {
+				return catchMessageNotModified(error);
+			}
 		}
 	} else if (isLocationBody(body) || isVenueBody(body) || isInvoiceBody(body)) {
 		// Dont edit the message, just recreate it.
 	} else if (isTextBody(body)) {
 		if ('text' in message) {
-			return context.editMessageText(
-				getBodyText(body),
-				createTextOther(body, keyboard, other),
-			)
-				// eslint-disable-next-line promise/prefer-await-to-then
-				.catch(catchMessageNotModified);
+			try {
+				return await context.editMessageText(
+					getBodyText(body),
+					createTextOther(body, keyboard, other),
+				);
+			} catch (error) {
+				return catchMessageNotModified(error);
+			}
 		}
 	} else {
-		throw new TypeError(
-			'The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.',
-		);
+		throw new TypeError('The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.');
 	}
 
 	// The current menu is incompatible: delete and reply new one
@@ -137,9 +140,7 @@ export async function editMenuOnContext<Context extends BaseContext>(
  * If thats not possible the reply markup (keyboard) is removed. The user can not press any buttons on that old message.
  * @param context context of the message to be deleted
  */
-export async function deleteMenuFromContext<Context extends BaseContext>(
-	context: Context,
-): Promise<void> {
+export async function deleteMenuFromContext<Context extends BaseContext>(context: Context): Promise<void> {
 	try {
 		await context.deleteMessage();
 	} catch {
@@ -245,9 +246,7 @@ async function replyRenderedMenuPartsToContext<Context extends BaseContext>(
 		return context.reply(text, createTextOther(body, keyboard, other));
 	}
 
-	throw new Error(
-		'The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.',
-	);
+	throw new Error('The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.');
 }
 
 /**
@@ -331,9 +330,7 @@ export function generateSendMenuToChatFunction<Context>(
 			);
 		}
 
-		throw new Error(
-			'The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.',
-		);
+		throw new Error('The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.');
 	};
 }
 
@@ -370,21 +367,15 @@ export function generateEditMessageIntoMenuFunction<Context>(
 		}
 
 		if (isLocationBody(body)) {
-			throw new Error(
-				'You can not edit into a location body. You have to send the menu as a new message.',
-			);
+			throw new Error('You can not edit into a location body. You have to send the menu as a new message.');
 		}
 
 		if (isVenueBody(body)) {
-			throw new Error(
-				'You can not edit into a venue body. You have to send the menu as a new message.',
-			);
+			throw new Error('You can not edit into a venue body. You have to send the menu as a new message.');
 		}
 
 		if (isInvoiceBody(body)) {
-			throw new Error(
-				'You can not edit into an invoice body. You have to send the menu as a new message.',
-			);
+			throw new Error('You can not edit into an invoice body. You have to send the menu as a new message.');
 		}
 
 		if (isTextBody(body)) {
@@ -396,9 +387,7 @@ export function generateEditMessageIntoMenuFunction<Context>(
 			);
 		}
 
-		throw new Error(
-			'The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.',
-		);
+		throw new Error('The body has to be a string or an object containing text or media. Check the grammy-inline-menu Documentation.');
 	};
 }
 

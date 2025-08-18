@@ -13,10 +13,14 @@ await test('keyboard pass through url button', async () => {
 	k.add(false, {text: 'foo', url: 'https://edjopato.de'});
 
 	const result = await k.render(undefined, '/');
-	deepStrictEqual(result, [[{
-		text: 'foo',
-		url: 'https://edjopato.de',
-	}]]);
+	deepStrictEqual(result, [
+		[
+			{
+				text: 'foo',
+				url: 'https://edjopato.de',
+			},
+		],
+	]);
 });
 
 await test('keyboard pass through url button creator', async () => {
@@ -24,10 +28,14 @@ await test('keyboard pass through url button creator', async () => {
 	k.add(false, () => ({text: 'foo', url: 'https://edjopato.de'}));
 
 	const result = await k.render(undefined, '/');
-	deepStrictEqual(result, [[{
-		text: 'foo',
-		url: 'https://edjopato.de',
-	}]]);
+	deepStrictEqual(result, [
+		[
+			{
+				text: 'foo',
+				url: 'https://edjopato.de',
+			},
+		],
+	]);
 });
 
 await test('keyboard callback button template', async () => {
@@ -35,10 +43,14 @@ await test('keyboard callback button template', async () => {
 	k.add(false, {text: 'foo', relativePath: 'bar'});
 
 	const result = await k.render(undefined, '/');
-	deepStrictEqual(result, [[{
-		text: 'foo',
-		callback_data: '/bar',
-	}]]);
+	deepStrictEqual(result, [
+		[
+			{
+				text: 'foo',
+				callback_data: '/bar',
+			},
+		],
+	]);
 });
 
 await test('keyboard callback button template below path', async () => {
@@ -46,10 +58,14 @@ await test('keyboard callback button template below path', async () => {
 	k.add(false, {text: 'foo', relativePath: 'bar'});
 
 	const result = await k.render(undefined, '/somewhere/in/menus/');
-	deepStrictEqual(result, [[{
-		text: 'foo',
-		callback_data: '/somewhere/in/menus/bar',
-	}]]);
+	deepStrictEqual(result, [
+		[
+			{
+				text: 'foo',
+				callback_data: '/somewhere/in/menus/bar',
+			},
+		],
+	]);
 });
 
 await test('keyboard two buttons', async () => {
@@ -104,16 +120,24 @@ await test('keyboard creator creating nothing', async () => {
 
 await test('keyboard creator creating url button', async () => {
 	const k = new Keyboard<unknown>();
-	k.addCreator(() => [[{
-		text: 'foo',
-		url: 'https://edjopato.de',
-	}]]);
+	k.addCreator(() => [
+		[
+			{
+				text: 'foo',
+				url: 'https://edjopato.de',
+			},
+		],
+	]);
 
 	const result = await k.render(undefined, '/');
-	deepStrictEqual(result, [[{
-		text: 'foo',
-		url: 'https://edjopato.de',
-	}]]);
+	deepStrictEqual(result, [
+		[
+			{
+				text: 'foo',
+				url: 'https://edjopato.de',
+			},
+		],
+	]);
 });
 
 await test('keyboard hints too long callback data', async () => {

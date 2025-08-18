@@ -16,8 +16,7 @@ export function combineHideAndChoices<Context>(
 			return true;
 		}
 
-		const match = new RegExp('/' + uniqueIdentifierPrefix + ':([^/]+)/?$')
-			.exec(path);
+		const match = new RegExp('/' + uniqueIdentifierPrefix + ':([^/]+)/?$').exec(path);
 		const toBeFound = match?.[1];
 		if (!toBeFound) {
 			throw new TypeError('could not read choice from path');

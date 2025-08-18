@@ -57,16 +57,18 @@ await test('menu-template pagination buttons 2 pages', async () => {
 		},
 	});
 	const keyboard = await menu.renderKeyboard('foo', '/');
-	deepStrictEqual(keyboard, [[
-		{
-			text: '1',
-			callback_data: '/unique:1',
-		},
-		{
-			text: '▶️ 2',
-			callback_data: '/unique:2',
-		},
-	]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: '1',
+				callback_data: '/unique:1',
+			},
+			{
+				text: '▶️ 2',
+				callback_data: '/unique:2',
+			},
+		],
+	]);
 });
 
 await test('menu-template pagination action trigger', () => {
@@ -85,7 +87,7 @@ await test('menu-template pagination action trigger', () => {
 	const actions = [...menu.renderActionHandlers(/^\//)];
 	strictEqual(actions.length, 1);
 
-	strictEqual(actions[0]!.trigger.source, '^\\/unique:(\\d+)$');
+	strictEqual(actions[0]!.trigger.source, String.raw`^\/unique:(\d+)$`);
 });
 
 await test('menu-template pagination action sets page', async t => {

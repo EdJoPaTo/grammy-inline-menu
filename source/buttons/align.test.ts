@@ -20,12 +20,7 @@ function generateCharArray(charA: string, charZ: string): string[] {
 }
 
 await test('getRowsOfButtons example', () => {
-	const result = getRowsOfButtons(
-		generateCharArray('A', 'Z'),
-		2,
-		3,
-		2,
-	);
+	const result = getRowsOfButtons(generateCharArray('A', 'Z'), 2, 3, 2);
 	deepStrictEqual(result, [
 		['G', 'H'],
 		['I', 'J'],
@@ -34,19 +29,13 @@ await test('getRowsOfButtons example', () => {
 });
 
 await test('getRowsOfButtons example with defaults', () => {
-	const result = getRowsOfButtons(
-		generateCharArray('A', 'E'),
-	);
-	deepStrictEqual(result, [
-		['A', 'B', 'C', 'D', 'E'],
-	]);
+	const result = getRowsOfButtons(generateCharArray('A', 'E'));
+	deepStrictEqual(result, [['A', 'B', 'C', 'D', 'E']]);
 });
 
 await test('getButtonsAsRows less buttons than columns', () => {
 	const result = getButtonsAsRows(generateCharArray('A', 'E'), 6);
-	deepStrictEqual(result, [
-		['A', 'B', 'C', 'D', 'E'],
-	]);
+	deepStrictEqual(result, [['A', 'B', 'C', 'D', 'E']]);
 });
 
 await test('getButtonsAsRows buttons for three colums', () => {
@@ -60,11 +49,7 @@ await test('getButtonsAsRows buttons for three colums', () => {
 
 await test('getButtonsAsRows buttons for three colums but last not full', () => {
 	const result = getButtonsAsRows(generateCharArray('A', 'E'), 2);
-	deepStrictEqual(result, [
-		['A', 'B'],
-		['C', 'D'],
-		['E'],
-	]);
+	deepStrictEqual(result, [['A', 'B'], ['C', 'D'], ['E']]);
 });
 
 await test('getButtonsAsRows default columns', () => {
@@ -82,13 +67,7 @@ await test('getButtonsAsRows without buttons', () => {
 
 await test('getButtonsOfPage default args', () => {
 	const result = getButtonsOfPage(generateCharArray('A', 'E'));
-	deepStrictEqual(result, [
-		'A',
-		'B',
-		'C',
-		'D',
-		'E',
-	]);
+	deepStrictEqual(result, ['A', 'B', 'C', 'D', 'E']);
 });
 
 await test('getButtonsOfPage without buttons', () => {
@@ -98,39 +77,22 @@ await test('getButtonsOfPage without buttons', () => {
 
 await test('getButtonsOfPage trim by maxRows', () => {
 	const result = getButtonsOfPage(generateCharArray('A', 'Z'), 1, 5);
-	deepStrictEqual(result, [
-		'A',
-		'B',
-		'C',
-		'D',
-		'E',
-	]);
+	deepStrictEqual(result, ['A', 'B', 'C', 'D', 'E']);
 });
 
 await test('getButtonsOfPage second page', () => {
 	const result = getButtonsOfPage(generateCharArray('A', 'Z'), 1, 3, 2);
-	deepStrictEqual(result, [
-		'D',
-		'E',
-		'F',
-	]);
+	deepStrictEqual(result, ['D', 'E', 'F']);
 });
 
 await test('getButtonsOfPage partial last page', () => {
 	const result = getButtonsOfPage(generateCharArray('A', 'E'), 1, 3, 2);
-	deepStrictEqual(result, [
-		'D',
-		'E',
-	]);
+	deepStrictEqual(result, ['D', 'E']);
 });
 
 await test('getButtonsOfPage last possible page instead of wanted', () => {
 	const result = getButtonsOfPage(generateCharArray('A', 'F'), 1, 3, 3);
-	deepStrictEqual(result, [
-		'D',
-		'E',
-		'F',
-	]);
+	deepStrictEqual(result, ['D', 'E', 'F']);
 });
 
 await test('maximumButtonsPerPage example', () => {

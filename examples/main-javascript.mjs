@@ -63,9 +63,7 @@ menu.select('select', {
 	isSet: (_, key) => key === selectedKey,
 });
 
-const foodMenu = new MenuTemplate(
-	'People like food. What do they like?',
-);
+const foodMenu = new MenuTemplate('People like food. What do they like?');
 
 const people = {Mark: {}, Paul: {}};
 

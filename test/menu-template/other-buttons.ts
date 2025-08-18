@@ -4,12 +4,19 @@ import {MenuTemplate} from '../../source/menu-template.js';
 
 await test('menu-template other-buttons copy_text', async () => {
 	const menu = new MenuTemplate('whatever');
-	menu.copyText({text: 'Button', copy_text: {text: 'content to be copied'}});
-	const keyboard = await menu.renderKeyboard(undefined, '/');
-	deepStrictEqual(keyboard, [[{
+	menu.copyText({
 		text: 'Button',
 		copy_text: {text: 'content to be copied'},
-	}]]);
+	});
+	const keyboard = await menu.renderKeyboard(undefined, '/');
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				copy_text: {text: 'content to be copied'},
+			},
+		],
+	]);
 });
 
 await test('menu-template other-buttons copy_text functions', async () => {
@@ -27,10 +34,14 @@ await test('menu-template other-buttons copy_text functions', async () => {
 		},
 	});
 	const keyboard = await menu.renderKeyboard('foo', '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		copy_text: {text: 'content to be copied'},
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				copy_text: {text: 'content to be copied'},
+			},
+		],
+	]);
 });
 
 await test('menu-template other-buttons copy_text hidden', async () => {
@@ -48,10 +59,14 @@ await test('menu-template other-buttons url', async () => {
 	const menu = new MenuTemplate('whatever');
 	menu.url({text: 'Button', url: 'https://edjopato.de'});
 	const keyboard = await menu.renderKeyboard(undefined, '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		url: 'https://edjopato.de',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				url: 'https://edjopato.de',
+			},
+		],
+	]);
 });
 
 await test('menu-template other-buttons url functions', async () => {
@@ -69,10 +84,14 @@ await test('menu-template other-buttons url functions', async () => {
 		},
 	});
 	const keyboard = await menu.renderKeyboard('foo', '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		url: 'https://edjopato.de',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				url: 'https://edjopato.de',
+			},
+		],
+	]);
 });
 
 await test('menu-template other-buttons url hidden', async () => {
@@ -90,10 +109,14 @@ await test('menu-template other-buttons switchToChat', async () => {
 	const menu = new MenuTemplate('whatever');
 	menu.switchToChat({text: 'Button', query: 'bar'});
 	const keyboard = await menu.renderKeyboard(undefined, '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		switch_inline_query: 'bar',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				switch_inline_query: 'bar',
+			},
+		],
+	]);
 });
 
 await test('menu-template other-buttons switchToChat functions', async () => {
@@ -111,10 +134,14 @@ await test('menu-template other-buttons switchToChat functions', async () => {
 		},
 	});
 	const keyboard = await menu.renderKeyboard('foo', '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		switch_inline_query: 'bar',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				switch_inline_query: 'bar',
+			},
+		],
+	]);
 });
 
 await test('menu-template other-buttons switchToChat hidden', async () => {
@@ -132,10 +159,14 @@ await test('menu-template other-buttons switchToCurrentChat', async () => {
 	const menu = new MenuTemplate('whatever');
 	menu.switchToCurrentChat({text: 'Button', query: 'bar'});
 	const keyboard = await menu.renderKeyboard(undefined, '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		switch_inline_query_current_chat: 'bar',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				switch_inline_query_current_chat: 'bar',
+			},
+		],
+	]);
 });
 
 await test('menu-template other-buttons switchToCurrentChat functions', async () => {
@@ -153,10 +184,14 @@ await test('menu-template other-buttons switchToCurrentChat functions', async ()
 		},
 	});
 	const keyboard = await menu.renderKeyboard('foo', '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		switch_inline_query_current_chat: 'bar',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				switch_inline_query_current_chat: 'bar',
+			},
+		],
+	]);
 });
 
 await test('menu-template other-buttons switchToCurrentChat hidden', async () => {

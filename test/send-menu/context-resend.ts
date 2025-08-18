@@ -5,12 +5,10 @@ import {MenuTemplate} from '../../source/index.js';
 import {resendMenuToContext} from '../../source/send-menu.js';
 
 await test('context-resend on callback query', async t => {
-	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(
-		async messageId => {
-			strictEqual(messageId, undefined);
-			return true;
-		},
-	);
+	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(async messageId => {
+		strictEqual(messageId, undefined);
+		return true;
+	});
 	const reply = t.mock.fn<BaseContext['reply']>(async (text, other) => {
 		strictEqual(text, 'whatever');
 		deepStrictEqual(other, {
@@ -43,12 +41,10 @@ await test('context-resend on callback query', async t => {
 });
 
 await test('context-resend on whatever', async t => {
-	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(
-		async messageId => {
-			strictEqual(messageId, undefined);
-			return true;
-		},
-	);
+	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(async messageId => {
+		strictEqual(messageId, undefined);
+		return true;
+	});
 	const reply = t.mock.fn<BaseContext['reply']>(async (text, other) => {
 		strictEqual(text, 'whatever');
 		deepStrictEqual(other, {

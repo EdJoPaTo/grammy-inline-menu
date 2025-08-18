@@ -72,18 +72,14 @@ await test('menu-middleware empty-menu default root path is responded', async t 
 		renderKeyboard: () => [],
 	};
 
-	const sendMenu = t.mock.fn<SendMenuFunc<BaseContext>>(
-		async (_menu, _context, path) => {
-			strictEqual(path, '/');
-		},
-	);
+	const sendMenu = t.mock.fn<SendMenuFunc<BaseContext>>(async (_menu, _context, path) => {
+		strictEqual(path, '/');
+	});
 	const mm = new MenuMiddleware('/', menu, {sendMenu});
 
 	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {};
-	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
-		async () => true,
-	);
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead');
@@ -118,18 +114,14 @@ await test('menu-middleware empty-menu custom root path is responded', async t =
 		renderKeyboard: () => [],
 	};
 
-	const sendMenu = t.mock.fn<SendMenuFunc<BaseContext>>(
-		async (_menu, _context, path) => {
-			strictEqual(path, 'custom/');
-		},
-	);
+	const sendMenu = t.mock.fn<SendMenuFunc<BaseContext>>(async (_menu, _context, path) => {
+		strictEqual(path, 'custom/');
+	});
 	const mm = new MenuMiddleware('custom/', menu, {sendMenu});
 
 	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {};
-	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
-		async () => true,
-	);
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead');
@@ -164,18 +156,14 @@ await test('menu-middleware empty-menu custom regex root path is responded', asy
 		renderKeyboard: () => [],
 	};
 
-	const sendMenu = t.mock.fn<SendMenuFunc<BaseContext>>(
-		async (_menu, _context, path) => {
-			strictEqual(path, 'tree42/');
-		},
-	);
+	const sendMenu = t.mock.fn<SendMenuFunc<BaseContext>>(async (_menu, _context, path) => {
+		strictEqual(path, 'tree42/');
+	});
 	const mm = new MenuMiddleware(/^tree(\d+)\//, menu, {sendMenu});
 
 	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {};
-	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
-		async () => true,
-	);
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead');
@@ -239,18 +227,14 @@ await test('menu-middleware empty-menu not existing path below is responded with
 		renderKeyboard: () => [],
 	};
 
-	const sendMenu = t.mock.fn<SendMenuFunc<BaseContext>>(
-		async (_menu, _context, path) => {
-			strictEqual(path, '/');
-		},
-	);
+	const sendMenu = t.mock.fn<SendMenuFunc<BaseContext>>(async (_menu, _context, path) => {
+		strictEqual(path, '/');
+	});
 	const mm = new MenuMiddleware('/', menu, {sendMenu});
 
 	const bot = new Bot<BaseContext>('123:ABC');
 	(bot as any).botInfo = {};
-	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
-		async () => true,
-	);
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead');

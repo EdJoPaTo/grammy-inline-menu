@@ -69,7 +69,10 @@ await test('ensureCorrectChoiceKeys correct keys are not a problem', () => {
 
 await test('ensureCorrectChoiceKeys slash throws', () => {
 	const choiceKeys = ['a/a'];
-	throws(() => {
-		ensureCorrectChoiceKeys('prefix', '/path/', choiceKeys);
-	}, {message: /can not contain '\/'.+prefix.+\/path\//});
+	throws(
+		() => {
+			ensureCorrectChoiceKeys('prefix', '/path/', choiceKeys);
+		},
+		{message: /can not contain '\/'.+prefix.+\/path\//},
+	);
 });

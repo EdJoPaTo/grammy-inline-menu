@@ -72,11 +72,10 @@ export function generateChoicesPaginationButtons<Context>(
 	const totalPages = choiceKeys / entriesPerPage;
 	const pageRecord = createPaginationChoices(totalPages, currentPage);
 	const pageKeys = Object.keys(pageRecord).map(Number);
-	const pageButtons = pageKeys
-		.map((page): CallbackButtonTemplate => ({
-			relativePath: `${uniqueIdentifierPrefix}P:${page}`,
-			text: pageRecord[page]!,
-		}));
+	const pageButtons = pageKeys.map((page): CallbackButtonTemplate => ({
+		relativePath: `${uniqueIdentifierPrefix}P:${page}`,
+		text: pageRecord[page]!,
+	}));
 
 	return pageButtons;
 }

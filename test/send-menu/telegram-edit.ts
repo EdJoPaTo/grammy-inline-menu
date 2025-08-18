@@ -107,131 +107,125 @@ await test('telegram-edit text with entities', async () => {
 });
 
 await test('telegram-edit media', async t => {
-	await Promise.all(
-		MEDIA_TYPES.map(async mediaType =>
-			t.test(mediaType, async () => {
-				const menu = new MenuTemplate<BaseContext>({
-					media: 'whatever',
-					type: mediaType,
-				});
+	await Promise.all(MEDIA_TYPES.map(async mediaType =>
+		t.test(mediaType, async () => {
+			const menu = new MenuTemplate<BaseContext>({
+				media: 'whatever',
+				type: mediaType,
+			});
 
-				const fakeTelegram: Partial<Api> = {
-					async editMessageMedia(chatId, messageId, media, other) {
-						strictEqual(chatId, 13);
-						strictEqual(messageId, 37);
-						deepStrictEqual(media, {
-							media: 'whatever',
-							type: mediaType,
-							caption: undefined,
-							caption_entities: undefined,
-							parse_mode: undefined,
-						});
-						deepStrictEqual(other, {
-							reply_markup: {
-								inline_keyboard: [],
-							},
-						});
-						return true;
-					},
-				};
+			const fakeTelegram: Partial<Api> = {
+				async editMessageMedia(chatId, messageId, media, other) {
+					strictEqual(chatId, 13);
+					strictEqual(messageId, 37);
+					deepStrictEqual(media, {
+						media: 'whatever',
+						type: mediaType,
+						caption: undefined,
+						caption_entities: undefined,
+						parse_mode: undefined,
+					});
+					deepStrictEqual(other, {
+						reply_markup: {
+							inline_keyboard: [],
+						},
+					});
+					return true;
+				},
+			};
 
-				const editIntoFunction = generateEditMessageIntoMenuFunction(
-					fakeTelegram as any,
-					menu,
-					'/',
-				);
+			const editIntoFunction = generateEditMessageIntoMenuFunction(
+				fakeTelegram as any,
+				menu,
+				'/',
+			);
 
-				const fakeContext: Partial<BaseContext> = {
-					callbackQuery: {
-						id: '666',
-						from: undefined as any,
-						chat_instance: '666',
-						data: '666',
-					},
-				};
+			const fakeContext: Partial<BaseContext> = {
+				callbackQuery: {
+					id: '666',
+					from: undefined as any,
+					chat_instance: '666',
+					data: '666',
+				},
+			};
 
-				await editIntoFunction(13, 37, fakeContext as any);
-			}),
-		),
-	);
+			await editIntoFunction(13, 37, fakeContext as any);
+		})));
 });
 
 await test('telegram-edit media with caption entities', async t => {
-	await Promise.all(
-		MEDIA_TYPES.map(async mediaType =>
-			t.test(mediaType, async () => {
-				if (!['animation', 'video'].includes(mediaType)) {
-					return;
-				}
+	await Promise.all(MEDIA_TYPES.map(async mediaType =>
+		t.test(mediaType, async () => {
+			if (!['animation', 'video'].includes(mediaType)) {
+				return;
+			}
 
-				const menu = new MenuTemplate<BaseContext>({
-					media: 'whatever',
-					text: 'Hello world!',
-					entities: [
-						{
-							type: 'bold',
-							offset: 0,
-							length: 5,
-						},
-						{
-							type: 'italic',
-							offset: 6,
-							length: 5,
-						},
-					],
-					type: mediaType,
-				});
+			const menu = new MenuTemplate<BaseContext>({
+				media: 'whatever',
+				text: 'Hello world!',
+				entities: [
+					{
+						type: 'bold',
+						offset: 0,
+						length: 5,
+					},
+					{
+						type: 'italic',
+						offset: 6,
+						length: 5,
+					},
+				],
+				type: mediaType,
+			});
 
-				const fakeTelegram: Partial<Api> = {
-					async editMessageMedia(chatId, messageId, media, other) {
-						strictEqual(chatId, 13);
-						strictEqual(messageId, 37);
-						deepStrictEqual(media, {
-							media: 'whatever',
-							type: mediaType,
-							caption: 'Hello world!',
-							caption_entities: [
-								{
-									type: 'bold',
-									offset: 0,
-									length: 5,
-								},
-								{
-									type: 'italic',
-									offset: 6,
-									length: 5,
-								},
-							],
-							parse_mode: undefined,
-						});
-						deepStrictEqual(other, {
-							reply_markup: {
-								inline_keyboard: [],
+			const fakeTelegram: Partial<Api> = {
+				async editMessageMedia(chatId, messageId, media, other) {
+					strictEqual(chatId, 13);
+					strictEqual(messageId, 37);
+					deepStrictEqual(media, {
+						media: 'whatever',
+						type: mediaType,
+						caption: 'Hello world!',
+						caption_entities: [
+							{
+								type: 'bold',
+								offset: 0,
+								length: 5,
 							},
-						});
-						return true;
-					},
-				};
+							{
+								type: 'italic',
+								offset: 6,
+								length: 5,
+							},
+						],
+						parse_mode: undefined,
+					});
+					deepStrictEqual(other, {
+						reply_markup: {
+							inline_keyboard: [],
+						},
+					});
+					return true;
+				},
+			};
 
-				const editIntoFunction = generateEditMessageIntoMenuFunction(
-					fakeTelegram as any,
-					menu,
-					'/',
-				);
+			const editIntoFunction = generateEditMessageIntoMenuFunction(
+				fakeTelegram as any,
+				menu,
+				'/',
+			);
 
-				const fakeContext: Partial<BaseContext> = {
-					callbackQuery: {
-						id: '666',
-						from: undefined as any,
-						chat_instance: '666',
-						data: '666',
-					},
-				};
+			const fakeContext: Partial<BaseContext> = {
+				callbackQuery: {
+					id: '666',
+					from: undefined as any,
+					chat_instance: '666',
+					data: '666',
+				},
+			};
 
-				await editIntoFunction(13, 37, fakeContext as any);
-			}),
-		),
-	);
+			await editIntoFunction(13, 37, fakeContext as any);
+		})));
 });
 
 await test('telegram-edit location', async () => {
@@ -255,11 +249,14 @@ await test('telegram-edit location', async () => {
 		},
 	};
 
-	await rejects(async () => {
-		await editIntoFunction(13, 37, fakeContext as any);
-	}, {
-		message: /can not edit into a location body/,
-	});
+	await rejects(
+		async () => {
+			await editIntoFunction(13, 37, fakeContext as any);
+		},
+		{
+			message: /can not edit into a location body/,
+		},
+	);
 });
 
 await test('telegram-edit venue', async () => {
@@ -286,11 +283,14 @@ await test('telegram-edit venue', async () => {
 		},
 	};
 
-	await rejects(async () => {
-		await editIntoFunction(13, 37, fakeContext as any);
-	}, {
-		message: /can not edit into a venue body/,
-	});
+	await rejects(
+		async () => {
+			await editIntoFunction(13, 37, fakeContext as any);
+		},
+		{
+			message: /can not edit into a venue body/,
+		},
+	);
 });
 
 await test('telegram-edit invoice', async () => {
@@ -319,9 +319,12 @@ await test('telegram-edit invoice', async () => {
 		},
 	};
 
-	await rejects(async () => {
-		await editIntoFunction(13, 37, fakeContext as any);
-	}, {
-		message: /can not edit into an invoice body/,
-	});
+	await rejects(
+		async () => {
+			await editIntoFunction(13, 37, fakeContext as any);
+		},
+		{
+			message: /can not edit into an invoice body/,
+		},
+	);
 });

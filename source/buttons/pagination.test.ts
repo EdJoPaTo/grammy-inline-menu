@@ -26,11 +26,12 @@ await test('pagination', async t => {
 	await macro('one page is ommited', 1, 1, []);
 	await macro('NaN pages is ommited', Number.NaN, 1, []);
 	await macro('currentPage NaN is assumed 1', 2, Number.NaN, [1, 2]);
-	await macro('currentPage greater than totalPages is max page', 10, 15, [
-		1,
-		9,
+	await macro(
+		'currentPage greater than totalPages is max page',
 		10,
-	]);
+		15,
+		[1, 9, 10],
+	);
 	await macro(
 		'currentPage Infinity is max page',
 		10,
@@ -52,12 +53,15 @@ await test('pagination', async t => {
 		});
 	});
 
-	await t.test('three pages are with +/-1 buttons and not first/last buttons', () => {
-		const result = createPaginationChoices(3, 2);
-		deepStrictEqual(result, {
-			1: '1 ◀️',
-			2: '2',
-			3: '▶️ 3',
-		});
-	});
+	await t.test(
+		'three pages are with +/-1 buttons and not first/last buttons',
+		() => {
+			const result = createPaginationChoices(3, 2);
+			deepStrictEqual(result, {
+				1: '1 ◀️',
+				2: '2',
+				3: '▶️ 3',
+			});
+		},
+	);
 });

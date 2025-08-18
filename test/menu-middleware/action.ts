@@ -68,18 +68,14 @@ await test('menu-middleware action is run and updating menu afterwards with path
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
 	};
-	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(
-		async (_menu, _context, path) => {
-			strictEqual(path, '/');
-		},
-	);
+	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(async (_menu, _context, path) => {
+		strictEqual(path, '/');
+	});
 	const mm = new MenuMiddleware('/', menu, {sendMenu});
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {};
-	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
-		async () => true,
-	);
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead');
@@ -124,18 +120,14 @@ await test('menu-middleware action is run and updating menu afterwards with true
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
 	};
-	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(
-		async (_menu, _context, path) => {
-			strictEqual(path, '/');
-		},
-	);
+	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(async (_menu, _context, path) => {
+		strictEqual(path, '/');
+	});
 	const mm = new MenuMiddleware('/', menu, {sendMenu});
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {};
-	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
-		async () => true,
-	);
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead');
@@ -187,18 +179,21 @@ await test('menu-middleware action returns non existing path afterwards throws E
 		throw new Error('dont call this function');
 	});
 
-	await rejects(async () =>
-		bot.handleUpdate({
-			update_id: 666,
-			callback_query: {
-				id: '666',
-				from: {} as any,
-				chat_instance: '666',
-				data: 'custom/what',
-			},
-		}), {
-		message: /There is no menu "\/foo\/" which can be reached in this menu$/,
-	});
+	await rejects(
+		async () =>
+			bot.handleUpdate({
+				update_id: 666,
+				callback_query: {
+					id: '666',
+					from: {} as any,
+					chat_instance: '666',
+					data: 'custom/what',
+				},
+			}),
+		{
+			message: /There is no menu "\/foo\/" which can be reached in this menu$/,
+		},
+	);
 });
 
 await test('menu-middleware action not existing action updates menu', async t => {
@@ -214,18 +209,14 @@ await test('menu-middleware action not existing action updates menu', async t =>
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
 	};
-	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(
-		async (_menu, _context, path) => {
-			strictEqual(path, '/');
-		},
-	);
+	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(async (_menu, _context, path) => {
+		strictEqual(path, '/');
+	});
 	const mm = new MenuMiddleware('/', menu, {sendMenu});
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {};
-	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
-		async () => true,
-	);
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead');
@@ -329,18 +320,14 @@ await test('menu-middleware action not existing action in submenu updates submen
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
 	};
-	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(
-		async (_menu, _context, path) => {
-			strictEqual(path, '/submenu/');
-		},
-	);
+	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(async (_menu, _context, path) => {
+		strictEqual(path, '/submenu/');
+	});
 	const mm = new MenuMiddleware('/', menu, {sendMenu});
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {};
-	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
-		async () => true,
-	);
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead');
@@ -391,18 +378,14 @@ await test('menu-middleware action in hidden submenu updates main menu', async t
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
 	};
-	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(
-		async (_menu, _context, path) => {
-			strictEqual(path, '/');
-		},
-	);
+	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(async (_menu, _context, path) => {
+		strictEqual(path, '/');
+	});
 	const mm = new MenuMiddleware('/', menu, {sendMenu});
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {};
-	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
-		async () => true,
-	);
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead');
@@ -453,18 +436,14 @@ await test('menu-middleware action in non existing submenu updates main menu', a
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
 	};
-	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(
-		async (_menu, _context, path) => {
-			strictEqual(path, '/');
-		},
-	);
+	const sendMenu = t.mock.fn<SendMenuFunc<MyContext>>(async (_menu, _context, path) => {
+		strictEqual(path, '/');
+	});
 	const mm = new MenuMiddleware('/', menu, {sendMenu});
 
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {};
-	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(
-		async () => true,
-	);
+	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
 			throw new Error('Use sendMenu instead');
@@ -509,9 +488,7 @@ await test('menu-middleware action run took too long and updating menu afterward
 	const bot = new Bot<MyContext>('123:ABC');
 	(bot as any).botInfo = {};
 	const answerCallbackQuery = t.mock.fn(async () => {
-		throw new Error(
-			'Bad Request: query is too old and response timeout expired or query ID is invalid',
-		);
+		throw new Error('Bad Request: query is too old and response timeout expired or query ID is invalid');
 	});
 	bot.use(async (ctx, next) => {
 		ctx.reply = () => {
@@ -571,14 +548,17 @@ await test('menu-middleware action updating menu still throws unknown error from
 		throw new Error('dont call this function');
 	});
 
-	await rejects(async () =>
-		bot.handleUpdate({
-			update_id: 666,
-			callback_query: {
-				id: '666',
-				from: {} as any,
-				chat_instance: '666',
-				data: '/what',
-			},
-		}), {message: /Whatever went wrong here for the test$/});
+	await rejects(
+		async () =>
+			bot.handleUpdate({
+				update_id: 666,
+				callback_query: {
+					id: '666',
+					from: {} as any,
+					chat_instance: '666',
+					data: '/what',
+				},
+			}),
+		{message: /Whatever went wrong here for the test$/},
+	);
 });

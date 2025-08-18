@@ -1,6 +1,10 @@
 import type {InputFile} from 'grammy';
 import type {
-	LabeledPrice, Location, MessageEntity, ParseMode, Venue,
+	LabeledPrice,
+	Location,
+	MessageEntity,
+	ParseMode,
+	Venue,
 } from 'grammy/types';
 import type {ReadonlyDeep} from 'type-fest';
 import {hasTruthyKey, isObject} from './generic-types.js';
@@ -20,7 +24,7 @@ export const MEDIA_TYPES = [
 	'photo',
 	'video',
 ] as const;
-export type MediaType = typeof MEDIA_TYPES[number];
+export type MediaType = (typeof MEDIA_TYPES)[number];
 
 export type TextBody = {
 	readonly text: string;

@@ -44,8 +44,6 @@ export function ensureCorrectChoiceKeys(
 ): void {
 	const containSlashExample = choiceKeys.find(o => o.includes('/'));
 	if (containSlashExample) {
-		throw new Error(
-			`Choices can not contain '/'. Found '${containSlashExample}' in unique identifier '${uniqueIdentifierPrefix}' at path '${path}'.`,
-		);
+		throw new Error(`Choices can not contain '/'. Found '${containSlashExample}' in unique identifier '${uniqueIdentifierPrefix}' at path '${path}'.`);
 	}
 }

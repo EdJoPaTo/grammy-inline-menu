@@ -62,20 +62,18 @@ await test('context-edit text reply when no message on callback query', async t 
 await test('context-edit text edit when message is a text message', async t => {
 	const menu = new MenuTemplate<BaseContext>('whatever');
 
-	const editMessageText = t.mock.fn<BaseContext['editMessageText']>(
-		async (text, other) => {
-			strictEqual(text, 'whatever');
-			deepStrictEqual(other, {
-				disable_web_page_preview: false,
-				entities: undefined,
-				parse_mode: undefined,
-				reply_markup: {
-					inline_keyboard: [],
-				},
-			});
-			return undefined as any;
-		},
-	);
+	const editMessageText = t.mock.fn<BaseContext['editMessageText']>(async (text, other) => {
+		strictEqual(text, 'whatever');
+		deepStrictEqual(other, {
+			disable_web_page_preview: false,
+			entities: undefined,
+			parse_mode: undefined,
+			reply_markup: {
+				inline_keyboard: [],
+			},
+		});
+		return undefined as any;
+	});
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
@@ -99,12 +97,10 @@ await test('context-edit text edit when message is a text message', async t => {
 await test('context-edit text reply when message is a media message', async t => {
 	const menu = new MenuTemplate<BaseContext>('whatever');
 
-	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(
-		async messageId => {
-			strictEqual(messageId, undefined);
-			return true;
-		},
-	);
+	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(async messageId => {
+		strictEqual(messageId, undefined);
+		return true;
+	});
 	const reply = t.mock.fn<BaseContext['reply']>(async (text, other) => {
 		strictEqual(text, 'whatever');
 		deepStrictEqual(other, {
@@ -142,12 +138,10 @@ await test('context-edit text reply when message is a media message', async t =>
 await test('context-edit text reply when message is a media message but fails with delete', async t => {
 	const menu = new MenuTemplate<BaseContext>('whatever');
 
-	const editMessage = t.mock.fn<BaseContext['editMessageReplyMarkup']>(
-		async markup => {
-			strictEqual(markup, undefined);
-			return true;
-		},
-	);
+	const editMessage = t.mock.fn<BaseContext['editMessageReplyMarkup']>(async markup => {
+		strictEqual(markup, undefined);
+		return true;
+	});
 	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(async () => {
 		throw new Error('whatever went wrong');
 	});
@@ -193,20 +187,18 @@ await test('context-edit media reply when not a callback query', async t => {
 		type: 'photo',
 	});
 
-	const replyWithPhoto = t.mock.fn<BaseContext['replyWithPhoto']>(
-		async (photo, other) => {
-			strictEqual(photo, 'whatever');
-			deepStrictEqual(other, {
-				caption: undefined,
-				caption_entities: undefined,
-				parse_mode: undefined,
-				reply_markup: {
-					inline_keyboard: [],
-				},
-			});
-			return undefined as any;
-		},
-	);
+	const replyWithPhoto = t.mock.fn<BaseContext['replyWithPhoto']>(async (photo, other) => {
+		strictEqual(photo, 'whatever');
+		deepStrictEqual(other, {
+			caption: undefined,
+			caption_entities: undefined,
+			parse_mode: undefined,
+			reply_markup: {
+				inline_keyboard: [],
+			},
+		});
+		return undefined as any;
+	});
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: undefined,
 		replyWithPhoto,
@@ -222,26 +214,22 @@ await test('context-edit media reply when location message', async t => {
 		type: 'photo',
 	});
 
-	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(
-		async messageId => {
-			strictEqual(messageId, undefined);
-			return true;
-		},
-	);
-	const replyWithPhoto = t.mock.fn<BaseContext['replyWithPhoto']>(
-		async (photo, other) => {
-			strictEqual(photo, 'whatever');
-			deepStrictEqual(other, {
-				caption: undefined,
-				caption_entities: undefined,
-				parse_mode: undefined,
-				reply_markup: {
-					inline_keyboard: [],
-				},
-			});
-			return undefined as any;
-		},
-	);
+	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(async messageId => {
+		strictEqual(messageId, undefined);
+		return true;
+	});
+	const replyWithPhoto = t.mock.fn<BaseContext['replyWithPhoto']>(async (photo, other) => {
+		strictEqual(photo, 'whatever');
+		deepStrictEqual(other, {
+			caption: undefined,
+			caption_entities: undefined,
+			parse_mode: undefined,
+			reply_markup: {
+				inline_keyboard: [],
+			},
+		});
+		return undefined as any;
+	});
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
@@ -273,22 +261,20 @@ await test('context-edit media edit when media message', async t => {
 		type: 'photo',
 	});
 
-	const editMessageMedia = t.mock.fn<BaseContext['editMessageMedia']>(
-		async (media, other) => {
-			deepStrictEqual(media, {
-				media: 'whatever',
-				type: 'photo',
-				caption: undefined,
-				parse_mode: undefined,
-			});
-			deepStrictEqual(other, {
-				reply_markup: {
-					inline_keyboard: [],
-				},
-			});
-			return undefined as any;
-		},
-	);
+	const editMessageMedia = t.mock.fn<BaseContext['editMessageMedia']>(async (media, other) => {
+		deepStrictEqual(media, {
+			media: 'whatever',
+			type: 'photo',
+			caption: undefined,
+			parse_mode: undefined,
+		});
+		deepStrictEqual(other, {
+			reply_markup: {
+				inline_keyboard: [],
+			},
+		});
+		return undefined as any;
+	});
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
@@ -315,22 +301,20 @@ await test('context-edit media edit when text message', async t => {
 		type: 'photo',
 	});
 
-	const editMessageMedia = t.mock.fn<BaseContext['editMessageMedia']>(
-		async (media, other) => {
-			deepStrictEqual(media, {
-				media: 'whatever',
-				type: 'photo',
-				caption: undefined,
-				parse_mode: undefined,
-			});
-			deepStrictEqual(other, {
-				reply_markup: {
-					inline_keyboard: [],
-				},
-			});
-			return undefined as any;
-		},
-	);
+	const editMessageMedia = t.mock.fn<BaseContext['editMessageMedia']>(async (media, other) => {
+		deepStrictEqual(media, {
+			media: 'whatever',
+			type: 'photo',
+			caption: undefined,
+			parse_mode: undefined,
+		});
+		deepStrictEqual(other, {
+			reply_markup: {
+				inline_keyboard: [],
+			},
+		});
+		return undefined as any;
+	});
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
@@ -354,11 +338,9 @@ await test('context-edit media edit when text message', async t => {
 await test('context-edit does not throw message is not modified', async t => {
 	const menu = new MenuTemplate<BaseContext>('whatever');
 
-	const editMessageText = t.mock.fn<BaseContext['editMessageText']>(
-		async () => {
-			throw new Error('lalala message is not modified lalala');
-		},
-	);
+	const editMessageText = t.mock.fn<BaseContext['editMessageText']>(async () => {
+		throw new Error('lalala message is not modified lalala');
+	});
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
@@ -494,10 +476,14 @@ await test('context-edit text edit with button', async () => {
 		},
 		async editMessageText(_text, other) {
 			deepStrictEqual(other?.reply_markup, {
-				inline_keyboard: [[{
-					text: 'Button',
-					callback_data: '/',
-				}]],
+				inline_keyboard: [
+					[
+						{
+							text: 'Button',
+							callback_data: '/',
+						},
+					],
+				],
 			});
 			return undefined as any;
 		},
@@ -528,10 +514,14 @@ await test('context-edit media edit with button', async () => {
 		},
 		async editMessageMedia(_media, other) {
 			deepStrictEqual(other?.reply_markup, {
-				inline_keyboard: [[{
-					text: 'Button',
-					callback_data: '/',
-				}]],
+				inline_keyboard: [
+					[
+						{
+							text: 'Button',
+							callback_data: '/',
+						},
+					],
+				],
 			});
 			return undefined as any;
 		},
@@ -547,25 +537,21 @@ await test('context-edit location reply', async t => {
 	});
 	menu.manual({text: 'Button', callback_data: '/'});
 
-	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(
-		async messageId => {
-			strictEqual(messageId, undefined);
-			return true;
-		},
-	);
-	const replyWithLocation = t.mock.fn<BaseContext['replyWithLocation']>(
-		async (latitude, longitude, other) => {
-			strictEqual(latitude, 53.5);
-			strictEqual(longitude, 10);
-			deepStrictEqual(other, {
-				live_period: 666,
-				reply_markup: {
-					inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
-				},
-			});
-			return undefined as any;
-		},
-	);
+	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(async messageId => {
+		strictEqual(messageId, undefined);
+		return true;
+	});
+	const replyWithLocation = t.mock.fn<BaseContext['replyWithLocation']>(async (latitude, longitude, other) => {
+		strictEqual(latitude, 53.5);
+		strictEqual(longitude, 10);
+		deepStrictEqual(other, {
+			live_period: 666,
+			reply_markup: {
+				inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
+			},
+		});
+		return undefined as any;
+	});
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
@@ -598,28 +584,24 @@ await test('context-edit venue reply', async t => {
 	});
 	menu.manual({text: 'Button', callback_data: '/'});
 
-	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(
-		async messageId => {
-			strictEqual(messageId, undefined);
-			return true;
-		},
-	);
-	const replyWithVenue = t.mock.fn<BaseContext['replyWithVenue']>(
-		async (latitude, longitude, title, address, other) => {
-			strictEqual(latitude, 53.5);
-			strictEqual(longitude, 10);
-			strictEqual(title, 'A');
-			strictEqual(address, 'B');
-			deepStrictEqual(other, {
-				foursquare_id: undefined,
-				foursquare_type: undefined,
-				reply_markup: {
-					inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
-				},
-			});
-			return undefined as any;
-		},
-	);
+	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(async messageId => {
+		strictEqual(messageId, undefined);
+		return true;
+	});
+	const replyWithVenue = t.mock.fn<BaseContext['replyWithVenue']>(async (latitude, longitude, title, address, other) => {
+		strictEqual(latitude, 53.5);
+		strictEqual(longitude, 10);
+		strictEqual(title, 'A');
+		strictEqual(address, 'B');
+		deepStrictEqual(other, {
+			foursquare_id: undefined,
+			foursquare_type: undefined,
+			reply_markup: {
+				inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
+			},
+		});
+		return undefined as any;
+	});
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',
@@ -654,34 +636,23 @@ await test('context-edit invoice reply', async t => {
 	});
 	menu.manual({text: 'Button', callback_data: '/'});
 
-	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(
-		async messageId => {
-			strictEqual(messageId, undefined);
-			return true;
-		},
-	);
-	const replyWithInvoice = t.mock.fn<BaseContext['replyWithInvoice']>(
-		async (
-			title,
-			description,
-			payload,
-			currency,
-			prices,
-			other,
-		) => {
-			strictEqual(title, 'A');
-			strictEqual(description, 'B');
-			strictEqual(currency, 'EUR');
-			strictEqual(payload, 'D');
-			deepStrictEqual(prices, []);
-			deepStrictEqual(other, {
-				reply_markup: {
-					inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
-				},
-			});
-			return undefined as any;
-		},
-	);
+	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(async messageId => {
+		strictEqual(messageId, undefined);
+		return true;
+	});
+	const replyWithInvoice = t.mock.fn<BaseContext['replyWithInvoice']>(async (title, description, payload, currency, prices, other) => {
+		strictEqual(title, 'A');
+		strictEqual(description, 'B');
+		strictEqual(currency, 'EUR');
+		strictEqual(payload, 'D');
+		deepStrictEqual(prices, []);
+		deepStrictEqual(other, {
+			reply_markup: {
+				inline_keyboard: [[{text: 'Button', callback_data: '/'}]],
+			},
+		});
+		return undefined as any;
+	});
 	const fakeContext: Partial<BaseContext> = {
 		callbackQuery: {
 			id: '666',

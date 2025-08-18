@@ -3,9 +3,13 @@ import {test} from 'node:test';
 import {combineHideAndChoices} from './actions.js';
 
 await test('choice actions choices are not called when hide is true', async () => {
-	const func = combineHideAndChoices('bla', () => {
-		throw new Error('dont call choices when already hidden');
-	}, () => true);
+	const func = combineHideAndChoices(
+		'bla',
+		() => {
+			throw new Error('dont call choices when already hidden');
+		},
+		() => true,
+	);
 	const isHidden = await func(undefined, '/');
 	strictEqual(isHidden, true);
 });

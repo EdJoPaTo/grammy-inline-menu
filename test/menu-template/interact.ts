@@ -73,7 +73,7 @@ await test('menu-template interact action is added with correct trigger', () => 
 	strictEqual(actions.size, 1);
 
 	const action = [...actions][0]!;
-	strictEqual(action.trigger.source, '^\\/unique$');
+	strictEqual(action.trigger.source, String.raw`^\/unique$`);
 });
 
 await test('menu-template interact action can be called', async t => {

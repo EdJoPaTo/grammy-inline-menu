@@ -6,10 +6,14 @@ await test('menu-template manual', async () => {
 	const menu = new MenuTemplate('whatever');
 	menu.manual({text: 'Button', url: 'https://edjopato.de'});
 	const keyboard = await menu.renderKeyboard(undefined, '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		url: 'https://edjopato.de',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				url: 'https://edjopato.de',
+			},
+		],
+	]);
 });
 
 await test('menu-template manual function', async () => {
@@ -20,47 +24,68 @@ await test('menu-template manual function', async () => {
 		return {text: 'Button', url: 'https://edjopato.de'};
 	});
 	const keyboard = await menu.renderKeyboard('foo', '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		url: 'https://edjopato.de',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				url: 'https://edjopato.de',
+			},
+		],
+	]);
 });
 
 await test('menu-template manual hidden', async () => {
 	const menu = new MenuTemplate('whatever');
-	menu.manual({text: 'Button', url: 'https://edjopato.de'}, {
-		hide: () => true,
-	});
+	menu.manual(
+		{text: 'Button', url: 'https://edjopato.de'},
+		{
+			hide: () => true,
+		},
+	);
 	const keyboard = await menu.renderKeyboard(undefined, '/');
 	deepStrictEqual(keyboard, []);
 });
 
 await test('menu-template manual hidden false', async () => {
 	const menu = new MenuTemplate('whatever');
-	menu.manual({text: 'Button', url: 'https://edjopato.de'}, {
-		hide: () => false,
-	});
+	menu.manual(
+		{text: 'Button', url: 'https://edjopato.de'},
+		{
+			hide: () => false,
+		},
+	);
 	const keyboard = await menu.renderKeyboard(undefined, '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		url: 'https://edjopato.de',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				url: 'https://edjopato.de',
+			},
+		],
+	]);
 });
 
 await test('menu-template manual hidden false function', async () => {
 	const menu = new MenuTemplate<string>('whatever');
-	menu.manual((context, path) => {
-		strictEqual(context, 'foo');
-		strictEqual(path, '/');
-		return {text: 'Button', url: 'https://edjopato.de'};
-	}, {
-		hide: () => false,
-	});
+	menu.manual(
+		(context, path) => {
+			strictEqual(context, 'foo');
+			strictEqual(path, '/');
+			return {text: 'Button', url: 'https://edjopato.de'};
+		},
+		{
+			hide: () => false,
+		},
+	);
 	const keyboard = await menu.renderKeyboard('foo', '/');
-	deepStrictEqual(keyboard, [[{
-		text: 'Button',
-		url: 'https://edjopato.de',
-	}]]);
+	deepStrictEqual(keyboard, [
+		[
+			{
+				text: 'Button',
+				url: 'https://edjopato.de',
+			},
+		],
+	]);
 });
 
 await test('menu-template manualRow empty input no button', async () => {
@@ -72,15 +97,19 @@ await test('menu-template manualRow empty input no button', async () => {
 
 await test('menu-template manualRow buttons end up in keyboard', async () => {
 	const menu = new MenuTemplate('whatever');
-	menu.manualRow(() => [[
-		{text: 'Button1', url: 'https://edjopato.de'},
-		{text: 'Button2', relativePath: 'foo'},
-	]]);
+	menu.manualRow(() => [
+		[
+			{text: 'Button1', url: 'https://edjopato.de'},
+			{text: 'Button2', relativePath: 'foo'},
+		],
+	]);
 	const keyboard = await menu.renderKeyboard(undefined, '/');
-	deepStrictEqual(keyboard, [[
-		{text: 'Button1', url: 'https://edjopato.de'},
-		{text: 'Button2', callback_data: '/foo'},
-	]]);
+	deepStrictEqual(keyboard, [
+		[
+			{text: 'Button1', url: 'https://edjopato.de'},
+			{text: 'Button2', callback_data: '/foo'},
+		],
+	]);
 });
 
 await test('menu-template manualAction trigger', () => {
@@ -91,7 +120,7 @@ await test('menu-template manualAction trigger', () => {
 	const actions = [...menu.renderActionHandlers(/^\//)];
 	strictEqual(actions.length, 1);
 
-	strictEqual(actions[0]!.trigger.source, '^\\/unique:(\\d+)$');
+	strictEqual(actions[0]!.trigger.source, String.raw`^\/unique:(\d+)$`);
 });
 
 await test('menu-template manualAction is triggered', async t => {

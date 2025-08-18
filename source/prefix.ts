@@ -49,12 +49,7 @@ function applyOptionsToPrefix(
 	prefix: string | boolean | undefined,
 	options: PrefixOptions,
 ): string | undefined {
-	const {
-		prefixFalse,
-		prefixTrue,
-		hideFalseEmoji,
-		hideTrueEmoji,
-	} = options;
+	const {prefixFalse, prefixTrue, hideFalseEmoji, hideTrueEmoji} = options;
 
 	if (prefix === true) {
 		if (hideTrueEmoji) {

@@ -42,70 +42,58 @@ const FAULTY_MENU_TEMPLATES: Readonly<Record<string, MenuTemplate<unknown>>> = {
 };
 
 await test('send-menu javascript-fails context edit', async t => {
-	await Promise.all(
-		Object.entries(FAULTY_MENU_TEMPLATES).map(async ([fault, menu]) =>
-			t.test(fault, async () => {
-				const fakeContext: Partial<BaseContext> = {
-					callbackQuery: {
-						id: '666',
-						chat_instance: '666',
-						from: {} as any,
-						data: '666',
-						message: {
-							text: '42',
-							date: 666,
-							message_id: 666,
-							chat: {} as any,
-						},
+	await Promise.all(Object.entries(FAULTY_MENU_TEMPLATES).map(async ([fault, menu]) =>
+		t.test(fault, async () => {
+			const fakeContext: Partial<BaseContext> = {
+				callbackQuery: {
+					id: '666',
+					chat_instance: '666',
+					from: {} as any,
+					data: '666',
+					message: {
+						text: '42',
+						date: 666,
+						message_id: 666,
+						chat: {} as any,
 					},
-				};
-				await rejects(
-					async () => editMenuOnContext(menu, fakeContext as any, '/'),
-					EXPECTED_ERROR,
-				);
-			}),
-		),
-	);
+				},
+			};
+			await rejects(
+				async () => editMenuOnContext(menu, fakeContext as any, '/'),
+				EXPECTED_ERROR,
+			);
+		})));
 });
 
 await test('send-menu javascript-fails context reply', async t => {
-	await Promise.all(
-		Object.entries(FAULTY_MENU_TEMPLATES).map(async ([fault, menu]) =>
-			t.test(fault, async () => {
-				await rejects(
-					async () => replyMenuToContext(menu, {} as any, '/'),
-					EXPECTED_ERROR,
-				);
-			}),
-		),
-	);
+	await Promise.all(Object.entries(FAULTY_MENU_TEMPLATES).map(async ([fault, menu]) =>
+		t.test(fault, async () => {
+			await rejects(
+				async () => replyMenuToContext(menu, {} as any, '/'),
+				EXPECTED_ERROR,
+			);
+		})));
 });
 
 await test('send-menu javascript-fails telegram send', async t => {
-	await Promise.all(
-		Object.entries(FAULTY_MENU_TEMPLATES).map(async ([fault, menu]) =>
-			t.test(fault, async () => {
-				const sendMenu = generateSendMenuToChatFunction({} as any, menu, '/');
-				await rejects(async () => sendMenu(666, {} as any), EXPECTED_ERROR);
-			}),
-		),
-	);
+	await Promise.all(Object.entries(FAULTY_MENU_TEMPLATES).map(async ([fault, menu]) =>
+		t.test(fault, async () => {
+			const sendMenu = generateSendMenuToChatFunction({} as any, menu, '/');
+			await rejects(async () => sendMenu(666, {} as any), EXPECTED_ERROR);
+		})));
 });
 
 await test('send-menu javascript-fails telegram edit', async t => {
-	await Promise.all(
-		Object.entries(FAULTY_MENU_TEMPLATES).map(async ([fault, menu]) =>
-			t.test(fault, async () => {
-				const editIntoMenu = generateEditMessageIntoMenuFunction(
-					{} as any,
-					menu,
-					'/',
-				);
-				await rejects(
-					async () => editIntoMenu(666, 666, {} as any),
-					EXPECTED_ERROR,
-				);
-			}),
-		),
-	);
+	await Promise.all(Object.entries(FAULTY_MENU_TEMPLATES).map(async ([fault, menu]) =>
+		t.test(fault, async () => {
+			const editIntoMenu = generateEditMessageIntoMenuFunction(
+				{} as any,
+				menu,
+				'/',
+			);
+			await rejects(
+				async () => editIntoMenu(666, 666, {} as any),
+				EXPECTED_ERROR,
+			);
+		})));
 });

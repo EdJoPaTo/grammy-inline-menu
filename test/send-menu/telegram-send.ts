@@ -43,59 +43,56 @@ await test('telegram-send text', async () => {
 });
 
 await test('telegram-send media', async t => {
-	await Promise.all(
-		MEDIA_TYPES.map(async mediaType =>
-			t.test(mediaType, async () => {
-				const menu = new MenuTemplate<BaseContext>({
-					media: 'whatever',
-					type: mediaType,
-				});
+	await Promise.all(MEDIA_TYPES.map(async mediaType =>
+		t.test(mediaType, async () => {
+			const menu = new MenuTemplate<BaseContext>({
+				media: 'whatever',
+				type: mediaType,
+			});
 
-				const sendFunction = async (
-					chatId: unknown,
-					media: unknown,
-					other: unknown,
-				) => {
-					strictEqual(chatId, 666);
-					strictEqual(media, 'whatever');
-					deepStrictEqual(other, {
-						caption: undefined,
-						caption_entities: undefined,
-						parse_mode: undefined,
-						reply_markup: {
-							inline_keyboard: [],
-						},
-					});
-					return {} as any;
-				};
-
-				const fakeTelegram: Partial<Api> = {
-					sendAnimation: sendFunction,
-					sendAudio: sendFunction,
-					sendDocument: sendFunction,
-					sendPhoto: sendFunction,
-					sendVideo: sendFunction,
-				};
-
-				const sendMenu = generateSendMenuToChatFunction(
-					fakeTelegram as any,
-					menu,
-					'/',
-				);
-
-				const fakeContext: Partial<BaseContext> = {
-					callbackQuery: {
-						id: '666',
-						from: undefined as any,
-						chat_instance: '666',
-						data: '666',
+			const sendFunction = async (
+				chatId: unknown,
+				media: unknown,
+				other: unknown,
+			) => {
+				strictEqual(chatId, 666);
+				strictEqual(media, 'whatever');
+				deepStrictEqual(other, {
+					caption: undefined,
+					caption_entities: undefined,
+					parse_mode: undefined,
+					reply_markup: {
+						inline_keyboard: [],
 					},
-				};
+				});
+				return {} as any;
+			};
 
-				await sendMenu(666, fakeContext as any);
-			}),
-		),
-	);
+			const fakeTelegram: Partial<Api> = {
+				sendAnimation: sendFunction,
+				sendAudio: sendFunction,
+				sendDocument: sendFunction,
+				sendPhoto: sendFunction,
+				sendVideo: sendFunction,
+			};
+
+			const sendMenu = generateSendMenuToChatFunction(
+				fakeTelegram as any,
+				menu,
+				'/',
+			);
+
+			const fakeContext: Partial<BaseContext> = {
+				callbackQuery: {
+					id: '666',
+					from: undefined as any,
+					chat_instance: '666',
+					data: '666',
+				},
+			};
+
+			await sendMenu(666, fakeContext as any);
+		})));
 });
 
 await test('telegram-send location', async () => {

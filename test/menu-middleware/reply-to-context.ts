@@ -157,7 +157,10 @@ await test('menu-middleware reply-to-context fails when rootTrigger is a regex a
 
 	const mm = new MenuMiddleware(/^tree(\d+)\//, menu);
 
-	await rejects(async () => {
-		await mm.replyToContext({} as any);
-	}, {message: /absolute path explicitly as a string/});
+	await rejects(
+		async () => {
+			await mm.replyToContext({} as any);
+		},
+		{message: /absolute path explicitly as a string/},
+	);
 });

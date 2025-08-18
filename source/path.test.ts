@@ -17,12 +17,9 @@ await test('combinePath', async t => {
 		relativePath: string,
 		expected: string,
 	) =>
-		t.test(
-			`combinePath(${parent}, ${relativePath}) is ${expected}`,
-			() => {
-				strictEqual(combinePath(parent, relativePath), expected);
-			},
-		);
+		t.test(`combinePath(${parent}, ${relativePath}) is ${expected}`, () => {
+			strictEqual(combinePath(parent, relativePath), expected);
+		});
 	await macro('/', 'wow', '/wow');
 	await macro('/', 'foo/bar', '/foo/bar');
 	await macro('/foo/', 'bar', '/foo/bar');
@@ -67,6 +64,7 @@ await test('getMenuOfPath throws when not a path', () => {
 
 await test('createRootMenuTrigger does not throw on good trigger', async t => {
 	const macro = async (trigger: string | RegExpLike) =>
+		// eslint-disable-next-line @typescript-eslint/no-base-to-string
 		t.test(String(trigger), () => {
 			createRootMenuTrigger(trigger);
 		});
@@ -77,27 +75,39 @@ await test('createRootMenuTrigger does not throw on good trigger', async t => {
 });
 
 await test('createRootMenuTrigger throws when not ending with /', () => {
-	throws(() => {
-		createRootMenuTrigger(/^blubb/);
-	}, {message: /root menu trigger.+\//});
+	throws(
+		() => {
+			createRootMenuTrigger(/^blubb/);
+		},
+		{message: /root menu trigger.+\//},
+	);
 });
 
 await test('createRootMenuTrigger throws when not starting with ^', () => {
-	throws(() => {
-		createRootMenuTrigger(/blubb\//);
-	}, {message: /root menu trigger.+\^/});
+	throws(
+		() => {
+			createRootMenuTrigger(/blubb\//);
+		},
+		{message: /root menu trigger.+\^/},
+	);
 });
 
 await test('createRootMenuTrigger throws when raw string contains multiple slashes /', () => {
-	throws(() => {
-		createRootMenuTrigger('some/stuff/');
-	}, {message: /root menu trigger.+exactly one slash/});
+	throws(
+		() => {
+			createRootMenuTrigger('some/stuff/');
+		},
+		{message: /root menu trigger.+exactly one slash/},
+	);
 });
 
 await test('createRootMenuTrigger throws when it matches multiple slashes /', () => {
-	throws(() => {
-		createRootMenuTrigger(/^.+\//);
-	}, {message: /root menu trigger.+exactly one slash/});
+	throws(
+		() => {
+			createRootMenuTrigger(/^.+\//);
+		},
+		{message: /root menu trigger.+exactly one slash/},
+	);
 });
 
 await test('combineTrigger', async t => {
@@ -106,9 +116,15 @@ await test('combineTrigger', async t => {
 		child: string | RegExpLike,
 		expected: RegExp,
 	) =>
-		t.test(`combineTrigger ${String(parent)} with ${String(child)} is ${String(expected)}`, () => {
-			deepStrictEqual(combineTrigger(parent, child), expected);
-		});
+		t.test(
+			// eslint-disable-next-line @typescript-eslint/no-base-to-string
+			`combineTrigger ${String(parent)} with ${String(child)} is ${
+				String(expected)
+			}`,
+			() => {
+				deepStrictEqual(combineTrigger(parent, child), expected);
+			},
+		);
 
 	await macro(/^\//, 'foo', /^\/foo/);
 	await macro(/^\//, /foo/, /^\/foo/);
@@ -134,11 +150,14 @@ await test('combineTrigger fails when parent is not ending with /', () => {
 await test('combineTrigger fails when child has flags/', async t => {
 	const macro = async (child: string | RegExpLike) =>
 		t.test(
-			typeof child === 'string' ? child : (`${child.source} ${child.flags}`),
+			typeof child === 'string' ? child : `${child.source} ${child.flags}`,
 			() => {
-				throws(() => {
-					combineTrigger(/^\/whatever\//, child);
-				}, {message: /flags/});
+				throws(
+					() => {
+						combineTrigger(/^\/whatever\//, child);
+					},
+					{message: /flags/},
+				);
 			},
 		);
 	await macro(/whatever/i);
@@ -178,13 +197,19 @@ await test('ensurePathMenu accepts correct paths', () => {
 });
 
 await test('ensurePathMenu throws when empty', () => {
-	throws(() => {
-		ensurePathMenu('');
-	}, {message: /empty string/});
+	throws(
+		() => {
+			ensurePathMenu('');
+		},
+		{message: /empty string/},
+	);
 });
 
 await test('ensurePathMenu throws when not ending with slash', () => {
-	throws(() => {
-		ensurePathMenu('path');
-	}, {message: /end with \//});
+	throws(
+		() => {
+			ensurePathMenu('path');
+		},
+		{message: /end with \//},
+	);
 });

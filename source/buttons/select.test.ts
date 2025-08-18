@@ -23,10 +23,14 @@ await test('generateSelectButtons is set creates false button', async () => {
 		},
 	});
 	const buttons = await func(undefined, '/');
-	deepStrictEqual(buttons, [[{
-		text: '✅ a',
-		relativePath: 'preF:a',
-	}]]);
+	deepStrictEqual(buttons, [
+		[
+			{
+				text: '✅ a',
+				relativePath: 'preF:a',
+			},
+		],
+	]);
 });
 
 await test('generateSelectButtons is not set creates true button', async () => {
@@ -38,10 +42,14 @@ await test('generateSelectButtons is not set creates true button', async () => {
 		},
 	});
 	const buttons = await func(undefined, '/');
-	deepStrictEqual(buttons, [[{
-		text: 'a',
-		relativePath: 'preT:a',
-	}]]);
+	deepStrictEqual(buttons, [
+		[
+			{
+				text: 'a',
+				relativePath: 'preT:a',
+			},
+		],
+	]);
 });
 
 await test('generateSelectButtons showFalseEmoji also prefixes currently false buttons', async () => {
@@ -54,10 +62,14 @@ await test('generateSelectButtons showFalseEmoji also prefixes currently false b
 		},
 	});
 	const buttons = await func(undefined, '/');
-	deepStrictEqual(buttons, [[{
-		text: '🚫 a',
-		relativePath: 'preT:a',
-	}]]);
+	deepStrictEqual(buttons, [
+		[
+			{
+				text: '🚫 a',
+				relativePath: 'preT:a',
+			},
+		],
+	]);
 });
 
 await test('generateSelectButtons creates pagination buttons', async () => {
@@ -75,20 +87,26 @@ await test('generateSelectButtons creates pagination buttons', async () => {
 	});
 	const buttons = await func(undefined, '/');
 	deepStrictEqual(buttons, [
-		[{
-			text: 'a',
-			relativePath: 'preT:a',
-		}],
-		[{
-			text: '1',
-			relativePath: 'preP:1',
-		}, {
-			text: '▶️ 2',
-			relativePath: 'preP:2',
-		}, {
-			text: '⏩ 3',
-			relativePath: 'preP:3',
-		}],
+		[
+			{
+				text: 'a',
+				relativePath: 'preT:a',
+			},
+		],
+		[
+			{
+				text: '1',
+				relativePath: 'preP:1',
+			},
+			{
+				text: '▶️ 2',
+				relativePath: 'preP:2',
+			},
+			{
+				text: '⏩ 3',
+				relativePath: 'preP:3',
+			},
+		],
 	]);
 });
 
@@ -104,10 +122,14 @@ await test('generateSelectButtons show keys of page 2', async () => {
 		},
 	});
 	const buttons = await func(undefined, '/');
-	deepStrictEqual(buttons, [[{
-		text: 'b',
-		relativePath: 'preT:b',
-	}]]);
+	deepStrictEqual(buttons, [
+		[
+			{
+				text: 'b',
+				relativePath: 'preT:b',
+			},
+		],
+	]);
 });
 
 await test('generateSelectButtons choice function is run', async t => {
@@ -119,14 +141,22 @@ await test('generateSelectButtons choice function is run', async t => {
 			throw new Error('no need to call set on keyboard creation');
 		},
 	});
-	deepStrictEqual(await func('a', '/'), [[{
-		text: 'a',
-		relativePath: 'preT:a',
-	}]]);
-	deepStrictEqual(await func('b', '/'), [[{
-		text: 'b',
-		relativePath: 'preT:b',
-	}]]);
+	deepStrictEqual(await func('a', '/'), [
+		[
+			{
+				text: 'a',
+				relativePath: 'preT:a',
+			},
+		],
+	]);
+	deepStrictEqual(await func('b', '/'), [
+		[
+			{
+				text: 'b',
+				relativePath: 'preT:b',
+			},
+		],
+	]);
 	strictEqual(choiceFunction.mock.callCount(), 2);
 });
 
@@ -165,8 +195,12 @@ await test('generateSelectButtons format state', async () => {
 	});
 
 	const buttons = await func(undefined, '/');
-	deepStrictEqual(buttons, [[{
-		text: 'lalala',
-		relativePath: 'preF:a',
-	}]]);
+	deepStrictEqual(buttons, [
+		[
+			{
+				text: 'lalala',
+				relativePath: 'preF:a',
+			},
+		],
+	]);
 });

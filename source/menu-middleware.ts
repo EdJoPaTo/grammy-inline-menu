@@ -61,16 +61,12 @@ export class MenuMiddleware<Context extends BaseContext> {
 		if (typeof path === 'function') {
 			// Happens when a JS User does this as next is the second argument and not a string:
 			// ctx.command('start', menuMiddleware.replyToContext)
-			throw new TypeError(
-				'Do not supply this as a middleware directly. Supply it as a function `ctx => menuMiddleware.replyToContext(ctx)`',
-			);
+			throw new TypeError('Do not supply this as a middleware directly. Supply it as a function `ctx => menuMiddleware.replyToContext(ctx)`');
 		}
 
 		if (typeof path !== 'string') {
 			// Happens when the rootTrigger is a RegExp
-			throw new TypeError(
-				'You have to specify an absolute path explicitly as a string in the second argument.',
-			);
+			throw new TypeError('You have to specify an absolute path explicitly as a string in the second argument.');
 		}
 
 		const {match, responder} = await getLongestMatchMenuResponder(
@@ -79,9 +75,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 			this.#responder,
 		);
 		if (!match) {
-			throw new Error(
-				'There is no menu which works with your supplied path: ' + path,
-			);
+			throw new Error('There is no menu which works with your supplied path: ' + path);
 		}
 
 		return replyMenuToContext(responder.menu, context, path);
@@ -126,9 +120,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 					} else if (afterwardsTarget === false) {
 						target = undefined;
 					} else {
-						throw new Error(
-							'You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.',
-						);
+						throw new Error('You have to return in your do function if you want to update the menu afterwards or not. If not just use return false.');
 					}
 				}
 			}
@@ -141,9 +133,7 @@ export class MenuMiddleware<Context extends BaseContext> {
 				);
 				if (!match?.[0]) {
 					// TODO: think about using next() in this case?
-					throw new Error(
-						`There is no menu "${target}" which can be reached in this menu`,
-					);
+					throw new Error(`There is no menu "${target}" which can be reached in this menu`);
 				}
 
 				// @ts-expect-error grammy has some more specific type there
@@ -151,8 +141,11 @@ export class MenuMiddleware<Context extends BaseContext> {
 				const targetPath = match[0];
 				// @ts-expect-error menu context is not exactly the context type (callback query context vs base context)
 				await this.#sendMenu(responder.menu, context, targetPath);
-				await context.answerCallbackQuery()
-					.catch(catchCallbackOld);
+				try {
+					await context.answerCallbackQuery();
+				} catch (error) {
+					catchCallbackOld(error);
+				}
 			}
 		});
 
@@ -176,8 +169,8 @@ function responderMatch<Context>(
 	responder: Responder<Context>,
 	path: string,
 ): RegExpExecArray | undefined {
-	return new RegExp(responder.trigger.source, responder.trigger.flags)
-		.exec(path) ?? undefined;
+	return new RegExp(responder.trigger.source, responder.trigger.flags).exec(path)
+		?? undefined;
 }
 
 async function getLongestMatchMenuResponder<Context extends BaseContext>(
@@ -245,30 +238,25 @@ function createResponder<Context extends BaseContext>(
 	canEnter: ContextPathFunc<Context, boolean>,
 	menu: MenuLike<Context>,
 ): MenuResponder<Context> {
-	const actionResponders = [...menu.renderActionHandlers(menuTrigger)]
-		.map(({trigger, doFunction}): ActionResponder<Context> => ({
-			type: 'action',
-			trigger,
-			do: doFunction,
-		}));
+	const actionResponders = [...menu.renderActionHandlers(menuTrigger)].map(({trigger, doFunction}): ActionResponder<Context> => ({
+		type: 'action',
+		trigger,
+		do: doFunction,
+	}));
 
-	const submenuResponders = [...menu.listSubmenus()]
-		.map((submenu): MenuResponder<Context> => {
-			const submenuTrigger = combineTrigger(menuTrigger, submenu.trigger);
+	const submenuResponders = [...menu.listSubmenus()].map((submenu): MenuResponder<Context> => {
+		const submenuTrigger = combineTrigger(menuTrigger, submenu.trigger);
 
-			const canEnterSubmenu: ContextPathFunc<Context, boolean> = async (
-				context,
-				path,
-			) => {
-				if (await submenu.hide?.(context, path)) {
-					return false;
-				}
+		const canEnterSubmenu: ContextPathFunc<Context, boolean> = async (
+			context,
+			path,
+		) => {
+			const isHidden = await submenu.hide?.(context, path);
+			return !isHidden;
+		};
 
-				return true;
-			};
-
-			return createResponder(submenuTrigger, canEnterSubmenu, submenu.menu);
-		});
+		return createResponder(submenuTrigger, canEnterSubmenu, submenu.menu);
+	});
 
 	return {
 		type: 'menu',
@@ -312,7 +300,7 @@ function treeLine(
 	}
 
 	text += regexSource
-		.replaceAll('\\/', '/')
+		.replaceAll(String.raw`\/`, '/')
 		.replace(/^\^/, '')
 		.replace(/\$$/, '');
 	text += '\n';

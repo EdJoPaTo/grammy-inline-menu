@@ -6,7 +6,10 @@ export type SetPageFunction<Context> = (
 	context: Context,
 	page: number,
 ) => ConstOrPromise<void>;
-export type GetCurrentPageFunction<Context> = ContextFunc<Context, number | undefined>;
+export type GetCurrentPageFunction<Context> = ContextFunc<
+	Context,
+	number | undefined
+>;
 export type GetTotalPagesFunction<Context> = ContextFunc<Context, number>;
 
 export interface GenericPaginationOptions<Context> {

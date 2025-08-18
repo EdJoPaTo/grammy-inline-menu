@@ -10,8 +10,7 @@ import {
 type MyContext = BaseContext;
 
 const menu = new MenuTemplate<MyContext>(() =>
-	'Main Menu\n' + new Date().toISOString(),
-);
+	'Main Menu\n' + new Date().toISOString());
 
 menu.url({text: 'EdJoPaTo.de', url: 'https://edjopato.de'});
 
@@ -62,9 +61,7 @@ menu.select('select', {
 	isSet: (_, key) => key === selectedKey,
 });
 
-const foodMenu = new MenuTemplate<MyContext>(
-	'People like food. What do they like?',
-);
+const foodMenu = new MenuTemplate<MyContext>('People like food. What do they like?');
 
 type FoodChoices = {
 	food?: string;
