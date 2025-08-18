@@ -1,8 +1,8 @@
 import {strictEqual} from 'node:assert';
 import {test} from 'node:test';
 import {Bot, type Context as BaseContext} from 'grammy';
-import type {MenuLike, Submenu} from '../../source/menu-like.js';
-import {MenuMiddleware} from '../../source/menu-middleware.js';
+import type {MenuLike, Submenu} from '../../source/menu-like.ts';
+import {MenuMiddleware} from '../../source/menu-middleware.ts';
 
 // TODO: Ugly workaround. This library should know better...
 type MyContext = BaseContext & {match: RegExpExecArray | undefined};

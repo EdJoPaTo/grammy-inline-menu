@@ -1,6 +1,6 @@
 import {ok, strictEqual, throws} from 'node:assert';
 import {test} from 'node:test';
-import {type ActionFunc, ActionHive} from './action-hive.js';
+import {type ActionFunc, ActionHive} from './action-hive.ts';
 
 await test('ActionHive add nothing is empty', () => {
 	const a = new ActionHive();

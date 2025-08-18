@@ -2,8 +2,8 @@ import {
 	type ActionFunc,
 	ActionHive,
 	type ButtonAction,
-} from './action-hive.js';
-import type {Body} from './body.js';
+} from './action-hive.ts';
+import type {Body} from './body.ts';
 import type {
 	CopyTextButtonOptions,
 	InteractionOptions,
@@ -11,39 +11,39 @@ import type {
 	SingleButtonOptions,
 	SwitchToChatOptions,
 	UrlButtonOptions,
-} from './buttons/basic.js';
-import type {ChooseOptions} from './buttons/choose.js';
+} from './buttons/basic.ts';
+import type {ChooseOptions} from './buttons/choose.ts';
 import {
 	createPaginationChoices,
 	type PaginationOptions,
 	type SetPageFunction,
-} from './buttons/pagination.js';
-import {generateSelectButtons, type SelectOptions} from './buttons/select.js';
+} from './buttons/pagination.ts';
+import {generateSelectButtons, type SelectOptions} from './buttons/select.ts';
 import type {
 	ChooseIntoSubmenuOptions,
 	SubmenuOptions,
-} from './buttons/submenu.js';
-import {generateToggleButton, type ToggleOptions} from './buttons/toggle.js';
+} from './buttons/submenu.ts';
+import {generateToggleButton, type ToggleOptions} from './buttons/toggle.ts';
 import {
 	type ChoicesRecord,
 	combineHideAndChoices,
 	generateChoicesButtons,
-} from './choices/index.js';
+} from './choices/index.ts';
 import type {
 	ConstOrContextPathFunc,
 	ContextFunc,
 	ContextPathFunc,
 	RegExpLike,
-} from './generic-types.js';
+} from './generic-types.ts';
 import {
 	type ButtonTemplate,
 	type ButtonTemplateRow,
 	type CallbackButtonTemplate,
 	type InlineKeyboard,
 	Keyboard,
-} from './keyboard.js';
-import type {MenuLike, Submenu} from './menu-like.js';
-import {ensureTriggerChild} from './path.js';
+} from './keyboard.ts';
+import type {MenuLike, Submenu} from './menu-like.ts';
+import {ensureTriggerChild} from './path.ts';
 
 export class MenuTemplate<Context> {
 	readonly #body: ContextPathFunc<Context, Body>;

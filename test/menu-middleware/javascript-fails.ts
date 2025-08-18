@@ -1,9 +1,9 @@
 import {rejects} from 'node:assert';
 import {test} from 'node:test';
 import {Bot, type Context as BaseContext} from 'grammy';
-import type {ButtonAction} from '../../source/action-hive.js';
-import type {MenuLike} from '../../source/menu-like.js';
-import {MenuMiddleware} from '../../source/menu-middleware.js';
+import type {ButtonAction} from '../../source/action-hive.ts';
+import type {MenuLike} from '../../source/menu-like.ts';
+import {MenuMiddleware} from '../../source/menu-middleware.ts';
 
 await test('menu-middleware javascript-fails not supply reply as a middleware directly', async () => {
 	const menu: MenuLike<unknown> = {

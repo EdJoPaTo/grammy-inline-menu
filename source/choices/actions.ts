@@ -1,6 +1,6 @@
-import type {ConstOrContextFunc, ContextPathFunc} from '../generic-types.js';
-import type {Choices} from './types.js';
-import {getChoiceKeysFromChoices} from './understand-choices.js';
+import type {ConstOrContextFunc, ContextPathFunc} from '../generic-types.ts';
+import type {Choices} from './types.ts';
+import {getChoiceKeysFromChoices} from './understand-choices.ts';
 
 export function combineHideAndChoices<Context>(
 	uniqueIdentifierPrefix: string,

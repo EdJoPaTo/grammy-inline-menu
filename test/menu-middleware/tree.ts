@@ -1,8 +1,8 @@
 import {strictEqual} from 'node:assert';
 import {test} from 'node:test';
-import type {ButtonAction} from '../../source/action-hive.js';
-import type {MenuLike, Submenu} from '../../source/menu-like.js';
-import {MenuMiddleware} from '../../source/menu-middleware.js';
+import type {ButtonAction} from '../../source/action-hive.ts';
+import type {MenuLike, Submenu} from '../../source/menu-like.ts';
+import {MenuMiddleware} from '../../source/menu-middleware.ts';
 
 const EMPTY_MENU: MenuLike<unknown> = {
 	listSubmenus: () => new Set(),

@@ -1,6 +1,6 @@
 import {strictEqual} from 'node:assert';
 import {test} from 'node:test';
-import {prefixText} from './prefix.js';
+import {prefixText} from './prefix.ts';
 
 await test('prefixText no prefix', () => {
 	const result = prefixText('42', undefined);

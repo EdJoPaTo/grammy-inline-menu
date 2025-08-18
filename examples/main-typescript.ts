@@ -4,7 +4,7 @@ import {
 	createBackMainMenuButtons,
 	MenuMiddleware,
 	MenuTemplate,
-} from '../source/index.js';
+} from '../source/index.ts';
 
 // Check out https://grammy.dev/guide/context.html and Context flavours
 type MyContext = BaseContext;

@@ -2,15 +2,15 @@ import {
 	createChoiceTextFunction,
 	generateChoicesPaginationButtons,
 	type ManyChoicesOptions,
-} from '../choices/index.js';
+} from '../choices/index.ts';
 import {
 	ensureCorrectChoiceKeys,
 	getChoiceKeysFromChoices,
-} from '../choices/understand-choices.js';
-import type {ConstOrPromise} from '../generic-types.js';
-import type {CallbackButtonTemplate} from '../keyboard.js';
-import {prefixEmoji} from '../prefix.js';
-import {getButtonsAsRows, getButtonsOfPage} from './align.js';
+} from '../choices/understand-choices.ts';
+import type {ConstOrPromise} from '../generic-types.ts';
+import type {CallbackButtonTemplate} from '../keyboard.ts';
+import {prefixEmoji} from '../prefix.ts';
+import {getButtonsAsRows, getButtonsOfPage} from './align.ts';
 
 export type IsSetFunction<Context> = (
 	context: Context,

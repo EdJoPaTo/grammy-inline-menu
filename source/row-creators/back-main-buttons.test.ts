@@ -1,6 +1,6 @@
 import {deepStrictEqual} from 'node:assert';
 import {test} from 'node:test';
-import {createBackMainMenuButtons} from './back-main-buttons.js';
+import {createBackMainMenuButtons} from './back-main-buttons.ts';
 
 await test('createBackMainMenuButtons creates no buttons in root menu', async () => {
 	const func = createBackMainMenuButtons();

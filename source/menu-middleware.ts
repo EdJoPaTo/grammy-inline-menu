@@ -1,13 +1,13 @@
 import {Composer, type Context as BaseContext} from 'grammy';
-import type {ActionFunc} from './action-hive.js';
-import type {ContextPathFunc, RegExpLike} from './generic-types.js';
-import type {MenuLike} from './menu-like.js';
-import {combinePath, combineTrigger, createRootMenuTrigger} from './path.js';
+import type {ActionFunc} from './action-hive.ts';
+import type {ContextPathFunc, RegExpLike} from './generic-types.ts';
+import type {MenuLike} from './menu-like.ts';
+import {combinePath, combineTrigger, createRootMenuTrigger} from './path.ts';
 import {
 	editMenuOnContext,
 	replyMenuToContext,
 	type SendMenuFunc,
-} from './send-menu.js';
+} from './send-menu.ts';
 
 type Responder<Context> = MenuResponder<Context> | ActionResponder<Context>;
 

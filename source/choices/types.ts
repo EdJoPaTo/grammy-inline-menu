@@ -1,6 +1,6 @@
-import type {BasicOptions} from '../buttons/basic.js';
-import type {GenericPaginationOptions} from '../buttons/pagination.js';
-import type {ConstOrContextFunc, ConstOrPromise} from '../generic-types.js';
+import type {BasicOptions} from '../buttons/basic.ts';
+import type {GenericPaginationOptions} from '../buttons/pagination.ts';
+import type {ConstOrContextFunc, ConstOrPromise} from '../generic-types.ts';
 
 export type Choice = string | number;
 export type ChoiceText = string;

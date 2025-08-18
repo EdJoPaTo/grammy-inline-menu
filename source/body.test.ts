@@ -13,7 +13,7 @@ import {
 	type MediaBody,
 	type TextBody,
 	type VenueBody,
-} from './body.js';
+} from './body.ts';
 
 function mehToString(something: unknown): string {
 	if (typeof something === 'object' || !something) {

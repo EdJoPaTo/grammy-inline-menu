@@ -1,6 +1,6 @@
 import {deepStrictEqual, strictEqual} from 'node:assert';
 import {test} from 'node:test';
-import {generateSelectButtons} from './select.js';
+import {generateSelectButtons} from './select.ts';
 
 await test('generateSelectButtons empty choices no buttons', async () => {
 	const func = generateSelectButtons('pre', {

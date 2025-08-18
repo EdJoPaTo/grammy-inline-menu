@@ -1,9 +1,9 @@
 import {deepStrictEqual, strictEqual} from 'node:assert';
 import {test} from 'node:test';
 import type {Api, Context as BaseContext} from 'grammy';
-import {MEDIA_TYPES} from '../../source/body.js';
-import {MenuTemplate} from '../../source/index.js';
-import {generateSendMenuToChatFunction} from '../../source/send-menu.js';
+import {MEDIA_TYPES} from '../../source/body.ts';
+import {MenuTemplate} from '../../source/index.ts';
+import {generateSendMenuToChatFunction} from '../../source/send-menu.ts';
 
 await test('telegram-send text', async () => {
 	const menu = new MenuTemplate<BaseContext>('whatever');

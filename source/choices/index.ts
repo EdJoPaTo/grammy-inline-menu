@@ -1,3 +1,3 @@
-export * from './actions.js';
-export * from './buttons.js';
-export type * from './types.js';
+export * from './actions.ts';
+export * from './buttons.ts';
+export type * from './types.ts';

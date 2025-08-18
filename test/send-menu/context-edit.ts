@@ -3,8 +3,8 @@
 import {deepStrictEqual, rejects, strictEqual} from 'node:assert';
 import {test} from 'node:test';
 import type {Context as BaseContext} from 'grammy';
-import {MenuTemplate} from '../../source/index.js';
-import {editMenuOnContext} from '../../source/send-menu.js';
+import {MenuTemplate} from '../../source/index.ts';
+import {editMenuOnContext} from '../../source/send-menu.ts';
 
 await test('context-edit text reply when not a callback query', async t => {
 	const menu = new MenuTemplate<BaseContext>('whatever');

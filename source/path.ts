@@ -2,7 +2,7 @@
 // A menu is having a trigger. When a specific path is matching the trigger, the menu is opened.
 // Example: The Trigger /\/events\/e-(.+)\/delete/ will get triggered when the path is called: /events/e-42/delete
 
-import type {RegExpLike} from './generic-types.js';
+import type {RegExpLike} from './generic-types.ts';
 
 export function ensureTriggerChild(trigger: string | RegExpLike): void {
 	const source = typeof trigger === 'string' ? trigger : trigger.source;

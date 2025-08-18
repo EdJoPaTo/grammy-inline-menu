@@ -1,4 +1,4 @@
-import type {Choices, ChoicesArray, ChoicesMap} from './types.js';
+import type {Choices, ChoicesArray, ChoicesMap} from './types.ts';
 
 function choicesIsArray(choices: Choices): choices is ChoicesArray {
 	return Array.isArray(choices);

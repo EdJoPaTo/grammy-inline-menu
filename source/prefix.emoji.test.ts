@@ -1,6 +1,6 @@
 import {strictEqual} from 'node:assert';
 import {test} from 'node:test';
-import {emojiFalse, emojiTrue, prefixEmoji} from './prefix.js';
+import {emojiFalse, emojiTrue, prefixEmoji} from './prefix.ts';
 
 await test('prefixEmoji no prefix', () => {
 	const result = prefixEmoji('42', undefined);

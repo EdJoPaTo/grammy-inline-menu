@@ -1,6 +1,6 @@
 import {throws} from 'node:assert';
 import {test} from 'node:test';
-import {MenuTemplate} from '../../source/menu-template.js';
+import {MenuTemplate} from '../../source/menu-template.ts';
 
 await test('menu-template javascript-forgot interact do', () => {
 	const menu = new MenuTemplate('whatever');

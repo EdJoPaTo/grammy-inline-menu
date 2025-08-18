@@ -1,9 +1,9 @@
 import type {CopyTextButton} from 'grammy/types';
-import type {ActionFunc} from '../action-hive.js';
+import type {ActionFunc} from '../action-hive.ts';
 import type {
 	ConstOrContextPathFunc,
 	ContextPathFunc,
-} from '../generic-types.js';
+} from '../generic-types.ts';
 
 export interface BasicOptions<Context> {
 	/** Return true when the button(s) should be hidden and not to be called */

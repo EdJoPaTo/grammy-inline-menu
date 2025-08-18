@@ -1,9 +1,9 @@
 import {deepStrictEqual, strictEqual} from 'node:assert';
 import {test} from 'node:test';
 import type {Context as BaseContext} from 'grammy';
-import {MEDIA_TYPES} from '../../source/body.js';
-import {MenuTemplate} from '../../source/index.js';
-import {replyMenuToContext} from '../../source/send-menu.js';
+import {MEDIA_TYPES} from '../../source/body.ts';
+import {MenuTemplate} from '../../source/index.ts';
+import {replyMenuToContext} from '../../source/send-menu.ts';
 
 await test('context-reply media', async t => {
 	await Promise.all(MEDIA_TYPES.map(async mediaType =>

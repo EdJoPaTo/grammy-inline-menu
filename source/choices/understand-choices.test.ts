@@ -4,7 +4,7 @@ import {
 	ensureCorrectChoiceKeys,
 	getChoiceKeysFromChoices,
 	getChoiceTextByKey,
-} from './understand-choices.js';
+} from './understand-choices.ts';
 
 await test('getChoiceKeysFromChoices from array', () => {
 	const choices = ['A', 'B', 1];

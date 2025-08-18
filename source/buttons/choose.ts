@@ -1,5 +1,5 @@
-import type {ManyChoicesOptions} from '../choices/index.js';
-import type {ConstOrPromise} from '../generic-types.js';
+import type {ManyChoicesOptions} from '../choices/index.ts';
+import type {ConstOrPromise} from '../generic-types.ts';
 
 export type ChooseActionFunc<Context> = (
 	context: Context,

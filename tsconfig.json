@@ -14,6 +14,7 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"outDir": "dist",
+		"rewriteRelativeImportExtensions": true,
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,

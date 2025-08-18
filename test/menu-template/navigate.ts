@@ -1,6 +1,6 @@
 import {deepStrictEqual} from 'node:assert';
 import {test} from 'node:test';
-import {MenuTemplate} from '../../source/menu-template.js';
+import {MenuTemplate} from '../../source/menu-template.ts';
 
 await test('menu-template navigate hidden', async () => {
 	const menu = new MenuTemplate('whatever');

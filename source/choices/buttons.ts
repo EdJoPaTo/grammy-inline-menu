@@ -2,15 +2,15 @@ import {
 	getButtonsAsRows,
 	getButtonsOfPage,
 	maximumButtonsPerPage,
-} from '../buttons/align.js';
-import {createPaginationChoices} from '../buttons/pagination.js';
-import type {CallbackButtonTemplate} from '../keyboard.js';
-import type {Choices, ChoiceTextFunc, ManyChoicesOptions} from './types.js';
+} from '../buttons/align.ts';
+import {createPaginationChoices} from '../buttons/pagination.ts';
+import type {CallbackButtonTemplate} from '../keyboard.ts';
+import type {Choices, ChoiceTextFunc, ManyChoicesOptions} from './types.ts';
 import {
 	ensureCorrectChoiceKeys,
 	getChoiceKeysFromChoices,
 	getChoiceTextByKey,
-} from './understand-choices.js';
+} from './understand-choices.ts';
 
 export function generateChoicesButtons<Context>(
 	uniqueIdentifierPrefix: string,

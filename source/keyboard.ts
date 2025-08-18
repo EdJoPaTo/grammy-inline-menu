@@ -5,8 +5,8 @@ import {
 	type ConstOrContextPathFunc,
 	type ContextPathFunc,
 	filterNonNullable,
-} from './generic-types.js';
-import {combinePath} from './path.js';
+} from './generic-types.ts';
+import {combinePath} from './path.ts';
 
 export type CallbackButtonTemplate = {
 	readonly text: string;

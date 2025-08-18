@@ -5,7 +5,7 @@ import {
 	hasTruthyKey,
 	isObject,
 	isRegExpExecArray,
-} from './generic-types.js';
+} from './generic-types.ts';
 
 await test('filterNonNullable', () => {
 	const input = ['bla', undefined, 'blubb', null];

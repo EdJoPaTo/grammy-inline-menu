@@ -1,6 +1,6 @@
-import type {ConstOrPromise, ContextFunc} from '../generic-types.js';
-import {clamp} from './align.js';
-import type {BasicOptions} from './basic.js';
+import type {ConstOrPromise, ContextFunc} from '../generic-types.ts';
+import {clamp} from './align.ts';
+import type {BasicOptions} from './basic.ts';
 
 export type SetPageFunction<Context> = (
 	context: Context,

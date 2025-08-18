@@ -1,5 +1,5 @@
-import type {ContextPathFunc, RegExpLike} from './generic-types.js';
-import {combineTrigger, ensureTriggerChild} from './path.js';
+import type {ContextPathFunc, RegExpLike} from './generic-types.ts';
+import {combineTrigger, ensureTriggerChild} from './path.ts';
 
 export type ActionFunc<Context> = ContextPathFunc<Context, string | boolean>;
 

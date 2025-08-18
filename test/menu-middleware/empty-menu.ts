@@ -1,9 +1,9 @@
 import {strictEqual} from 'node:assert';
 import {test} from 'node:test';
 import {Bot, type Context as BaseContext} from 'grammy';
-import type {MenuLike} from '../../source/menu-like.js';
-import {MenuMiddleware} from '../../source/menu-middleware.js';
-import type {SendMenuFunc} from '../../source/send-menu.js';
+import type {MenuLike} from '../../source/menu-like.ts';
+import {MenuMiddleware} from '../../source/menu-middleware.ts';
+import type {SendMenuFunc} from '../../source/send-menu.ts';
 
 await test('menu-middleware empty-menu non callback queries are passing through', async t => {
 	const menu: MenuLike<unknown> = {

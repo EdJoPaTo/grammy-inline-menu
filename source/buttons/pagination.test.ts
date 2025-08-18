@@ -1,6 +1,6 @@
 import {deepStrictEqual} from 'node:assert';
 import {test} from 'node:test';
-import {createPaginationChoices} from './pagination.js';
+import {createPaginationChoices} from './pagination.ts';
 
 await test('pagination', async t => {
 	const macro = async (

@@ -7,7 +7,7 @@ import type {
 	Venue,
 } from 'grammy/types';
 import type {ReadonlyDeep} from 'type-fest';
-import {hasTruthyKey, isObject} from './generic-types.js';
+import {hasTruthyKey, isObject} from './generic-types.ts';
 
 export type Body =
 	| string

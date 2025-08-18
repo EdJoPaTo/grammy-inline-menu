@@ -1,6 +1,6 @@
 import {deepStrictEqual, strictEqual, throws} from 'node:assert';
 import {test} from 'node:test';
-import type {RegExpLike} from './generic-types.js';
+import type {RegExpLike} from './generic-types.ts';
 import {
 	combinePath,
 	combineTrigger,
@@ -9,7 +9,7 @@ import {
 	ensureTriggerChild,
 	ensureTriggerLastChild,
 	getMenuOfPath,
-} from './path.js';
+} from './path.ts';
 
 await test('combinePath', async t => {
 	const macro = async (

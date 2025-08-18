@@ -1,8 +1,8 @@
 import {deepStrictEqual, strictEqual} from 'node:assert';
 import {test} from 'node:test';
 import type {Context as BaseContext} from 'grammy';
-import {MenuTemplate} from '../../source/index.js';
-import {resendMenuToContext} from '../../source/send-menu.js';
+import {MenuTemplate} from '../../source/index.ts';
+import {resendMenuToContext} from '../../source/send-menu.ts';
 
 await test('context-resend on callback query', async t => {
 	const deleteMessage = t.mock.fn<BaseContext['deleteMessage']>(async messageId => {

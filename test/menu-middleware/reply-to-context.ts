@@ -1,8 +1,8 @@
 import {deepStrictEqual, rejects, strictEqual} from 'node:assert';
 import {test} from 'node:test';
 import type {Context as BaseContext} from 'grammy';
-import type {MenuLike, Submenu} from '../../source/menu-like.js';
-import {MenuMiddleware} from '../../source/menu-middleware.js';
+import type {MenuLike, Submenu} from '../../source/menu-like.ts';
+import {MenuMiddleware} from '../../source/menu-middleware.ts';
 
 await test('menu-middleware reply-to-context replies main menu', async t => {
 	const submenuMenu: MenuLike<unknown> = {

@@ -1,6 +1,6 @@
 import {rejects, strictEqual} from 'node:assert';
 import {test} from 'node:test';
-import {combineHideAndChoices} from './actions.js';
+import {combineHideAndChoices} from './actions.ts';
 
 await test('choice actions choices are not called when hide is true', async () => {
 	const func = combineHideAndChoices(

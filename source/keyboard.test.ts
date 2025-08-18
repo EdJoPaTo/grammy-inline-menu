@@ -1,6 +1,6 @@
 import {deepStrictEqual, rejects} from 'node:assert';
 import {test} from 'node:test';
-import {Keyboard} from './keyboard.js';
+import {Keyboard} from './keyboard.ts';
 
 await test('keyboard no buttons', async () => {
 	const k = new Keyboard<unknown>();

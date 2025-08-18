@@ -1,6 +1,6 @@
 import {deepStrictEqual, strictEqual} from 'node:assert';
 import {test} from 'node:test';
-import {MenuTemplate} from '../../source/menu-template.js';
+import {MenuTemplate} from '../../source/menu-template.ts';
 
 await test('menu-template body string body is passed through', async () => {
 	const menu = new MenuTemplate('foobar');

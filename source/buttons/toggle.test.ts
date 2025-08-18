@@ -1,6 +1,6 @@
 import {deepStrictEqual, strictEqual} from 'node:assert';
 import {test} from 'node:test';
-import {generateToggleButton} from './toggle.js';
+import {generateToggleButton} from './toggle.ts';
 
 await test('toggle hidden does not render any button', async () => {
 	const func = generateToggleButton('pre', {

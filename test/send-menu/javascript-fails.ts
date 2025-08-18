@@ -1,13 +1,13 @@
 import {rejects} from 'node:assert';
 import {test} from 'node:test';
 import type {Context as BaseContext} from 'grammy';
-import {MenuTemplate} from '../../source/index.js';
+import {MenuTemplate} from '../../source/index.ts';
 import {
 	editMenuOnContext,
 	generateEditMessageIntoMenuFunction,
 	generateSendMenuToChatFunction,
 	replyMenuToContext,
-} from '../../source/send-menu.js';
+} from '../../source/send-menu.ts';
 
 const EXPECTED_ERROR = {
 	message: /The body has to be a string or an object containing text or media/,
