@@ -47,7 +47,7 @@ await bot.start();
 
 ![Example shown as a GIF](media/example-food.gif)
 
-Look at the code here: [TypeScript](examples/main-typescript.ts) / [JavaScript (consider using TypeScript)](examples/main-javascript.mjs)
+Look at the [TypeScript code here](examples/main.ts).
 
 ## Version migration
 
@@ -182,7 +182,7 @@ The menu body can be an object containing `media` and `type` for media.
 The `media` and `type` is the same as [Telegrams `InputMedia`](https://core.telegram.org/bots/api#inputmedia).
 The media is just passed to grammY so check its documentation on [how to work with files](https://grammy.dev/guide/files.html).
 
-The [example](examples/main-typescript.ts) features a media submenu with all currently supported media types.
+The [example](examples/main.ts) features a media submenu with all currently supported media types.
 
 ```ts
 const menuTemplate = new MenuTemplate<MyContext>((ctx, path) => {

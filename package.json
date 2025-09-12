@@ -31,8 +31,7 @@
 		"build": "del-cli dist && tsc",
 		"prepack": "npm run build",
 		"preexample-js": "npm run build",
-		"example-js": "node examples/main-javascript.mjs",
-		"start": "tsc --sourceMap && node --enable-source-maps dist/examples/main-typescript.js",
+		"start": "tsc --sourceMap && node --enable-source-maps dist/examples/main.js",
 		"test": "tsc --sourceMap && xo && c8 --all node --test --enable-source-maps"
 	},
 	"type": "module",
@@ -66,15 +65,6 @@
 				"@typescript-eslint/consistent-type-definitions": "off",
 				"@typescript-eslint/naming-convention": "off",
 				"@typescript-eslint/prefer-readonly-parameter-types": "error"
-			}
-		},
-		{
-			"files": [
-				"examples/**/*.*js"
-			],
-			"rules": {
-				"camelcase": "off",
-				"dot-notation": "off"
 			}
 		},
 		{
