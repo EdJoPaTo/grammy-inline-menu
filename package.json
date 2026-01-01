@@ -39,7 +39,7 @@
 		"node": ">=18"
 	},
 	"dependencies": {
-		"type-fest": "^4.0.0"
+		"type-fest": "^5.3.1"
 	},
 	"peerDependencies": {
 		"grammy": "^1.31.0"
