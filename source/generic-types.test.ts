@@ -1,17 +1,6 @@
-import {deepStrictEqual, strictEqual} from 'node:assert';
+import {strictEqual} from 'node:assert';
 import {test} from 'node:test';
-import {
-	filterNonNullable,
-	hasTruthyKey,
-	isObject,
-	isRegExpExecArray,
-} from './generic-types.ts';
-
-await test('filterNonNullable', () => {
-	const input = ['bla', undefined, 'blubb', null];
-	const output = input.filter(filterNonNullable());
-	deepStrictEqual(output, ['bla', 'blubb']);
-});
+import {hasTruthyKey, isObject, isRegExpExecArray} from './generic-types.ts';
 
 await test('isRegExpExecArray true', async t => {
 	const macro = async (regex: RegExp) =>

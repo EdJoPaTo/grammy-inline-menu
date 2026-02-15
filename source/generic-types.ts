@@ -43,8 +43,3 @@ export function isRegExpExecArray(something: unknown): something is RegExpExecAr
 
 	return true;
 }
-
-// TODO: remove when .filter(o => o !== undefined) works.
-export function filterNonNullable<T>(): (o: T) => o is NonNullable<T> {
-	return (o): o is NonNullable<T> => o !== null && o !== undefined;
-}

@@ -4,7 +4,6 @@ import type {ReadonlyDeep} from 'type-fest';
 import {
 	type ConstOrContextPathFunc,
 	type ContextPathFunc,
-	filterNonNullable,
 } from './generic-types.ts';
 import {combinePath} from './path.ts';
 
@@ -85,7 +84,7 @@ async function entryToRows<Context>(
 
 	const buttonsInRow = await Promise.all(entry.map(async button =>
 		typeof button === 'function' ? button(context, path) : button));
-	const filtered = buttonsInRow.filter(filterNonNullable());
+	const filtered = buttonsInRow.filter(o => o !== undefined);
 	return [filtered];
 }
 
