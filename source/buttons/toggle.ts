@@ -40,9 +40,20 @@ export function generateToggleButton<Context>(
 			? await options.text(context, path)
 			: options.text;
 		const state = await options.isSet(context, path);
+
+		const icon_custom_emoji_id
+			= typeof options.icon_custom_emoji_id === 'function'
+				? await options.icon_custom_emoji_id(context, path)
+				: options.icon_custom_emoji_id;
+		const style = typeof options.style === 'function'
+			? await options.style(context, path)
+			: options.style;
+
 		return {
 			text: await formatFunction(context, textResult, state, path),
 			relativePath: uniqueIdentifierPrefix + ':' + (state ? 'false' : 'true'),
+			...(icon_custom_emoji_id ? {icon_custom_emoji_id} : {}),
+			...(style ? {style} : {}),
 		};
 	};
 }

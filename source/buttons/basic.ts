@@ -19,6 +19,12 @@ export interface SingleButtonOptions<Context>
 	extends BasicOptions<Context>, JoinLastRowOption {
 	/** Label text on the button */
 	readonly text: ConstOrContextPathFunc<Context, string>;
+
+	/** Custom Emoji shown before the text of the button */
+	readonly icon_custom_emoji_id?: ConstOrContextPathFunc<Context, string>;
+
+	/** Visual button style */
+	readonly style?: ConstOrContextPathFunc<Context, 'danger' | 'success' | 'primary'>;
 }
 
 export type ManualButtonOptions<Context> =

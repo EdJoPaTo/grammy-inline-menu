@@ -146,16 +146,27 @@ export class MenuTemplate<Context> {
 	 * });
 	 */
 	copyText(options: CopyTextButtonOptions<Context>): void {
-		const {text, copy_text} = options;
-		this.manual(
-			async (context, path) => ({
-				text: typeof text === 'function' ? await text(context, path) : text,
-				copy_text: typeof copy_text === 'function'
-					? await copy_text(context, path)
-					: copy_text,
-			}),
-			options,
-		);
+		this.manual(async (context, path) => {
+			const text = typeof options.text === 'function'
+				? await options.text(context, path)
+				: options.text;
+			const copy_text = typeof options.copy_text === 'function'
+				? await options.copy_text(context, path)
+				: options.copy_text;
+			const icon_custom_emoji_id
+				= typeof options.icon_custom_emoji_id === 'function'
+					? await options.icon_custom_emoji_id(context, path)
+					: options.icon_custom_emoji_id;
+			const style = typeof options.style === 'function'
+				? await options.style(context, path)
+				: options.style;
+			return {
+				text,
+				copy_text,
+				...(icon_custom_emoji_id ? {icon_custom_emoji_id} : {}),
+				...(style ? {style} : {}),
+			};
+		}, options);
 	}
 
 	/** Add an url button to the keyboard
@@ -166,14 +177,27 @@ export class MenuTemplate<Context> {
 	 * });
 	 */
 	url(options: UrlButtonOptions<Context>): void {
-		const {text, url} = options;
-		this.manual(
-			async (context, path) => ({
-				text: typeof text === 'function' ? await text(context, path) : text,
-				url: typeof url === 'function' ? await url(context, path) : url,
-			}),
-			options,
-		);
+		this.manual(async (context, path) => {
+			const text = typeof options.text === 'function'
+				? await options.text(context, path)
+				: options.text;
+			const url = typeof options.url === 'function'
+				? await options.url(context, path)
+				: options.url;
+			const icon_custom_emoji_id
+				= typeof options.icon_custom_emoji_id === 'function'
+					? await options.icon_custom_emoji_id(context, path)
+					: options.icon_custom_emoji_id;
+			const style = typeof options.style === 'function'
+				? await options.style(context, path)
+				: options.style;
+			return {
+				text,
+				url,
+				...(icon_custom_emoji_id ? {icon_custom_emoji_id} : {}),
+				...(style ? {style} : {}),
+			};
+		}, options);
 	}
 
 	/** Add a switch_inline_query button to the keyboard
@@ -184,16 +208,27 @@ export class MenuTemplate<Context> {
 	 * });
 	 */
 	switchToChat(options: SwitchToChatOptions<Context>): void {
-		const {text, query} = options;
-		this.manual(
-			async (context, path) => ({
-				text: typeof text === 'function' ? await text(context, path) : text,
-				switch_inline_query: typeof query === 'function'
-					? await query(context, path)
-					: query,
-			}),
-			options,
-		);
+		this.manual(async (context, path) => {
+			const text = typeof options.text === 'function'
+				? await options.text(context, path)
+				: options.text;
+			const switch_inline_query = typeof options.query === 'function'
+				? await options.query(context, path)
+				: options.query;
+			const icon_custom_emoji_id
+				= typeof options.icon_custom_emoji_id === 'function'
+					? await options.icon_custom_emoji_id(context, path)
+					: options.icon_custom_emoji_id;
+			const style = typeof options.style === 'function'
+				? await options.style(context, path)
+				: options.style;
+			return {
+				text,
+				switch_inline_query,
+				...(icon_custom_emoji_id ? {icon_custom_emoji_id} : {}),
+				...(style ? {style} : {}),
+			};
+		}, options);
 	}
 
 	/** Add a switch_inline_query_current_chat button to the keyboard
@@ -204,16 +239,28 @@ export class MenuTemplate<Context> {
 	 * });
 	 */
 	switchToCurrentChat(options: SwitchToChatOptions<Context>): void {
-		const {text, query} = options;
-		this.manual(
-			async (context, path) => ({
-				text: typeof text === 'function' ? await text(context, path) : text,
-				switch_inline_query_current_chat: typeof query === 'function'
-					? await query(context, path)
-					: query,
-			}),
-			options,
-		);
+		this.manual(async (context, path) => {
+			const text = typeof options.text === 'function'
+				? await options.text(context, path)
+				: options.text;
+			const switch_inline_query_current_chat
+				= typeof options.query === 'function'
+					? await options.query(context, path)
+					: options.query;
+			const icon_custom_emoji_id
+				= typeof options.icon_custom_emoji_id === 'function'
+					? await options.icon_custom_emoji_id(context, path)
+					: options.icon_custom_emoji_id;
+			const style = typeof options.style === 'function'
+				? await options.style(context, path)
+				: options.style;
+			return {
+				text,
+				switch_inline_query_current_chat,
+				...(icon_custom_emoji_id ? {icon_custom_emoji_id} : {}),
+				...(style ? {style} : {}),
+			};
+		}, options);
 	}
 
 	// TODO: add login_url, callback_game, pay for easier access (like url button)
@@ -231,7 +278,7 @@ export class MenuTemplate<Context> {
 	navigate(relativePath: string, options: SingleButtonOptions<Context>): void {
 		this.#keyboard.add(
 			Boolean(options.joinLastRow),
-			generateCallbackButtonTemplate(options.text, relativePath, options.hide),
+			generateCallbackButtonTemplate(relativePath, options),
 		);
 	}
 
@@ -271,11 +318,7 @@ export class MenuTemplate<Context> {
 		);
 		this.#keyboard.add(
 			Boolean(options.joinLastRow),
-			generateCallbackButtonTemplate(
-				options.text,
-				uniqueIdentifier,
-				options.hide,
-			),
+			generateCallbackButtonTemplate(uniqueIdentifier, options),
 		);
 	}
 
@@ -313,11 +356,7 @@ export class MenuTemplate<Context> {
 		});
 		this.#keyboard.add(
 			Boolean(options.joinLastRow),
-			generateCallbackButtonTemplate(
-				options.text,
-				uniqueIdentifier + '/',
-				options.hide,
-			),
+			generateCallbackButtonTemplate(uniqueIdentifier + '/', options),
 		);
 	}
 
@@ -597,22 +636,29 @@ export class MenuTemplate<Context> {
 }
 
 function generateCallbackButtonTemplate<Context>(
-	text: ConstOrContextPathFunc<Context, string>,
 	relativePath: string,
-	hide: undefined | ContextPathFunc<Context, boolean>,
+	options: SingleButtonOptions<Context>,
 ): ContextPathFunc<Context, CallbackButtonTemplate | undefined> {
-	if (!text) {
-		throw new TypeError('you have to specify `text` in order to show a button label');
-	}
-
-	return async (context, path) => {
-		if (await hide?.(context, path)) {
+	return async (context, path): Promise<CallbackButtonTemplate | undefined> => {
+		if (await options.hide?.(context, path)) {
 			return undefined;
 		}
 
+		const text = typeof options.text === 'function'
+			? await options.text(context, path)
+			: options.text;
+		const icon_custom_emoji_id
+			= typeof options.icon_custom_emoji_id === 'function'
+				? await options.icon_custom_emoji_id(context, path)
+				: options.icon_custom_emoji_id;
+		const style = typeof options.style === 'function'
+			? await options.style(context, path)
+			: options.style;
 		return {
 			relativePath,
-			text: typeof text === 'function' ? await text(context, path) : text,
+			text,
+			...(icon_custom_emoji_id ? {icon_custom_emoji_id} : {}),
+			...(style ? {style} : {}),
 		};
 	};
 }

@@ -11,6 +11,8 @@ import {combinePath} from './path.ts';
 export type CallbackButtonTemplate = {
 	readonly text: string;
 	readonly relativePath: string;
+	readonly icon_custom_emoji_id?: string;
+	readonly style?: 'danger' | 'success' | 'primary';
 };
 
 export type InlineKeyboardButton = ReadonlyDeep<TelegramInlineKeyboardButton>;
@@ -107,8 +109,11 @@ function renderCallbackButtonTemplate(
 		throw new Error(`callback_data only supports 1-64 bytes. With this button (${template.relativePath}) it would get too long (${absolutePathLength}). Full path: ${absolutePath}`);
 	}
 
+	const {icon_custom_emoji_id, style} = template;
 	return {
 		text: template.text,
 		callback_data: absolutePath,
+		...(icon_custom_emoji_id ? {icon_custom_emoji_id} : {}),
+		...(style ? {style} : {}),
 	};
 }
