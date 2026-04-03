@@ -30,7 +30,6 @@
 	"scripts": {
 		"build": "del-cli dist && tsc",
 		"prepack": "npm run build",
-		"preexample-js": "npm run build",
 		"start": "tsc --sourceMap && node --enable-source-maps dist/examples/main.js",
 		"test": "tsc --sourceMap && xo && c8 --all node --test --enable-source-maps"
 	},
