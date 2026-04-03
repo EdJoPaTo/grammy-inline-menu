@@ -231,7 +231,7 @@ menu.submenu('media', mediaMenu, {
 const menuMiddleware = new MenuMiddleware<MyContext>('/', menu);
 console.log(menuMiddleware.tree());
 
-const bot = new Bot<MyContext>(process.env['BOT_TOKEN']!);
+const bot = new Bot(process.env['BOT_TOKEN']!);
 
 bot.on('callback_query:data', async (ctx, next) => {
 	console.log(

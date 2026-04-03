@@ -15,7 +15,7 @@ await test('menu-middleware empty-menu non callback queries are passing through'
 
 	const mm = new MenuMiddleware('/', menu);
 
-	const bot = new Bot<BaseContext>('123:ABC');
+	const bot = new Bot('123:ABC');
 	(bot as any).botInfo = {};
 	bot.use(mm.middleware());
 
@@ -45,7 +45,7 @@ await test('menu-middleware empty-menu irrelevant callback queries are passing t
 
 	const mm = new MenuMiddleware('/', menu);
 
-	const bot = new Bot<BaseContext>('123:ABC');
+	const bot = new Bot('123:ABC');
 	(bot as any).botInfo = {};
 	bot.use(mm.middleware());
 
@@ -77,7 +77,7 @@ await test('menu-middleware empty-menu default root path is responded', async t 
 	});
 	const mm = new MenuMiddleware('/', menu, {sendMenu});
 
-	const bot = new Bot<BaseContext>('123:ABC');
+	const bot = new Bot('123:ABC');
 	(bot as any).botInfo = {};
 	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
@@ -119,7 +119,7 @@ await test('menu-middleware empty-menu custom root path is responded', async t =
 	});
 	const mm = new MenuMiddleware('custom/', menu, {sendMenu});
 
-	const bot = new Bot<BaseContext>('123:ABC');
+	const bot = new Bot('123:ABC');
 	(bot as any).botInfo = {};
 	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
@@ -161,7 +161,7 @@ await test('menu-middleware empty-menu custom regex root path is responded', asy
 	});
 	const mm = new MenuMiddleware(/^tree(\d+)\//, menu, {sendMenu});
 
-	const bot = new Bot<BaseContext>('123:ABC');
+	const bot = new Bot('123:ABC');
 	(bot as any).botInfo = {};
 	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
@@ -200,7 +200,7 @@ await test('menu-middleware empty-menu default root path does not trigger custom
 
 	const mm = new MenuMiddleware('custom/', menu);
 
-	const bot = new Bot<BaseContext>('123:ABC');
+	const bot = new Bot('123:ABC');
 	(bot as any).botInfo = {};
 	bot.use(mm.middleware());
 
@@ -232,7 +232,7 @@ await test('menu-middleware empty-menu not existing path below is responded with
 	});
 	const mm = new MenuMiddleware('/', menu, {sendMenu});
 
-	const bot = new Bot<BaseContext>('123:ABC');
+	const bot = new Bot('123:ABC');
 	(bot as any).botInfo = {};
 	const answerCallbackQuery = t.mock.fn<BaseContext['answerCallbackQuery']>(async () => true);
 	bot.use(async (ctx, next) => {
