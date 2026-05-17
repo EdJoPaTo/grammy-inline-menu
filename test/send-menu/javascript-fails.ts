@@ -79,7 +79,7 @@ await test('send-menu javascript-fails telegram send', async t => {
 	await Promise.all(Object.entries(FAULTY_MENU_TEMPLATES).map(async ([fault, menu]) =>
 		t.test(fault, async () => {
 			const sendMenu = generateSendMenuToChatFunction({} as any, menu, '/');
-			await rejects(async () => sendMenu(666, {} as any), EXPECTED_ERROR);
+			await rejects(async () => sendMenu(666, {}), EXPECTED_ERROR);
 		})));
 });
 
@@ -92,7 +92,7 @@ await test('send-menu javascript-fails telegram edit', async t => {
 				'/',
 			);
 			await rejects(
-				async () => editIntoMenu(666, 666, {} as any),
+				async () => editIntoMenu(666, 666, {}),
 				EXPECTED_ERROR,
 			);
 		})));
