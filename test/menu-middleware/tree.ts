@@ -27,7 +27,7 @@ await test('menu-middleware tree action', () => {
 		},
 	};
 	const menu: MenuLike<unknown> = {
-		listSubmenus: () => new Set([]),
+		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],

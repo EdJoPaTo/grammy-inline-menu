@@ -21,7 +21,7 @@ await test('menu-middleware action is run without updating menu afterwards', asy
 	};
 	const mock = t.mock.method(action, 'doFunction');
 	const menu: MenuLike<MyContext> = {
-		listSubmenus: () => new Set([]),
+		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
@@ -63,7 +63,7 @@ await test('menu-middleware action is run and updating menu afterwards with path
 	};
 	const mock = t.mock.method(action, 'doFunction');
 	const menu: MenuLike<MyContext> = {
-		listSubmenus: () => new Set([]),
+		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
@@ -115,7 +115,7 @@ await test('menu-middleware action is run and updating menu afterwards with true
 	};
 	const mock = t.mock.method(action, 'doFunction');
 	const menu: MenuLike<MyContext> = {
-		listSubmenus: () => new Set([]),
+		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
@@ -161,7 +161,7 @@ await test('menu-middleware action returns non existing path afterwards throws E
 		doFunction: () => '/foo/',
 	};
 	const menu: MenuLike<MyContext> = {
-		listSubmenus: () => new Set([]),
+		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
@@ -204,7 +204,7 @@ await test('menu-middleware action not existing action updates menu', async t =>
 		},
 	};
 	const menu: MenuLike<MyContext> = {
-		listSubmenus: () => new Set([]),
+		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
@@ -476,7 +476,7 @@ await test('menu-middleware action run took too long and updating menu afterward
 		doFunction: () => '.',
 	};
 	const menu: MenuLike<MyContext> = {
-		listSubmenus: () => new Set([]),
+		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
@@ -521,7 +521,7 @@ await test('menu-middleware action updating menu still throws unknown error from
 		doFunction: () => '.',
 	};
 	const menu: MenuLike<MyContext> = {
-		listSubmenus: () => new Set([]),
+		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],

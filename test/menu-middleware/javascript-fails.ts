@@ -36,7 +36,7 @@ await test('menu-middleware javascript-fails action is run and no path to update
 		doFunction() {},
 	};
 	const menu: MenuLike<BaseContext> = {
-		listSubmenus: () => new Set([]),
+		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],
@@ -81,7 +81,7 @@ await test('menu-middleware javascript-fails action is run and an empty path to 
 		},
 	};
 	const menu: MenuLike<BaseContext> = {
-		listSubmenus: () => new Set([]),
+		listSubmenus: () => new Set(),
 		renderActionHandlers: () => new Set([action]),
 		renderBody: () => 'whatever',
 		renderKeyboard: () => [],

@@ -20,10 +20,11 @@ await test('getChoiceKeysFromChoices from record', () => {
 });
 
 await test('getChoiceKeysFromChoices from map', () => {
-	const choices = new Map<string | number, string>();
-	choices.set('A', 'Aaa');
-	choices.set('B', 'Bbb');
-	choices.set(1, '111');
+	const choices = new Map<string | number, string>([
+		['A', 'Aaa'],
+		['B', 'Bbb'],
+		[1, '111'],
+	]);
 	const keys = getChoiceKeysFromChoices(choices);
 	deepStrictEqual(keys, ['A', 'B', '1']);
 });
@@ -41,9 +42,10 @@ await test('getChoiceTextByKey from record', () => {
 });
 
 await test('getChoiceTextByKey from map', () => {
-	const choices = new Map<string, string>();
-	choices.set('A', 'Aaa');
-	choices.set('B', 'Bbb');
+	const choices = new Map<string, string>([
+		['A', 'Aaa'],
+		['B', 'Bbb'],
+	]);
 	const text = getChoiceTextByKey(choices, 'A');
 	strictEqual(text, 'Aaa');
 });
@@ -55,9 +57,10 @@ await test('getChoiceTextByKey from record but undefined', () => {
 });
 
 await test('getChoiceTextByKey from map but undefined', () => {
-	const choices = new Map<string, string>();
-	choices.set('A', 'Aaa');
-	choices.set('B', 'Bbb');
+	const choices = new Map<string, string>([
+		['A', 'Aaa'],
+		['B', 'Bbb'],
+	]);
 	const text = getChoiceTextByKey(choices, 'C');
 	strictEqual(text, 'C');
 });
